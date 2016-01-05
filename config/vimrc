@@ -5,21 +5,24 @@ if version >= 700                   " Ignore configuration on older systems
 " -----------------------------------
 " Table of Contents
 " -----------------------------------
-" 1. Vim and Bundles
+" 1. Vim and Plugins
 " 2. User Interface
-" 3. Syntax Highlighting
-" 4. Indentation and Tabs
-" 5. Keybindings
-" 6. Filetypes
-" 7. Functions and Helpers
+" 3. Status Line
+" 4. Syntax Highlighting
+" 5. Text Editing and Searching
+" 6. Indentation and Tabs
+" 7. Keybindings
+" 8. Filetypes and Auto Commands
+" 9. Functions and Helpers
 " -----------------------------------
 
-" 1. Vim and Bundles ---------------- {{{1
+" 1. Vim and Plugins ---------------- {{{1
 
 set nocompatible                    " Break backwards compatibility with vi
 set encoding=utf-8                  " Character encoding
 set ttyfast                         " Optimize for fast terminal connections
 set fileformats=unix,dos,mac        " Support all newline formats
+set history=1000                    " Increase number of commands saved
 
 set viminfo+=n$HOME/.vim/.viminfo   " Customize path of viminfo file
 set backupdir=$HOME/.vim/backup     " Centralize backups
@@ -28,11 +31,16 @@ set directory=$HOME/.vim/swap       " Centralize swapfiles
 if exists("&undodir")
   set undodir=$HOME/.vim/undo       " Centralize undo history
 endif
- 
+
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 
 call pathogen#infect()              " Load plugins in bundle directory
 call pathogen#helptags()            " Load bundle help files
+
+" Load matchit.vim, if not via pathogen
+if !exists('g:loaded_matchit') && findfile('bundle/matchit.vim', &rtp) ==# ''
+  runtime! macros/matchit.vim
+endif
 
 
 " 2. User Interface ----------------- {{{1
@@ -40,6 +48,7 @@ call pathogen#helptags()            " Load bundle help files
 if has('gui_running')
 
   set guifont=Menlo\ Regular:h15    " Select font to use
+  set linespace=2                   " Increase spacing between lines
   let g:solarized_bold=0            " Turn off bold fonts
 
 endif
@@ -47,17 +56,15 @@ endif
 set title                           " Allow vim to customize the title
 set number                          " Show line numbers
 set cursorline                      " Highlight current line
-set nohidden                        " Close hidden buffers
+set hidden                          " Hide modified buffers without complaining
 set showmatch                       " Highlight matching parenthesis
 set shortmess=atI                   " Shorten messages
 set foldmethod=marker               " Enable fold markers
 
-set splitbelow                      " Split to the bottom of the current window
-set splitright                      " Split to the right of the current window
-
+set laststatus=2                    " Always display the status line
 set ruler                           " Display cursor position
 set showcmd                         " Show currently running command
-set showmode                        " Show the current editing mode
+set noshowmode                      " Mode is displayed in lightline already
 
 set wildmenu                        " Visual autocomplete for command menu
 set wildmode=list:longest           " Set wildmeno to list choice
@@ -66,27 +73,86 @@ set list                            " Show invisible characters
 set listchars=tab:▸\                " Show tab stops
 set listchars+=trail:·              " Show trailing spaces
 set listchars+=nbsp:_               " Show non breaking spaces
+set listchars+=extends:»            " Line continues offscreen
+set listchars+=precedes:«           " Line precedes offscreen
 "set listchars+=eol:¬               " Show end of line markers
-"set listchars+=extends:»           " Line continues offscreen
-"set listchars+=precedes:«          " Line precedes offscreen
 
-let g:netrw_banner = 0              " Supress the banner of file explorer
-let g:netrw_liststyle = 3           " Enable tree-view in file explorer
-let g:netrw_keepdir = 0             " Sync current and browsing directory
-let g:netrw_browse_split = 4        " Use previous window to open files
-let g:netrw_altv = 1                " Split window to the right
-let g:netrw_alto = 1                " Split window to the bottom
-let g:netrw_winsize = -28           " Customize the initial netrw window size
+set splitbelow                      " Split to the bottom of the current window
+set splitright                      " Split to the right of the current window
+
+set scrolloff=1                     " Min. lines to keep above/below the cursor
+set sidescrolloff=5                 " Min. cols to keep left/right of the cursor
+set display+=lastline               " Keep as much as possible
 
 set mouse +=a                       " Enable mouse support. Shame on me...
 if &term =~ '^screen'
   set ttymouse=xterm2               " Enable extended mouse support.
 endif
 
+let g:netrw_banner=0                " Hide the banner in netrw
+let g:netrw_altv=1                  " Split window to the right
+let g:netrw_alto=1                  " Split window to the bottom
 
-" 3. Syntax Highlighting ------------ {{{1
 
-if has('syntax')
+" 3. Status Line -------------------- {{{1
+
+" Customize information displayed in status line
+let g:lightline = {
+  \ 'colorscheme': 'solarized',
+  \ 'active': {
+  \   'right': [ [ 'lineinfo' ],
+  \              [ 'percent' ],
+  \              [ 'fileformat', 'fileencoding' ] ]
+  \ },
+  \ 'mode_map': {
+  \   'n': ' N ',
+  \   'i': ' I ',
+  \   'R': ' R ',
+  \   'v': ' V ',
+  \   'V': 'V-L',
+  \   'c': ' C ',
+  \   "\<C-v>": 'V-B',
+  \   's': ' S ',
+  \   'S': 'S-L',
+  \   "\<C-s>": 'S-B',
+  \   '?': '      '
+  \ },
+  \ 'component_function': {
+  \   'fileformat': 'LightLineFileFormat',
+  \   'fileencoding': 'LightLineFileEncoding'
+  \ },
+  \ 'subseparator': { 'left': '', 'right': '·' }
+  \ }
+
+" Show file format only if it differs from the default (unix)
+function! LightLineFileFormat()
+  return &fileformat !=? 'unix' ? &fileformat : ''
+endfunction
+
+" Show file encoding only if it differs from the default (utf-8)
+function! LightLineFileEncoding()
+  let fenc = strlen(&fileencoding) ? &fileencoding : &encoding
+  return fenc !=? 'utf-8' ? fenc : ''
+endfunction
+
+" Keep custom status line in CtrlP window
+let g:ctrlp_status_func = {
+  \ 'main': 'CtrlPStatusMain',
+  \ 'prog': 'CtrlPStatusProg',
+  \ }
+
+function! CtrlPStatusMain(focus, byfname, regex, prev, item, next, marked)
+  return lightline#statusline(0)
+endfunction
+
+function! CtrlPStatusProg(str)
+  return lightline#statusline(0)
+endfunction
+
+
+" 4. Syntax Highlighting ------------ {{{1
+
+if has('syntax') && !exists('g:syntax_on')
 
   syntax enable                     " Enable syntax processing
 
@@ -101,23 +167,16 @@ if has('syntax')
 endif
 
 
-" 5. Text Editing and Searching ----- 
+" 5. Text Editing and Searching ----- {{{1
 
 set nostartofline                   " Do not reset cursor position
 set backspace=2                     " Equivalent to backspace=indent,eol,start
 
-set hlsearch                        " Highlight matches
 set incsearch                       " Highlight dynamically while typing
 set ignorecase                      " Ignore case when searching
 set smartcase                       " Be case-sensitive when using capitals
 
-set nowrap                          " Wrap long lines, enabled per filetype
 set textwidth=80                    " Wrap lines at 80 columns (if enabled)
-set formatoptions=tcrql             " t - autowrap to textwidth
-                                    " c - autowrap comments to textwidth
-                                    " r - autinsert comment leader
-                                    " q - allow formatting of comments
-                                    " l - Don't format existing lines
 
 " Use the silver searcher if avilable
 if executable('ag')
@@ -126,114 +185,119 @@ if executable('ag')
 endif
 
 
-" 4. Indentation and Tabs ----------- {{{1
+" 6. Indentation and Tabs ----------- {{{1
 
 set autoindent                      " Start indentation at same cursor position
-set smartindent                     " Try to be smart (use C-style)
+set smarttab                        " Insert blanks according to shiftwidth
 set expandtab                       " Expand <Tab>s with spaces
 set tabstop=4                       " For proper display of files with tabs
 set shiftwidth=2                    " Spaces for each tab stop of (auto)indent
 set softtabstop=2                   " Set virtual tab stop
 set shiftround                      " Round indents to multiple of shiftwidth
-set copyindent                      " Use existing indents for new indents
-set preserveindent                  " Save existing indent structure
 
-filetype plugin indent on       " Load plugins/indentation per filetype
+filetype plugin indent on           " Load plugins/indentation per filetype
 
 
-" 5. Keybindings -------------------- {{{1
+" 7. Keybindings -------------------- {{{1
 
 " Customize leader key
 let mapleader=","
 
 " Avoid the escape key
-inoremap jj <Esc>
-inoremap jk <Esc>
+ino jj <Esc>
+ino jk <Esc>
+
+" Allow the use of undo in insert mode
+ino <C-u> <C-g>u<C-u>
 
 " Fast file saving
-nnoremap <leader>w :w!<CR>
+nmap <leader>w :w!<CR>
 
-" Remove search highlights
-nnoremap <leader>nh :nohl<CR>
+" Edit mode helpers
+cno %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
+map <leader>ew :e %%
+map <leader>es :split %%
+map <leader>ev :vsplit %%
+map <leader>et :tabe %%
+
+" Change current directory to the path of the file in the current buffer
+nmap <silent> <leader>cd :lcd %:h<CR>:pwd<CR>
+
+" Toggle paste mode
+nn <silent> <F4> :set invpaste<CR>:set paste?<CR>
+ino <silent> <F4> :set <Esc>:set invpaste<CR>:set paste?<CR>
+
+" Toggle text wrapping
+nmap <silent> <leader>tw :set invwrap<CR>:set wrap?<CR>
 
 " Remove trailing whitespace
-nnoremap <leader>rtw :call RemoveTrailingWhitespace()<CR>
+nmap <leader>rtw :call RemoveTrailingWhitespace()<CR>
 
 " Spell checking
-nnoremap <leader>ss :setlocal spell!<CR>
-nnoremap <leader>sn ]s
-nnoremap <leader>sp [s
-nnoremap <leader>sa zg
-nnoremap <leader>s? z=
+nn <leader>ss :setlocal spell!<CR>
+nn <leader>sn ]s
+nn <leader>sp [s
+nn <leader>sa zg
+nn <leader>s? z=
 
-" Move a line of text
-nnoremap <leader>mj :m.+1<CR>==
-nnoremap <leader>mk :m.-2<CR>==
-inoremap <leader>mj <Esc>:m.+1<CR>==gi
-inoremap <leader>mk <Esc>:m.-2<CR>==gi
-vnoremap <leader>mj :m'>+1<CR>gv=gv
-vnoremap <leader>mk :m'<-2<CR>gv=gv
+" Convert (word|first) char to (lower|uppercase)
+nn <leader>u mQviwU`Q
+nn <leader>l mQviwu`Q
+nn <leader>U mQgewvU`Q
+nn <leader>L mQgewvu`Q
 
-" Navigate vim tabs
-nnoremap <silent> <C-t> :tabnew<CR>
-nnoremap <silent> <C-Tab> :tabnext<CR>
-nnoremap <silent> <C-S-Tab> :tabprevious<CR>
-nnoremap <silent> <C-Left> :tabprevious<CR>
-nnoremap <silent> <C-Right> :tabnext<CR>
+" Remove search highlighting
+if maparg('<C-L>', 'n') ==# ''
+  nn <silent> <C-l> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+endif
 
 " OSX: Copy and paste to/from clipboard
 if has('clipboard') && has('mac')
-  vnoremap Y "*y
-  nnoremap Y "*yy
-  vnoremap <C-c> "*y
-  vnoremap <C-v> "*p
-  vnoremap <C-x> "*c
+  vn Y "*y
+  nn Y "*yy
+  vn <C-c> "*y
+  vn <C-v> "*p
+  vn <C-x> "*c
 endif
-
-" NetRW: Toggle file explorer
-nnoremap <silent> <leader>kb :call ToggleVExplorer()<CR>
 
 " CtrlP: Custom key bindings
 " 1. Search word under cursor
 " 2. Search file by name
 " 3. Search active buffers
-nnoremap <leader>a :Ag! <C-R>=expand('<cword>')<CR><CR>
-nnoremap <leader>p :CtrlP<CR>
-nnoremap <leader>b :CtrlPBuffer<CR>
+nmap <leader>a :Ag! <C-R>=expand('<cword>')<CR><CR>
+nmap <leader>p :CtrlP<CR>
+nmap <leader>b :CtrlPBuffer<CR>
 
 
-" 6. Filetypes ---------------------- {{{1
+" 8. Filetypes and Auto Commands ---- {{{1
 
-" Force correct filetype for markdown files
-autocmd BufRead,BufNewFile *.md set filetype=markdown
+augroup vimrc_autocmds
 
-" Remove trailing whitespace
-autocmd FileType html,css,js,php autocmd BufWritePre <buffer> :call RemoveTrailingWhitespace()
+  " Remove all existing commands in this group
+  au!
 
-" Auto wrap textfiles at 80 characters
-autocmd Filetype text,markdown,gitcommit setlocal wrap textwidth=80
+  " Remember cursor position, except for commit messages
+  au BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")| exe "normal! g`\"" | endif"`'")"'")
 
-" Enable spell check for text files
-autocmd FileType text,markdown,gitcommit setlocal spell spelllang=en_us,de_de
+  " Text Writing:
+  " 1. Wrap lines characters
+  " 2. Enable spell checking by default
+  au BufNewFile,BufReadPost *.md set filetype=markdown
+  au Filetype text,markdown,gitcommit setlocal wrap textwidth=72
+  au FileType text,markdown,gitcommit setlocal spell spelllang=en_us,de_de
+
+  " Development:
+  " 1. Use tab to expand emmet abbreviation.
+  " 2. Remove trailing spaces.
+  let g:user_emmet_install_global = 0
+  au FileType html,php,css,scss,sass EmmetInstall
+  au FileType html,php,css,scss,sass imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+  au FileType html,php,css,scss,sass,js autocmd BufWritePre <buffer> :call RemoveTrailingWhitespace()
+
+augroup END
 
 
-" 7. Functions and Helpers ---------- {{{1
-
-function! ToggleVExplorer()
-  if exists('t:vex_bufnr')
-    let vex_bufnr = bufwinnr(t:vex_bufnr)
-    if vex_bufnr != -1
-      execute vex_bufnr . 'wincmd w'
-      close
-      execute winnr() . 'wincmd w'
-    endif
-    unlet t:vex_bufnr
-  else
-    execute '1wincmd w'
-    Vexplore
-    let t:vex_bufnr = bufnr('%')
-  endif
-endfunc
+" 9. Functions and Helpers ---------- {{{1
 
 function! RemoveTrailingWhitespace()
   let l:cursor_pos = getpos('.')

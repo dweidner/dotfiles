@@ -2,6 +2,7 @@
 
 # Base folder containing all dotfiles
 export DOTFILES_PATH=~/.dotfiles
+export ZSH_PLUGIN_PATH=$DOTFILES_PATH/config/zsh/plugins
 
 # Customize zsh’s fpath
 fpath=( ~/.zfunctions $DOTFILES_PATH/functions $fpath )
@@ -42,6 +43,16 @@ for file in $DOTFILES_PATH/functions/*; do
   autoload -Uz ${file##*/}
 done
 
+# Load zsh plugins
+plugins=(
+  zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+  zsh-bd/bd.zsh
+)
+
+for file in $plugins; do
+  [ -f $ZSH_PLUGIN_PATH/$file ] && source $ZSH_PLUGIN_PATH/$file
+done
+
 # Load common shell aliases
 source $DOTFILES_PATH/config/aliases
 
@@ -54,4 +65,4 @@ for file in $DOTFILES_PATH/config/zsh/*; do
 done
 
 # Load user configuration
-[ -f ~/.bash_user ] && source ~/.bash_user
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local

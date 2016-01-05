@@ -1,0 +1,14 @@
+node_modules/
+assets/js/
+assets/css/
+assets/fonts/
+assets/img/
+assets/maps/
+log/
+logs/
+images/
+tmp/
+.sass-cache/
+*.old
+*.bak
+*.log
