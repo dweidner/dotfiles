@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+#
+# Create a data URI from a file and copy it to the pasteboard.
+#
+# Usage: datauri file
+#
+# $1 = Path to the file to encode.
+#
+datauri() {
+  local mime
+  local uri
+
+  mime=$(file -b --mime-type "$1")
+  if [[ $mime == text/* ]]; then
+    mime="${mime};charset=utf-8"
+  fi
+
+  uri="data:${mime};base64,$(openssl base64 -in "$1" | tr -d '\n')"
+  if type pbcopy >/dev/null 2>&1; then
+    echo "$uri" | pbcopy
+  else
+    echo "$uri"
+  fi
+}

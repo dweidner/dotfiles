@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+#
+# Take ownership of the given file or directory.
+#
+# Usage: grab [directory]
+#
+# [$1] = Path to the directory to take ownership for.
+#
+grab() {
+  sudo chown -R "${USER}" "${1:-.}"
+}

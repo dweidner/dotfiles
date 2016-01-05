@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+#
+# Display formatting options and the 8/16 colors available using ANSI
+# escape sequences.
+#
+# Usage: ansi_formatting [text]
+#
+# [$1] = Text to print as placeholder.
+#
+ansi_formatting() {
+  local text="${1:-The quick brown fox jumps over the lazy dog}"
+  local colors=('black' 'red' 'green' 'yellow' 'blue' 'magenta' 'cyan' 'white')
+
+  echo -e "\nANSI Formatting:"
+
+  printf "%-12s %b%s%b\n" "Bold"       "\e[1m" "$text" "\e[21m\e[0m"
+  printf "%-12s %b%s%b\n" "Dim"        "\e[2m" "$text" "\e[22m"
+  printf "%-12s %b%s%b\n" "Italic"     "\e[3m" "$text" "\e[23m"
+  printf "%-12s %b%s%b\n" "Underlined" "\e[4m" "$text" "\e[24m"
+  printf "%-12s %b%s%b\n" "Blink"      "\e[5m" "$text" "\e[25m"
+  printf "%-12s %b%s%b\n" "Reverse"    "\e[7m" "$text" "\e[27m"
+  printf "%-12s %b%s%b\n" "Hidden"     "\e[8m" "$text" "\e[28m"
+
+  echo -e "\n8/16 Colors:"
+
+  for i in {0..7}; do
+    printf "%b %02d %-15s %b  %b %02d %-15s %b  %b %02d %-15s %b  %b %02d %-15s %b\n" \
+      "\e[0;3${i}m" "$i" "${colors[$i+1]}" "\e[0;39m" \
+      "\e[0;4${i}m" "$i" "${colors[$i+1]}" "\e[0;49m" \
+      "\e[1;9${i}m" "$((i + 8))" "light ${colors[$i+1]}" "\e[0;39m" \
+      "\e[0;10${i}m" "$((i + 8))" "light ${colors[$i+1]}" "\e[0;49m"
+  done
+
+  echo -e "\n256 Colors:"
+
+  for i in 38 48; do
+    for j in {0..256}; do
+      printf "%b %--5s %b" "\e[${i};5;${j}m" "$j" "\e[0m"
+      [ $(((j + 1) % 8)) -eq 0 ] && printf "\n"
+    done
+    printf "\n"
+  done
+}

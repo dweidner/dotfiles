@@ -1,0 +1,248 @@
+" .VIMRC
+
+if version >= 700                   " Ignore configuration on older systems
+
+" -----------------------------------
+" Table of Contents
+" -----------------------------------
+" 1. Vim and Bundles
+" 2. User Interface
+" 3. Syntax Highlighting
+" 4. Indentation and Tabs
+" 5. Keybindings
+" 6. Filetypes
+" 7. Functions and Helpers
+" -----------------------------------
+
+" 1. Vim and Bundles ---------------- {{{1
+
+set nocompatible                    " Break backwards compatibility with vi
+set encoding=utf-8                  " Character encoding
+set ttyfast                         " Optimize for fast terminal connections
+set fileformats=unix,dos,mac        " Support all newline formats
+
+set viminfo+=n$HOME/.vim/.viminfo   " Customize path of viminfo file
+set backupdir=$HOME/.vim/backup     " Centralize backups
+set directory=$HOME/.vim/swap       " Centralize swapfiles
+
+if exists("&undodir")
+  set undodir=$HOME/.vim/undo       " Centralize undo history
+endif
+ 
+runtime bundle/vim-pathogen/autoload/pathogen.vim
+
+call pathogen#infect()              " Load plugins in bundle directory
+call pathogen#helptags()            " Load bundle help files
+
+
+" 2. User Interface ----------------- {{{1
+
+if has('gui_running')
+
+  set guifont=Menlo\ Regular:h15    " Select font to use
+  let g:solarized_bold=0            " Turn off bold fonts
+
+endif
+
+set title                           " Allow vim to customize the title
+set number                          " Show line numbers
+set cursorline                      " Highlight current line
+set nohidden                        " Close hidden buffers
+set showmatch                       " Highlight matching parenthesis
+set shortmess=atI                   " Shorten messages
+set foldmethod=marker               " Enable fold markers
+
+set splitbelow                      " Split to the bottom of the current window
+set splitright                      " Split to the right of the current window
+
+set ruler                           " Display cursor position
+set showcmd                         " Show currently running command
+set showmode                        " Show the current editing mode
+
+set wildmenu                        " Visual autocomplete for command menu
+set wildmode=list:longest           " Set wildmeno to list choice
+
+set list                            " Show invisible characters
+set listchars=tab:▸\                " Show tab stops
+set listchars+=trail:·              " Show trailing spaces
+set listchars+=nbsp:_               " Show non breaking spaces
+"set listchars+=eol:¬               " Show end of line markers
+"set listchars+=extends:»           " Line continues offscreen
+"set listchars+=precedes:«          " Line precedes offscreen
+
+let g:netrw_banner = 0              " Supress the banner of file explorer
+let g:netrw_liststyle = 3           " Enable tree-view in file explorer
+let g:netrw_keepdir = 0             " Sync current and browsing directory
+let g:netrw_browse_split = 4        " Use previous window to open files
+let g:netrw_altv = 1                " Split window to the right
+let g:netrw_alto = 1                " Split window to the bottom
+let g:netrw_winsize = -28           " Customize the initial netrw window size
+
+set mouse +=a                       " Enable mouse support. Shame on me...
+if &term =~ '^screen'
+  set ttymouse=xterm2               " Enable extended mouse support.
+endif
+
+
+" 3. Syntax Highlighting ------------ {{{1
+
+if has('syntax')
+
+  syntax enable                     " Enable syntax processing
+
+  if match($THEME, 'Dark') != -1
+    set background=light            " Use dark variant of the theme
+    colorscheme solarized           " Select color theme to use
+  else
+    set background=light            " Use light variant of the theme (default)
+    colorscheme solarized           " Select color theme to use
+  endif
+
+endif
+
+
+" 5. Text Editing and Searching ----- 
+
+set nostartofline                   " Do not reset cursor position
+set backspace=2                     " Equivalent to backspace=indent,eol,start
+
+set hlsearch                        " Highlight matches
+set incsearch                       " Highlight dynamically while typing
+set ignorecase                      " Ignore case when searching
+set smartcase                       " Be case-sensitive when using capitals
+
+set nowrap                          " Wrap long lines, enabled per filetype
+set textwidth=80                    " Wrap lines at 80 columns (if enabled)
+set formatoptions=tcrql             " t - autowrap to textwidth
+                                    " c - autowrap comments to textwidth
+                                    " r - autinsert comment leader
+                                    " q - allow formatting of comments
+                                    " l - Don't format existing lines
+
+" Use the silver searcher if avilable
+if executable('ag')
+  let g:ackprg = 'ag --nogroup --column'
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
+
+
+" 4. Indentation and Tabs ----------- {{{1
+
+set autoindent                      " Start indentation at same cursor position
+set smartindent                     " Try to be smart (use C-style)
+set expandtab                       " Expand <Tab>s with spaces
+set tabstop=4                       " For proper display of files with tabs
+set shiftwidth=2                    " Spaces for each tab stop of (auto)indent
+set softtabstop=2                   " Set virtual tab stop
+set shiftround                      " Round indents to multiple of shiftwidth
+set copyindent                      " Use existing indents for new indents
+set preserveindent                  " Save existing indent structure
+
+filetype plugin indent on       " Load plugins/indentation per filetype
+
+
+" 5. Keybindings -------------------- {{{1
+
+" Customize leader key
+let mapleader=","
+
+" Avoid the escape key
+inoremap jj <Esc>
+inoremap jk <Esc>
+
+" Fast file saving
+nnoremap <leader>w :w!<CR>
+
+" Remove search highlights
+nnoremap <leader>nh :nohl<CR>
+
+" Remove trailing whitespace
+nnoremap <leader>rtw :call RemoveTrailingWhitespace()<CR>
+
+" Spell checking
+nnoremap <leader>ss :setlocal spell!<CR>
+nnoremap <leader>sn ]s
+nnoremap <leader>sp [s
+nnoremap <leader>sa zg
+nnoremap <leader>s? z=
+
+" Move a line of text
+nnoremap <leader>mj :m.+1<CR>==
+nnoremap <leader>mk :m.-2<CR>==
+inoremap <leader>mj <Esc>:m.+1<CR>==gi
+inoremap <leader>mk <Esc>:m.-2<CR>==gi
+vnoremap <leader>mj :m'>+1<CR>gv=gv
+vnoremap <leader>mk :m'<-2<CR>gv=gv
+
+" Navigate vim tabs
+nnoremap <silent> <C-t> :tabnew<CR>
+nnoremap <silent> <C-Tab> :tabnext<CR>
+nnoremap <silent> <C-S-Tab> :tabprevious<CR>
+nnoremap <silent> <C-Left> :tabprevious<CR>
+nnoremap <silent> <C-Right> :tabnext<CR>
+
+" OSX: Copy and paste to/from clipboard
+if has('clipboard') && has('mac')
+  vnoremap Y "*y
+  nnoremap Y "*yy
+  vnoremap <C-c> "*y
+  vnoremap <C-v> "*p
+  vnoremap <C-x> "*c
+endif
+
+" NetRW: Toggle file explorer
+nnoremap <silent> <leader>kb :call ToggleVExplorer()<CR>
+
+" CtrlP: Custom key bindings
+" 1. Search word under cursor
+" 2. Search file by name
+" 3. Search active buffers
+nnoremap <leader>a :Ag! <C-R>=expand('<cword>')<CR><CR>
+nnoremap <leader>p :CtrlP<CR>
+nnoremap <leader>b :CtrlPBuffer<CR>
+
+
+" 6. Filetypes ---------------------- {{{1
+
+" Force correct filetype for markdown files
+autocmd BufRead,BufNewFile *.md set filetype=markdown
+
+" Remove trailing whitespace
+autocmd FileType html,css,js,php autocmd BufWritePre <buffer> :call RemoveTrailingWhitespace()
+
+" Auto wrap textfiles at 80 characters
+autocmd Filetype text,markdown,gitcommit setlocal wrap textwidth=80
+
+" Enable spell check for text files
+autocmd FileType text,markdown,gitcommit setlocal spell spelllang=en_us,de_de
+
+
+" 7. Functions and Helpers ---------- {{{1
+
+function! ToggleVExplorer()
+  if exists('t:vex_bufnr')
+    let vex_bufnr = bufwinnr(t:vex_bufnr)
+    if vex_bufnr != -1
+      execute vex_bufnr . 'wincmd w'
+      close
+      execute winnr() . 'wincmd w'
+    endif
+    unlet t:vex_bufnr
+  else
+    execute '1wincmd w'
+    Vexplore
+    let t:vex_bufnr = bufnr('%')
+  endif
+endfunc
+
+function! RemoveTrailingWhitespace()
+  let l:cursor_pos = getpos('.')
+  silent! %s/\s\+$//
+  call setpos('.', l:cursor_pos)
+endfunc
+
+" }}}1
+
+endif " version >= 700
+
+" vim:foldmethod=marker:foldlevel=1

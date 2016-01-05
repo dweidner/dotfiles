@@ -1,0 +1,297 @@
+#!/usr/bin/env bash
+
+BACKUP_LOGFILE="$HOME/Library/Logs/backup.log"
+BACKUP_IGNORE="$HOME/.backup_ignore"
+
+#
+# Print a message in a given color.
+#
+# Usage: e message [color] [format]
+#
+# $1 = Message to print
+# $2 = Color to use [red|green|yellow]
+#
+e() {
+  local msg="$1"
+  local color="$2"
+
+  local prefix
+  local suffix
+
+  if [ -n "$color" ]; then
+    case "$color" in
+      red)     prefix=$(tput setaf 1)  ;;
+      green)   prefix=$(tput setaf 2)  ;;
+      yellow)  prefix=$(tput setaf 3)  ;;
+      bold)    prefix=$(tput bold)     ;;
+    esac
+    suffix=$(tput sgr0)
+  fi
+
+  printf "%b%s%b\n" "$prefix" "$msg" "$suffix"
+}
+
+#
+# Ask for user input.
+#
+# Usage: ask question
+#
+# $1 = Question to ask.
+#
+e_ask() {
+  read -r -n 1 -p "$(tput setaf 2)$* (y/n) $(tput sgr0)"
+  printf "\n"
+}
+
+#
+# Notifies user about how to use the script
+#
+# Usage: e_usage
+#
+e_usage() {
+  e "usage: backup [source] [target]"
+}
+
+#
+# Displays script information.
+#
+# Usage: e_header
+#
+e_header() {
+  e ""
+  e "Backup Utility" "bold"
+  e "
+    This script copies the given source directory and all its
+    contents to a backup directory.
+
+    Root priviliges are required to ensure all files are copied correctly.
+    You will be prompted for a password...
+  "
+}
+
+#
+# Display backup statistics.
+#
+# Usage: e_statistics starttime endtime [logfile]
+#
+#  $1  = Time the backup was started
+#  $2  = Time the backup was finished
+#
+e_statistics() {
+  local duration=$((2 - 1))
+
+  if [ "$duration" -lt 60 ]; then
+    duration="$duration seconds"
+  elif [ "$duration" -lt 3600 ]; then
+    duration="$((duration / 60)) minutes and $((duration % 60)) seconds"
+  else
+    duration="$((duration / 3600)) hours and $(((duration % 3600) / 60)) minutes"
+  fi
+
+  local num_files
+  num_files=$(awk '/Number of files: /{print $7}' "$BACKUP_LOGFILE")
+
+  local num_files_transferred
+  num_files_transferred=$(awk '/Number of regular files transferred: /{print $NF}' "$BACKUP_LOGFILE")
+
+  printf '=%.0s' {1..50}; printf '\n'
+  e "Summary:" "bold"
+  e "- Number of files: $num_files"
+  e "- Number of regular files transferred: $num_files_transferred"
+  e "- Total Duration: $duration"
+  printf '=%.0s' {1..50}; printf '\n\n'
+}
+
+#
+# Report errors and warnings that occured during
+# the backup process.
+#
+# Usage: e_errors
+#
+e_errors() {
+  local warnings
+  local num_warnings
+
+  warnings=$(grep "rsync:" "$BACKUP_LOGFILE" | awk -F"rsync: " '{print "- "$2}')
+  num_warnings=$(echo "$warnings" | wc -l | tr -d ' ')
+
+  if [ -z "$warnings" ]; then
+    warnings="– None –"
+  fi
+
+  e "Warnings ($((num_warnings - 1))):" "yellow"
+  e "$warnings"; echo
+
+  local errors
+  local num_errors
+
+  errors=$(grep "rsync error:" "$BACKUP_LOGFILE" | awk -F"rsync error: " '{print "- "$2}')
+  num_errors=$(echo "$errors" | wc -l | tr -d ' ')
+
+  if [ -z "$errors" ]; then
+    errors="– None –"
+  fi
+
+  e "Errors ($((num_errors - 1))):" "red"
+  e "$errors"; echo
+
+  return "$((num_errors - 1))"
+}
+
+#
+# Test if rsync is available in the users $PATH.
+#
+# Usage: is_rsync_executable
+#
+is_rsync_executable() {
+  type "rsync" >/dev/null 2>&1
+}
+
+#
+# Test if the given directory is readable.
+#
+# Usage: is_dir_readable directory
+#
+# $1 = Path to the direcotry
+#
+is_dir_readable() {
+  [ -d "$1" ]
+}
+
+#
+# Test if the given file is readable.
+#
+# Usage: is_file_readable file
+#
+# $1 = Path to the file
+#
+is_file_readable() {
+  [ -f "$1" ]
+}
+
+#
+# Run incremental backup using rsync and bless.
+#
+# Usage: backup source target
+#
+#  $1  = Source directory
+#  $2  = Target direcotry
+#
+backup() {
+  local source="$1"
+  local target="$2"
+
+  # Remove old logfiles
+  if [ -f "$BACKUP_LOGFILE" ]; then
+    rm -f "$BACKUP_LOGFILE"
+  fi
+
+  sudo rsync --archive \
+         --hard-links \
+         --executability \
+         --xattrs \
+         --acls \
+         --one-file-system \
+         --verbose \
+         --delete \
+         --progress \
+         --stats \
+         --timeout=999 \
+         --log-file="$BACKUP_LOGFILE" \
+         --exclude-from="$BACKUP_IGNORE" \
+         "$source" \
+         "$target"
+
+  # Check for errors
+  if [ $? -ne 0 ]; then
+    e "» An error occured during the backup. See the log for more details." "red"
+  else
+    e "» Backup finished successfully." "green"
+  fi
+
+  # Make the backup bootable
+  e_ask "» Make the backup bootable?"
+
+  if [[ "$REPLY" =~ ^[YyJj]$ ]]; then
+    sudo bless -folder "$target/System/Library/CoreServices"
+
+    # Check for errors
+    if [ $? -ne 0 ]; then
+      e "» Could not make the backup bootable." "red"
+      return 1
+    else
+      e "» Your backup is now bootable." "green"
+    fi
+  fi
+
+  return 0
+}
+
+#
+# Script entry point
+#
+# $1 = Source directory
+# $2 = Target directory of the backup
+#
+main() {
+  local source="$1"
+  local target="$2"
+
+  # Ensure any arguments are given
+  if [[ -z "$source" || -z "$target" ]]; then
+    e_usage
+    return 1
+  fi
+
+  # Ask for root priviliges
+  e_header
+  sudo -v
+  echo
+
+  # Ensure rsync is available
+  if ! is_rsync_executable; then
+    e "backup: rsync not found: Ensure it is in your PATH." "red"
+    return 1
+  fi
+
+  # Ensure the source directory is available
+  if ! is_dir_readable "$source"; then
+    e "backup: Source directory not found: $source" "red"
+    return 1
+  fi
+
+  # Ensure target directory is available
+  if ! is_dir_readable "$target"; then
+    e "backup: Target directory not found: $target" "red"
+    return 1
+  fi
+
+  # Ask the user if we should ignore some files during the backup
+  if is_file_readable "$BACKUP_IGNORE"; then
+    e_ask "» Found a .backup_ignore file in your home directory. Do you want to use that file?"
+
+    if [[ "$REPLY" =~ ^[Nn]$ ]]; then
+      BACKUP_IGNORE=""
+    fi
+  fi
+
+  # Start the backup process
+  e "» Running backup. This may take some time..." "green"; echo
+
+  local starttime
+  starttime="$(date +%s)"
+
+  backup "$source" "$target"
+
+  local endtime
+  endtime="$(date +%s)"
+
+  # Summarize results
+  e_statistics "$starttime" "$endtime"
+  e_errors
+  e "» Backup done. Relax :)." "green"
+
+  return 0
+}
+
+main "$@"

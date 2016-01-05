@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+#
+# List all installed homebrew formulars and those depending on them.
+#
+# Usage: brewls 
+#
+brewls() {
+  brew list -1 | while read -r cask; do \
+    echo -ne "\x1B[1;34m* $cask \x1B[0m\n"; \
+    brew uses "$cask" --installed | awk '{printf("| %s \n", $0)}'; \
+  done
+}

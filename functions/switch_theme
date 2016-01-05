@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+#
+# Change the active color scheme of the Mac OSX terminal.
+# 
+# Usage: switch_theme theme_name
+#
+# $1 = Name of the color theme.
+#
+switch_theme() {
+  local theme="$1"
+
+  if [ -z "$theme" ]; then
+    echo "Usage: switch_theme theme_name"
+    return 1
+  fi
+
+  osascript -e "tell application \"Terminal\" to set current settings of front window to settings set \"$theme\"" 2>/dev/null
+
+  if [ $? -ne 0 ]; then
+    echo "switch_theme: Invalid color scheme: $theme"
+    return 1
+  fi
+  
+  export THEME="$theme"
+  return 0
+}

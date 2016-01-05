@@ -1,0 +1,52 @@
+[color]
+  ui = auto
+  interactive = auto
+
+[core]
+  excludesfile = ~/.gitignore
+  attributesfile = ~/.gitattributes
+
+[pretty]
+  # %h <short-sha>
+  # %s <commit-message>
+  # %d <pointer-names>
+  # %an <commit-author-name>
+  # %ar <relative-time>
+  nice = "format:%C(yellow)%h%C(reset) %C(red)%d%C(reset) %s -- %C(blue)%an%C(reset); %ar"
+
+[push]
+  default = simple
+
+[alias]
+    # Basic shortcuts
+    st = status -s
+    cl = clone --recursive
+    co = checkout
+    cm = "!f() { git commit -m \"$1\"; }; f"
+    ca = "!f() { git add --all && git commit --all -m \"$1\"; }; f"
+    am = commit --amend
+    pa = !"git pull; git submodule foreach git pull origin master"
+
+    # Logging
+    ls = log --pretty=nice --decorate
+    ll = log --pretty=nice --decorate --numstat --no-renames
+
+    # List branches, tags and remotes
+    tags = tag -l
+    branches = branch -a
+    remotes = remote -v
+    contributors = shortlog --summary --numbered
+
+    # Assume unchanged
+    au = !"f() { git update-index --assume-unchanged \"$1\"; }; f"
+    nau = !"f() { git update-index --no-assume-unchanged \"$1\"; }; f"
+    lsau = !"git ls-files -v | grep \"^[[:lower:]]\" | cut -f2 -d' '"
+
+[diff]
+  tool = opendiff
+
+[difftool]
+  prompt = false
+
+[merge]
+  tool = opendiff

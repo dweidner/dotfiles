@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+#
+# Search the bash history.
+#
+# Usage: h [search]
+#
+# [$1] = Keyword to search for in the history.
+#
+h() {
+  if [[ -z "$1" ]]; then
+    history -n 0
+  else
+    history -n | grep "$1"
+  fi
+}

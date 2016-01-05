@@ -1,0 +1,29 @@
+# 1. General Settings ----------------- {{{1
+
+set input-meta on
+set output-meta on
+set convert-meta off
+
+
+# 2. Keybindings ---------------------- {{{1
+
+"\e[A": history-search-backward       # [arrow up]
+"\e[B": history-search-forward        # [arrow down]
+"\e[1;9D": backward-word              # [alt + left]
+"\e[1;9C": forward-word               # [alt + right]
+"\e[3~": kill-word                    # [alt + delete]
+
+
+# 3. Autocomplete --------------------- {{{1
+
+set completion-ignore-case on         # Ignore case for autocomplete
+set show-all-if-ambiguous on          # Show all suggestions if multiple
+set mark-symlinked-directories on     # Add trailing slash
+set match-hidden-files off            # Do not match hidden files
+set page-completions off              # Disable paging
+set completion-query-items 200        # Ask before showing more than 200 items
+set visible-stats on                  # Show additional information
+set skip-completed-text on            # Look at the text after the cursor
+
+
+# vim:foldmethod=marker:foldlevel=1

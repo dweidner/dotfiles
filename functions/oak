@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+#
+# Alias for tree. Display a colored list of all the contents of a
+# given directory.
+#
+# Usage: oak [directory]
+# Source: [@mathiasbynens](https://git.io/QXbJdQ)
+#
+# [$1] = Path to the directory to display the contents of.
+#
+oak() {
+  tree -aC -I '.cache|.Trash|.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX;
+}

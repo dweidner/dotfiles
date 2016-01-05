@@ -1,0 +1,24 @@
+# Compiled Python files
+*.pyc
+
+# Folder configuration files
+.DS_Store
+Desktop.ini
+
+# Thumbnail cache files
+._*
+Thumbs.db
+
+# Files on external disks
+.Spotlight-V100
+.Trashes
+
+# Temporary files
+*.diff
+*.err
+*.log
+*.orig
+*.sass-cache
+
+# Sublime Text
+*.sublime-workspace

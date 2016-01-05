@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# Update homebrew
+brew update
+brew upgrade --all
+
+# Install GNU core utilities
+brew install coreutils
+
+# Update shell
+brew install zsh
+brew install bash
+brew tap homebrew/versions
+brew install bash-completion2
+
+# Install and update utilities
+brew install encfs
+brew install homebrew/dupes/grep
+brew install homebrew/dupes/openssh
+brew install git
+brew install git-flow
+brew install wget
+brew install tree
+brew install rsync
+brew install vim
+brew install the_silver_searcher
+
+# Development Tools
+brew install dnsmasq
+brew install node --without-npm
+brew install mysql
+brew install homebrew/php/php56
+brew install homebrew/php/php56-xdebug
+brew install homebrew/php/php56-mcrypt
+brew install homebrew/php/adminer
+brew install composer
+brew install wp-cli
+brew install drush
+brew install imagemagick
+brew install optipng
+brew install httrack
+
+# Remove outdated versions from cellar
+brew cleanup

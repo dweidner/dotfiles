@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+#
+# How to use the script.
+#
+# Usage e_usage
+#
+e_usage() {
+  echo "usage: mount_encfs source target"
+}
+
+#
+# Test if rsync is available in the users $PATH.
+#
+# Usage: is_encfs_available
+#
+is_encfs_available() {
+  type "encfs" >/dev/null 2>&1
+}
+
+#
+# Test if a drive is already mounted.
+#
+# Usage: is_encfs_mounted
+#
+is_encfs_mounted() {
+  mount | grep encfs >/dev/null 2>&1
+}
+
+#
+# Script entry point
+#
+# $1 = Source directory
+# $2 = Mount point
+#
+main() {
+  local source="$1"
+  local target="$2"
+
+  if [[ -z "$source" || -z "$target" ]]; then
+    e_usage
+    return 1
+  fi
+
+  if ! is_encfs_available; then
+    echo "mount_encfs: encfs not found"
+    return 1
+  fi
+
+  if is_encfs_mounted; then
+    echo "mount_encfs: Another drive is already mounted"
+    return 1
+  fi
+
+  if [ ! -d "$source" ]; then
+    echo "mount_encfs: Source directory not found: $source"
+    return 1
+  fi
+
+  if [ ! -d "$target" ]; then
+    mkdir -p "$target"
+    chmod 0700 "$target"
+  fi
+
+  local volume_name
+  volume_name=$(basename "$target")
+
+  # Mount the encfs volume
+  # -o volname=<str>      set the file system's volume name
+  # -o allow_root         allow access to root
+  # -o local              mark the volume as "local" (default is "nonlocal")
+  # -o hard_remove        immediate removal (don't hide files)
+  # -o auto_xattr         handle extended attributes entirely through ._ files
+  # -o nolocalcaches      meta option equivalent to noreadahead,noubc,novncache
+  /usr/local/bin/encfs -S "$source" "$target" --extpass="/usr/bin/security find-generic-password -gl encfs 2>&1 >/dev/null|grep password|/usr/bin/cut -d'\"' -f 2" -o volname="$volume_name"
+
+  if [ $? -ne 0 ]; then
+    echo "mount_encfs: An error occured while mounting the volume: $volume_name."
+  fi
+
+  return 0
+}
+
+main "$@"

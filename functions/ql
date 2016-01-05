@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+#
+# Preview a file in quick look.
+#
+# Usage: ql file
+#
+# $1 = File to display in quick look.
+#
+ql() {
+  qlmanage -p "$@" 2>/dev/null
+}
