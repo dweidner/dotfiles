@@ -290,8 +290,8 @@ augroup vimrc_autocmds
   " 1. Use tab to expand emmet abbreviation.
   " 2. Remove trailing spaces.
   let g:user_emmet_install_global = 0
-  au FileType html,php,css,scss,sass EmmetInstall
-  au FileType html,php,css,scss,sass imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+  au FileType html,html.twig,php,css,scss,sass EmmetInstall
+  au FileType html,html.twig,php,css,scss,sass imap <buffer> <tab> <plug>(emmet-expand-abbr)
   au FileType html,php,css,scss,sass,js autocmd BufWritePre <buffer> :call RemoveTrailingWhitespace()
 
 augroup END
