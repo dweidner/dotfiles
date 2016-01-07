@@ -58,6 +58,7 @@ case "$OSTYPE" in
     alias chrome='open -a Google\ Chrome'
     alias firefox='open -a Firefox'
     alias safari='open -a Safari'
+    alias vimr='open -a VimR'
     alias pubkey='more ~/.ssh/id_rsa.pub | pbcopy | printf "=> Public key copied.\n"'
     alias update='sudo softwareupdate -i -a; brew update; brew upgrade --all; brew cleanup; npm update npm -g; npm update -g; gem update --system; gem update'
     alias cleanup='find . -type f -name "*.DS_Store" -ls -delete'
