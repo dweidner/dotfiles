@@ -49,3 +49,6 @@
 [submodule "config/vim/bundle/vim-twig"]
 	path = config/vim/bundle/vim-twig
 	url = git@github.com:evidens/vim-twig.git
+[submodule "config/vim/bundle/vim-javascript-syntax"]
+	path = config/vim/bundle/vim-javascript-syntax
+	url = git@github.com:jelera/vim-javascript-syntax.git
