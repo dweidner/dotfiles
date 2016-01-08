@@ -74,3 +74,6 @@
 [submodule "config/vim/bundle/vim-tmux-focus-events"]
 	path = config/vim/bundle/vim-tmux-focus-events
 	url = https://github.com/tmux-plugins/vim-tmux-focus-events.git
+[submodule "config/vim/bundle/vim-syntastic"]
+	path = config/vim/bundle/vim-syntastic
+	url = https://github.com/scrooloose/syntastic.git

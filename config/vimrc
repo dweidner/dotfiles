@@ -93,64 +93,19 @@ let g:netrw_banner=0                " Hide the banner in netrw
 let g:netrw_altv=1                  " Split window to the right
 let g:netrw_alto=1                  " Split window to the bottom
 
+let g:syntastic_error_symbol='•'    " Customize error symbol
+let g:syntastic_warning_symbol='!'  " Customize warning symbol
+let g:syntastic_check_on_open=1     " Run syntax check when opening a file
+let g:syntastic_check_on_wq=0       " Avoid running tests on close
 
-" 3. Status Line -------------------- {{{1
-
-" Customize information displayed in status line
-let g:lightline = {
-  \ 'colorscheme': 'solarized',
-  \ 'active': {
-  \   'right': [ [ 'lineinfo' ],
-  \              [ 'percent' ],
-  \              [ 'fileformat', 'fileencoding' ] ]
-  \ },
-  \ 'mode_map': {
-  \   'n': ' N ',
-  \   'i': ' I ',
-  \   'R': ' R ',
-  \   'v': ' V ',
-  \   'V': 'V-L',
-  \   'c': ' C ',
-  \   "\<C-v>": 'V-B',
-  \   's': ' S ',
-  \   'S': 'S-L',
-  \   "\<C-s>": 'S-B',
-  \   '?': '      '
-  \ },
-  \ 'component_function': {
-  \   'fileformat': 'LightLineFileFormat',
-  \   'fileencoding': 'LightLineFileEncoding'
-  \ },
-  \ 'subseparator': { 'left': '', 'right': '·' }
-  \ }
-
-" Show file format only if it differs from the default (unix)
-function! LightLineFileFormat()
-  return &fileformat !=? 'unix' ? &fileformat : ''
-endfunction
-
-" Show file encoding only if it differs from the default (utf-8)
-function! LightLineFileEncoding()
-  let fenc = strlen(&fileencoding) ? &fileencoding : &encoding
-  return fenc !=? 'utf-8' ? fenc : ''
-endfunction
-
-" Keep custom status line in CtrlP window
-let g:ctrlp_status_func = {
-  \ 'main': 'CtrlPStatusMain',
-  \ 'prog': 'CtrlPStatusProg',
-  \ }
-
-function! CtrlPStatusMain(focus, byfname, regex, prev, item, next, marked)
-  return lightline#statusline(0)
-endfunction
-
-function! CtrlPStatusProg(str)
-  return lightline#statusline(0)
-endfunction
+" Customize the appearance of the status line
+let s:statuslinerc=expand('~/.vim/statusline.vimrc')
+if has('statusline') && filereadable(s:statuslinerc)
+  exec ':so ' . s:statuslinerc
+endif
 
 
-" 4. Syntax Highlighting ------------ {{{1
+" 3. Syntax Highlighting ------------ {{{1
 
 if has('syntax') && !exists('g:syntax_on')
 
@@ -167,7 +122,7 @@ if has('syntax') && !exists('g:syntax_on')
 endif
 
 
-" 5. Text Editing and Searching ----- {{{1
+" 4. Text Editing and Searching ----- {{{1
 
 set nostartofline                   " Do not reset cursor position
 set backspace=2                     " Equivalent to backspace=indent,eol,start
@@ -185,7 +140,7 @@ if executable('ag')
 endif
 
 
-" 6. Indentation and Tabs ----------- {{{1
+" 5. Indentation and Tabs ----------- {{{1
 
 set autoindent                      " Start indentation at same cursor position
 set smarttab                        " Insert blanks according to shiftwidth
@@ -198,7 +153,7 @@ set shiftround                      " Round indents to multiple of shiftwidth
 filetype plugin indent on           " Load plugins/indentation per filetype
 
 
-" 7. Keybindings -------------------- {{{1
+" 6. Keybindings -------------------- {{{1
 
 " Customize leader key
 let mapleader=","
@@ -206,9 +161,6 @@ let mapleader=","
 " Avoid the escape key
 ino jj <Esc>
 ino jk <Esc>
-
-" Allow the use of undo in insert mode
-ino <C-u> <C-g>u<C-u>
 
 " Fast file saving
 nmap <leader>w :w!<CR>
@@ -234,7 +186,7 @@ nmap <silent> <leader>tw :set invwrap<CR>:set wrap?<CR>
 nmap <leader>rtw :call RemoveTrailingWhitespace()<CR>
 
 " Spell checking
-nn <leader>ss :setlocal spell!<CR>
+nn <silent> <leader>ss :setlocal spell!<CR>:setlocal spell?<CR>
 nn <leader>sn ]s
 nn <leader>sp [s
 nn <leader>sa zg
@@ -269,7 +221,7 @@ nmap <leader>p :CtrlP<CR>
 nmap <leader>b :CtrlPBuffer<CR>
 
 
-" 8. Filetypes and Auto Commands ---- {{{1
+" 7. Filetypes and Auto Commands ---- {{{1
 
 augroup vimrc_autocmds
 
@@ -297,13 +249,20 @@ augroup vimrc_autocmds
 augroup END
 
 
-" 9. Functions and Helpers ---------- {{{1
+" 8. Functions and Helpers ---------- {{{1
 
+" Helper function to remove all trailing spaces in a buffer
 function! RemoveTrailingWhitespace()
   let l:cursor_pos = getpos('.')
   silent! %s/\s\+$//
   call setpos('.', l:cursor_pos)
 endfunc
+
+" Load local vimrc if available
+let s:localrc = expand('~/.vim/local.vimrc')
+if filereadable(s:localrc)
+  exec ':so ' . s:localrc
+endif
 
 " }}}1
 
