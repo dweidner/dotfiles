@@ -2,7 +2,6 @@
 
 # Base folder containing all dotfiles
 export DOTFILES_PATH=~/.dotfiles
-export ZSH_PLUGIN_PATH=$DOTFILES_PATH/config/zsh/plugins
 
 # Customize zsh’s fpath
 fpath=( ~/.zfunctions $DOTFILES_PATH/functions $fpath )
@@ -44,22 +43,17 @@ for file in $DOTFILES_PATH/functions/*; do
 done
 
 # Load zsh plugins
-plugins=(
-  zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-  zsh-bd/bd.zsh
-)
+plugins=( zsh-syntax-highlighting bd )
 
-for file in $plugins; do
-  [ -f $ZSH_PLUGIN_PATH/$file ] && source $ZSH_PLUGIN_PATH/$file
+for plugin in $plugins; do
+  plugin_file=$DOTFILES_PATH/config/zsh/bundle/$plugin/$plugin.plugin.zsh
+  [ -f $plugin_file ] && source $plugin_file
 done
 
 # Load common shell aliases
 source $DOTFILES_PATH/config/aliases
 
 # Load zsh options
-setopt AUTO_CD
-setopt EXTENDED_GLOB
-
 for file in $DOTFILES_PATH/config/zsh/*; do
   [ -f $file ] && source $file
 done

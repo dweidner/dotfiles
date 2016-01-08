@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 if [ -z $HISTFILE ]; then
-    HISTFILE=$HOME/.zsh_history
+  HISTFILE=$HOME/.zsh_history
 fi
 
 HISTSIZE=10000

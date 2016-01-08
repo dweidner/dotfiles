@@ -1,5 +1,11 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
+#
+# Load directory colors using the dircolors utility. Uses solarized
+# LSCOLORS on Mac OSX if dircolors is not available.
+#
+# Usage: load_dircolors
+#
 load_dircolors() {
 
   # Test for availability of the dircolors utility

@@ -4,7 +4,7 @@
 editors=(vim nano pico)
 
 for editor in $editors; do
-  if [[ -x $(which $editor ) ]]; then
+  if [[ -x $(which $editor) ]]; then
     EDITOR=$editor
     break
   fi
