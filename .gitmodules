@@ -70,6 +70,7 @@
 [submodule "config/tmux/plugins/tmux-sidebar"]
 	path = config/tmux/plugins/tmux-sidebar
 	url = https://github.com/tmux-plugins/tmux-sidebar.git
+	ignore = dirty
 [submodule "config/vim/bundle/vim-tmux-focus-events"]
 	path = config/vim/bundle/vim-tmux-focus-events
 	url = https://github.com/tmux-plugins/vim-tmux-focus-events.git
