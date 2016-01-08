@@ -55,3 +55,18 @@
 [submodule "config/vim/bundle/vim-supertab"]
 	path = config/vim/bundle/vim-supertab
 	url = https://github.com:ervandew/supertab.git
+[submodule "config/tmux/plugins/tmux-prefix-highlight"]
+	path = config/tmux/plugins/tmux-prefix-highlight
+	url = https://github.com/tmux-plugins/tmux-prefix-highlight.git
+[submodule "config/tmux/plugins/tmux-yank"]
+	path = config/tmux/plugins/tmux-yank
+	url = https://github.com/tmux-plugins/tmux-yank.git
+[submodule "config/tmux/plugins/tmux-open"]
+	path = config/tmux/plugins/tmux-open
+	url = https://github.com/tmux-plugins/tmux-open.git
+[submodule "config/tmux/plugins/tmux-copycat"]
+	path = config/tmux/plugins/tmux-copycat
+	url = https://github.com/tmux-plugins/tmux-copycat.git
+[submodule "config/tmux/plugins/tmux-sidebar"]
+	path = config/tmux/plugins/tmux-sidebar
+	url = https://github.com/tmux-plugins/tmux-sidebar.git

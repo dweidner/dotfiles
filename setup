@@ -35,7 +35,7 @@ if is_confirmed; then
   link_dotfile "config/vim"             ".vim"
   link_dotfile "config/vimrc"           ".vimrc"
   link_dotfile "config/gemrc"           ".gemrc"
-  link_dotfile "config/tmux"            ".tmux.conf"
+  link_dotfile "config/tmux.conf"       ".tmux.conf"
   link_dotfile "config/dircolors"       ".dircolors"
   link_dotfile "config/agignore"        ".agignore"
   link_dotfile "config/git/attributes"  ".gitattributes"
