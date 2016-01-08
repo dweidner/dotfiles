@@ -1,8 +1,8 @@
 [submodule "config/zsh/plugins/zsh-syntax-highlighting"]
-	path = config/zsh/bundle/zsh-syntax-highlighting
+	path = config/zsh/plugins/zsh-syntax-highlighting
 	url = https://github.com:zsh-users/zsh-syntax-highlighting.git
 [submodule "config/zsh/plugins/zsh-pure"]
-	path = config/zsh/bundle/pure
+	path = config/zsh/plugins/pure
 	url = https://github.com:sindresorhus/pure.git
 [submodule "config/vim/bundle/vim-pathogen"]
 	path = config/vim/bundle/vim-pathogen
@@ -38,7 +38,7 @@
 	path = config/vim/bundle/vim-surround
 	url = https://github.com/tpope/vim-surround
 [submodule "config/zsh/plugins/zsh-bd"]
-	path = config/zsh/bundle/bd
+	path = config/zsh/plugins/bd
 	url = https://github.com:Tarrasch/zsh-bd.git
 [submodule "config/vim/bunlde/vim-css3-syntax"]
 	path = config/vim/bundle/vim-css3-syntax

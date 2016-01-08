@@ -46,7 +46,7 @@ done
 plugins=( zsh-syntax-highlighting bd )
 
 for plugin in $plugins; do
-  plugin_file=$DOTFILES_PATH/config/zsh/bundle/$plugin/$plugin.plugin.zsh
+  plugin_file=$DOTFILES_PATH/config/zsh/plugins/$plugin/$plugin.plugin.zsh
   [ -f $plugin_file ] && source $plugin_file
 done
 
