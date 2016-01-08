@@ -4,7 +4,7 @@
 export DOTFILES_PATH=~/.dotfiles
 
 # Customize zsh’s fpath
-fpath=( ~/.zfunctions $DOTFILES_PATH/functions $fpath )
+fpath=( ~/.zfunctions $DOTFILES_PATH/zsh/functions $fpath )
 
 # Customize the path variable
 pathdirs=(
@@ -38,7 +38,7 @@ done
 typeset -gU path mandirs
 
 # Load custom functions
-for file in $DOTFILES_PATH/functions/*; do
+for file in $DOTFILES_PATH/zsh/functions/*; do
   autoload -Uz ${file##*/}
 done
 
@@ -46,15 +46,15 @@ done
 plugins=( zsh-syntax-highlighting bd )
 
 for plugin in $plugins; do
-  plugin_file=$DOTFILES_PATH/config/zsh/plugins/$plugin/$plugin.plugin.zsh
+  plugin_file=$DOTFILES_PATH/zsh/plugins/$plugin/$plugin.plugin.zsh
   [ -f $plugin_file ] && source $plugin_file
 done
 
 # Load common shell aliases
-source $DOTFILES_PATH/config/aliases
+source $DOTFILES_PATH/aliases
 
 # Load zsh options
-for file in $DOTFILES_PATH/config/zsh/*; do
+for file in $DOTFILES_PATH/zsh/*.zsh; do
   [ -f $file ] && source $file
 done
 

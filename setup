@@ -12,8 +12,8 @@ link_dotfile() {
 }
 
 # Ensure commonly used helper functions are available
-load_dotfile "helpers/system"
-load_dotfile "helpers/io"
+load_dotfile "helpers/system.sh"
+load_dotfile "helpers/io.sh"
 
 # Display script information
 e_header "Dotfiles – Setup Assistant"
@@ -24,22 +24,22 @@ seek_confirmation "Link dotfiles (this may overwrite existing files)?"
 if is_confirmed; then
 
   # Copy '.gitconfig' if it does not exist
-  [[ ! -f "$HOME/.gitconfig" ]] && cp "$HOME/.dotfiles/config/git/config" "$HOME/.gitconfig"
+  [[ ! -f "$HOME/.gitconfig" ]] && cp "$HOME/.dotfiles/git/config" "$HOME/.gitconfig"
 
   # Create the necessary symbolic links between the `.dotfiles` and `HOME`
   # directory.
-  link_dotfile "config/zshrc"           ".zshrc"
-  link_dotfile "config/bashrc"          ".bashrc"
-  link_dotfile "config/bashrc"          ".bash_profile"
-  link_dotfile "config/inputrc"         ".inputrc"
-  link_dotfile "config/vim"             ".vim"
-  link_dotfile "config/vimrc"           ".vimrc"
-  link_dotfile "config/gemrc"           ".gemrc"
-  link_dotfile "config/tmux.conf"       ".tmux.conf"
-  link_dotfile "config/dircolors"       ".dircolors"
-  link_dotfile "config/agignore"        ".agignore"
-  link_dotfile "config/git/attributes"  ".gitattributes"
-  link_dotfile "config/git/ignore"      ".gitignore"
+  link_dotfile "zshrc"           ".zshrc"
+  link_dotfile "bashrc"          ".bashrc"
+  link_dotfile "bashrc"          ".bash_profile"
+  link_dotfile "inputrc"         ".inputrc"
+  link_dotfile "vim"             ".vim"
+  link_dotfile "vimrc"           ".vimrc"
+  link_dotfile "gemrc"           ".gemrc"
+  link_dotfile "tmux.conf"       ".tmux.conf"
+  link_dotfile "dircolors"       ".dircolors"
+  link_dotfile "agignore"        ".agignore"
+  link_dotfile "git/attributes"  ".gitattributes"
+  link_dotfile "git/ignore"      ".gitignore"
 
 fi
 
@@ -49,7 +49,7 @@ if is_mac; then
   seek_confirmation "Do you want to customize the OSX settings?"
 
   if is_confirmed; then
-    load_dotfile "config/osx/config"
+    load_dotfile "osx/config"
   fi
 
 fi
@@ -61,7 +61,7 @@ if is_mac && ! is_executable brew; then
 
   if is_confirmed; then
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    load_dotfile "config/osx/brew"
+    load_dotfile "osx/brew"
   fi
 
 fi
@@ -75,7 +75,7 @@ if is_mac && ! is_executable npm; then
     mkdir "$HOME/.npm-packages"
     echo "prefix=$HOME/.npm-packages" >> ~/.npmrc
     echo "NPM_PACKAGES=\"\$HOME/.npm-packages\"" >> ~/.bash_user
-    echo "NODE_PATH=\"\$NPM_PACKAGES/lib/node_modules:\$NODE_PATH\"" >> ~/.bash_user
+    echo "NODE_PATH=\"\$NPM_PACKAGES/lib/node_modules:\$NODE_PATH\"" >> ~/.zshrc.local
     curl -L https://www.npmjs.com/install.sh | sh
   fi
 
