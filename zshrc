@@ -43,7 +43,7 @@ for file in $DOTFILES_PATH/zsh/functions/*; do
 done
 
 # Load zsh plugins
-plugins=( zsh-syntax-highlighting bd )
+plugins=( zsh-syntax-highlighting zsh-completions bd )
 
 for plugin in $plugins; do
   plugin_file=$DOTFILES_PATH/zsh/plugins/$plugin/$plugin.plugin.zsh
