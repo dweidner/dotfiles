@@ -6,14 +6,13 @@ if version >= 700                   " Ignore configuration on older systems
 " Table of Contents
 " -----------------------------------
 " 1. General Settings
-" 2. Plugins
-" 3. User Interface
-" 4. Syntax Highlighting
-" 5. Text Editing and Searching
-" 6. Indentation and Tabs
-" 7. Keybindings
-" 8. File types and Auto Commands
-" 9. Functions and Helpers
+" 2. User Interface
+" 3. Syntax Highlighting
+" 4. Text Editing and Searching
+" 5. Indentation and Tabs
+" 6. Keybindings
+" 7. File types and Auto Commands
+" 8. Functions and Helpers
 " -----------------------------------
 
 " 1. General Settings --------------- {{{1
@@ -25,53 +24,18 @@ set clipboard+=unnamed              " Yank and paste to/from the * register
 set fileformats=unix,dos,mac        " Support all newline formats
 set history=1000                    " Increase number of commands saved
 
-set viminfo+=n$HOME/.vim/.viminfo   " Customize path of viminfo file
-set backupdir=$HOME/.vim/backup     " Centralize backups
-set directory=$HOME/.vim/swap       " Centralize swapfiles
+set viminfo+=n$HOME/.vim/viminfo    " Customize path of viminfo file
+set backupdir=$HOME/.vim/backup/    " Centralize backups
+set directory=$HOME/.vim/swap/      " Centralize swapfiles
 
 if exists("&undodir")
-  set undodir=$HOME/.vim/undo       " Centralize undo history
+  set undodir=$HOME/.vim/undo/      " Centralize undo history
 endif
 
-
-" 2. Plugins ------------------------ {{{1
-
-runtime bundle/vim-pathogen/autoload/pathogen.vim
-
-call pathogen#infect()              " Load plugins in bundle directory
-call pathogen#helptags()            " Load bundle help files
-
-" NOTE: Plugins are listed solely for documentation purposes
-
-" Improve syntax highlighting
-" Plugin "hail2u/vim-css3-syntax"
-" Plugin "jelera/vim-javascript-syntax"
-" Plugin "cakebaker/scss-syntax"
-" Plugin "evidens/vim-twig"
-
-" File searching
-" Plugin "rking/ag.vim"
-" Plugin "ctrlpvim/ctrlp.vim"
-
-" User Interface Improvements
-" Plugin "altercation/vim-colors-solarized"
-" Plugin "airblade/vim-gitgutter"
-" Plugin "scrooloose/syntastic.git"
-
-" [Web] Development
-" Plugin "othree/html5.vim"
-" Plugin "mattn/emmet-vim"
-" Plugin "cohama/vim-lexima"
-" Plugin "tpope/vim-surround"
-
-" Misc
-" Plugin "ervandew/supertab"
-" Plugin "christoomey/vim-tmux-navigator"
-" Plugin "tmux-plugins/vim-tmux-focus-events"
-
-" Load matchit.vim which is shipped with vim
-if !exists('g:loaded_matchit') && findfile('bundle/matchit.vim', &rtp) ==# ''
-  runtime! macros/matchit.vim
+" Load plugins and plugin configuration
+let s:pluginsrc=expand('~/.vim/plugins.vimrc')
+if filereadable(s:pluginsrc)
+  exec ':so ' . s:pluginsrc
 endif
 
 
@@ -121,15 +85,6 @@ if &term =~ '^screen'
   set ttymouse=xterm2               " Enable extended mouse support.
 endif
 
-let g:netrw_banner=0                " Hide the banner in netrw
-let g:netrw_altv=1                  " Split window to the right
-let g:netrw_alto=1                  " Split window to the bottom
-
-let g:syntastic_error_symbol='•'    " Customize error symbol
-let g:syntastic_warning_symbol='!'  " Customize warning symbol
-let g:syntastic_check_on_open=1     " Run syntax check when opening a file
-let g:syntastic_check_on_wq=0       " Avoid running tests on close
-
 " Customize the appearance of the status line
 let s:statuslinerc=expand('~/.vim/statusline.vimrc')
 if has('statusline') && filereadable(s:statuslinerc)
@@ -164,12 +119,6 @@ set ignorecase                      " Ignore case when searching
 set smartcase                       " Be case-sensitive when using capitals
 
 set textwidth=80                    " Wrap lines at 80 columns (if enabled)
-
-" Use the silver searcher if available
-if executable('ag')
-  let g:ackprg = 'ag --nogroup --column'
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-endif
 
 
 " 5. Indentation and Tabs ----------- {{{1
@@ -246,12 +195,13 @@ endif
 " 1. Search word under cursor
 " 2. Search file by name
 " 3. Search active buffers
-nmap <leader>a :Ag! <C-R>=expand('<cword>')<CR><CR>
+nmap <leader>ag :Ack! <C-R>
+nmap <leader>agk :Ack! <C-R>=expand('<cword>')<CR><CR>
 nmap <leader>p :CtrlP<CR>
 nmap <leader>b :CtrlPBuffer<CR>
 
 
-" 7. File types and Auto Commands ---- {{{1
+" 7. File Types and Auto Commands ---- {{{1
 
 augroup vimrc_autocmds
 
