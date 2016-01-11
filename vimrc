@@ -195,8 +195,7 @@ endif
 " 1. Search word under cursor
 " 2. Search file by name
 " 3. Search active buffers
-nmap <leader>ag :Ack! <C-R>
-nmap <leader>agk :Ack! <C-R>=expand('<cword>')<CR><CR>
+nmap <leader>a :Ack! <C-R>=expand('<cword>')<CR><CR>
 nmap <leader>p :CtrlP<CR>
 nmap <leader>b :CtrlPBuffer<CR>
 
