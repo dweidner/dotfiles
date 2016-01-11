@@ -12,7 +12,7 @@ if version >= 700                   " Ignore configuration on older systems
 " 5. Text Editing and Searching
 " 6. Indentation and Tabs
 " 7. Keybindings
-" 8. Filetypes and Auto Commands
+" 8. File types and Auto Commands
 " 9. Functions and Helpers
 " -----------------------------------
 
@@ -21,6 +21,7 @@ if version >= 700                   " Ignore configuration on older systems
 set nocompatible                    " Break backwards compatibility with vi
 set encoding=utf-8                  " Character encoding
 set ttyfast                         " Optimize for fast terminal connections
+set clipboard+=unnamed              " Yank and paste to/from the * register
 set fileformats=unix,dos,mac        " Support all newline formats
 set history=1000                    " Increase number of commands saved
 
@@ -40,7 +41,7 @@ runtime bundle/vim-pathogen/autoload/pathogen.vim
 call pathogen#infect()              " Load plugins in bundle directory
 call pathogen#helptags()            " Load bundle help files
 
-" NOTE: Plugins listed solely for documentation purposes
+" NOTE: Plugins are listed solely for documentation purposes
 
 " Improve syntax highlighting
 " Plugin "hail2u/vim-css3-syntax"
@@ -98,14 +99,14 @@ set showcmd                         " Show currently running command
 set noshowmode                      " Mode is displayed in lightline already
 
 set wildmenu                        " Visual autocomplete for command menu
-set wildmode=list:longest           " Set wildmeno to list choice
+set wildmode=list:longest           " Set wildmenu to list choices
 
 set list                            " Show invisible characters
 set listchars=tab:▸\                " Show tab stops
 set listchars+=trail:·              " Show trailing spaces
 set listchars+=nbsp:_               " Show non breaking spaces
-set listchars+=extends:»            " Line continues offscreen
-set listchars+=precedes:«           " Line precedes offscreen
+set listchars+=extends:»            " Line continues off-screen
+set listchars+=precedes:«           " Line precedes off-screen
 "set listchars+=eol:¬               " Show end of line markers
 
 set splitbelow                      " Split to the bottom of the current window
@@ -164,7 +165,7 @@ set smartcase                       " Be case-sensitive when using capitals
 
 set textwidth=80                    " Wrap lines at 80 columns (if enabled)
 
-" Use the silver searcher if avilable
+" Use the silver searcher if available
 if executable('ag')
   let g:ackprg = 'ag --nogroup --column'
   let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
@@ -181,7 +182,7 @@ set shiftwidth=2                    " Spaces for each tab stop of (auto)indent
 set softtabstop=2                   " Set virtual tab stop
 set shiftround                      " Round indents to multiple of shiftwidth
 
-filetype plugin indent on           " Load plugins/indentation per filetype
+filetype plugin indent on           " Load plugins/indentation per file type
 
 
 " 6. Keybindings -------------------- {{{1
@@ -213,7 +214,7 @@ ino <silent> <F4> :set <Esc>:set invpaste<CR>:set paste?<CR>
 " Toggle text wrapping
 nmap <silent> <leader>tw :set invwrap<CR>:set wrap?<CR>
 
-" Remove trailing whitespace
+" Remove trailing white space
 nmap <leader>rtw :call RemoveTrailingWhitespace()<CR>
 
 " Spell checking
@@ -250,7 +251,7 @@ nmap <leader>p :CtrlP<CR>
 nmap <leader>b :CtrlPBuffer<CR>
 
 
-" 7. Filetypes and Auto Commands ---- {{{1
+" 7. File types and Auto Commands ---- {{{1
 
 augroup vimrc_autocmds
 
