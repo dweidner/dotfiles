@@ -22,11 +22,11 @@ let g:lightline = {
   \ },
   \ 'component_function': {
   \   'ctrlp': 'CtrlPMark',
+  \   'ctags': 'GutenTagsStatusLineFlag',
   \   'fileformat': 'LightLineFileFormat',
   \   'fileencoding': 'LightLineFileEncoding'
   \ },
   \ 'component_expand': {
-  \   'ctags': 'GutenTagsStatusLineFlag',
   \   'syntastic': 'SyntasticStatuslineFlag',
   \ },
   \ 'subseparator': { 'left': '', 'right': '·' }
@@ -85,7 +85,7 @@ function! s:UpdateSyntasticStatus()
 endfunction
 
 " Trigger syntastic status update, when buffer is saved
-augroup syntastic
+augroup syntastic_update
   au!
   au BufWritePost *.php,*.css,*.scss,*.js call s:UpdateSyntasticStatus()
 augroup END
