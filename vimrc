@@ -17,26 +17,24 @@ if version >= 700                   " Ignore configuration on older systems
 
 " 1. General Settings --------------- {{{1
 
+let $VIMHOME=$HOME.'/.vim'
+
 set nocompatible                    " Break backwards compatibility with vi
 set encoding=utf-8                  " Character encoding
-set ttyfast                         " Optimize for fast terminal connections
-set clipboard+=unnamed              " Yank and paste to/from the * register
+set clipboard+=unnamed              " Use system clipboard by default
 set fileformats=unix,dos,mac        " Support all newline formats
 set history=1000                    " Increase number of commands saved
 
-set viminfo+=n$HOME/.vim/viminfo    " Customize path of viminfo file
-set backupdir=$HOME/.vim/backup/    " Centralize backups
-set directory=$HOME/.vim/swap/      " Centralize swapfiles
+set viminfo+=n$VIMHOME/viminfo      " Customize path of viminfo file
+set backupdir=$VIMHOME/backup/      " Centralize backups
+set directory=$VIMHOME/swap/        " Centralize swapfiles
 
 if exists("&undodir")
-  set undodir=$HOME/.vim/undo/      " Centralize undo history
+  set undodir=$VIMHOME/undo/        " Centralize undo history
 endif
 
 " Load plugins and plugin configuration
-let s:pluginsrc=expand('~/.vim/plugins.vimrc')
-if filereadable(s:pluginsrc)
-  exec ':so ' . s:pluginsrc
-endif
+source $VIMHOME/plugins.vimrc
 
 
 " 2. User Interface ----------------- {{{1
@@ -55,7 +53,7 @@ set cursorline                      " Highlight current line
 set hidden                          " Hide modified buffers without complaining
 set showmatch                       " Highlight matching parenthesis
 set shortmess=atI                   " Shorten messages
-set foldmethod=marker               " Enable fold markers
+set foldenable                      " Enable folding
 
 set laststatus=2                    " Always display the status line
 set ruler                           " Display cursor position
@@ -85,11 +83,17 @@ if &term =~ '^screen'
   set ttymouse=xterm2               " Enable extended mouse support.
 endif
 
-" Customize the appearance of the status line
-let s:statuslinerc=expand('~/.vim/statusline.vimrc')
-if has('statusline') && filereadable(s:statuslinerc)
-  exec ':so ' . s:statuslinerc
+" Use a bar-shaped cursor for insert mode (if supported).
+if exists('$TMUX')
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
+
+" Customize the appearance of the status line
+source $VIMHOME/statusline.vimrc
 
 
 " 3. Syntax Highlighting ------------ {{{1
@@ -118,6 +122,7 @@ set incsearch                       " Highlight dynamically while typing
 set ignorecase                      " Ignore case when searching
 set smartcase                       " Be case-sensitive when using capitals
 
+set nowrap                          " Avoid wrapping lines
 set textwidth=80                    " Wrap lines at 80 columns (if enabled)
 
 
@@ -126,7 +131,7 @@ set textwidth=80                    " Wrap lines at 80 columns (if enabled)
 set autoindent                      " Start indentation at same cursor position
 set smarttab                        " Insert blanks according to shiftwidth
 set expandtab                       " Expand <Tab>s with spaces
-set tabstop=4                       " For proper display of files with tabs
+set tabstop=2                       " For proper display of files with tabs
 set shiftwidth=2                    " Spaces for each tab stop of (auto)indent
 set softtabstop=2                   " Set virtual tab stop
 set shiftround                      " Round indents to multiple of shiftwidth
@@ -143,28 +148,25 @@ let mapleader=","
 ino jj <Esc>
 ino jk <Esc>
 
+" Reload configuration file
+map <leader>r :so $MYVIMRC<CR>
+
 " Fast file saving
 nmap <leader>w :w!<CR>
 
+" Switch to previous file
+nmap <leader><Space> <C-^>
+
+" Change current directory to the path of the file in the current buffer
+nmap <silent> <leader>cd :lcd %:h<CR>:pwd<CR>
+
 " Edit mode helpers
+" See http://vimcasts.org/e/14
 cno %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 map <leader>ew :e %%
 map <leader>es :split %%
 map <leader>ev :vsplit %%
 map <leader>et :tabe %%
-
-" Change current directory to the path of the file in the current buffer
-nmap <silent> <leader>cd :lcd %:h<CR>:pwd<CR>
-
-" Toggle paste mode
-nn <silent> <F4> :set invpaste<CR>:set paste?<CR>
-ino <silent> <F4> :set <Esc>:set invpaste<CR>:set paste?<CR>
-
-" Toggle text wrapping
-nmap <silent> <leader>tw :set invwrap<CR>:set wrap?<CR>
-
-" Remove trailing white space
-nmap <leader>rtw :call RemoveTrailingWhitespace()<CR>
 
 " Spell checking
 nn <silent> <leader>ss :setlocal spell!<CR>:setlocal spell?<CR>
@@ -173,16 +175,34 @@ nn <leader>sp [s
 nn <leader>sa zg
 nn <leader>s? z=
 
+" Insert blank line (below|above) current line
+nn <leader>o mzo<Esc>`z
+nn <leader>O mzO<Esc>`z
+
 " Convert (word|first) char to (lower|uppercase)
 nn <leader>u mQviwU`Q
 nn <leader>l mQviwu`Q
 nn <leader>U mQgewvU`Q
 nn <leader>L mQgewvu`Q
 
-" Remove search highlighting
-if maparg('<C-L>', 'n') ==# ''
-  nn <silent> <C-l> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
-endif
+" Search in files/buffers
+" 1. Search word under cursor
+" 2. Search file by name
+" 3. Search active buffers
+nmap <leader>a :Ack! 
+nmap <leader>A :Ack! <C-R>=expand('<cword>')<CR><CR>
+nmap <leader>f :CtrlP<CR>
+nmap <leader>b :CtrlPBuffer<CR>
+nmap <leader>t :CtrlPTag<CR>
+
+" Toggle: Paste Mode
+set pastetoggle=<F4>
+
+" Toggle: Search highlighting
+nn <F5> :set hlsearch!<Bar>set hlsearch?<CR>
+
+" Toggle: Numbers
+nn <silent> <F6> :let [&nu, &rnu] = [&nu+&rnu==0, &nu]<CR>
 
 " OSX: Copy and paste to/from clipboard
 if has('clipboard') && has('mac')
@@ -191,13 +211,16 @@ if has('clipboard') && has('mac')
   vn <C-x> "*c
 endif
 
-" CtrlP: Custom key bindings
-" 1. Search word under cursor
-" 2. Search file by name
-" 3. Search active buffers
-nmap <leader>a :Ack! <C-R>=expand('<cword>')<CR><CR>
-nmap <leader>p :CtrlP<CR>
-nmap <leader>b :CtrlPBuffer<CR>
+" Run the compiler of the current file type in the background
+nn <F9> :Dispatch<CR>
+
+" Generate ctags
+map <leader>ct :!ctags -R --exclude=.git --exclude=.svn --exclude=.hg --verbose=yes *<CR>
+
+" Remove search highlighting when clearing
+if maparg('<C-L>', 'n') ==# ''
+  nn <silent> <C-l> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+endif
 
 
 " 7. File Types and Auto Commands ---- {{{1
@@ -237,9 +260,8 @@ function! RemoveTrailingWhitespace()
 endfunc
 
 " Load local vimrc if available
-let s:localrc = expand('~/.vim/local.vimrc')
-if filereadable(s:localrc)
-  exec ':so ' . s:localrc
+if filereadable($VIMHOME.'/local.vimrc')
+  source $VIMHOME/local.vimrc
 endif
 
 " }}}1
