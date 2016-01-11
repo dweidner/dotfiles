@@ -11,8 +11,7 @@ if version >= 700                   " Ignore configuration on older systems
 " 4. Text Editing and Searching
 " 5. Indentation and Tabs
 " 6. Keybindings
-" 7. File types and Auto Commands
-" 8. Functions and Helpers
+" 7. File Types and Auto Commands
 " -----------------------------------
 
 " 1. General Settings --------------- {{{1
@@ -160,13 +159,9 @@ nmap <leader><Space> <C-^>
 " Change current directory to the path of the file in the current buffer
 nmap <silent> <leader>cd :lcd %:h<CR>:pwd<CR>
 
-" Edit mode helpers
+" Expand %% to the parent directory of current file/buffer
 " See http://vimcasts.org/e/14
 cno %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
-map <leader>ew :e %%
-map <leader>es :split %%
-map <leader>ev :vsplit %%
-map <leader>et :tabe %%
 
 " Spell checking
 nn <silent> <leader>ss :setlocal spell!<CR>:setlocal spell?<CR>
@@ -179,17 +174,22 @@ nn <leader>s? z=
 nn <leader>o mzo<Esc>`z
 nn <leader>O mzO<Esc>`z
 
+" Remove line, but do not write it to the erase buffer
+nn <leader>x "_dd
+
 " Convert (word|first) char to (lower|uppercase)
 nn <leader>u mQviwU`Q
 nn <leader>l mQviwu`Q
 nn <leader>U mQgewvU`Q
 nn <leader>L mQgewvu`Q
 
-" Search in files/buffers
-" 1. Search word under cursor
-" 2. Search file by name
-" 3. Search active buffers
-nmap <leader>a :Ack! 
+" Search in files/buffers/tags
+" 1. Search for file containing...
+" 2. Search for file containing word under cursor...
+" 3. Search files by name
+" 4. Search active buffers
+" 5. Search ctags
+nmap <leader>a :Ack!
 nmap <leader>A :Ack! <C-R>=expand('<cword>')<CR><CR>
 nmap <leader>f :CtrlP<CR>
 nmap <leader>b :CtrlPBuffer<CR>
@@ -213,9 +213,6 @@ endif
 
 " Run the compiler of the current file type in the background
 nn <F9> :Dispatch<CR>
-
-" Generate ctags
-map <leader>ct :!ctags -R --exclude=.git --exclude=.svn --exclude=.hg --verbose=yes *<CR>
 
 " Remove search highlighting when clearing
 if maparg('<C-L>', 'n') ==# ''
@@ -245,19 +242,10 @@ augroup vimrc_autocmds
   " 2. Remove trailing spaces.
   let g:user_emmet_install_global = 0
   au FileType html,html.twig,php,css,scss,sass EmmetInstall
-  au FileType html,php,css,scss,sass,js autocmd BufWritePre <buffer> :call RemoveTrailingWhitespace()
 
 augroup END
 
-
-" 8. Functions and Helpers ---------- {{{1
-
-" Helper function to remove all trailing spaces in a buffer
-function! RemoveTrailingWhitespace()
-  let l:cursor_pos = getpos('.')
-  silent! %s/\s\+$//
-  call setpos('.', l:cursor_pos)
-endfunc
+" 8. Private Configuration ----------- {{{1
 
 " Load local vimrc if available
 if filereadable($VIMHOME.'/local.vimrc')

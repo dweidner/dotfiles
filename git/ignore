@@ -22,3 +22,15 @@ Thumbs.db
 
 # Sublime Text
 *.sublime-workspace
+
+# Ignore tags created by ctags and cscope
+TAGS
+.TAGS
+!TAGS/
+tags
+.tags
+!tags/
+cscope.files
+cscope.out
+cscope.in.out
+cscope.po.out

@@ -83,3 +83,9 @@
 [submodule "vim/bundle/vim-ack"]
 	path = vim/bundle/vim-ack
 	url = https://github.com/mileszs/ack.vim.git
+[submodule "vim/bundle/vim-stripper"]
+	path = vim/bundle/vim-stripper
+	url = https://github.com/itspriddle/vim-stripper.git
+[submodule "vim/bundle/vim-gutentags"]
+	path = vim/bundle/vim-gutentags
+	url = https://github.com/ludovicchabant/vim-gutentags.git

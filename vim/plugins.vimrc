@@ -1,9 +1,9 @@
-" VIM PLUGINS
+" PLUGINS.VIMRC
 
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 
 call pathogen#infect()              " Load plugins in bundle directory
-call pathogen#helptags()            " Load bundle help files
+call pathogen#helptags()            " Generate help tags for bundles
 
 
 " -----------------------------------------------------
@@ -12,10 +12,11 @@ call pathogen#helptags()            " Load bundle help files
 " Plugins are listed solely for documentation purposes
 "
 " Improve syntax highlighting
+" Plugin "othree/html5.vim"
 " Plugin "hail2u/vim-css3-syntax"
 " Plugin "jelera/vim-javascript-syntax"
-" Plugin "cakebaker/scss-syntax"
 " Plugin "evidens/vim-twig"
+" Plugin "cakebaker/scss-syntax"
 "
 " File searching
 " Plugin "mileszs/ack.vim"
@@ -23,18 +24,20 @@ call pathogen#helptags()            " Load bundle help files
 "
 " User Interface Improvements
 " Plugin "altercation/vim-colors-solarized"
-" Plugin "airblade/vim-gitgutter"
-" Plugin "scrooloose/syntastic.git"
+" Plugin "itchyny/lightline.vim"
 " Plugin "ervandew/supertab"
-" Plugin "tpope/vim-dispatch"
 "
 " [Web] Development
-" Plugin "othree/html5.vim"
+" Plugin "airblade/vim-gitgutter"
+" Plugin "scrooloose/syntastic.git"
+" Plugin "ludovicchabant/vim-gutentags"
 " Plugin "mattn/emmet-vim"
 " Plugin "cohama/vim-lexima"
 " Plugin "tpope/vim-surround"
+" Plugin "itspriddle/vim-stripper"
 "
 " Misc
+" Plugin "tpope/vim-dispatch"
 " Plugin "christoomey/vim-tmux-navigator"
 " Plugin "tmux-plugins/vim-tmux-focus-events"
 "
@@ -69,6 +72,10 @@ let g:syntastic_html_tidy_ignore_errors = [
     \  '<script> escaping malformed URI reference',
     \  '</head> isn''t allowed in <body> elements'
     \ ]
+
+
+" Gutentags settings
+let g:gutentags_tagfile='.tags'
 
 
 " Load matchit.vim which is shipped with vim

@@ -1,11 +1,11 @@
-" VIM LIGHTLINE
+" STATUSLINE.VIMRC
 
 " Customize information displayed in status line
 let g:lightline = {
   \ 'colorscheme': 'solarized',
   \ 'active': {
   \   'left': [ [ 'mode', 'paste' ], [ 'filename' ], [ 'ctrlp' ] ],
-  \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'syntastic' ] ]
+  \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'syntastic', 'ctags' ] ]
   \ },
   \ 'mode_map': {
   \   'n': ' N ',
@@ -26,7 +26,8 @@ let g:lightline = {
   \   'fileencoding': 'LightLineFileEncoding'
   \ },
   \ 'component_expand': {
-  \   'syntastic': 'SyntasticStatuslineFlag'
+  \   'ctags': 'GutenTagsStatusLineFlag',
+  \   'syntastic': 'SyntasticStatuslineFlag',
   \ },
   \ 'subseparator': { 'left': '', 'right': '·' }
   \ }
@@ -42,7 +43,12 @@ function! LightLineFileEncoding()
   return fenc !=? 'utf-8' ? fenc : ''
 endfunction
 
-" Keep custom status line in CtrlP window
+" Display indicator if gutentags is (re)generating ctags file
+function! GutenTagsStatusLineFlag()
+  return gutentags#statusline(' Generating ctags... ')
+endfunction
+
+" Customize status line of CtrlP
 let g:ctrlp_status_func = {
   \ 'main': 'CtrlPStatusMain',
   \ 'prog': 'CtrlPStatusProg',
