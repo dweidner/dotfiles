@@ -6,10 +6,11 @@ call pathogen#infect()              " Load plugins in bundle directory
 call pathogen#helptags()            " Generate help tags for bundles
 
 
-" -----------------------------------------------------
-"
+" -----------------------------------
 " NOTE:
-" Plugins are listed solely for documentation purposes
+" Plugins are listed solely for
+" documentation purposes
+" -----------------------------------
 "
 " Improve syntax highlighting
 " Plugin "othree/html5.vim"
@@ -41,10 +42,11 @@ call pathogen#helptags()            " Generate help tags for bundles
 " Plugin "christoomey/vim-tmux-navigator"
 " Plugin "tmux-plugins/vim-tmux-focus-events"
 "
-" -----------------------------------------------------
+" -----------------------------------
 
 
-" The Silver Searcher settings
+" 1. The Silver Searcher settings --- {{{1
+
 if executable('ag')
   let g:ackprg='ag --vimgrep'
   let g:ack_use_dispatch=1
@@ -53,13 +55,15 @@ if executable('ag')
 endif
 
 
-" NetRW settings
+" 2. NetRW settings ----------------- {{{1
+
 let g:netrw_banner=0                " Hide the banner in netrw
 let g:netrw_altv=1                  " Split window to the right
 let g:netrw_alto=1                  " Split window to the bottom
 
 
-" Syntastic settings
+" 3. Syntastic settings ------------- {{{1
+
 let g:syntastic_error_symbol='•'    " Customize error symbol
 let g:syntastic_warning_symbol='!'  " Customize warning symbol
 let g:syntastic_check_on_open=1     " Run syntax check when opening a file
@@ -74,12 +78,17 @@ let g:syntastic_html_tidy_ignore_errors = [
     \ ]
 
 
-" Gutentags settings
+" 4. Gutentags settings ------------- {{{1
+
 let g:gutentags_tagfile='.tags'
 
+
+" 5. MatchIt ------------------------ {{{1
 
 " Load matchit.vim which is shipped with vim
 if !exists('g:loaded_matchit') && findfile('bundle/matchit.vim', &rtp) ==# ''
   runtime! macros/matchit.vim
 endif
 
+
+" vim:foldmethod=marker:foldlevel=1

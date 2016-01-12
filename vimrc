@@ -12,6 +12,7 @@ if version >= 700                   " Ignore configuration on older systems
 " 5. Indentation and Tabs
 " 6. Keybindings
 " 7. File Types and Auto Commands
+" 8. Private Configuration
 " -----------------------------------
 
 " 1. General Settings --------------- {{{1
@@ -140,6 +141,8 @@ filetype plugin indent on           " Load plugins/indentation per file type
 
 " 6. Keybindings -------------------- {{{1
 
+" a) General ---------------- {{{2
+
 " Customize leader key
 let mapleader=","
 
@@ -150,96 +153,123 @@ ino jk <Esc>
 " Reload configuration file
 map <leader>r :so $MYVIMRC<CR>
 
-" Fast file saving
-nmap <leader>w :w!<CR>
-
-" Switch to previous file
-nmap <leader><Space> <C-^>
-
-" Change current directory to the path of the file in the current buffer
-nmap <silent> <leader>cd :lcd %:h<CR>:pwd<CR>
-
-" Expand %% to the parent directory of current file/buffer
+" Expand %% to directory containing the current file
 " See http://vimcasts.org/e/14
 cno %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 
-" Spell checking
-nn <silent> <leader>ss :setlocal spell!<CR>:setlocal spell?<CR>
-nn <leader>sn ]s
-nn <leader>sp [s
-nn <leader>sa zg
-nn <leader>s? z=
+" b) Buffers ---------------- {{{2
 
-" Insert blank line (below|above) current line
+" Switch to previous buffer
+nmap <leader><Space> <C-^>
+
+" Search in buffer list using CtrlP
+nmap <leader>b :CtrlPBuffer<CR>
+
+" Write current buffer to file
+nmap <leader>w :w!<CR>
+
+" c) File Searching --------- {{{2
+
+" Ack: Search for file containing word
+map <leader>a :Ack!
+map <leader>A :Ack! <C-R>=expand('<cword>')<CR><CR>
+
+" Search files in project
+map <leader>f :CtrlP<CR>
+
+" Search ctags (in current buffer)
+map <leader>t :CtrlPTag<CR>
+map <leader>T :CtrlPBufTag<CR>
+
+" Search most recent used files
+map <leader>mr :CtrlPMRU<CR>
+
+" d) Word Manipulation ------ {{{2
+
+" Convert word to lower/uppercase
+nn <leader>u mQviwU`Q
+nn <leader>l mQviwu`Q
+
+" Convert first character to lower/uppercase
+nn <leader>U mQgewvU`Q
+nn <leader>L mQgewvu`Q
+
+" e) Line Manipulation ------ {{{2
+
+" Insert blank line below/above current line
 nn <leader>o mzo<Esc>`z
 nn <leader>O mzO<Esc>`z
 
 " Remove line, but do not write it to the erase buffer
 nn <leader>x "_dd
 
-" Convert (word|first) char to (lower|uppercase)
-nn <leader>u mQviwU`Q
-nn <leader>l mQviwu`Q
-nn <leader>U mQgewvU`Q
-nn <leader>L mQgewvu`Q
+" Move current line up/down
+nn <leader>mj :m .+1<CR>==
+nn <leader>mk :m .-2<CR>==
+ino <leader>mj <Esc>:m .+1<CR>==gi
+ino <leader>mk <Esc>:m .-2<CR>==gi
 
-" Search in files/buffers/tags
-" 1. Search for file containing...
-" 2. Search for file containing word under cursor...
-" 3. Search files by name
-" 4. Search active buffers
-" 5. Search ctags
-nmap <leader>a :Ack!
-nmap <leader>A :Ack! <C-R>=expand('<cword>')<CR><CR>
-nmap <leader>f :CtrlP<CR>
-nmap <leader>b :CtrlPBuffer<CR>
-nmap <leader>t :CtrlPTag<CR>
+" f) Spell checking --------- {{{2
 
-" Toggle: Paste Mode
-set pastetoggle=<F4>
+" Toggle spell checking
+nn <silent> <leader>ss :setlocal spell!<CR>:setlocal spell?<CR>
 
-" Toggle: Search highlighting
-nn <F5> :set hlsearch!<Bar>set hlsearch?<CR>
+" Navigate spelling erros
+nn <leader>sn ]s
+nn <leader>sp [s
 
-" Toggle: Numbers
-nn <silent> <F6> :let [&nu, &rnu] = [&nu+&rnu==0, &nu]<CR>
+" Open dictionary
+nn <leader>s? z=
 
-" OSX: Copy and paste to/from clipboard
+" Add word to dictionary
+nn <leader>sa zg
+
+" g) Clipboard -------------- {{{2
+
+" Copy to clipboard
 if has('clipboard') && has('mac')
   vn <C-c> "*y
   vn <C-v> "*p
   vn <C-x> "*c
 endif
 
+" h) Misc ------------------- {{{2
+
+" Toggle paste mode
+set pastetoggle=<F4>
+
+" Toggle search highlighting
+nn <F5> :set hlsearch!<Bar>set hlsearch?<CR>
+
+" Toggle numbers: No Numbers -> Absolute -> Relative
+nn <silent> <F6> :let [&nu, &rnu] = [&nu+&rnu==0, &nu]<CR>
+
 " Run the compiler of the current file type in the background
 nn <F9> :Dispatch<CR>
-
-" Remove search highlighting when clearing
-if maparg('<C-L>', 'n') ==# ''
-  nn <silent> <C-l> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
-endif
 
 
 " 7. File Types and Auto Commands ---- {{{1
 
 augroup vimrc_autocmds
 
-  " Remove all existing commands in this group
+  " a) General -------------- {{{2
+
+  " Avoid binding commands twice when sourcing vimrc
   au!
 
   " Remember cursor position, except for commit messages
   au BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")| exe "normal! g`\"" | endif"`'")"'")
 
-  " Text Writing:
-  " 1. Wrap lines characters
-  " 2. Enable spell checking by default
+  " b) Text Writing --------- {{{2
+
+  " Wrap lines to improve readability of text documents
   au BufNewFile,BufReadPost *.md set filetype=markdown
   au Filetype text,markdown,gitcommit setlocal wrap textwidth=72
   au FileType text,markdown,gitcommit setlocal spell spelllang=en_us,de_de
 
-  " Development:
-  " 1. Use tab to expand emmet abbreviation.
-  " 2. Remove trailing spaces.
+  " c) Development ---------- {{{2
+
+  " Enable emmet for specifc file types only
   let g:user_emmet_install_global = 0
   au FileType html,html.twig,php,css,scss,sass EmmetInstall
 

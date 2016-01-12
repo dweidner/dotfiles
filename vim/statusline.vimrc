@@ -1,11 +1,12 @@
 " STATUSLINE.VIMRC
 
-" Customize information displayed in status line
+" 1. Lightline ---------------------- {{{1
+
 let g:lightline = {
   \ 'colorscheme': 'solarized',
   \ 'active': {
   \   'left': [ [ 'mode', 'paste' ], [ 'filename' ], [ 'ctrlp' ] ],
-  \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'syntastic', 'ctags' ] ]
+  \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'syntastic', 'busy' ] ]
   \ },
   \ 'mode_map': {
   \   'n': ' N ',
@@ -22,7 +23,7 @@ let g:lightline = {
   \ },
   \ 'component_function': {
   \   'ctrlp': 'CtrlPMark',
-  \   'ctags': 'GutenTagsStatusLineFlag',
+  \   'busy': 'LightLineBusyFlag',
   \   'fileformat': 'LightLineFileFormat',
   \   'fileencoding': 'LightLineFileEncoding'
   \ },
@@ -43,17 +44,21 @@ function! LightLineFileEncoding()
   return fenc !=? 'utf-8' ? fenc : ''
 endfunction
 
-" Display indicator if gutentags is (re)generating ctags file
-function! GutenTagsStatusLineFlag()
-  return gutentags#statusline(' Generating ctags... ')
+" Display indicator if processes are running in the background
+function! LightLineBusyFlag()
+  let ctags = gutentags#statusline(' ... ')
+  return ctags
 endfunction
 
-" Customize status line of CtrlP
+
+" 2. CtrlP -------------------------- {{{1
+
 let g:ctrlp_status_func = {
-  \ 'main': 'CtrlPStatusMain',
-  \ 'prog': 'CtrlPStatusProg',
+  \ 'main': 'CtrlPMainStatusLine',
+  \ 'prog': 'CtrlPProgressStatusLine',
   \ }
 
+" Display currently active mode
 function! CtrlPMark()
   if expand('%:t') =~ 'ControlP'
     call lightline#link('iR'[g:lightline.ctrlp_regex])
@@ -63,7 +68,7 @@ function! CtrlPMark()
   endif
 endfunction
 
-function! CtrlPStatusMain(focus, byfname, regex, prev, item, next, marked)
+function! CtrlPMainStatusLine(focus, byfname, regex, prev, item, next, marked)
   let g:lightline.ctrlp_regex = a:regex
   let g:lightline.ctrlp_prev = a:prev
   let g:lightline.ctrlp_item = a:item
@@ -71,9 +76,12 @@ function! CtrlPStatusMain(focus, byfname, regex, prev, item, next, marked)
   return lightline#statusline(0)
 endfunction
 
-function! CtrlPStatusProg(str)
+function! CtrlPProgressStatusLine(str)
   return lightline#statusline(0)
 endfunction
+
+
+" 3. Syntastic ---------------------- {{{1
 
 " Customize the text displayed by syntastic in the status line
 let g:syntastic_stl_format='%E{E:%e}%B{ · }%W{W: %w}'
@@ -89,3 +97,6 @@ augroup syntastic_update
   au!
   au BufWritePost *.php,*.css,*.scss,*.js call s:UpdateSyntasticStatus()
 augroup END
+
+
+" vim:foldmethod=marker:foldlevel=1
