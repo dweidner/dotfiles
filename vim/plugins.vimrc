@@ -35,9 +35,11 @@ call pathogen#helptags()            " Generate help tags for bundles
 " Plugin "mattn/emmet-vim"
 " Plugin "cohama/vim-lexima"
 " Plugin "tpope/vim-surround"
+" Plugin "tpope/vim-commentary"
 " Plugin "itspriddle/vim-stripper"
 "
 " Misc
+" Plugin "airblade/vim-rooter"
 " Plugin "tpope/vim-dispatch"
 " Plugin "christoomey/vim-tmux-navigator"
 " Plugin "tmux-plugins/vim-tmux-focus-events"
