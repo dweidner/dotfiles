@@ -257,6 +257,9 @@ nn <leader>s? z=
 " Add word to dictionary
 nn <leader>sa zg
 
+" Correct the last spelling error with the first suggestion
+nn <leader>sc [s1z=
+
 " g) Clipboard -------------- {{{2
 
 " Copy to clipboard
