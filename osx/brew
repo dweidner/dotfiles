@@ -23,6 +23,7 @@ brew install wget
 brew install tree
 brew install rsync
 brew install vim
+brew install ctags
 brew install the_silver_searcher
 
 # Development Tools

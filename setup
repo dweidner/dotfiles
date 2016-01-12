@@ -38,6 +38,7 @@ if is_confirmed; then
   link_dotfile "tmux.conf"       ".tmux.conf"
   link_dotfile "dircolors"       ".dircolors"
   link_dotfile "agignore"        ".agignore"
+  link_dotfile "ctags"           ".ctags"
   link_dotfile "git/attributes"  ".gitattributes"
   link_dotfile "git/ignore"      ".gitignore"
 
