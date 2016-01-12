@@ -61,6 +61,7 @@ set laststatus=2                    " Always display the status line
 set ruler                           " Display cursor position
 set showcmd                         " Show currently running command
 set noshowmode                      " Mode is displayed in lightline already
+set pumheight=10                    " Limit the visible entries of the popup menu
 
 set wildmenu                        " Visual autocomplete for command menu
 set wildmode=list:longest           " Set wildmenu to list choices
@@ -137,8 +138,8 @@ set smartcase                       " Be case-sensitive when using capitals
 set nowrap                          " No line wrapping by default
 set textwidth=0                     " Avoid line breaks when pasting
 
+set completeopt=longest,menuone     " Do not select the first entry in popup menu
 set spelllang=en_us,de_de           " Languages to use for spell checks
-set complete+=kspell                " Autocomplete spelling suggestions
 
 
 " 5. Indentation and Tabs ----------- {{{1
@@ -284,6 +285,7 @@ nn <F9> :Dispatch<CR>
 
 " Toggle comments. German keyboard... u know? :(
 nn <silent> <leader>7 :Commentary<CR>
+
 
 " 7. Custom Functions --------------- {{{1
 
