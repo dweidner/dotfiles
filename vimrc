@@ -159,8 +159,11 @@ filetype plugin indent on           " Load plugins/indentation per file type
 
 " a) General ---------------- {{{2
 
-" Customize leader key
-let mapleader=","
+" Using space as leader makes sense, as it is easy to reach and does not have a
+" special meaning (in vim’s normal mode). Unfortunatly with space as leader
+" nothing is displayed, when using showmode. As a workaround we simply map
+" space to the default leader key.
+map <Space> <Leader>
 
 " Avoid the escape key
 ino jj <Esc>
@@ -171,24 +174,32 @@ ino jk <Esc>
 cno %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 
 " Edit in window/split/vsplit/tab
-nmap <leader>ew :e %%
-nmap <leader>es :split %%
-nmap <leader>ev :vsplit %%
-nmap <leader>et :tabe %%
+nmap <Leader>ew :e %%
+nmap <Leader>es :split %%
+nmap <Leader>ev :vsplit %%
+nmap <Leader>et :tabe %%
 
-" Reload/edit configuration file
-nn <leader>r :so $MYVIMRC<CR>
+" Reload/edit vim configuration file
+nn <Leader>vs :source $MYVIMRC<CR>
+nn <Leader>ve :edit $MYVIMRC<CR>
 
-" Write buffer to file
-nn <leader>w :w!<CR>
+" Split window vertically/horizontally
+nn <Leader>wv <C-w>v<C-w>l
+nn <Leader>ws <C-w>s<C-w>j
 
 " b) Movement --------------- {{{2
 
 " Switch to previous buffer
-nn <leader><Space> <C-^>
+nn <Leader><Space> <C-^>
 
 " Search in buffer list using CtrlP
-nn <leader>b :CtrlPBuffer<CR>
+nn <Leader>b :CtrlPBuffer<CR>
+
+" Faster buffer switching
+nn <Leader>bn :bnext<CR>
+nn <Leader>bN :bprevious<CR>
+nn <Leader>bp :bprevious<CR>
+nn <Leader>bd :bdelete<CR>
 
 " Move between display lines instead of numbered lines
 nn <Up> gk
@@ -201,64 +212,64 @@ nn <C-t> <C-O>
 " c) File Searching --------- {{{2
 
 " Search for file containing word using ag/ack
-nn <leader>a :Ack!
-nn <leader>A :Ack! <C-R>=expand('<cword>')<CR><CR>
+nn <Leader>a :Ack!
+nn <Leader>A :Ack! <C-R>=expand('<cword>')<CR><CR>
 
 " Search files in project
-nn <leader>f :CtrlP<CR>
+nn <Leader>f :CtrlP<CR>
 
 " Search most recent used files
-nn <leader>F :CtrlPMRU
+nn <Leader>F :CtrlPMRU
 
 " Search ctags (in current buffer)
-nn <leader>t :CtrlPTag<CR>
-nn <leader>T :CtrlPBufTag<CR>
+nn <Leader>t :CtrlPTag<CR>
+nn <Leader>T :CtrlPBufTag<CR>
 
 " Clear cache
-nn <silent> <leader>cc :CtrlPClearAllCaches<CR>
+nn <silent> <Leader>cc :CtrlPClearAllCaches<CR>
 
 " d) Word Manipulation ------ {{{2
 
 " Convert word to lower/uppercase
-nn <leader>u mQviwU`Q
-nn <leader>l mQviwu`Q
+nn <Leader>u mQviwU`Q
+nn <Leader>l mQviwu`Q
 
 " Convert first character to lower/uppercase
-nn <leader>U mQgewvU`Q
-nn <leader>L mQgewvu`Q
+nn <Leader>U mQgewvU`Q
+nn <Leader>L mQgewvu`Q
 
 " e) Line Manipulation ------ {{{2
 
 " Insert blank line below/above current line
-nn <leader>o mzo<Esc>`z
-nn <leader>O mzO<Esc>`z
+nn <Leader>o mzo<Esc>`z
+nn <Leader>O mzO<Esc>`z
 
 " Remove line, but do not write it to the erase buffer
-nn <leader>x "_dd
+nn <Leader>x "_dd
 
 " Move current line up/down
-nn <leader>mj :m .+1<CR>==
-nn <leader>mk :m .-2<CR>==
-vn <leader>mj :m '>+1<CR>gv=gv
-vn <leader>mk :m '<-2<CR>gv=gv
+nn <Leader><Up>   :<C-u>silent! move-2<CR>==
+nn <Leader><Down> :<C-u>silent! move+1<CR>==
+xn <Leader><Up>   :<C-u>silent! '<,'>move-2<CR>gv=gv
+xn <Leader><Down> :<C-u>silent! '<,'>move'>+<CR>gv=gv
 
 " f) Spell checking --------- {{{2
 
 " Toggle spell checking
-nn <silent> <leader>ss :setlocal spell!<CR>:setlocal spell?<CR>
+nn <silent> <Leader>ss :setlocal spell!<CR>:setlocal spell?<CR>
 
 " Navigate spelling errors
-nn <leader>sn ]s
-nn <leader>sp [s
+nn <Leader>sn ]s
+nn <Leader>sp [s
 
 " Open dictionary
-nn <leader>s? z=
+nn <Leader>s? z=
 
 " Add word to dictionary
-nn <leader>sa zg
+nn <Leader>sa zg
 
 " Correct the last spelling error with the first suggestion
-nn <leader>sc [s1z=
+nn <Leader>sc [s1z=
 
 " g) Clipboard -------------- {{{2
 
@@ -285,9 +296,6 @@ nn <silent> <F7> :call ToggleWrap()<CR>
 
 " Run the compiler of the current file type in the background
 nn <F9> :Dispatch<CR>
-
-" Toggle comments. German keyboard... u know? :(
-nn <silent> <leader>7 :Commentary<CR>
 
 
 " 7. Custom Functions --------------- {{{1
