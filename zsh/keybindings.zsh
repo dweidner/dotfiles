@@ -13,3 +13,11 @@ bindkey -M vicmd 'j' history-search-forward
 
 # Delete key
 bindkey '\e[3~' delete-char
+
+# Customize the behavior of backward-delete-word
+function slash-backward-delete-word() {
+  local WORDCHARS="${WORDCHARS:s@/@}"
+  zle backward-kill-word
+}
+zle -N slash-backward-delete-word
+bindkey '^W' slash-backward-delete-word
