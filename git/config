@@ -19,13 +19,15 @@
 
 [alias]
     # Basic shortcuts
-    st = status -s
-    cl = clone --recursive
-    co = checkout
-    cm = "!f() { git commit -m \"$1\"; }; f"
-    ca = "!f() { git add --all && git commit --all -m \"$1\"; }; f"
+    b  = branch
+    d  = diff
+    m  = merge
+    mt = mergetool
     am = commit --amend
-    pa = !"git pull; git submodule foreach git pull origin master"
+    cl = clone --recursive
+    ci = commit
+    co = checkout
+    st = status -s
 
     # Logging
     ls = log --pretty=nice --decorate
@@ -36,11 +38,6 @@
     branches = branch -a
     remotes = remote -v
     contributors = shortlog --summary --numbered
-
-    # Assume unchanged
-    au = !"f() { git update-index --assume-unchanged \"$1\"; }; f"
-    nau = !"f() { git update-index --no-assume-unchanged \"$1\"; }; f"
-    lsau = !"git ls-files -v | grep \"^[[:lower:]]\" | cut -f2 -d' '"
 
 [diff]
   tool = opendiff
