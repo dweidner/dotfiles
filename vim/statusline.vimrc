@@ -5,7 +5,7 @@
 let g:lightline = {
   \ 'colorscheme': 'solarized',
   \ 'active': {
-  \   'left': [ [ 'mode', 'paste' ], [ 'filename' ], [ 'ctrlp' ] ],
+  \   'left': [ [ 'mode', 'paste' ], [ 'filename' ], [ 'ctrlp', 'fugitive' ] ],
   \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'syntastic', 'busy' ] ]
   \ },
   \ 'mode_map': {
@@ -23,6 +23,7 @@ let g:lightline = {
   \ },
   \ 'component_function': {
   \   'ctrlp': 'CtrlPMark',
+  \   'fugitive': 'LightLineFugitive',
   \   'busy': 'LightLineBusyFlag',
   \   'fileformat': 'LightLineFileFormat',
   \   'fileencoding': 'LightLineFileEncoding'
@@ -46,8 +47,12 @@ endfunction
 
 " Display indicator if processes are running in the background
 function! LightLineBusyFlag()
-  let ctags = gutentags#statusline(' ... ')
-  return ctags
+  return exists('*gutentags#statusline') ? gutentags#statusline('...') : ''
+endfunction
+
+" Display the current git branch
+function! LightLineFugitive()
+  return exists('*fugitive#head') ? fugitive#head() : ''
 endfunction
 
 

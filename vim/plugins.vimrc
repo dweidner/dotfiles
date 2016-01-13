@@ -32,6 +32,7 @@ call pathogen#helptags()            " Generate help tags for bundles
 " Plugin "airblade/vim-gitgutter"
 " Plugin "scrooloose/syntastic.git"
 " Plugin "ludovicchabant/vim-gutentags"
+" Plugin "tpope/vim-fugitive"
 " Plugin "mattn/emmet-vim"
 " Plugin "cohama/vim-lexima"
 " Plugin "tpope/vim-surround"

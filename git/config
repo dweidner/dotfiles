@@ -26,8 +26,11 @@
     am = commit --amend
     cl = clone --recursive
     ci = commit
+    ca = !git add --all && git commit -m
     co = checkout
+    ec = config --global -e
     st = status -s
+    up = !git pull --rebase --prune $@ && git submodule update --init --recursive
 
     # Logging
     ls = log --pretty=nice --decorate
