@@ -48,13 +48,11 @@ call pathogen#helptags()            " Generate help tags for bundles
 " -----------------------------------
 
 
-" 1. The Silver Searcher settings --- {{{1
+" 1. Ack settings ------------------- {{{1
 
 if executable('ag')
   let g:ackprg='ag --vimgrep'
   let g:ack_use_dispatch=1
-  let g:ctrlp_user_command='ag %s -l --nocolor -g ""'
-  " let g:ctrlp_use_caching=0
 endif
 
 
@@ -65,7 +63,23 @@ let g:netrw_altv=1                  " Split window to the right
 let g:netrw_alto=1                  " Split window to the bottom
 
 
-" 3. Syntastic settings ------------- {{{1
+" 3. CtrlP settings ----------------- {{{1
+
+let g:ctrlp_line_prefix=''          " Avoid adding a prefix to each file in the list
+
+" Use `The Silver Searcher` if available
+if executable('ag')
+  let g:ctrlp_user_command = 'ag %s
+    \ --nocolor --nogroup -g ""
+    \ --files-with-matches
+    \ --ignore=".git"
+    \ --ignore=".svn"
+    \ --ignore=".hg"
+    \ --ignore="node_modules"'
+endif
+
+
+" 4. Syntastic settings ------------- {{{1
 
 let g:syntastic_error_symbol='•'    " Customize error symbol
 let g:syntastic_warning_symbol='!'  " Customize warning symbol
@@ -81,12 +95,12 @@ let g:syntastic_html_tidy_ignore_errors = [
     \ ]
 
 
-" 4. Gutentags settings ------------- {{{1
+" 5. Gutentags settings ------------- {{{1
 
 let g:gutentags_tagfile='.tags'
 
 
-" 5. MatchIt ------------------------ {{{1
+" 6. MatchIt ------------------------ {{{1
 
 " Load matchit.vim which is shipped with vim
 if !exists('g:loaded_matchit') && findfile('bundle/matchit.vim', &rtp) ==# ''

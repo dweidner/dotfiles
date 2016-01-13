@@ -8,6 +8,9 @@ log/
 logs/
 images/
 tmp/
+.git
+.svn
+.hg
 .sass-cache/
 *.old
 *.bak
