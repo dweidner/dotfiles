@@ -169,6 +169,9 @@ map <Space> <Leader>
 ino jj <Esc>
 ino jk <Esc>
 
+" Expand %d to the current day (e.g. 20160214)
+cno %d <C-R>=strftime("%Y%m%d")<CR>
+
 " Expand %% to directory of the current file
 " See http://vimcasts.org/e/14
 cno %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
@@ -196,6 +199,7 @@ nn <Leader><Space> <C-^>
 nn <Leader>b :CtrlPBuffer<CR>
 
 " Faster buffer switching
+nn <Leader><Tab> :bnext<CR>
 nn <Leader>bn :bnext<CR>
 nn <Leader>bN :bprevious<CR>
 nn <Leader>bp :bprevious<CR>
@@ -230,6 +234,10 @@ nn <silent> <Leader>cc :CtrlPClearAllCaches<CR>
 
 " d) Word Manipulation ------ {{{2
 
+" Increment/decrement numbers
+nn + <C-a>
+nn - <C-x>
+
 " Convert word to lower/uppercase
 nn <Leader>u mQviwU`Q
 nn <Leader>l mQviwu`Q
@@ -241,8 +249,8 @@ nn <Leader>L mQgewvu`Q
 " e) Line Manipulation ------ {{{2
 
 " Insert blank line below/above current line
-nn <Leader>o mzo<Esc>`z
-nn <Leader>O mzO<Esc>`z
+nn <silent> <Leader>o mzo<Esc>`z
+nn <silent> <Leader>O mzO<Esc>`z
 
 " Remove line, but do not write it to the erase buffer
 nn <Leader>x "_dd
@@ -252,6 +260,10 @@ nn <Leader><Up>   :<C-u>silent! move-2<CR>==
 nn <Leader><Down> :<C-u>silent! move+1<CR>==
 xn <Leader><Up>   :<C-u>silent! '<,'>move-2<CR>gv=gv
 xn <Leader><Down> :<C-u>silent! '<,'>move'>+<CR>gv=gv
+
+" Reselect visual block after indent/outdent
+xn < <gv
+xn > >gv
 
 " f) Spell checking --------- {{{2
 
@@ -292,16 +304,20 @@ nn <F5> :set hlsearch!<Bar>set hlsearch?<CR>
 nn <silent> <F6> :let [&nu, &rnu] = [&nu+&rnu==0, &nu]<CR>
 
 " Toggle soft wrapping of lines
-nn <silent> <F7> :call ToggleWrap()<CR>
+nn <silent> <F7> :call <sid>ToggleWrap()<CR>
 
 " Run the compiler of the current file type in the background
 nn <F9> :Dispatch<CR>
+
+" Insert the current date (e.g. Mon, 14. Feburary 2016)
+nn <F10> "=strftime("%a %d. %B %Y")<CR>P
+ino <F10> <C-R>=strftime("%a %d. %B %Y")<CR>
 
 
 " 7. Custom Functions --------------- {{{1
 
 " Toggle soft line wrapping
-function! ToggleWrap()
+function! s:ToggleWrap()
   if &wrap
     " Disable soft wrapping
     set nowrap nolinebreak list
@@ -311,6 +327,15 @@ function! ToggleWrap()
     set wrap linebreak nolist
     echo "  wrap"
   endif
+endfunction
+
+" Expand emmet abbreviation at current cursor or move to next marker
+function! s:EmmetExpandOrJump()
+  let l=getline('.')
+  if (match(l, '<.*>')) >= 0
+    return "\<plug>(emmet-move-next)"
+  endif
+  return "\<plug>(emmet-expand-abbr)"
 endfunction
 
 
@@ -338,6 +363,9 @@ augroup vimrc_autocmds
   " Enable emmet for specific file types only
   let g:user_emmet_install_global = 0
   au FileType html,html.twig,php,css,scss,sass EmmetInstall
+
+  " Expand emmet abbreviation or move to next marker
+  au FileType html,html.twig,php,css,scss,sass imap <buffer><expr><silent> <C-e> <sid>EmmetExpandOrJump()
 
 augroup END
 
