@@ -20,30 +20,31 @@ call pathogen#helptags()            " Generate help tags for bundles
 " Plugin "cakebaker/scss-syntax"
 "
 " File searching
-" Plugin "mileszs/ack.vim"
-" Plugin "ctrlpvim/ctrlp.vim"
+" Plugin "mileszs/ack.vim"                    " Search file contents
+" Plugin "ctrlpvim/ctrlp.vim"                 " Navigate files/buffers
 "
 " User Interface Improvements
-" Plugin "altercation/vim-colors-solarized"
-" Plugin "itchyny/lightline.vim"
-" Plugin "ervandew/supertab"
+" Plugin "altercation/vim-colors-solarized"   " Color scheme of choice
+" Plugin "itchyny/lightline.vim"              " Customize vim's statusline
+" Plugin "ervandew/supertab"                  " Tab or Auto-Complete
 "
 " [Web] Development
-" Plugin "airblade/vim-gitgutter"
-" Plugin "scrooloose/syntastic.git"
-" Plugin "ludovicchabant/vim-gutentags"
-" Plugin "tpope/vim-fugitive"
-" Plugin "mattn/emmet-vim"
-" Plugin "cohama/vim-lexima"
-" Plugin "tpope/vim-surround"
-" Plugin "tpope/vim-commentary"
-" Plugin "itspriddle/vim-stripper"
+" Plugin "scrooloose/syntastic.git"           " Check file syntax
+" Plugin "mattn/emmet-vim"                    " Writing html markup
+" Plugin "ludovicchabant/vim-gutentags"       " Auto-generate ctags
+" Plugin "tpope/vim-fugitive"                 " Git integration
+" Plugin "airblade/vim-gitgutter"             " Check for file changes
+" Plugin "cohama/vim-lexima"                  " Auto close brackets
+" Plugin "tpope/vim-surround"                 " Wrap text objects
+" Plugin "tpope/vim-commentary"               " Toggle comments
+" Plugin "itspriddle/vim-stripper"            " Remove trailing spaces
 "
 " Misc
-" Plugin "airblade/vim-rooter"
-" Plugin "tpope/vim-dispatch"
-" Plugin "christoomey/vim-tmux-navigator"
-" Plugin "tmux-plugins/vim-tmux-focus-events"
+" Plugin "airblade/vim-rooter"                " Smart working directory
+" Plugin "tpope/vim-dispatch"                 " Async commands
+" Plugin "tpope/vim-eunuch"                   " Unix utilities in vim
+" Plugin "christoomey/vim-tmux-navigator"     " Navigate between tmux and
+" Plugin "tmux-plugins/vim-tmux-focus-events" " Fix focus events in tmux
 "
 " -----------------------------------
 

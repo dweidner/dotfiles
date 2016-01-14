@@ -223,7 +223,7 @@ nn <Leader>A :Ack! <C-R>=expand('<cword>')<CR><CR>
 nn <Leader>f :CtrlP<CR>
 
 " Search most recent used files
-nn <Leader>F :CtrlPMRU
+nn <Leader>F :CtrlPMRU<CR>
 
 " Search ctags (in current buffer)
 nn <Leader>t :CtrlPTag<CR>
