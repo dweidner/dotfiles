@@ -46,9 +46,16 @@ alias reload='exec $SHELL -l'
 # Frequently used utilities
 alias g='git'
 alias e='$EDITOR'
-alias v='atom'
 alias rsyncp='rsync --archive --compress --verbose --progress --partial --human-readable --rsh ssh'
 alias rsyncfat='rsync --recursive --links --devices --specials --size-only --no-times --no-perms --no-owner --no-group --verbose --progress --human-readable'
+
+# Redirecting input
+alias -g C='| wc -l'
+alias -g H='| head'
+alias -g L='| less'
+alias -g M='| more'
+alias -g T='| tail'
+alias -g NUL='>/dev/null 2>&1'
 
 # Create aliases based on the current operating system
 case "$OSTYPE" in

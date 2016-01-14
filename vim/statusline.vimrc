@@ -6,7 +6,7 @@ let g:lightline = {
   \ 'colorscheme': 'solarized',
   \ 'active': {
   \   'left': [ [ 'mode', 'paste' ], [ 'filename' ], [ 'ctrlp', 'fugitive' ] ],
-  \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'syntastic', 'busy' ] ]
+  \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'busy', 'syntastic', 'fileformat', 'fileencoding' ] ]
   \ },
   \ 'mode_map': {
   \   'n': ' N ',
@@ -31,7 +31,7 @@ let g:lightline = {
   \ 'component_expand': {
   \   'syntastic': 'SyntasticStatuslineFlag',
   \ },
-  \ 'subseparator': { 'left': '', 'right': '·' }
+  \ 'subseparator': { 'left': '', 'right': '｜' }
   \ }
 
 " Show file format only if it differs from the default (unix)
@@ -47,7 +47,7 @@ endfunction
 
 " Display indicator if processes are running in the background
 function! LightLineBusyFlag()
-  return exists('*gutentags#statusline') ? gutentags#statusline('...') : ''
+  return exists('*gutentags#statusline') ? gutentags#statusline(' ··· ') : ''
 endfunction
 
 " Display the current git branch
@@ -89,7 +89,7 @@ endfunction
 " 3. Syntastic ---------------------- {{{1
 
 " Customize the text displayed by syntastic in the status line
-let g:syntastic_stl_format='%E{E:%e}%B{ · }%W{W: %w}'
+let g:syntastic_stl_format='%E{⨯ %e}%B{ · }%W{▴ %w} '
 
 " Update Syntastic status, will be triggered by autocmd
 function! s:UpdateSyntasticStatus()
