@@ -13,11 +13,14 @@ call pathogen#helptags()            " Generate help tags for bundles
 " -----------------------------------
 "
 " Improve syntax highlighting
-" Plugin "othree/html5.vim"
 " Plugin "hail2u/vim-css3-syntax"
-" Plugin "jelera/vim-javascript-syntax"
+" Plugin "cakebaker/scss-syntax.vim"
+" Plugin "pangloss/vim-javascript"
 " Plugin "evidens/vim-twig"
-" Plugin "cakebaker/scss-syntax"
+"
+" Language extensions
+" Plugin "othree/html5.vim"                   " HTML5 & SVG omnicomplete
+" Plugin "shawncplus/phpcomplete.vim"         " PHP omnicomplete
 "
 " File searching
 " Plugin "mileszs/ack.vim"                    " Search file contents
