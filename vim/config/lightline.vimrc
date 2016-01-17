@@ -1,6 +1,4 @@
-" STATUSLINE.VIMRC
-
-" 1. Lightline ---------------------- {{{1
+" LIGHTLINE.VIMRC
 
 let g:lightline = {
   \ 'colorscheme': 'solarized',
@@ -55,9 +53,6 @@ function! LightLineFugitive()
   return exists('*fugitive#head') ? fugitive#head() : ''
 endfunction
 
-
-" 2. CtrlP -------------------------- {{{1
-
 let g:ctrlp_status_func = {
   \ 'main': 'CtrlPMainStatusLine',
   \ 'prog': 'CtrlPProgressStatusLine',
@@ -85,12 +80,6 @@ function! CtrlPProgressStatusLine(str)
   return lightline#statusline(0)
 endfunction
 
-
-" 3. Syntastic ---------------------- {{{1
-
-" Customize the text displayed by syntastic in the status line
-let g:syntastic_stl_format='%E{⨯ %e}%B{ · }%W{▴ %w} '
-
 " Update Syntastic status, will be triggered by autocmd
 function! s:UpdateSyntasticStatus()
   SyntasticCheck
@@ -103,5 +92,3 @@ augroup syntastic_update
   au BufWritePost *.php,*.css,*.scss,*.js call s:UpdateSyntasticStatus()
 augroup END
 
-
-" vim:foldmethod=marker:foldlevel=1

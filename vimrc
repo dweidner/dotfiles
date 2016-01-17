@@ -30,13 +30,9 @@ set history=1000                    " Increase number of commands saved
 set viminfo+=n$VIMHOME/viminfo      " Customize path of viminfo file
 set backupdir=$VIMHOME/backup//     " Centralize backups
 set directory=$VIMHOME/swap//       " Centralize swapfiles
+set undodir=$VIMHOME/undo//         " Centralize undo history
 
-if exists("&undodir")
-  set undodir=$VIMHOME/undo//       " Centralize undo history
-endif
-
-" Load plugins and plugin configuration
-source $VIMHOME/plugins.vimrc
+source $VIMHOME/bundles.vimrc       " Load bundles + configuration
 
 
 " 2. User Interface ----------------- {{{1
@@ -63,19 +59,6 @@ set showcmd                         " Show currently running command
 set noshowmode                      " Mode is displayed in lightline already
 set pumheight=10                    " Limit the visible entries of the popup menu
 
-set wildmenu                        " Visual autocomplete for command menu
-set wildmode=list:longest           " Set wildmenu to list choices
-
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*
-set wildignore+=*.jpg,*.jpeg,*.png,*.gif,*.tiff,*.psd
-set wildignore+=*.zip,*.tar,*.tar.gz,*.dmg
-set wildignore+=*.pdf,*.doc,*.docx,*.xls,*.xlsx,*.ppt,*.pptx
-set wildignore+=*.mp3,*.mp4,*.mov
-set wildignore+=*.gem,gems/**
-set wildignore+=*/node_modules/**
-set wildignore+=*/bower_components/**
-set wildignore+=*/tmp/**,.DS_Store,Icon
-
 set list                            " Show invisible characters
 set listchars=tab:▸\                " Show tab stops
 set listchars+=trail:·              " Show trailing spaces
@@ -83,7 +66,6 @@ set listchars+=nbsp:_               " Show non breaking spaces
 set listchars+=extends:»            " Line continues off-screen
 set listchars+=precedes:«           " Line precedes off-screen
 "set listchars+=eol:¬               " Show end of line markers
-
 set fillchars-=fold                 " Remove fillchars for folds
 set showbreak=↪                     " Show line breaks
 
@@ -96,17 +78,18 @@ set display+=lastline               " Keep as much as possible
 
 set mouse=a ttymouse=xterm2         " Enable mouse support. Shame on me...
 
-" Use a bar-shaped cursor for insert mode (if supported).
-if exists('$TMUX')
-  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-else
-  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-endif
+set wildmenu                        " Visual autocomplete for command menu
+set wildmode=list:longest           " Set wildmenu to list choices
 
-" Customize the appearance of the status line
-source $VIMHOME/statusline.vimrc
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*
+set wildignore+=*.jpg,*.jpeg,*.png,*.gif,*.tiff,*.psd
+set wildignore+=*.zip,*.tar,*.tar.gz,*.dmg
+set wildignore+=*.pdf,*.doc,*.docx,*.xls,*.xlsx,*.ppt,*.pptx
+set wildignore+=*.mp3,*.mp4,*.mov
+set wildignore+=*.gem,gems/**
+set wildignore+=*/node_modules/**
+set wildignore+=*/bower_components/**
+set wildignore+=*/tmp/**,.DS_Store,Icon
 
 
 " 3. Syntax Highlighting ------------ {{{1
@@ -176,42 +159,20 @@ cno %d <C-R>=strftime("%Y%m%d")<CR>
 " See http://vimcasts.org/e/14
 cno %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 
-" Edit in window/split/vsplit/tab
-nmap <Leader>ew :e %%
-nmap <Leader>es :split %%
-nmap <Leader>ev :vsplit %%
-nmap <Leader>et :tabe %%
-
-" Reload/edit vim configuration file
-nn <Leader>vs :source $MYVIMRC<CR>
-nn <Leader>ve :edit $MYVIMRC<CR>
+" b) Windows/Buffers -------- {{{2
 
 " Split window vertically/horizontally
 nn <Leader>wv <C-w>v<C-w>l
 nn <Leader>ws <C-w>s<C-w>j
 
-" b) Movement --------------- {{{2
-
-" Switch to previous buffer
+" Switch to alternate buffer
 nn <Leader><Space> <C-^>
 
-" Search in buffer list using CtrlP
-nn <Leader>b :CtrlPBuffer<CR>
-
-" Faster buffer switching
+" Switch to next buffer
 nn <Leader><Tab> :bnext<CR>
-nn <Leader>bn :bnext<CR>
-nn <Leader>bN :bprevious<CR>
-nn <Leader>bp :bprevious<CR>
-nn <Leader>bd :bdelete<CR>
 
-" Move between display lines instead of numbered lines
-nn <Up> gk
-nn <Down> gj
-
-" Jump to tag/subject and back
-nn t <C-]>
-nn <C-t> <C-O>
+" Search in buffer list using CtrlP
+nn <Leader>be :CtrlPBuffer<CR>
 
 " c) File Searching --------- {{{2
 
@@ -219,18 +180,11 @@ nn <C-t> <C-O>
 nn <Leader>a :Ack!
 nn <Leader>A :Ack! <C-R>=expand('<cword>')<CR><CR>
 
-" Search files in project
-nn <Leader>f :CtrlP<CR>
+" Search ctags (in current buffer)
+nn <Leader>t :CtrlPBufTag<CR>
 
 " Search most recent used files
-nn <Leader>F :CtrlPMRU<CR>
-
-" Search ctags (in current buffer)
-nn <Leader>t :CtrlPTag<CR>
-nn <Leader>T :CtrlPBufTag<CR>
-
-" Clear cache
-nn <silent> <Leader>cc :CtrlPClearAllCaches<CR>
+nn <Leader>mru :CtrlPMRU<CR>
 
 " d) Word Manipulation ------ {{{2
 
@@ -261,11 +215,21 @@ nn <Leader><Down> :<C-u>silent! move+1<CR>==
 xn <Leader><Up>   :<C-u>silent! '<,'>move-2<CR>gv=gv
 xn <Leader><Down> :<C-u>silent! '<,'>move'>+<CR>gv=gv
 
+" Move between display lines instead of numbered lines
+nn <Up> gk
+nn <Down> gj
+
 " Reselect visual block after indent/outdent
 xn < <gv
 xn > >gv
 
-" f) Spell checking --------- {{{2
+" f) Development ------------ {{{2
+
+" Jump to tag/subject and back
+nn t <C-]>
+nn <C-t> <C-O>
+
+" g) Spell checking --------- {{{2
 
 " Toggle spell checking
 nn <silent> <Leader>ss :setlocal spell!<CR>:setlocal spell?<CR>
@@ -283,7 +247,7 @@ nn <Leader>sa zg
 " Correct the last spelling error with the first suggestion
 nn <Leader>sc [s1z=
 
-" g) Clipboard -------------- {{{2
+" h) Clipboard -------------- {{{2
 
 " Copy to clipboard
 if has('clipboard') && has('mac')
@@ -292,7 +256,7 @@ if has('clipboard') && has('mac')
   vn <C-x> "*c
 endif
 
-" h) Misc ------------------- {{{2
+" i) Utility ---------------- {{{2
 
 " Toggle paste mode
 set pastetoggle=<F4>
