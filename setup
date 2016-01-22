@@ -30,7 +30,7 @@ if is_confirmed; then
   # directory.
   link_dotfile "zshrc"           ".zshrc"
   link_dotfile "bashrc"          ".bashrc"
-  link_dotfile "bashrc"          ".bash_profile"
+  link_dotfile "bash_profile"    ".bash_profile"
   link_dotfile "inputrc"         ".inputrc"
   link_dotfile "vim"             ".vim"
   link_dotfile "vimrc"           ".vimrc"
