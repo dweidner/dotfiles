@@ -103,3 +103,9 @@
 [submodule "vim/bundle/vim-repeat"]
 	path = vim/bundle/vim-repeat
 	url = https://github.com/tpope/vim-repeat.git
+[submodule "tmux/plugins/tmux-sessionist"]
+	path = tmux/plugins/tmux-sessionist
+	url = https://github.com/tmux-plugins/tmux-sessionist.git
+[submodule "tmux/plugins/tmux-resurrect"]
+	path = tmux/plugins/tmux-resurrect
+	url = https://github.com/tmux-plugins/tmux-resurrect.git
