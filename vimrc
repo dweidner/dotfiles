@@ -32,7 +32,8 @@ set backupdir=$VIMHOME/backup//     " Centralize backups
 set directory=$VIMHOME/swap//       " Centralize swapfiles
 set undodir=$VIMHOME/undo//         " Centralize undo history
 
-source $VIMHOME/bundles.vimrc       " Load bundles + configuration
+source $VIMHOME/bundles.vimrc       " Load vim bundles
+source $VIMHOME/settings.vimrc      " Load bundle configuration
 
 
 " 2. User Interface ----------------- {{{1
@@ -172,7 +173,7 @@ nn <Leader><Space> <C-^>
 nn <Leader><Tab> :bnext<CR>
 
 " Search in buffer list using CtrlP
-nn <Leader>be :CtrlPBuffer<CR>
+nn <Leader>b :CtrlPBuffer<CR>
 
 " c) File Searching --------- {{{2
 
@@ -247,16 +248,7 @@ nn <Leader>sa zg
 " Correct the last spelling error with the first suggestion
 nn <Leader>sc [s1z=
 
-" h) Clipboard -------------- {{{2
-
-" Copy to clipboard
-if has('clipboard') && has('mac')
-  vn <C-c> "*y
-  vn <C-v> "*p
-  vn <C-x> "*c
-endif
-
-" i) Utility ---------------- {{{2
+" h) Utility ---------------- {{{2
 
 " Toggle paste mode
 set pastetoggle=<F4>
@@ -293,19 +285,10 @@ function! s:ToggleWrap()
   endif
 endfunction
 
-" Expand emmet abbreviation at current cursor or move to next marker
-function! s:EmmetExpandOrJump()
-  let l=getline('.')
-  if (match(l, '<.*>')) >= 0
-    return "\<plug>(emmet-move-next)"
-  endif
-  return "\<plug>(emmet-expand-abbr)"
-endfunction
-
 
 " 8. File Types and Auto Commands --- {{{1
 
-augroup vimrc_autocmds
+augroup vimrc
 
   " a) General -------------- {{{2
 
@@ -321,15 +304,6 @@ augroup vimrc_autocmds
   au BufNewFile,BufReadPost *.md set filetype=markdown
   au Filetype text,markdown,gitcommit setlocal wrap linebreak textwidth=72
   au FileType text,markdown,gitcommit setlocal spell spelllang=en_us,de_de
-
-  " c) (Web) Development ---- {{{2
-
-  " Enable emmet for specific file types only
-  let g:user_emmet_install_global = 0
-  au FileType html,html.twig,php,css,scss,sass EmmetInstall
-
-  " Expand emmet abbreviation or move to next marker
-  au FileType html,html.twig,php,css,scss,sass imap <buffer><expr><silent> <C-e> <sid>EmmetExpandOrJump()
 
 augroup END
 

@@ -54,7 +54,3 @@ call pathogen#helptags()            " Generate help tags for bundles
 "
 " -----------------------------------
 
-for file in split(globpath($VIMHOME.'/config', '*.vimrc'), '\n')
-  execute 'source' file
-endfor
-
