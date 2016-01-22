@@ -1,6 +1,8 @@
 " CTRLP.VIMRC
 
-let g:ctrlp_line_prefix=''          " Avoid adding a prefix to each file in the list
+" 1. Configuration -------------------- {{{1
+"
+let g:ctrlp_line_prefix=''              " Avoid adding a prefix to each file in the list
 
 " Use `The Silver Searcher` if available
 if executable('ag')
@@ -13,6 +15,9 @@ if executable('ag')
     \ --ignore="node_modules"'
 endif
 
+
+" 2. Key bindings --------------------- {{{1
+
 " Search in buffer list using CtrlP
 nn <Leader>b :CtrlPBuffer<CR>
 
@@ -22,3 +27,5 @@ nn <Leader>s :CtrlPBufTag<CR>
 " Search most recent used files
 nn <Leader>mru :CtrlPMRU<CR>
 
+
+" vim:foldmethod=marker:foldlevel=2

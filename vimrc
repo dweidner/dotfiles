@@ -122,6 +122,8 @@ set textwidth=0                     " Avoid line breaks when pasting
 set completeopt=longest,menuone     " Do not select the first entry in popup menu
 set spelllang=en_us,de_de           " Languages to use for spell checks
 
+set matchpairs+=<:>                 " Change html tags with ci< or ci>
+
 
 " 5. Indentation and Tabs ----------- {{{1
 

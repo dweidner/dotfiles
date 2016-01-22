@@ -6,8 +6,8 @@ endif
 
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 
-call pathogen#infect()              " Load plugins in bundle directory
-call pathogen#helptags()            " Generate help tags for bundles
+call pathogen#infect()                        " Load plugins from directory
+call pathogen#helptags()                      " Generate help tags for bundles
 
 " -----------------------------------
 " NOTE:
