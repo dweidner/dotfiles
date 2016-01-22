@@ -61,10 +61,6 @@
 [submodule "tmux/plugins/tmux-copycat"]
 	path = tmux/plugins/tmux-copycat
 	url = https://github.com/tmux-plugins/tmux-copycat.git
-[submodule "tmux/plugins/tmux-sidebar"]
-	path = tmux/plugins/tmux-sidebar
-	url = https://github.com/tmux-plugins/tmux-sidebar.git
-	ignore = dirty
 [submodule "vim/bundle/vim-tmux-focus-events"]
 	path = vim/bundle/vim-tmux-focus-events
 	url = https://github.com/tmux-plugins/vim-tmux-focus-events.git
