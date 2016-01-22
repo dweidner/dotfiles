@@ -173,21 +173,6 @@ nn <Leader><Space> <C-^>
 " Switch to next buffer
 nn <Leader><Tab> :bnext<CR>
 
-" Search in buffer list using CtrlP
-nn <Leader>b :CtrlPBuffer<CR>
-
-" c) File Searching --------- {{{2
-
-" Search for file containing word using ag/ack
-nn <Leader>a :Ack!
-nn <Leader>A :Ack! <C-R>=expand('<cword>')<CR><CR>
-
-" Search ctags (in current buffer)
-nn <Leader>t :CtrlPBufTag<CR>
-
-" Search most recent used files
-nn <Leader>mru :CtrlPMRU<CR>
-
 " d) Word Manipulation ------ {{{2
 
 " Increment/decrement numbers

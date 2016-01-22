@@ -50,7 +50,8 @@ call pathogen#helptags()            " Generate help tags for bundles
 " Plugin "tpope/vim-dispatch"                 " Async commands
 " Plugin "tpope/vim-eunuch"                   " Unix utilities in vim
 " Plugin "tpope/vim-repeat"                   " Repeat plugin commands
-" Plugin "christoomey/vim-tmux-navigator"     " Navigate between tmux and
+" Plugin "benmills/vimux"                     " Run commands in tmux pane
+" Plugin "christoomey/vim-tmux-navigator"     " Navigate between tmux and vim
 " Plugin "tmux-plugins/vim-tmux-focus-events" " Fix focus events in tmux
 "
 " -----------------------------------
