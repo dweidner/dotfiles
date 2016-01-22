@@ -100,3 +100,6 @@
 [submodule "vim/bundle/vim-phpcomplete"]
 	path = vim/bundle/vim-phpcomplete
 	url = https://github.com/shawncplus/phpcomplete.vim.git
+[submodule "vim/bundle/vim-repeat"]
+	path = vim/bundle/vim-repeat
+	url = https://github.com/tpope/vim-repeat.git

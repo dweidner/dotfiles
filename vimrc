@@ -13,7 +13,6 @@ if version >= 700                   " Ignore configuration on older systems
 " 6. Key bindings
 " 7. Custom Functions
 " 8. File Types and Auto Commands
-" 9. Private Configuration
 " -----------------------------------
 
 " 1. General Settings --------------- {{{1
@@ -21,11 +20,16 @@ if version >= 700                   " Ignore configuration on older systems
 let $VIMHOME=$HOME.'/.vim'
 
 set nocompatible                    " Break backwards compatibility with vi
-set encoding=utf-8                  " Character encoding
+set encoding=utf-8                  " Encoding used in vim
 set ttyfast                         " Optimize for fast terminal connection
-set clipboard+=unnamed              " Use system clipboard by default
-set fileformats=unix,dos,mac        " Support all newline formats
+set hidden                          " Hide modified buffers without complaining
+set autoread                        " Reload file if modified outside vim
 set history=1000                    " Increase number of commands saved
+set clipboard+=unnamed              " Use system clipboard by default
+set fileformats=unix,dos,mac        " Enable automatic fileformat detection
+
+set splitright                      " Split to the right of the current window
+set splitbelow                      " Split to the bottom of the current window
 
 set viminfo+=n$VIMHOME/viminfo      " Customize path of viminfo file
 set backupdir=$VIMHOME/backup//     " Centralize backups
@@ -49,15 +53,14 @@ endif
 set title                           " Allow vim to customize the title
 set number                          " Show line numbers
 set cursorline                      " Highlight current line
-set hidden                          " Hide modified buffers without complaining
-set showmatch                       " Highlight matching parenthesis
-set shortmess=atI                   " Shorten messages
-set foldenable                      " Enable folding
-
-set laststatus=2                    " Always display the status line
 set ruler                           " Display cursor position
 set showcmd                         " Show currently running command
 set noshowmode                      " Mode is displayed in lightline already
+set showmatch                       " Highlight matching parenthesis
+set shortmess=aoOtI                 " Use abbreviation in messages
+
+set laststatus=2                    " Always display the status line
+set cmdheight=1                     " Avoid hit-enter prompts
 set pumheight=10                    " Limit the visible entries of the popup menu
 
 set list                            " Show invisible characters
@@ -67,20 +70,15 @@ set listchars+=nbsp:_               " Show non breaking spaces
 set listchars+=extends:»            " Line continues off-screen
 set listchars+=precedes:«           " Line precedes off-screen
 "set listchars+=eol:¬               " Show end of line markers
-set fillchars-=fold                 " Remove fillchars for folds
 set showbreak=↪                     " Show line breaks
-
-set splitbelow                      " Split to the bottom of the current window
-set splitright                      " Split to the right of the current window
-
-set scrolloff=3                     " Min. lines to keep above/below the cursor
-set sidescrolloff=5                 " Min. cols to keep left/right of the cursor
-set display+=lastline               " Keep as much as possible
 
 set mouse=a ttymouse=xterm2         " Enable mouse support. Shame on me...
 
+set scrolloff=3                     " Min. lines to keep above/below the cursor
+set sidescrolloff=5                 " Min. cols to keep left/right of the cursor
+
 set wildmenu                        " Visual autocomplete for command menu
-set wildmode=list:longest           " Set wildmenu to list choices
+set wildmode=list:longest           " Set wildmenu to list choices and complete
 
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*
 set wildignore+=*.jpg,*.jpeg,*.png,*.gif,*.tiff,*.psd
@@ -89,7 +87,6 @@ set wildignore+=*.pdf,*.doc,*.docx,*.xls,*.xlsx,*.ppt,*.pptx
 set wildignore+=*.mp3,*.mp4,*.mov
 set wildignore+=*.gem,gems/**
 set wildignore+=*/node_modules/**
-set wildignore+=*/bower_components/**
 set wildignore+=*/tmp/**,.DS_Store,Icon
 
 
@@ -152,6 +149,10 @@ map <Space> <Leader>
 " Avoid the escape key
 ino jj <Esc>
 ino jk <Esc>
+
+" Faster linewise scrolling
+nn <C-e> 3<C-e>
+nn <C-y> 3<C-y>
 
 " Expand %d to the current day (e.g. 20160214)
 cno %d <C-R>=strftime("%Y%m%d")<CR>
@@ -307,13 +308,6 @@ augroup vimrc
 
 augroup END
 
-
-" 9. Private Configuration ---------- {{{1
-
-" Load local vimrc if available
-if filereadable($VIMHOME.'/local.vimrc')
-  source $VIMHOME/local.vimrc
-endif
 
 " }}}1
 
