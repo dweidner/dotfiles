@@ -289,7 +289,6 @@ augroup vimrc
   " b) Text Writing --------- {{{2
 
   " Wrap lines to improve readability of text documents
-  au BufNewFile,BufReadPost *.md set filetype=markdown
   au Filetype text,markdown,gitcommit setlocal wrap linebreak textwidth=72
   au FileType text,markdown,gitcommit setlocal spell spelllang=en_us,de_de
 

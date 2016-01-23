@@ -20,11 +20,11 @@ call pathogen#helptags()                      " Generate help tags for bundles
 " Plugin "cakebaker/scss-syntax.vim"
 " Plugin "pangloss/vim-javascript"
 " Plugin "evidens/vim-twig"
+" Plugin "tpope/vim-markdown"
 "
 " Language extensions
 " Plugin "othree/html5.vim"                   " HTML5 & SVG omnicomplete
 " Plugin "shawncplus/phpcomplete.vim"         " PHP omnicomplete
-" Plugin "plasticboy/vim-markdown"            " Markdown syntax & more
 "
 " File searching
 " Plugin "mileszs/ack.vim"                    " Search file contents
