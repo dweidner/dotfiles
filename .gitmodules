@@ -112,6 +112,6 @@
 [submodule "vim/bundle/vim-vimux"]
 	path = vim/bundle/vim-vimux
 	url = https://github.com/benmills/vimux.git
-[submodule "vim/bundle/vim-markdown"]
-	path = vim/bundle/vim-markdown
-	url = https://github.com/plasticboy/vim-markdown.git
+[submodule "vim/bundle/vim-goyo"]
+	path = vim/bundle/vim-goyo
+	url = https://github.com/junegunn/goyo.vim.git
