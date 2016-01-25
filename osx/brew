@@ -40,6 +40,7 @@ brew install homebrew/php/php-code-sniffer
 brew install homebrew/php/phpmd
 brew install homebrew/php/composer
 brew install homebrew/php/drush
+brew install homebrew/php/drupalconsole
 brew install homebrew/php/wp-cli
 
 # Remove outdated versions from cellar
