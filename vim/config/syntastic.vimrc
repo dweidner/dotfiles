@@ -60,6 +60,7 @@ function! s:SelectCodingStandard(key)
   endif
 
   let g:syntastic_php_phpcs_args='--report=csv '.args
+  call SyntasticCheck()
   echo 'phpcs_standard='.a:key
 endfunction
 
