@@ -121,3 +121,6 @@
 [submodule "tmux/plugins/tmux-pain-control"]
 	path = tmux/plugins/tmux-pain-control
 	url = https://github.com/tmux-plugins/tmux-pain-control.git
+[submodule "vim/bundle/vim-dash"]
+	path = vim/bundle/vim-dash
+	url = https://github.com/rizzatti/dash.vim.git
