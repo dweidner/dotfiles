@@ -22,8 +22,9 @@ let g:syntastic_mode_map = {
   \   'active_filetypes': [ 'php', 'javascript', 'sass', 'css', 'sh', 'zsh' ],
   \ }
 
-" Use PSR2 as default coding standard
-let g:syntastic_php_phpcs_args='--standard=PSR2'
+" Disable style checkers for php
+let g:syntastic_php_checkers = ['php']
+let s:php_coding_standard='none'
 
 " Use eslint instead of jshint
 let g:syntastic_javascript_checkers = ['eslint']
@@ -41,47 +42,65 @@ let g:syntastic_html_tidy_ignore_errors = [
 " 3. Key bindings ---------------------------- {{{1
 
 " Toggle between coding standards in the following order:
-" - Default (PSR2)
-" - WordPress
-" - Drupal
-nn <F10> :call <SID>ToggleCodingStandard()<CR>
+" 1. None, 2. PSR1, 3. PSR2, 4. WordPress, 5. Drupal
+nn <F10> :call <SID>TogglePHPCodingStandard()<CR>
 
 
 " 4. Custom Functions and Commands ----------- {{{1
 
-" Toggle between coding standards
-function! s:SelectCodingStandard(key)
-  let args='--standard=PSR2'
+" Get a list of available coding standards
+function! s:GetPHPCodingStandards()
+  return ['None', 'PSR1', 'PSR2', 'WordPress', 'Drupal']
+endfunction
 
-  if a:key ==? 'wordpress'
+" Select a specific php coding standards
+function! s:SelectPHPCodingStandard(key)
+  let idx=index(g:syntastic_php_checkers, 'phpcs')
+  let args=''
+
+  if a:key ==? 'psr1'
+    let args='--standard=PSR1'
+  elseif a:key ==? 'psr2'
+    let args='--standard=PSR2'
+  elseif a:key ==? 'wordpress'
     let args='--standard=WordPress'
   elseif a:key ==? 'drupal'
     let args='--standard=Drupal --extensions=php,module,inc,install,test,profile,theme'
   endif
 
-  let g:syntastic_php_phpcs_args='--report=csv '.args
+  if !empty(args)
+    if idx < 0
+      call add(g:syntastic_php_checkers, 'phpcs')
+    endif
+    let g:syntastic_php_phpcs_args='--report=csv '.args
+    let s:php_coding_standard=tolower(a:key)
+  else
+    if idx >= 0
+      call remove(g:syntastic_php_checkers, idx)
+    endif
+    let g:syntastic_php_phpcs_args=''
+    let s:php_coding_standard='none'
+  endif
+
   call SyntasticCheck()
-  echo 'phpcs_standard='.a:key
+  echo 'php_coding_standard='.s:php_coding_standard
 endfunction
 
 " Toggle between available coding standards
-function! s:ToggleCodingStandard()
-  if g:syntastic_php_phpcs_args =~ "standard=PSR2"
-    call s:SelectCodingStandard('wordpress')
-  elseif g:syntastic_php_phpcs_args =~ "standard=WordPress"
-    call s:SelectCodingStandard('drupal')
-  elseif g:syntastic_php_phpcs_args =~ "standard=Drupal"
-    call s:SelectCodingStandard('default')
-  endif
+function! s:TogglePHPCodingStandard()
+  let options=s:GetPHPCodingStandards()
+  let idx=match(options, s:php_coding_standard)
+  let next=(idx + 1) % len(options)
+  call s:SelectPHPCodingStandard(options[next])
 endfunction
 
 " Suggestions for AutoCompletion
-function! s:CompleteCodingStandard(ArgLead, CmdLine, CursorPos)
-  return ['Default', 'WordPress', 'Drupal']
+function! s:CompletePHPCodingStandard(ArgLead, CmdLine, CursorPos)
+  return s:GetPHPCodingStandards()
 endfunction
 
 " Custom command to select coding standard
-com -nargs=1 -complete=customlist,s:CompleteCodingStandard SelectCodingStandard :call s:SelectCodingStandard(<q-args>)
+com -nargs=1 -complete=customlist,s:CompletePHPCodingStandard PHPCodingStandard :call s:SelectPHPCodingStandard(<q-args>)
 
 
 " vim:foldmethod=marker:foldlevel=2

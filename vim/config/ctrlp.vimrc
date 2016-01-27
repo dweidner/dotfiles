@@ -18,11 +18,11 @@ endif
 
 " 2. Key bindings --------------------- {{{1
 
-" Search in buffer list using CtrlP
-nn <Leader>b :CtrlPBuffer<CR>
+" Search by filename
+nn <Leader>p :CtrlP<CR>
 
-" Search symbols in current buffer
-nn <Leader>s :CtrlPBufTag<CR>
+" Search symbols in current file
+nn <Leader>r :CtrlPBufTag<CR>
 
 " Search most recent used files
 nn <Leader>mru :CtrlPMRU<CR>

@@ -254,10 +254,6 @@ nn <silent> <F7> :call <sid>ToggleWrap()<CR>
 " Run the compiler of the current file type in the background
 nn <F9> :Dispatch<CR>
 
-" Insert the current date (e.g. Mon, 14. Feburary 2016)
-nn <F12> "=strftime("%a %d. %B %Y")<CR>P
-ino <F12> <C-R>=strftime("%a %d. %B %Y")<CR>
-
 
 " 7. Custom Functions --------------- {{{1
 
