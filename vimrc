@@ -22,6 +22,7 @@ let $VIMHOME=$HOME.'/.vim'
 set nocompatible                    " Break backwards compatibility with vi
 set encoding=utf-8                  " Encoding used in vim
 set ttyfast                         " Optimize for fast terminal connection
+set lazyredraw                      " No redraw for macros and commands
 set hidden                          " Hide modified buffers without complaining
 set autoread                        " Reload file if modified outside vim
 set history=1000                    " Increase number of commands saved
