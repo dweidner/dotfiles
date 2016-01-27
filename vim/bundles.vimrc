@@ -45,6 +45,7 @@ call pathogen#helptags()                      " Generate help tags for bundles
 " Plugin "tpope/vim-surround"                 " Wrap text objects
 " Plugin "tpope/vim-commentary"               " Toggle comments
 " Plugin "itspriddle/vim-stripper"            " Remove trailing spaces
+" Plugin "rizzatti/dash.vim"                  " Search docset in Dash.app
 "
 " Misc
 " Plugin "airblade/vim-rooter"                " Smart working directory
