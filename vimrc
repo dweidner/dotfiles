@@ -255,8 +255,8 @@ nn <silent> <F7> :call <sid>ToggleWrap()<CR>
 nn <F9> :Dispatch<CR>
 
 " Insert the current date (e.g. Mon, 14. Feburary 2016)
-nn <F10> "=strftime("%a %d. %B %Y")<CR>P
-ino <F10> <C-R>=strftime("%a %d. %B %Y")<CR>
+nn <F12> "=strftime("%a %d. %B %Y")<CR>P
+ino <F12> <C-R>=strftime("%a %d. %B %Y")<CR>
 
 
 " 7. Custom Functions --------------- {{{1
