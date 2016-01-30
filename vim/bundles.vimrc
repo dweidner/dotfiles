@@ -37,7 +37,6 @@ call pathogen#helptags()                      " Generate help tags for bundles
 " Plugin "ludovicchabant/vim-gutentags"       " Auto-generate ctags
 " Plugin "tpope/vim-fugitive"                 " Git integration
 " Plugin "airblade/vim-gitgutter"             " Check for file changes
-" Plugin "cohama/vim-lexima"                  " Auto close brackets
 " Plugin "tpope/vim-surround"                 " Wrap text objects
 " Plugin "tpope/vim-commentary"               " Toggle comments
 " Plugin "itspriddle/vim-stripper"            " Remove trailing spaces
