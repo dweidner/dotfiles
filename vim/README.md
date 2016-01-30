@@ -2,7 +2,7 @@
 Overview of default and custom key bindings in **VIM**.
 
 ## Cursor movement
-j
+
 `h` - move left  
 `j` - move down  
 `k` - move up  
@@ -49,7 +49,7 @@ j
 
 `Leader`+`x` - delete line without writing to the erase buffer[²](#custom)  
 `Leader`+`o` - insert new *line* below, stay in normal mode[²](#custom)  
-`Leader`+`O` - insert new *line* above, stay in normal mode[²](#custom)..
+`Leader`+`O` - insert new *line* above, stay in normal mode[²](#custom)  
 
 `y$` - copy to the end of the *line*  
 `yy` - copy a *line*  
@@ -63,13 +63,13 @@ j
 `u` - undo last *command*  
 `Ctrl`+`r` - redo last *command*  
 
-`Leader`+`Up` - Move current *line* up  
-`Leader`+`Down` - Move current *line* down  
+`Leader`+`Up` - Move current *line* up[²](#custom)  
+`Leader`+`Down` - Move current *line* down[²](#custom)  
 
-`Leader`+`l` - convert *word* to lowercase  
-`Leader`+`u` - convert *word* to uppercase  
-`Leader`+`L` - convert *first letter* of word to lowercase  
-`Leader`+`U` - convert *first letter* of word to uppercase  
+`Leader`+`l` - convert *word* to lowercase[²](#custom)  
+`Leader`+`u` - convert *word* to uppercase[²](#custom)  
+`Leader`+`L` - convert *first letter* of word to lowercase[²](#custom)  
+`Leader`+`U` - convert *first letter* of word to uppercase[²](#custom)  
 
 ## Insert Mode
 
