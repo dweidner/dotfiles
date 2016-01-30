@@ -1,9 +1,5 @@
 " BUNDLES.VIMRC
 
-if !exists('$VIMHOME')
-  let $VIMHOME=$HOME.'/.vim'
-endif
-
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 
 call pathogen#infect()                        " Load plugins from directory
