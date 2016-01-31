@@ -23,14 +23,14 @@ Overview of default and custom key bindings in **VIM**.
 `b` - move backwards to the beginning of a *word*  
 `B` - move backwards to the beginning of a *word* (including punctuation)
 
-`fx` - move to the next occurrence of *x*
-
 `0` - move the beginning of the *line*  
 `^` - move to the first character of the *line*  
 `$` - move to the end of the *line*
 
 `}` - move to next *paragraph*/*function*/*block*[¹](#todo)  
 `{` - move to previous *paragraph*/*function*/*block*[¹](#todo)  
+
+`f`+`[character]` - move to the next occurrence of *character*  
 
 ## Editing
 
@@ -46,6 +46,9 @@ Overview of default and custom key bindings in **VIM**.
 `d$` - delete to the end of the *line*  
 `dd` - delete entire *line*  
 `dw` - delete *word*  
+
+`gc`+`[motion]` - comment or uncomment lines that [motion] moves over[³](#commentary)  
+`gcc` - comment or uncomment lines[³](#commentary)  
 
 `Leader`+`x` - delete line without writing to the erase buffer[²](#custom)  
 `Leader`+`o` - insert new *line* below, stay in normal mode[²](#custom)  
@@ -102,6 +105,8 @@ Overview of default and custom key bindings in **VIM**.
 `d` - delete *selection*  
 `~` - switch case  
 
+`gc` - comment or uncomment *selection*[³](#commentary)  
+
 ## Buffer Management
 
 `Leader`+`Tab` - switch to next buffer[²](#custom)  
@@ -125,6 +130,40 @@ Overview of default and custom key bindings in **VIM**.
 `Ctrl`+`e` - scroll window 3 lines down[²](#custom)  
 `Ctrl`+`y` - scroll window 3 lines up[²](#custom)  
 
+## System Integration
+
+`Leader`+`d` - search for the word under the cursor in Dash.app  
+
+## CtrlP Mode
+
+`Ctrl`+`p` - open *CtrlP*  
+`Ctrl`+`c` - exit *CtrlP*  
+
+`Ctrl`+`f` - scroll to the *next search mode* in the sequence  
+`Ctrl`+`b` - scroll to the *previous search mode* in the sequence  
+`Ctrl`+`j` - move *selection* down  
+`Ctrl`+`k` - move *selection* up  
+`Ctrl`+`d` - search by *filename* instead of *full path*  
+
+`Ctrl`+`t` - open selected file in a new *tab*  
+`Ctrl`+`v` - open file in a *vertical split*  
+`Ctrl`+`s` - open file in a *horizontal split*  
+`Ctrl`+`y` - create *new file* and its parent directories  
+
+`Ctrl`+`z` - mark file  
+`Ctrl`+`o` - open marked files  
+
+# Ack Quickfix Window
+
+`o` - open file  
+`O` - open file and close quickfix window  
+`t` - open file in a new tab  
+`h` - open file in horizontal split  
+`v` - open file in a vertical split  
+`q` - close quickfix window  
+`go` - preview file, keep focus on quickfix window  
+
 ---
 <a name="todo">¹</a>: In search of a better binding for a better key binding on a german keyboard  
 <a name="custom">²</a>: Via custom key binding  
+<a name="commentary">³</a>: Via [vim-commentary](https://github.com/tpope/vim-commentary.git)  
