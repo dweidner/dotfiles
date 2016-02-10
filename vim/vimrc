@@ -9,7 +9,7 @@ if version >= 700                     " Ignore configuration on older systems
 " 2. User Interface
 " 3. Text Editing and Searching
 " 4. Indentation and Tabs
-" 5. Plugins
+" 5. Vim Plugins
 " -------------------------------------
 
 
@@ -130,7 +130,7 @@ set softtabstop=2                     " Set virtual tab stop
 set shiftround                        " Round indents to multiple of shiftwidth
 
 
-" 6. Plugins -----------------------. {{{1
+" 6. Vim Plugins ---------------------- {{{1
 
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 
