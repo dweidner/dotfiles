@@ -1,8 +1,7 @@
-" CTRLP.VIMRC
+" plugin/ctrlp.plugin.vim
 
-" 1. Configuration -------------------- {{{1
-"
-let g:ctrlp_line_prefix=''              " Avoid adding a prefix to each file in the list
+" Avoid adding a prefix to each entry in the list
+let g:ctrlp_line_prefix = ''
 
 " Use `The Silver Searcher` if available
 if executable('ag')
@@ -15,14 +14,9 @@ if executable('ag')
     \ --ignore="node_modules"'
 endif
 
-
-" 2. Key bindings --------------------- {{{1
-
 " Search by filename
 nn <Leader>p :CtrlPLastMode<CR>
 
 " Search symbols in current file
 nn <Leader>r :CtrlPBufTag<CR>
 
-
-" vim:foldmethod=marker:foldlevel=2

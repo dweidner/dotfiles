@@ -1,4 +1,4 @@
-" plugin/plugin-netrw.vim
+" plugin/netrw.plugin.vim
 
 let g:netrw_home = expand(g:vim_home_dir . '/tmp/cache')
 

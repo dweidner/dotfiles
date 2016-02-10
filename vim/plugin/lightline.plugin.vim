@@ -1,7 +1,18 @@
-" LIGHTLINE.VIMRC
+" plugin/lightline.plugin.vim
 
-" 1. Components ----------------------- {{{1
+" -------------------------------------
+" Table of Contents
+" -------------------------------------
+" 1. Lightline
+" 2. Git/Fugitive
+" 3. CtrlP
+" 4. Syntastics
+" -------------------------------------
 
+
+" 1. Lightline ------------------------ {{{1
+
+" Customize the statusline with lightline
 let g:lightline = {
   \ 'colorscheme': 'solarized',
   \ 'active': {
@@ -34,16 +45,10 @@ let g:lightline = {
   \ 'subseparator': { 'left': '', 'right': '｜' }
   \ }
 
-
-" 2. VIM ------------------------------ {{{1
-
 " Display indicator if processes are running in the background
 function! LightLineBusyFlag()
   return exists('*gutentags#statusline') ? gutentags#statusline(' ··· ') : ''
 endfunction
-
-
-" 3. File/Buffer ---------------------- {{{1
 
 " Show file format only if it differs from the default (unix)
 function! LightLineFileFormat()
@@ -57,7 +62,7 @@ function! LightLineFileEncoding()
 endfunction
 
 
-" 4. Git ------------------------------ {{{1
+" 1. Git/Fugitive --------------------- {{{1
 
 " Display the current git branch
 function! LightLineFugitive()
@@ -65,7 +70,7 @@ function! LightLineFugitive()
 endfunction
 
 
-" 5. CtrlP ---------------------------- {{{1
+" 2. CtrlP ---------------------------- {{{1
 
 " Use custom status functions
 let g:ctrlp_status_func = {
@@ -98,7 +103,7 @@ function! CtrlPProgressStatusLine(str)
 endfunction
 
 
-" 6. Syntastic ------------------------ {{{1
+" 3. Syntastics ----------------------- {{{1
 
 " Update Syntastic status, will be triggered by autocmd
 function! s:UpdateSyntasticStatus()
@@ -106,12 +111,14 @@ function! s:UpdateSyntasticStatus()
   call lightline#update()
 endfunction
 
-" Trigger syntastic status update, when buffer is saved
-augroup syntastic_update
+augroup vimrc_syntastic
+
   au!
+
+  " Trigger syntastic status update, when buffer is saved
   au BufWritePost *.php,*.css,*.scss,*.js call s:UpdateSyntasticStatus()
+
 augroup END
 
 
 " vim:foldmethod=marker:foldlevel=2
-

@@ -1,20 +1,20 @@
-" SYNTASTIC.VIMRC
+" plugin/syntastic.plugin.vim
 
-" 1. Configuration -------------------------- {{{1
+" -------------------------------------
+" Table of Contents
+" -------------------------------------
+" 1. Start Behavior
+" 2. Appearance
+" 3. Syntax Checkers
+" 4. PHP Coding Standards
+" -------------------------------------
 
-let g:syntastic_error_symbol='⨯'            " Customize error symbol
-let g:syntastic_warning_symbol='▴'          " Customize warning symbol
-let g:syntastic_style_error_symbol='◦'      " Customize style error symbol
-let g:syntastic_style_warning_symbol='◦'    " Customize style error symbol
+
+" 1. Start Behavior ------------------------ {{{1
+
 let g:syntastic_check_on_open=1             " Run syntax check when opening a file
 let g:syntastic_check_on_wq=0               " Avoid running tests on close
 let g:syntastic_always_populate_loc_list=1  " Populate location list with errors
-
-" Customize the message displayed in the status bar
-let g:syntastic_stl_format='%E{⨯ %e}%B{ · }%W{▴ %w} '
-
-
-" 2. Syntax Checkers ------------------------ {{{1
 
 " Start syntastic in passiv mode. Enable only for specific file types.
 let g:syntastic_mode_map = {
@@ -22,9 +22,22 @@ let g:syntastic_mode_map = {
   \   'active_filetypes': [ 'php', 'javascript', 'sass', 'css', 'sh', 'zsh' ],
   \ }
 
+
+" 2. Appearance ---------------------------- {{{1
+
+let g:syntastic_error_symbol='⨯'            " Customize error symbol
+let g:syntastic_warning_symbol='▴'          " Customize warning symbol
+let g:syntastic_style_error_symbol='◦'      " Customize style error symbol
+let g:syntastic_style_warning_symbol='◦'    " Customize style error symbol
+
+" Customize the message displayed in the status bar
+let g:syntastic_stl_format='%E{⨯ %e}%B{ · }%W{▴ %w} '
+
+
+" 3. Syntax Checkers ----------------------- {{{1
+
 " Disable style checkers for php
 let g:syntastic_php_checkers = ['php']
-let s:php_coding_standard='none'
 
 " Use eslint instead of jshint
 let g:syntastic_javascript_checkers = ['eslint']
@@ -39,14 +52,10 @@ let g:syntastic_html_tidy_ignore_errors = [
     \ ]
 
 
-" 3. Key bindings ---------------------------- {{{1
+" 4. PHP Coding Standards ------------------ {{{1
 
-" Toggle between coding standards in the following order:
-" 1. None, 2. PSR1, 3. PSR2, 4. WordPress, 5. Drupal
-nn <F10> :call <SID>TogglePHPCodingStandard()<CR>
-
-
-" 4. Custom Functions and Commands ----------- {{{1
+" Currently active coding standard
+let s:php_coding_standard='none'
 
 " Get a list of available coding standards
 function! s:GetPHPCodingStandards()
@@ -101,6 +110,10 @@ endfunction
 
 " Custom command to select coding standard
 com -nargs=1 -complete=customlist,s:CompletePHPCodingStandard PHPCodingStandard :call s:SelectPHPCodingStandard(<q-args>)
+
+" Toggle between coding standards in the following order:
+" 1. None, 2. PSR1, 3. PSR2, 4. WordPress, 5. Drupal
+nn <F10> :call <SID>TogglePHPCodingStandard()<CR>
 
 
 " vim:foldmethod=marker:foldlevel=2

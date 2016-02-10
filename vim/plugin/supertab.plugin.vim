@@ -1,4 +1,4 @@
-" plugin/plugin-supertab.vim
+" plugin/supertab.plugin.vim
 
 " Use file completion, before trying to complete a method/field/etc...
 let g:SuperTabDefaultCompletionType = 'context'
