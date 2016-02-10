@@ -19,13 +19,10 @@ endif
 " 2. Key bindings --------------------- {{{1
 
 " Search by filename
-nn <Leader>p :CtrlP<CR>
+nn <Leader>p :CtrlPLastMode<CR>
 
 " Search symbols in current file
 nn <Leader>r :CtrlPBufTag<CR>
-
-" Search most recent used files
-nn <Leader>mru :CtrlPMRU<CR>
 
 
 " vim:foldmethod=marker:foldlevel=2

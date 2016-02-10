@@ -30,7 +30,13 @@ Overview of default and custom key bindings in **VIM**.
 `}` - move to next *paragraph*/*function*/*block*[¹](#todo)  
 `{` - move to previous *paragraph*/*function*/*block*[¹](#todo)  
 
-`f`+`[character]` - move to the next occurrence of *character*  
+`f{char}` - move cursor to next occurrence of *char*   
+`F{char}` - move cursor to previous occurrence of *char*  
+`t{char}` - move cursor before next occurrence of *char*  
+`T{char}` - move cursor after next occurrence of *char*  
+
+`;` - Repeat latest `f`, `F`, `t`, `T`  
+`,` - Repeat latest `f`, `F`, `t`, `T` in opposite direction  
 
 ## Editing
 
@@ -47,7 +53,7 @@ Overview of default and custom key bindings in **VIM**.
 `dd` - delete entire *line*  
 `dw` - delete *word*  
 
-`gc`+`[motion]` - comment or uncomment lines that [motion] moves over[³](#commentary)  
+`gc{motion}` - comment or uncomment lines that *motion* moves over[³](#commentary)  
 `gcc` - comment or uncomment lines[³](#commentary)  
 
 `Leader`+`x` - delete line without writing to the erase buffer[²](#custom)  
@@ -130,10 +136,6 @@ Overview of default and custom key bindings in **VIM**.
 `Ctrl`+`e` - scroll window 3 lines down[²](#custom)  
 `Ctrl`+`y` - scroll window 3 lines up[²](#custom)  
 
-## System Integration
-
-`Leader`+`d` - search for the word under the cursor in Dash.app  
-
 ## CtrlP Mode
 
 `Ctrl`+`p` - open *CtrlP*  
@@ -162,6 +164,10 @@ Overview of default and custom key bindings in **VIM**.
 `v` - open file in a vertical split  
 `q` - close quickfix window  
 `go` - preview file, keep focus on quickfix window  
+
+## System Integration
+
+`Leader`+`d` - search for the word under the cursor in Dash.app  
 
 ---
 <a name="todo">¹</a>: In search of a better binding for a better key binding on a german keyboard  

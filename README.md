@@ -1,6 +1,4 @@
 # Daniel’s dotfiles
 
-My dotfiles are heavily based on the work of Nicolas Gallagher[1] and Mathias Bynens[2]. Both repositories are linked here for reference:
+My dotfiles are heavily based on the work of Nicolas Gallagher[¹](https://github.com/necolas/dotfiles) and Mathias Bynens[²](https://github.com/mathiasbynens/dotfiles).
 
-1. [@necolas](https://github.com/necolas/dotfiles)
-2. [@mathiasbynens](https://github.com/mathiasbynens/dotfiles)

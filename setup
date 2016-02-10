@@ -33,7 +33,6 @@ if is_confirmed; then
   link_dotfile "bash_profile"    ".bash_profile"
   link_dotfile "inputrc"         ".inputrc"
   link_dotfile "vim"             ".vim"
-  link_dotfile "vimrc"           ".vimrc"
   link_dotfile "gemrc"           ".gemrc"
   link_dotfile "tmux.conf"       ".tmux.conf"
   link_dotfile "dircolors"       ".dircolors"
