@@ -1,7 +1,9 @@
 " filetype.vim
 
 " Runs on `filetype on`
-" @see: http://vimdoc.sourceforge.net/htmldoc/filetype.html
+" @see <http://vimdoc.sourceforge.net/htmldoc/filetype.html>
+
+if exists('g:did_load_filetypes') | finish | endif
 
 augroup filetypedetect
 

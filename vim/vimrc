@@ -129,6 +129,8 @@ set shiftwidth=2                      " Spaces for each tab stop of (auto)indent
 set softtabstop=2                     " Set virtual tab stop
 set shiftround                        " Round indents to multiple of shiftwidth
 
+filetype plugin indent on             " Plugin/Indentation per filetype
+
 
 " 6. Vim Plugins ---------------------- {{{1
 
