@@ -4,11 +4,13 @@
 " Table of Contents
 " -------------------------------------
 " 1. General Mappings
-" 2. Window/Buffer Management
-" 3. Word Operations
-" 4. Line Operations
-" 5. User Interface
+" 2. Movement
+" 3. Window/Buffer Management
+" 4. Word Operations
+" 5. Line Operations
+" 6. User Interface
 " -------------------------------------
+
 
 " 1. General Mappings ----------------- {{{1
 
@@ -22,6 +24,19 @@ map <Space> <Leader>
 ino jj <Esc>
 ino jk <Esc>
 
+" Reselect visual block after indent/outdent
+xn < <gv
+xn > >gv
+
+
+" 2. Movement ------------------------- {{{1
+
+" Make [,],{,} accessible on german keyboards
+map ö [
+map ä ]
+map Ö {
+map Ä }
+
 " Faster linewise scrolling
 nn <C-e> 3<C-e>
 nn <C-y> 3<C-y>
@@ -30,12 +45,8 @@ nn <C-y> 3<C-y>
 nn <Up> gk
 nn <Down> gj
 
-" Reselect visual block after indent/outdent
-xn < <gv
-xn > >gv
 
-
-" 2. Window/Buffer Management --------- {{{1
+" 3. Window/Buffer Management --------- {{{1
 
 " Split window vertically/horizontally
 nn <Leader>wv <C-w>v<C-w>l
@@ -48,7 +59,7 @@ nn <Leader><Space> <C-^>
 nn <Leader><Tab> :bnext<CR>
 
 
-" 3. Word Operations ------------------ {{{1
+" 4. Word Operations ------------------ {{{1
 
 " Convert word to lower/uppercase
 nn <Leader>u mQviwU`Q
@@ -63,23 +74,13 @@ nn + <C-a>
 nn - <C-x>
 
 
-" 4. Line Operations ------------------ {{{1
+" 5. Line Operations ------------------ {{{1
 
 " Remove line, but do not write it to the erase buffer
 nn <Leader>x "_dd
 
-" Insert blank line below/above current line
-nn <silent> <Leader>o mzo<Esc>`z
-nn <silent> <Leader>O mzO<Esc>`z
 
-" Move current line up/down
-nn <Leader><Up>   :<C-u>silent! move-2<CR>==
-nn <Leader><Down> :<C-u>silent! move+1<CR>==
-xn <Leader><Up>   :<C-u>silent! '<,'>move-2<CR>gv=gv
-xn <Leader><Down> :<C-u>silent! '<,'>move'>+<CR>gv=gv
-
-
-" 5. User Interface ------------------- {{{1
+" 6. User Interface ------------------- {{{1
 
 " Toggle paste mode
 set pastetoggle=<F4>

@@ -27,8 +27,10 @@ Overview of default and custom key bindings in **VIM**.
 `^` - move to the first character of the *line*  
 `$` - move to the end of the *line*
 
-`}` - move to next *paragraph*/*function*/*block*[¹](#todo)  
-`{` - move to previous *paragraph*/*function*/*block*[¹](#todo)  
+`{` - move to previous *paragraph*/*function*/*block*  
+`}` - move to next *paragraph*/*function*/*block*  
+`Ö` - move to previous *paragraph*/*function*/*block*[¹](#custom)  
+`Ä` - move to next *paragraph*/*function*/*block*[¹](#custom)  
 
 `f{char}` - move cursor to next occurrence of *char*   
 `F{char}` - move cursor to previous occurrence of *char*  
@@ -53,12 +55,12 @@ Overview of default and custom key bindings in **VIM**.
 `dd` - delete entire *line*  
 `dw` - delete *word*  
 
-`gc{motion}` - comment or uncomment lines that *motion* moves over[³](#commentary)  
-`gcc` - comment or uncomment lines[³](#commentary)  
+`gc{motion}` - comment or uncomment lines that *motion* moves over[²](#commentary)  
+`gcc` - comment or uncomment lines[²](#commentary)  
 
-`Leader`+`x` - delete line without writing to the erase buffer[²](#custom)  
-`Leader`+`o` - insert new *line* below, stay in normal mode[²](#custom)  
-`Leader`+`O` - insert new *line* above, stay in normal mode[²](#custom)  
+`Leader`+`x` - delete line without writing to the erase buffer[¹](#custom)  
+`Leader`+`o` - insert new *line* below, stay in normal mode[¹](#custom)  
+`Leader`+`O` - insert new *line* above, stay in normal mode[¹](#custom)  
 
 `y$` - copy to the end of the *line*  
 `yy` - copy a *line*  
@@ -72,13 +74,13 @@ Overview of default and custom key bindings in **VIM**.
 `u` - undo last *command*  
 `Ctrl`+`r` - redo last *command*  
 
-`Leader`+`Up` - Move current *line* up[²](#custom)  
-`Leader`+`Down` - Move current *line* down[²](#custom)  
+`Leader`+`Up` - Move current *line* up[¹](#custom)  
+`Leader`+`Down` - Move current *line* down[¹](#custom)  
 
-`Leader`+`l` - convert *word* to lowercase[²](#custom)  
-`Leader`+`u` - convert *word* to uppercase[²](#custom)  
-`Leader`+`L` - convert *first letter* of word to lowercase[²](#custom)  
-`Leader`+`U` - convert *first letter* of word to uppercase[²](#custom)  
+`Leader`+`l` - convert *word* to lowercase[¹](#custom)  
+`Leader`+`u` - convert *word* to uppercase[¹](#custom)  
+`Leader`+`L` - convert *first letter* of word to lowercase[¹](#custom)  
+`Leader`+`U` - convert *first letter* of word to uppercase[¹](#custom)  
 
 ## Insert Mode
 
@@ -90,8 +92,8 @@ Overview of default and custom key bindings in **VIM**.
 `O` - append a new *line* above the current  
 `ea` - insert at the end of the *word*  
 
-`jj` - exit *insert mode*[²](#custom)  
-`jk` - exit *insert mode*[²](#custom)  
+`jj` - exit *insert mode*[¹](#custom)  
+`jk` - exit *insert mode*[¹](#custom)  
 
 ## Visual Mode
 
@@ -111,12 +113,12 @@ Overview of default and custom key bindings in **VIM**.
 `d` - delete *selection*  
 `~` - switch case  
 
-`gc` - comment or uncomment *selection*[³](#commentary)  
+`gc` - comment or uncomment *selection*[²](#commentary)  
 
 ## Buffer Management
 
-`Leader`+`Tab` - switch to next buffer[²](#custom)  
-`Leader`+`Space` - switch to alternate buffer[²](#custom)  
+`Leader`+`Tab` - switch to next buffer[¹](#custom)  
+`Leader`+`Space` - switch to alternate buffer[¹](#custom)  
 
 ## Window Management
 
@@ -125,18 +127,60 @@ Overview of default and custom key bindings in **VIM**.
 `Ctrl`+`ww` - switch window  
 `Ctrl`+`wq` - close window  
 
-`Leader`+`ws` - split window horizontally and move to new window[²](#custom)  
-`Leader`+`wv` - split window vertically and move to new window[²](#custom)  
+`Leader`+`ws` - split window horizontally and move to new window[¹](#custom)  
+`Leader`+`wv` - split window vertically and move to new window[¹](#custom)  
 
 `Ctrl`+`wh` - switch to window on the left  
 `Ctrl`+`wj` - switch to window below  
 `Ctrl`+`wk` - switch to window above  
 `Ctrl`+`wl` - switch to window on the right  
 
-`Ctrl`+`e` - scroll window 3 lines down[²](#custom)  
-`Ctrl`+`y` - scroll window 3 lines up[²](#custom)  
+`Ctrl`+`e` - scroll window 3 lines down[¹](#custom)  
+`Ctrl`+`y` - scroll window 3 lines up[¹](#custom)  
 
-## CtrlP Mode
+## [Unimpaired](https://github.com/tpope/vim-unimpaired)
+
+`[a` - Edit previous file in argument list (`:previous`)  
+`]a` - Edit next file in argument list (`:next`)  
+`[A` - Edit first file in argument list (`:first`)  
+`]A` - Edit last file in argument list (`:last`)  
+
+`[b` - Go to the previous buffer in buffer list (`:bprevious`)  
+`]b` - Go to the next buffer in buffer list (`:bnext`)  
+`[B` - Go to the first buffer in buffer list (`:bfirst`)  
+`]B` - Go to the last buffer in buffer list (`:blast`)  
+
+`[l` - Display previous entry in the location list (`:lprevious`)  
+`]l` - Display next entry in the location list (`:lnext`)  
+`[L` - Display first entry in the location list (`:lfirst`)  
+`]L` - Display last entry in the location list (`:llast`)  
+
+`[q` - Display previous entry in the quickfix window (`:lprevious`)  
+`]q` - Display next entry in the quickfix window (`:lnext`)  
+`[Q` - Display first entry in the quickfix window (`:lfirst`)  
+`]Q` - Display last entry in the quickfix window (`:llast`)  
+
+`[t` - Jump to the previous matching tag (`:tprevious`)  
+`]t` - Jump to the next matching tag (`:tnext`)  
+`[T` - Jump to the first matching tag (`:tfirst`)  
+`]T` - Jump to the last matching tag (`:tlast`)  
+
+`[Space` - Add blank line above the cursor  
+`]Space` - Add blank line below the cursor  
+`[e` - Exchange the current line with the line above  
+`]e` - Exchange the current line with the line below  
+
+`cob` - Toggle background of the colorscheme (`background`)  
+`coc` - Toggle highlighting of the current line (`cursorline`)  
+`coh` - Toggle search higlighting (`hlsearch`)  
+`cor` - Toggle relative numbers (`relativenumber`)  
+`cos` - Toggle spell checker (`spell`)  
+`cow` - Toggle line wrapping (`wrap`)  
+
+**TIP:**  
+In order to make the `[` and `]` mappings accessible on german keyboards you can use `ö` or `ä` respectively.  
+
+## [CtrlP Mode](https://github.com/ctrlpvim/ctrlp.vim)
 
 `Ctrl`+`p` - open *CtrlP*  
 `Ctrl`+`c` - exit *CtrlP*  
@@ -155,7 +199,7 @@ Overview of default and custom key bindings in **VIM**.
 `Ctrl`+`z` - mark file  
 `Ctrl`+`o` - open marked files  
 
-# Ack Quickfix Window
+# [Ack Quickfix Window](https://github.com/mileszs/ack.vim)
 
 `o` - open file  
 `O` - open file and close quickfix window  
@@ -170,6 +214,5 @@ Overview of default and custom key bindings in **VIM**.
 `Leader`+`d` - search for the word under the cursor in Dash.app  
 
 ---
-<a name="todo">¹</a>: In search of a better binding for a better key binding on a german keyboard  
-<a name="custom">²</a>: Via custom key binding  
-<a name="commentary">³</a>: Via [vim-commentary](https://github.com/tpope/vim-commentary.git)  
+<a name="custom">¹</a>: Via custom key binding  
+<a name="commentary">²</a>: Via [vim-commentary](https://github.com/tpope/vim-commentary.git)  
