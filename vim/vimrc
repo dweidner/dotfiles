@@ -160,12 +160,14 @@ call pathogen#helptags()
 " Plugin "itchyny/lightline.vim"              " Customize vim's statusline
 " Plugin "ervandew/supertab"                  " Tab or Auto-Complete
 
-" [Web] Development
-" Plugin "scrooloose/syntastic.git"           " Check file syntax
-" Plugin "mattn/emmet-vim"                    " Writing html markup
-" Plugin "ludovicchabant/vim-gutentags"       " Auto-generate ctags
+" Git Integration
 " Plugin "tpope/vim-fugitive"                 " Git integration
 " Plugin "airblade/vim-gitgutter"             " Check for file changes
+
+" [Web] Development
+" Plugin "scrooloose/syntastic.git"           " Check file syntax
+" Plugin "ludovicchabant/vim-gutentags"       " Auto-generate ctags
+" Plugin "mattn/emmet-vim"                    " Writing html markup
 " Plugin "tpope/vim-surround"                 " Wrap text objects
 " Plugin "tpope/vim-commentary"               " Toggle comments
 " Plugin "itspriddle/vim-stripper"            " Remove trailing spaces
