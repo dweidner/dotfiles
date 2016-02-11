@@ -129,8 +129,6 @@ set shiftwidth=2                      " Spaces for each tab stop of (auto)indent
 set softtabstop=2                     " Set virtual tab stop
 set shiftround                        " Round indents to multiple of shiftwidth
 
-filetype plugin indent on             " Plugin/Indentation per filetype
-
 
 " 6. Vim Plugins ---------------------- {{{1
 
@@ -139,7 +137,7 @@ runtime bundle/vim-pathogen/autoload/pathogen.vim
 call pathogen#infect()
 call pathogen#helptags()
 
-" Improve syntax highlighting
+" Syntax highlighting
 " Plugin "hail2u/vim-css3-syntax"
 " Plugin "cakebaker/scss-syntax.vim"
 " Plugin "pangloss/vim-javascript"
@@ -154,7 +152,7 @@ call pathogen#helptags()
 " Plugin "mileszs/ack.vim"                    " Search file contents
 " Plugin "ctrlpvim/ctrlp.vim"                 " Navigate files/buffers
 
-" User Interface Improvements
+" User Interface
 " Plugin "altercation/vim-colors-solarized"   " Color scheme of choice
 " Plugin "itchyny/lightline.vim"              " Customize vim's statusline
 " Plugin "ervandew/supertab"                  " Tab or Auto-Complete
@@ -178,6 +176,8 @@ call pathogen#helptags()
 " Plugin "christoomey/vim-tmux-navigator"     " Navigate between tmux and vim
 " Plugin "tmux-plugins/vim-tmux-focus-events" " Fix focus events in tmux
 
+" File Type Plugins
+filetype plugin indent on                     " Allow plugins per filetype
 set secure                                    " Block write operations and ↪
                                               " autocmd in local vimrc
 
