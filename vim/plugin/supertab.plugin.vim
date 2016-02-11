@@ -1,6 +1,6 @@
 " plugin/supertab.plugin.vim
 
-" Try to complete file path, members or properties
+" Try to complete file path, members or properties first
 let g:SuperTabDefaultCompletionType = 'context'
 
 augroup vimrc_supertab

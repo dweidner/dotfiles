@@ -91,9 +91,6 @@
 [submodule "vim/bundle/vim-eunuch"]
 	path = vim/bundle/vim-eunuch
 	url = https://github.com/tpope/vim-eunuch
-[submodule "vim/bundle/vim-javascript"]
-	path = vim/bundle/vim-javascript
-	url = https://github.com/pangloss/vim-javascript.git
 [submodule "vim/bundle/vim-phpcomplete"]
 	path = vim/bundle/vim-phpcomplete
 	url = https://github.com/shawncplus/phpcomplete.vim.git
@@ -121,3 +118,9 @@
 [submodule "vim/bundle/vim-dash"]
 	path = vim/bundle/vim-dash
 	url = https://github.com/rizzatti/dash.vim.git
+[submodule "vim/bundle/vim-yajs"]
+	path = vim/bundle/vim-yajs
+	url = https://github.com/othree/yajs.vim.git
+[submodule "vim/bundle/vim-js-indent"]
+	path = vim/bundle/vim-js-indent
+	url = https://github.com/gavocanov/vim-js-indent.git
