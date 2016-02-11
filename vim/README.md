@@ -55,8 +55,8 @@ Overview of default and custom key bindings in **VIM**.
 `!` - filter through an external program  
 
 **Modifier::**  
-`i` - inner (exclude the boundaries)
-`a` - a (include the boundaries)
+`i` - inner (exclude the boundaries)  
+`a` - a (include the boundaries)  
 
 **Action:**  
 `p` - paragraph  
