@@ -22,6 +22,7 @@ Overview of default and custom key bindings in **VIM**.
 `E` - move forwards to the end of a *word* (including punctuation)  
 `b` - move backwards to the beginning of a *word*  
 `B` - move backwards to the beginning of a *word* (including punctuation)
+`ge` - move backwards to the end of a *word*  
 
 `0` - move the beginning of the *line*  
 `^` - move to the first character of the *line*  
@@ -37,8 +38,36 @@ Overview of default and custom key bindings in **VIM**.
 `t{char}` - move cursor before next occurrence of *char*  
 `T{char}` - move cursor after next occurrence of *char*  
 
-`;` - Repeat latest `f`, `F`, `t`, `T`  
-`,` - Repeat latest `f`, `F`, `t`, `T` in opposite direction  
+## Operators & Text objects
+
+```
+[operator][count][modifier][action]
+                 |________________|
+                         |
+                    [text-object]
+```
+
+**Operator:**  
+`d` - delete  
+`c` - change  
+`y` - yank  
+`~` - swap case  
+`!` - filter through an external program  
+
+**Modifier::**  
+`i` - inner (exclude the boundaries)
+`a` - a (include the boundaries)
+
+**Action:**  
+`p` - paragraph  
+`s` - sentence  
+`w` - word  
+`t` - tag block  
+`"` - double quoted string  
+`'` - single quited string  
+`[` - from *[* to *]* (same as `]`)  
+`b` - block from *(* to *)* (same as `(`, `)`)  
+`B` - block from *{* to *}* (same as `{`, `}`)  
 
 ## Editing
 
@@ -55,12 +84,42 @@ Overview of default and custom key bindings in **VIM**.
 `dd` - delete entire *line*  
 `dw` - delete *word*  
 
+`Leader`+`x` - delete line without writing to the erase buffer[¹](#custom)  
+
 `gc{motion}` - comment or uncomment lines that *motion* moves over[²](#commentary)  
 `gcc` - comment or uncomment lines[²](#commentary)  
 
-`Leader`+`x` - delete line without writing to the erase buffer[¹](#custom)  
-`Leader`+`o` - insert new *line* below, stay in normal mode[¹](#custom)  
-`Leader`+`O` - insert new *line* above, stay in normal mode[¹](#custom)  
+`g~{motion}` - swap case of text  
+`gu{motion}` - make text lowercase  
+`gU{motion}` - make text uppercase  
+
+`Leader`+`l` - convert *word* to lowercase[¹](#custom)  
+`Leader`+`u` - convert *word* to uppercase[¹](#custom)  
+`Leader`+`L` - convert *first letter* of word to lowercase[¹](#custom)  
+`Leader`+`U` - convert *first letter* of word to uppercase[¹](#custom)  
+
+## File Navigation
+
+`gf` - edit the file whose name is under the cursor  
+
+`[i` - show first line in current file and all included files that contain the word under the cursor  
+`[I` - list all lines in current file and all included files that contain the word under the cursor  
+
+`gd` - go to definition of word under the cursor in current file  
+`g]` - list all tags that match the word under the cursor  
+
+## Undo & Redo
+
+`u` - undo last *command*  
+`Ctrl`+`r` - redo last *command*  
+
+`.` - repeat last *command*  
+'g&' - repeat last `:s` on all lines  
+
+`;` - repeat latest `f`, `F`, `t`, `T`  
+`,` - repeat latest `f`, `F`, `t`, `T` in opposite direction  
+
+## Copy & Paste
 
 `y$` - copy to the end of the *line*  
 `yy` - copy a *line*  
@@ -69,18 +128,31 @@ Overview of default and custom key bindings in **VIM**.
 `p` - paste from clipboard after cursor  
 `P` - paste from clipboard before cursor  
 
-`.` - repeat last *command*  
+`[p` - paste from clipboard before cursor but adjust indent to current line  
+`]p` - paste from clipboard after cursor but adjust indent to current line  
 
-`u` - undo last *command*  
-`Ctrl`+`r` - redo last *command*  
+## Spell checking
 
-`Leader`+`Up` - Move current *line* up[¹](#custom)  
-`Leader`+`Down` - Move current *line* down[¹](#custom)  
+`cos` - Toggle spell checking[³](#unimpaired)  
 
-`Leader`+`l` - convert *word* to lowercase[¹](#custom)  
-`Leader`+`u` - convert *word* to uppercase[¹](#custom)  
-`Leader`+`L` - convert *first letter* of word to lowercase[¹](#custom)  
-`Leader`+`U` - convert *first letter* of word to uppercase[¹](#custom)  
+`[s` - move to the previous spelling mistake  
+`]s` - move to the next spelling mistake  
+
+`z=` - give spelling suggestions  
+`zg` - mark word as correct  
+`zw` - mark word as wrong  
+
+## Folding
+
+`zf{motion}` - create a fold  
+
+`zo` - open one fold under the cursor  
+`zc` - close one fold under the cursor  
+`zR` - Open all folds  
+`zM` - close all folds  
+
+`zj` - Move downwards to the start of the next fold  
+`zk` - Move upwards to the end of the previous fold  
 
 ## Insert Mode
 
@@ -93,13 +165,12 @@ Overview of default and custom key bindings in **VIM**.
 `ea` - insert at the end of the *word*  
 
 `jj` - exit *insert mode*[¹](#custom)  
-`jk` - exit *insert mode*[¹](#custom)  
 
 ## Visual Mode
 
 `v` - start *visual mode*  
 `V` - start linewise *visual mode*  
-`Ctrl`+`v` - start v*isual block mode*  
+`Ctrl`+`v` - start *visual block mode*  
 
 `aw` - mark *word*  
 `ab` - mark *block* ()  
@@ -114,6 +185,10 @@ Overview of default and custom key bindings in **VIM**.
 `~` - switch case  
 
 `gc` - comment or uncomment *selection*[²](#commentary)  
+
+`gv` - reselect previous selection  
+`gn` - find next match of last search pattern and visual select it  
+`gN` - find previous match of last search pattern and visual select it  
 
 ## Buffer Management
 
@@ -178,7 +253,7 @@ Overview of default and custom key bindings in **VIM**.
 `cow` - Toggle line wrapping (`wrap`)  
 
 **TIP:**  
-In order to make the `[` and `]` mappings accessible on german keyboards you can use `ö` or `ä` respectively.  
+In order to make it easier to access the `[` and `]` mappings on german keyboards `ö` or `ä` are mapped as custom binding.  
 
 ## [CtrlP Mode](https://github.com/ctrlpvim/ctrlp.vim)
 
@@ -209,10 +284,7 @@ In order to make the `[` and `]` mappings accessible on german keyboards you can
 `q` - close quickfix window  
 `go` - preview file, keep focus on quickfix window  
 
-## System Integration
-
-`Leader`+`d` - search for the word under the cursor in Dash.app  
-
 ---
 <a name="custom">¹</a>: Via custom key binding  
 <a name="commentary">²</a>: Via [vim-commentary](https://github.com/tpope/vim-commentary.git)  
+<a name="unimpaired">³</a>: Via [vim-unimpaired](https://github.com/tpope/vim-unimpaired)  

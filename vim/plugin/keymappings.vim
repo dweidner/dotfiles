@@ -22,7 +22,6 @@ map <Space> <Leader>
 
 " Avoid the escape key
 ino jj <Esc>
-ino jk <Esc>
 
 " Reselect visual block after indent/outdent
 xn < <gv
@@ -36,6 +35,12 @@ map ö [
 map ä ]
 map Ö {
 map Ä }
+
+" Move to the beginning/end of the line (default: top/bottom window)
+" @see <https://bitbucket.org/sjl/dotfiles/src>
+nn H ^
+nn L $
+vn L g_
 
 " Faster linewise scrolling
 nn <C-e> 3<C-e>
@@ -56,7 +61,10 @@ nn <Leader>ws <C-w>s<C-w>j
 nn <Leader><Space> <C-^>
 
 " Switch to next buffer
-nn <Leader><Tab> :bnext<CR>
+nn <silent> <Leader><Tab> :bnext<CR>
+
+" Close current buffer and location list
+nn <silent> <Leader>bd :lclose<CR>:bdelete<CR>
 
 
 " 4. Word Operations ------------------ {{{1
@@ -64,10 +72,6 @@ nn <Leader><Tab> :bnext<CR>
 " Convert word to lower/uppercase
 nn <Leader>u mQviwU`Q
 nn <Leader>l mQviwu`Q
-
-" Convert first character to lower/uppercase
-nn <Leader>U mQgewvU`Q
-nn <Leader>L mQgewvu`Q
 
 " Increment/decrement numbers
 nn + <C-a>
@@ -79,17 +83,21 @@ nn - <C-x>
 " Remove line, but do not write it to the erase buffer
 nn <Leader>x "_dd
 
+" Swap lines using vim-unimpaired
+" @see <https://github.com/davidosomething/dotfiles>
+nmap <special> <C-k> [e
+nmap <special> <C-j> ]e
+vmap <special> <C-k> [egv
+vmap <special> <C-j> ]egv
+
 
 " 6. User Interface ------------------- {{{1
 
 " Toggle paste mode
 set pastetoggle=<F4>
 
-" Toggle search highlighting
-nn <F5> :set hlsearch!<Bar>set hlsearch?<CR>
-
 " Toggle numbers: No Numbers -> Absolute -> Relative
-nn <silent> <F6> :let [&nu, &rnu] = [&nu+&rnu==0, &nu]<CR>
+nn <silent> <F5> :let [&nu, &rnu] = [&nu+&rnu==0, &nu]<CR>
 
 " Toggle soft line wrapping
 function! s:ToggleWrap()
@@ -103,7 +111,7 @@ function! s:ToggleWrap()
     echo "  wrap"
   endif
 endfunction
-nn <silent> <F7> :call <sid>ToggleWrap()<CR>
+nn <silent> <F6> :call <sid>ToggleWrap()<CR>
 
 
 " vim:foldmethod=marker:foldlevel=2
