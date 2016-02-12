@@ -62,6 +62,7 @@ Overview of default and custom key bindings in **VIM**.
 `p` - paragraph  
 `s` - sentence  
 `w` - word  
+`f` - function[⁴](#textobj-user)  
 `t` - tag block  
 `"` - double quoted string  
 `'` - single quited string  
@@ -288,3 +289,4 @@ In order to make it easier to access the `[` and `]` mappings on german keyboard
 <a name="custom">¹</a>: Via custom key binding  
 <a name="commentary">²</a>: Via [vim-commentary](https://github.com/tpope/vim-commentary.git)  
 <a name="unimpaired">³</a>: Via [vim-unimpaired](https://github.com/tpope/vim-unimpaired)  
+<a name="textobj-user">⁴</a>: Via [vim-textobj-function](https://github.com/kana/vim-textobj-function)  

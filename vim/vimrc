@@ -144,8 +144,14 @@ call pathogen#helptags()
 " Plugin "evidens/vim-twig"
 " Plugin "tpope/vim-markdown"
 
-" Indentation
+" Indentation plugins
 " Plugin "gavocanov/vim-js-indent"
+
+" Text Objects
+" Plugin "kana/vim-textobj-user"
+" Plugin "kana/vim-textobj-function"
+" Plugin "kentaro/vim-textobj-function-php"
+" Plugin "thinca/vim-textobj-function-javascript"
 
 " Language extensions
 " Plugin "othree/html5.vim"                   " HTML5 & SVG omnicomplete
@@ -155,10 +161,9 @@ call pathogen#helptags()
 " Plugin "mileszs/ack.vim"                    " Search file contents
 " Plugin "ctrlpvim/ctrlp.vim"                 " Navigate files/buffers
 
-" User Interface
+" Appearance
 " Plugin "altercation/vim-colors-solarized"   " Color scheme of choice
 " Plugin "itchyny/lightline.vim"              " Customize vim's statusline
-" Plugin "ervandew/supertab"                  " Tab or Auto-Complete
 
 " Git Integration
 " Plugin "tpope/vim-fugitive"                 " Git integration
@@ -172,13 +177,13 @@ call pathogen#helptags()
 " Plugin "tpope/vim-commentary"               " Toggle comments
 " Plugin "itspriddle/vim-stripper"            " Remove trailing spaces
 
-" Misc
+" Utility
+" Plugin "ervandew/supertab"                  " Tab or Auto-Complete
 " Plugin "airblade/vim-rooter"                " Smart working directory
 " Plugin "tpope/vim-dispatch"                 " Async commands
 " Plugin "tpope/vim-eunuch"                   " Unix utilities in vim
 " Plugin "tpope/vim-repeat"                   " Repeat plugin commands
 " Plugin "benmills/vimux"                     " Run commands in tmux pane
-" Plugin "christoomey/vim-tmux-navigator"     " Navigate between tmux and vim
 " Plugin "tmux-plugins/vim-tmux-focus-events" " Fix focus events in tmux
 
 " File Type Plugins
