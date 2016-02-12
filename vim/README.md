@@ -21,7 +21,7 @@ Overview of default and custom key bindings in **VIM**.
 `e` - move forwards to the end of a *word*  
 `E` - move forwards to the end of a *word* (including punctuation)  
 `b` - move backwards to the beginning of a *word*  
-`B` - move backwards to the beginning of a *word* (including punctuation)
+`B` - move backwards to the beginning of a *word* (including punctuation)  
 `ge` - move backwards to the end of a *word*  
 
 `0` - move the beginning of the *line*  
@@ -115,7 +115,7 @@ Overview of default and custom key bindings in **VIM**.
 `Ctrl`+`r` - redo last *command*  
 
 `.` - repeat last *command*  
-'g&' - repeat last `:s` on all lines  
+`g&` - repeat last `:s` on all lines  
 
 `;` - repeat latest `f`, `F`, `t`, `T`  
 `,` - repeat latest `f`, `F`, `t`, `T` in opposite direction  
@@ -256,7 +256,7 @@ Overview of default and custom key bindings in **VIM**.
 **TIP:**  
 In order to make it easier to access the `[` and `]` mappings on german keyboards `ö` or `ä` are mapped as custom binding.  
 
-## [CtrlP Mode](https://github.com/ctrlpvim/ctrlp.vim)
+## [CtrlP](https://github.com/ctrlpvim/ctrlp.vim)
 
 `Ctrl`+`p` - open *CtrlP*  
 `Ctrl`+`c` - exit *CtrlP*  
@@ -275,7 +275,7 @@ In order to make it easier to access the `[` and `]` mappings on german keyboard
 `Ctrl`+`z` - mark file  
 `Ctrl`+`o` - open marked files  
 
-## [Ack Quickfix Window](https://github.com/mileszs/ack.vim)
+## [(Ack) Quickfix Window](https://github.com/mileszs/ack.vim)
 
 `o` - open file  
 `O` - open file and close quickfix window  
