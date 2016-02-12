@@ -21,11 +21,11 @@
 map <Space> <Leader>
 
 " Avoid the escape key
-ino jj <Esc>
+inoremap jj <Esc>
 
 " Reselect visual block after indent/outdent
-xn < <gv
-xn > >gv
+xnoremap < <gv
+xnoremap > >gv
 
 
 " 2. Movement ------------------------- {{{1
@@ -38,50 +38,50 @@ map Ä }
 
 " Move to the beginning/end of the line (default: top/bottom window)
 " @see <https://bitbucket.org/sjl/dotfiles/src>
-nn H ^
-nn L $
-vn L g_
+nnoremap H ^
+nnoremap L $
+vnoremap L g_
 
 " Faster linewise scrolling
-nn <C-e> 3<C-e>
-nn <C-y> 3<C-y>
+nnoremap <C-e> 3<C-e>
+nnoremap <C-y> 3<C-y>
 
 " Move between display lines instead of numbered lines
-nn <Up> gk
-nn <Down> gj
+nnoremap <Up> gk
+nnoremap <Down> gj
 
 
 " 3. Window/Buffer Management --------- {{{1
 
 " Split window vertically/horizontally
-nn <Leader>wv <C-w>v<C-w>l
-nn <Leader>ws <C-w>s<C-w>j
+nnoremap <Leader>wv <C-w>v<C-w>l
+nnoremap <Leader>ws <C-w>s<C-w>j
 
 " Switch to alternate buffer
-nn <Leader><Space> <C-^>
+nnoremap <Leader><Space> <C-^>
 
 " Switch to next buffer
-nn <silent> <Leader><Tab> :bnext<CR>
+nnoremap <silent> <Leader><Tab> :bnext<CR>
 
 " Close current buffer and location list
-nn <silent> <Leader>bd :lclose<CR>:bdelete<CR>
+nnoremap <silent> <Leader>bd :lclose<CR>:bdelete<CR>
 
 
 " 4. Word Operations ------------------ {{{1
 
 " Convert word to lower/uppercase
-nn <Leader>u mQviwU`Q
-nn <Leader>l mQviwu`Q
+nnoremap <Leader>u mQviwU`Q
+nnoremap <Leader>l mQviwu`Q
 
 " Increment/decrement numbers
-nn + <C-a>
-nn - <C-x>
+nnoremap + <C-a>
+nnoremap - <C-x>
 
 
 " 5. Line Operations ------------------ {{{1
 
 " Remove line, but do not write it to the erase buffer
-nn <Leader>x "_dd
+nnoremap <Leader>x "_dd
 
 " Swap lines using vim-unimpaired
 " @see <https://github.com/davidosomething/dotfiles>
@@ -97,7 +97,7 @@ vmap <special> <C-j> ]egv
 set pastetoggle=<F4>
 
 " Toggle numbers: No Numbers -> Absolute -> Relative
-nn <silent> <F5> :let [&nu, &rnu] = [&nu+&rnu==0, &nu]<CR>
+nnoremap <silent> <F5> :let [&nu, &rnu] = [&nu+&rnu==0, &nu]<CR>
 
 " Toggle soft line wrapping
 function! s:ToggleWrap()
@@ -111,7 +111,7 @@ function! s:ToggleWrap()
     echo "  wrap"
   endif
 endfunction
-nn <silent> <F6> :call <sid>ToggleWrap()<CR>
+nnoremap <silent> <F6> :call <sid>ToggleWrap()<CR>
 
 
 " vim:foldmethod=marker:foldlevel=2

@@ -113,7 +113,7 @@ com -nargs=1 -complete=customlist,s:CompletePHPCodingStandard PHPCodingStandard 
 
 " Toggle between coding standards in the following order:
 " 1. None, 2. PSR1, 3. PSR2, 4. WordPress, 5. Drupal
-nn <F10> :call <SID>TogglePHPCodingStandard()<CR>
+nnoremap <F10> :call <SID>TogglePHPCodingStandard()<CR>
 
 
 " vim:foldmethod=marker:foldlevel=2

@@ -15,8 +15,8 @@ if executable('ag')
 endif
 
 " Search by filename
-nn <Leader>p :CtrlPLastMode<CR>
+nnoremap <Leader>p :CtrlPLastMode<CR>
 
 " Search symbols in current file
-nn <Leader>r :CtrlPBufTag<CR>
+nnoremap <Leader>r :CtrlPBufTag<CR>
 
