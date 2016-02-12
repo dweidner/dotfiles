@@ -54,7 +54,7 @@ Overview of default and custom key bindings in **VIM**.
 `~` - swap case  
 `!` - filter through an external program  
 
-**Modifier::**  
+**Modifier:**  
 `i` - inner (exclude the boundaries)  
 `a` - a (include the boundaries)  
 
@@ -213,6 +213,23 @@ Overview of default and custom key bindings in **VIM**.
 
 `Ctrl`+`e` - scroll window 3 lines down[¹](#custom)  
 `Ctrl`+`y` - scroll window 3 lines up[¹](#custom)  
+
+## [Surround](https://github.com/tpope/vim-surround)
+
+**Normal Mode:**  
+`ds` - delete a surrounding  
+`cs` - change a surrounding  
+`ys{motion}` - add a surrounding  
+`yS{motion}` - add a surrounding and place the affected text on a new line  
+`yss` - add a surrounding to the whole line  
+`ySS` - add a surrounding to the whole line and place it on a new line  
+
+**Visual Mode:**  
+`s` - add a surrounding  
+`S` - add a surrounding and place the selected text on a new line  
+
+**Insert Mode**  
+`Ctrl`+`s` - add a surrounding  
 
 ## [Unimpaired](https://github.com/tpope/vim-unimpaired)
 
