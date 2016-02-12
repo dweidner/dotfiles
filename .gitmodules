@@ -109,9 +109,6 @@
 [submodule "tmux/plugins/tmux-pain-control"]
 	path = tmux/plugins/tmux-pain-control
 	url = https://github.com/tmux-plugins/tmux-pain-control.git
-[submodule "vim/bundle/vim-dash"]
-	path = vim/bundle/vim-dash
-	url = https://github.com/rizzatti/dash.vim.git
 [submodule "vim/bundle/vim-yajs"]
 	path = vim/bundle/vim-yajs
 	url = https://github.com/othree/yajs.vim.git
@@ -133,3 +130,6 @@
 [submodule "vim/bundle/vim-textobj-function-php"]
 	path = vim/bundle/vim-textobj-function-php
 	url = https://github.com/kentaro/vim-textobj-function-php.git
+[submodule "vim/bundle/vim-investigate"]
+	path = vim/bundle/vim-investigate
+	url = https://github.com/keith/investigate.vim.git

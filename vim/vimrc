@@ -153,7 +153,7 @@ call pathogen#helptags()
 " Plugin "kentaro/vim-textobj-function-php"
 " Plugin "thinca/vim-textobj-function-javascript"
 
-" Language extensions
+" Omnicomplete
 " Plugin "othree/html5.vim"                   " HTML5 & SVG omnicomplete
 " Plugin "shawncplus/phpcomplete.vim"         " PHP omnicomplete
 
@@ -180,6 +180,7 @@ call pathogen#helptags()
 " Utility
 " Plugin "ervandew/supertab"                  " Tab or Auto-Complete
 " Plugin "airblade/vim-rooter"                " Smart working directory
+" Plugin "keith/investigate.vim"              " Look up documentation
 " Plugin "tpope/vim-dispatch"                 " Async commands
 " Plugin "tpope/vim-eunuch"                   " Unix utilities in vim
 " Plugin "tpope/vim-repeat"                   " Repeat plugin commands
