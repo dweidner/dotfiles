@@ -275,7 +275,7 @@ In order to make it easier to access the `[` and `]` mappings on german keyboard
 `Ctrl`+`z` - mark file  
 `Ctrl`+`o` - open marked files  
 
-# [Ack Quickfix Window](https://github.com/mileszs/ack.vim)
+## [Ack Quickfix Window](https://github.com/mileszs/ack.vim)
 
 `o` - open file  
 `O` - open file and close quickfix window  

@@ -36,6 +36,9 @@ map ä ]
 map Ö {
 map Ä }
 
+map öö [[
+map ää ]]
+
 " Move to the beginning/end of the line (default: top/bottom window)
 " @see <https://bitbucket.org/sjl/dotfiles/src>
 nnoremap H ^
