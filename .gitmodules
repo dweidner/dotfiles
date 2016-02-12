@@ -133,3 +133,6 @@
 [submodule "vim/bundle/vim-investigate"]
 	path = vim/bundle/vim-investigate
 	url = https://github.com/keith/investigate.vim.git
+[submodule "vim/bundle/vim-ultisnips"]
+	path = vim/bundle/vim-ultisnips
+	url = https://github.com/SirVer/ultisnips.git
