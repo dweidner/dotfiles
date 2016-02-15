@@ -1,0 +1,128 @@
+# --------------------------------------------------------------
+# CSS Snippets
+# --------------------------------------------------------------
+
+# -------------------------------------
+# Table of Contents:
+# -------------------------------------
+# 1. Pseudo Elements
+# 2. Pseudo Classes
+# 3. Misc
+# -------------------------------------
+
+
+# Pseudo Elements ---------------------------------------------- {{{1
+
+snippet :b "Pseudo element: before"
+::before {
+	${1}
+}$0
+endsnippet
+
+snippet :a "Pseudo element: after"
+::after {
+	${1}
+}$0
+endsnippet
+
+
+# Pseudo Classes ----------------------------------------------- {{{1
+
+snippet :h "Mouse over..."
+:hover {
+	${1}
+}
+$0
+endsnippet
+
+snippet :f "Focus..."
+:focus {
+	${1}
+}
+$0
+endsnippet
+
+snippet :v "Visited..."
+:visited {
+	${1}
+}
+$0
+endsnippet
+
+snippet :fc "First child..."
+:first-child {
+	${1}
+}
+$0
+endsnippet
+
+snippet :lc "Last child..."
+:last-child {
+	${1}
+}
+$0
+endsnippet
+
+snippet :nc "Nth child..."
+:nth-child(${1:odd}) {
+	${2}
+}
+$0
+endsnippet
+
+snippet :not "Nth of type..."
+:nth-of-type(${1}) {
+	${2}
+}
+$0
+endsnippet
+
+
+# Misc --------------------------------------------------------- {{{1
+
+snippet sec "Section..." b
+/** --------------------
+ * #${1}
+ ** -------------------- */
+$0
+endsnippet
+
+snippet /* "Comment..." b
+/* ${1} */$0
+endsnippet
+
+snippet . "Class declaration..." b
+.${1} {
+	${2}
+}
+$0
+endsnippet
+
+snippet # "ID declaration..." b
+#${1} {
+	${2}
+}
+$0
+endsnippet
+
+snippet @i "Import statement..." b
+@import url(${1});$0
+endsnippet
+
+snippet @m "Media query..." b
+@media ${1:print} {
+	${2}
+}
+$0
+endsnippet
+
+snippet @f "Font declaration..." b
+@font-face {
+	font-family: ${1};
+	src: url(${2});
+}
+$0
+endsnippet
+
+
+# vim:foldmethod=marker:foldlevel=2

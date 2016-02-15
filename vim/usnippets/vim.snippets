@@ -1,0 +1,90 @@
+# --------------------------------------------------------------
+# VIM Snippets
+# --------------------------------------------------------------
+
+# -------------------------------------
+# Table of Contents:
+# -------------------------------------
+# 1. Control Structures
+# 2. Loops
+# 3. Functions
+# 4. Misc
+# -------------------------------------
+
+
+# Control Structures ------------------------------------------- {{{1
+
+snippet if "if..." b
+if ${1}
+	${2}
+endif
+$0
+endsnippet
+
+snippet ifelse "if... else..." b
+if ${1}
+	${2}
+else
+	${3}
+endif
+$0
+endsnippet
+
+
+# Loops -------------------------------------------------------- {{{1
+
+snippet for "for..." b
+for ${1} in ${2}
+	${3}
+endfor
+$0
+endsnippet
+
+snippet keyvalue "for..." b
+for [${1},${2}] in items(${3})
+	${4}
+	unlet $1 $2
+endfor
+endsnippet
+
+snippet while "while..." b
+while ${1}
+	${2}
+endwhile
+$0
+endsnippet
+
+
+# Functions ---------------------------------------------------- {{{1
+
+snippet f "Function declaration..." b
+function! ${1:foo}(${2})
+	${3}
+endfunction
+$0
+endsnippet
+
+
+# Misc --------------------------------------------------------- {{{1
+
+snippet au "Autocmd block..." b
+augroup ${1:group}
+	au ${2:BufRead,BufNewFile} ${3:*} ${4}
+augroup end
+$0
+endsnippet
+
+snippet plug "Plugin definition..."
+Plugin "${1}"
+endsnippet
+
+snippet guard "Reload guard..." b
+if exists('g:${1:did_`!p snip.rv = snip.fn.replace('.','_')`}') || &cp || version < 700
+	finish
+endif
+let g:$1 = 1${2}
+$0
+endsnippet
+
+
+# vim:foldmethod=marker:foldlevel=2
