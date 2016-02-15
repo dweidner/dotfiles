@@ -136,3 +136,6 @@
 [submodule "vim/bundle/vim-ultisnips"]
 	path = vim/bundle/vim-ultisnips
 	url = https://github.com/SirVer/ultisnips.git
+[submodule "vim/bundle/vim-easy-align"]
+	path = vim/bundle/vim-easy-align
+	url = https://github.com/junegunn/vim-easy-align.git

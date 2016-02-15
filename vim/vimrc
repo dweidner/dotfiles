@@ -181,6 +181,7 @@ call pathogen#helptags()
 " Plugin "ervandew/supertab"                  " Tab or Auto-Complete
 " Plugin "airblade/vim-rooter"                " Smart working directory
 " Plugin "keith/investigate.vim"              " Look up documentation
+" Plugin "junegunn/vim-easy-align"            " Align text elements
 " Plugin "tpope/vim-dispatch"                 " Async commands
 " Plugin "tpope/vim-eunuch"                   " Unix utilities in vim
 " Plugin "tpope/vim-repeat"                   " Repeat plugin commands
