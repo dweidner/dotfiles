@@ -1,0 +1,393 @@
+# --------------------------------------------------------------
+# JavaScript Snippets (most of them extracted from honza/vim-snippets)
+# @see <https://github.com/honza/vim-snippets>
+# --------------------------------------------------------------
+
+# -------------------------------------
+# Table of Contents:
+# -------------------------------------
+# 1. Control Structures
+# 2. Loops
+# 3. Variables/Constants
+# 4. Class Declaration/Instantiation
+# 5. Functions/Methods
+# 6. DOM
+# 7. JSDoc
+# 8. Debugging
+# 9. Misc
+# -------------------------------------
+
+
+# Control Structures ------------------------------------------- {{{1
+
+snippet if "if (...)" b
+if (${1}) {
+	${2}
+}
+$0
+endsnippet
+
+snippet ifelse "if {...} else {...}" b
+if (${1}) {
+	${2}
+}
+else {
+	${3}
+}
+$0
+endsnippet
+
+snippet else "else" b
+else {
+	${1}
+}
+endsnippet
+
+snippet elseif "elseif (...)"
+elseif (${1}) {
+	$0
+}
+endsnippet
+
+snippet switch "switch (...)" b
+switch($${1}) {
+	case '${2}':
+		${3}
+		break;
+	$4
+}
+$0
+endsnippet
+
+snippet case "case '...'" b
+case '${1}':
+	${2}
+	break;$0
+endsnippet
+
+snippet default "default" b
+default:
+	${1}
+	break;$0
+endsnippet
+
+snippet try "try {...} catch {...}" b
+try {
+	${VISUAL}$3
+}
+catch(e) {
+	${2:// Ignore exception}
+}
+$0
+endsnippet
+
+
+# Loops -------------------------------------------------------- {{{1
+
+snippet for "for (...)" b
+for (var ${4:i} = 0, ${1:l} = ${2:array.length}; $4 < $1; $4++) {
+	${VISUAL}$5
+}
+$0
+endsnippet
+
+snippet keyvalue "for (...)" b
+for (${1:prop} in ${2:obj}) {
+	if ($2.hasOwnProperty($1)) {
+		${VISUAL}$3
+	}
+}
+$0
+endsnippet
+
+snippet do "do {...} while (...)" b
+do {
+	${VISUAL}$2
+}
+while(${1});
+$0
+endsnippet
+
+snippet while "while (...)" b
+while (${1:true}) {
+	${VISUAL}$2
+}
+$0
+endsnippet
+
+
+# Variables/Constants ------------------------------------------ {{{1
+
+snippet var "Variable assignment..." b
+var ${1:foo} = ${2};$0
+endsnippet
+
+snippet var? "Ternary assignment..." b
+var ${1:foo} = (${2}) ? ${3} : ${3};$0
+endsnippet
+
+snippet def "Constant definition..." b
+const ${1:FOO} = ${2};$9
+endsnippet
+
+snippet : "Property definition..." b
+${1:foo}: ${2},$0
+endsnippet
+
+
+# Class Declaration/Instantiation  ----------------------------- {{{1
+
+snippet new "New class instance..." b
+var ${1:foo} = new ${2:${1/\w+\s*/\u$0/}}($3);$0
+endsnippet
+
+snippet construct "Constructor..." b
+/**
+ * Creates a new instance of ${1}.
+ *
+ * @param {$3*} ${2/, /\n   * \@param {*} /g}
+ * @class
+ */
+function ${4:${1/\w+\s*/\u$0/}}(${2:dependency}) {${2/(\w+)(, )*/\n      this.$1 = $$1;/g}
+}
+$0
+endsnippet
+
+
+# Functions/Methods -------------------------------------------- {{{1
+
+snippet f "Function..."
+function ${1}(${2}) {
+	${VISUAL}$3
+}
+$0
+endsnippet
+
+snippet lambda "Annonymous function..."
+function(${1}) {
+	${VISUAL}${2}
+}${0}
+endsnippet
+
+snippet m "Prototype method..." b
+/**
+ * ${5:TODO: Undocumented function}
+ *
+ * @return {${6:void}}
+ */
+${1:Foo}.prototype.${2:bar} = function(${3}) {
+	${VISUAL}$4
+};
+$0
+endsnippet
+
+snippet getter "Getter..." b
+/**
+ * Returns the value of ${1}.
+ *
+ * @return {${2:*}}
+ */
+${4:Foo}.prototype.get${3:${1/\w+\s*/\u$0/}} = function() {
+	return this.$1;
+};
+$0
+endsnippet
+
+snippet setter "Setter..." b
+/**
+ * Sets the value of ${1}.
+ *
+ * @param {${2:*}} ${3:value} ${4:Value to set}
+ * @return {${5:`!p snip.rv=snip.basename.title()`}}
+ */
+$5.prototype.set${6:1/\w+\s*/\u$0/} = function($3}) {
+	this.$1 = $3;
+	return this;
+};
+$0
+endsnippet
+
+snippet getset "Getter/Setter..." b
+/**
+ * Returns the value of ${1}.
+ *
+ * @return {${2:*}}
+ */
+${4:Foo}.prototype.get${3:${1/\w+\s*/\u$0/}} = function() {
+	return this.$1;
+};
+
+/**
+ * Sets the value of $1.
+ *
+ * @param {$2} ${4:value} ${5:Value to set}
+ * @return {${7:`!p snip.rv=snip.basename.title()`}}
+ */
+$7.prototype.set$3 = function($4}) {
+	this.$1 = $4;
+	return this;
+},
+$0
+endsnippet
+
+snippet :m "Method..." b
+${1:foo}: function(${2}) {
+	${VISUAL}$3
+},
+$0
+endsnippet
+
+snippet :getter "Getter..." b
+/**
+ * Returns the value of ${1}.
+ *
+ * @return {${2:*}}
+ */
+get${3:${1/\w+\s*/\u$0/}}: function() {
+	return this.$1;
+},
+$0
+endsnippet
+
+snippet :setter "Setter..." b
+/**
+ * Sets the value of ${1}.
+ *
+ * @param {${2:*}} ${3:value} ${4:Value to set}
+ * @return {${5:`!p snip.rv=snip.basename.title()`}}
+ */
+set${6:1/\w+\s*/\u$0/}: function($3}) {
+	this.$1 = $3;
+	return this;
+},
+$0
+endsnippet
+
+snippet :getset "Getter/Setter..." b
+/**
+ * Returns the value of ${1}.
+ *
+ * @return {${2:*}}
+ */
+get${3:${1/\w+\s*/\u$0/}}: function() {
+	return this.$1;
+},
+
+/**
+ * Sets the value of $1.
+ *
+ * @param {$2} ${4:value} ${5:Value to set}
+ * @return {${7:`!p snip.rv=snip.basename.title()`}}
+ */
+set$3: function($4}) {
+	this.$1 = $4;
+	return this;
+},
+$0
+endsnippet
+
+
+# DOM ---------------------------------------------------------- {{{1
+
+snippet d< "Get elements by tag name..."
+document.getElementsByTagName('${1}')$0
+endsnippet
+
+snippet d# "Get element by ID..."
+document.getElementById('${1}')$0
+endsnippet
+
+snippet d. "Get elements by class name..."
+document.querySelectorAll('${1}')$0
+endsnippet
+
+snippet d.0 "Get element by class name..."
+document.querySelector('${1}')$0
+endsnippet
+
+
+# JSDoc -------------------------------------------------------- {{{1
+
+snippet /* "JSDoc..." b
+/**
+ * $1
+ */
+$0
+endsnippet
+
+snippet @f "JSDoc: file"
+@file
+$0
+endsnippet
+
+snippet @p "JSDoc: parameter"
+@param {${1:*}} ${2:param} ${3:Parameter description}
+endsnippet
+
+snippet @v "JSDoc: class member"
+@var {${1:*}} ${2:member}
+endsnippet
+
+snippet @c "JSDoc: constant"
+@const {${1:*}} ${2:CONST}
+endsnippet
+
+snippet @r "JSDoc: return value"
+@return {${1:void}}
+endsnippet
+
+snippet @i "JSDoc: inheritdoc"
+@inheritdoc
+endsnippet
+
+snippet @a "JSDoc: author"
+@author ${1:`!v g:snippets_author`}
+endsnippet
+
+snippet @s "JSDoc: since"
+@since ${1:1.0}
+endsnippet
+
+snippet @a "JSDoc: package"
+@access ${1:private}
+endsnippet
+
+
+# Debugging ---------------------------------------------------- {{{1
+
+snippet dump "Dump variable information..."
+console.debug('${1:label}', ${VISUAL}${2:var});$0
+endsnippet
+
+snippet log "Log error message..."
+console.log(${1});$0
+endsnippet
+
+
+# Misc --------------------------------------------------------- {{{1
+
+snippet (f "Immediately-invoked function  expression..."
+(function(${1:window}) {
+	${VISUAL}$0
+})(${2:$1});
+endsnippet
+
+snippet def "Defined AMD module..." b
+define([${1}], ${2});$0
+endsnippet
+
+snippet req "Require AMD module..." b
+require([${1}], ${2});$0
+endsnippet
+
+snippet throw "Throw error..."
+throw new Error('${1}')
+endsnippet
+
+snippet strict "Use strict..." b
+'use strict';
+endsnippet
+
+
+# vim:foldmethod=marker:foldlevel=2
+

@@ -1,0 +1,224 @@
+# --------------------------------------------------------------
+# Twig Snippets
+# --------------------------------------------------------------
+
+# -------------------------------------
+# Table of Contents:
+# -------------------------------------
+# 1. Control Structures
+# 2. Loops
+# 3. Variables/Constants
+# 4. Rendering
+# 5. PHPDoc
+# 6. Misc
+# -------------------------------------
+
+
+# Control Structures ------------------------------------------- {{{1
+
+snippet if "if ..." b
+{% if ${1} %}
+	${VISUAL}${2}
+{% endif %}
+$0
+endsnippet
+
+snippet if! "if not ..." b
+{% if not ${1} %}
+	${VISUAL}${2}
+{% endif %}
+$0
+endsnippet
+
+snippet ifelse "if ... else ..." b
+{% if ${1} %}
+	${VISUAL}${2}
+{% else %}
+	${3}
+{% endif %}
+$0
+endsnippet
+
+snippet else "else" b
+{% else %}
+$0
+endsnippet
+
+snippet elseif "elseif (...)"
+{% elseif ${1} %}
+$0
+endsnippet
+
+
+# Loops -------------------------------------------------------- {{{1
+
+snippet for "for ..." b
+{% for ${1:i} in ${2:0..10} %}
+	${VISUAL}${3}
+{% endfor %}
+$0
+endsnippet
+
+snippet forelse "for ... else ..." b
+{% for ${1:i} in ${2:0..10} %}
+	${VISUAL}${3}
+{% else %}
+	${4}
+{% endfor %}
+$0
+endsnippet
+
+snippet keyvalue "for ..." b
+{% for ${1:key}, ${2:value} in ${3:values} %}
+	${VISUAL}${4}
+{% endfor %}
+$0
+endsnippet
+
+
+# Variables/Constants ------------------------------------------ {{{1
+
+snippet set "Variable declaration..." b
+{% set ${1:foo} = ${2:'bar'} %}
+endsnippet
+
+snippet import "Import..." b
+{% import '${1}'${2: as foo} %}$0
+endsnippet
+
+snippet from "Import from..." b
+{% from '${1}' import ${2:foo}${3: as bar} %}$0
+endsnippet
+
+
+# Rendering ---------------------------------------------------- {{{1
+
+snippet e "Render..." b
+{{ ${VISUAL}${1} }}$0
+endsnippet
+
+snippet e- "Render without leading/trailing whitespace..." b
+{{- ${VISUAL}${1} -}}$0
+endsnippet
+
+snippet c "Render a comment..." b
+{# ${VISUAL}${1} #}$0
+endsnippet
+
+snippet block "Block declaration..." b
+{% block ${1} %}
+	${VISUAL}${2}
+{% endblock %}
+$0
+endsnippet
+
+snippet super "Render block content..." b
+{{ block('${1}') }}$0
+endsnippet
+
+snippet parent "Render parent block contents..." b
+{{ parent() }}$0
+endsnippet
+
+snippet filter "Filter block contents..." b
+{% filter ${1} %}
+	${VISUAL}${2}
+{% endfilter %}
+$0
+endsnippet
+
+snippet verbatim "Render raw content..." b
+{% verbatim %}
+	${1}
+{% endverbatim %}
+$0
+endsnippet
+
+
+# PHPDoc ------------------------------------------------------- {{{1
+
+snippet /* "DocBlock..." b
+{#
+/**
+ * $1
+ */
+#}
+$0
+endsnippet
+
+snippet @f "DocBlock: file"
+@file
+$0
+endsnippet
+
+snippet @p "DocBlock: parameter"
+@param ${1:mixed} $${2} ${3:Parameter description}
+endsnippet
+
+snippet @v "DocBlock: class variable"
+@var ${1:mixed} ${2}
+endsnippet
+
+snippet @c "DocBlock: constant"
+@const ${1:FOO} ${2}
+endsnippet
+
+snippet @r "DocBlock: return value"
+@return ${1:void}
+endsnippet
+
+snippet @i "DocBlock: inheritdoc"
+{@inheritdoc}
+endsnippet
+
+snippet @a "DocBlock: author"
+@author ${1:`!v g:snippets_author`}
+endsnippet
+
+snippet @s "DocBlock: since"
+@since ${1:1.0} ${2:- `!v strftime('%d %b, %Y')`}
+endsnippet
+
+snippet @pkg "DocBlock: package"
+@package ${1}
+endsnippet
+
+snippet @spkg "DocBlock: subpackage"
+@subpackage ${1}
+endsnippet
+
+
+# Misc --------------------------------------------------------- {{{1
+
+snippet dump "Dump variable information..."
+{{ dump(${VISUAL}${1}) }}$0
+endsnippet
+
+snippet extends "Extend a template..." b
+{% extends '${1}' %}$0
+endsnippet
+
+snippet use "Reuse a template..." b
+{% use '${1}' %}$0
+endsnippet
+
+snippet include "Include a template..." b
+{% include '${1}'${5: with \{'${2:foo}': '${3:bar}'${4}\}} %}$0
+endsnippet
+
+snippet embed "Embed a template..." b
+{% embed '${1}'${5: with \{'${2:foo}': '${3:bar}'${4}\}} %}
+	${VISUAL}${6}
+{% endembed %}
+$0
+endsnippet
+
+snippet macro "Macro tag..." b
+{% macro ${1} %}
+	${2}
+{% endmacro %}
+$0
+endsnippet
+
+
+# vim:foldmethod=marker:foldlevel=2
