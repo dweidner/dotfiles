@@ -176,6 +176,7 @@ call pathogen#helptags()
 " Plugin "tpope/vim-surround"                 " Wrap text objects
 " Plugin "tpope/vim-commentary"               " Toggle comments
 " Plugin "itspriddle/vim-stripper"            " Remove trailing spaces
+" Plugin "SirVer/ultisnips"                   " Snippet manager
 
 " Utility
 " Plugin "ervandew/supertab"                  " Tab or Auto-Complete
