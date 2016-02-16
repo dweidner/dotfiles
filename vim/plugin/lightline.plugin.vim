@@ -111,14 +111,13 @@ function! s:UpdateSyntasticStatus()
   call lightline#update()
 endfunction
 
-augroup vimrc_syntastic
-
+" Create a new autocmd group for the lightline plugin
+augroup dotlightline
   au!
+augroup end
 
-  " Trigger syntastic status update, when buffer is saved
-  au BufWritePost *.php,*.css,*.scss,*.js call s:UpdateSyntasticStatus()
-
-augroup END
+" Trigger syntastic status update, when buffer is saved
+au dotlightline BufWritePost *.php,*.css,*.scss,*.js call s:UpdateSyntasticStatus()
 
 
 " vim:foldmethod=marker:foldlevel=2

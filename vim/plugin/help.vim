@@ -1,11 +1,11 @@
 " plugin/help.vim
 
-augroup vimrc_help
-
+" Create a new autocmd group for the help utilities
+augroup dothelp
   au!
+augroup end
 
-  " Close help window with <q>
-  au FileType help nn <silent><buffer> q :q<CR>
-  au FileType help nn <silent><buffer> Q :q<CR>
+" Close help window with <q>
+au dothelp FileType help nn <silent><buffer> q :q<CR>
+au dothelp FileType help nn <silent><buffer> Q :q<CR>
 
-augroup END

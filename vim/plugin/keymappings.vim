@@ -9,6 +9,7 @@
 " 4. Word Operations
 " 5. Line Operations
 " 6. User Interface
+" 7. Misc
 " -------------------------------------
 
 
@@ -23,9 +24,8 @@ map <Space> <Leader>
 " Avoid the escape key
 inoremap jj <Esc>
 
-" Reselect visual block after indent/outdent
-xnoremap < <gv
-xnoremap > >gv
+" Expand %% to the same  directory of the current file
+cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 
 
 " 2. Movement ------------------------- {{{1
@@ -63,8 +63,14 @@ nnoremap <Leader>ws <C-w>s<C-w>j
 " Switch to alternate buffer
 nnoremap <Leader><Space> <C-^>
 
-" Switch to next buffer
-nnoremap <silent> <Leader><Tab> :bnext<CR>
+" Open file in new buffer/split
+" @see <http://vimcasts.org/e/14>
+map <silent> <Leader>ew :edit %%
+map <silent> <Leader>es :split %%
+map <silent> <Leader>ev :vsplit %%
+
+" Save current buffer
+nnoremap <silent> <Leader>w :w<CR>
 
 " Close current buffer and location list
 nnoremap <silent> <Leader>bd :lclose<CR>:bdelete<CR>
@@ -115,6 +121,13 @@ function! s:ToggleWrap()
   endif
 endfunction
 nnoremap <silent> <F6> :call <sid>ToggleWrap()<CR>
+
+
+" 7. Misc ----------------------------- {{{1
+
+" Reselect visual block after indent/outdent
+xnoremap < <gv
+xnoremap > >gv
 
 
 " vim:foldmethod=marker:foldlevel=2
