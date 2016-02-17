@@ -137,39 +137,11 @@ runtime bundle/vim-pathogen/autoload/pathogen.vim
 call pathogen#infect()
 call pathogen#helptags()
 
-" Syntax highlighting
-" Plugin "hail2u/vim-css3-syntax"
-" Plugin "cakebaker/scss-syntax.vim"
-" Plugin "othree/yajs.vim"
-" Plugin "evidens/vim-twig"
-" Plugin "tpope/vim-markdown"
-
-" Indentation plugins
-" Plugin "gavocanov/vim-js-indent"
-
-" Text Objects
-" Plugin "kana/vim-textobj-user"
-" Plugin "kana/vim-textobj-function"
-" Plugin "kentaro/vim-textobj-function-php"
-" Plugin "thinca/vim-textobj-function-javascript"
-
-" Omnicomplete
-" Plugin "othree/html5.vim"                   " HTML5 & SVG omnicomplete
-" Plugin "shawncplus/phpcomplete.vim"         " PHP omnicomplete
-
-" File searching
-" Plugin "mileszs/ack.vim"                    " Search file contents
-" Plugin "ctrlpvim/ctrlp.vim"                 " Navigate files/buffers
-
 " Appearance
 " Plugin "altercation/vim-colors-solarized"   " Color scheme of choice
 " Plugin "itchyny/lightline.vim"              " Customize vim's statusline
 
-" Git Integration
-" Plugin "tpope/vim-fugitive"                 " Git integration
-" Plugin "airblade/vim-gitgutter"             " Check for file changes
-
-" [Web] Development
+" Web Development
 " Plugin "scrooloose/syntastic.git"           " Check file syntax
 " Plugin "ludovicchabant/vim-gutentags"       " Auto-generate ctags
 " Plugin "mattn/emmet-vim"                    " Writing html markup
@@ -177,6 +149,31 @@ call pathogen#helptags()
 " Plugin "tpope/vim-commentary"               " Toggle comments
 " Plugin "itspriddle/vim-stripper"            " Remove trailing spaces
 " Plugin "SirVer/ultisnips"                   " Snippet manager
+
+" Text Writing
+" Plugin "reedes/vim-pencil"                  " Soft wrap, better undo...
+
+" Syntax highlighting
+" Plugin "hail2u/vim-css3-syntax"             " Improve support for CSS3
+" Plugin "cakebaker/scss-syntax.vim"          " Improve higlighting for SASS
+" Plugin "othree/yajs.vim"                    " Add ES6 support
+" Plugin "evidens/vim-twig"                   " Improve hilighting for Twig
+" Plugin "tpope/vim-markdown"                 " Load *.md files as markdown
+
+" Indentation
+" Plugin "gavocanov/vim-js-indent"            " Improve js indentation
+
+" Git Integration
+" Plugin "tpope/vim-fugitive"                 " Git integration
+" Plugin "airblade/vim-gitgutter"             " Check for file changes
+
+" Omnicomplete
+" Plugin "othree/html5.vim"                   " HTML5 & SVG omnicomplete
+" Plugin "shawncplus/phpcomplete.vim"         " PHP omnicomplete
+
+" File Navigation
+" Plugin "mileszs/ack.vim"                    " Search file contents
+" Plugin "ctrlpvim/ctrlp.vim"                 " Navigate files/buffers
 
 " Utility
 " Plugin "ervandew/supertab"                  " Tab or Auto-Complete

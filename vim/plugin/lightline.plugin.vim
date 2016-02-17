@@ -17,7 +17,7 @@ let g:lightline = {
   \ 'colorscheme': 'solarized',
   \ 'active': {
   \   'left': [ [ 'mode', 'paste' ], [ 'filename' ], [ 'ctrlp', 'fugitive' ] ],
-  \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'busy', 'syntastic', 'fileformat', 'fileencoding' ] ]
+  \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'busy', 'syntastic', 'wrap', 'fileformat', 'fileencoding' ] ]
   \ },
   \ 'mode_map': {
   \   'n': ' N ',
@@ -36,6 +36,7 @@ let g:lightline = {
   \   'ctrlp': 'CtrlPMark',
   \   'fugitive': 'LightLineFugitive',
   \   'busy': 'LightLineBusyFlag',
+  \   'wrap': 'PencilMode',
   \   'fileformat': 'LightLineFileFormat',
   \   'fileencoding': 'LightLineFileEncoding'
   \ },
@@ -62,7 +63,7 @@ function! LightLineFileEncoding()
 endfunction
 
 
-" 1. Git/Fugitive --------------------- {{{1
+" 2. Git/Fugitive --------------------- {{{1
 
 " Display the current git branch
 function! LightLineFugitive()
@@ -70,7 +71,7 @@ function! LightLineFugitive()
 endfunction
 
 
-" 2. CtrlP ---------------------------- {{{1
+" 3. CtrlP ---------------------------- {{{1
 
 " Use custom status functions
 let g:ctrlp_status_func = {
@@ -103,7 +104,7 @@ function! CtrlPProgressStatusLine(str)
 endfunction
 
 
-" 3. Syntastics ----------------------- {{{1
+" 4. Syntastics ----------------------- {{{1
 
 " Update Syntastic status, will be triggered by autocmd
 function! s:UpdateSyntasticStatus()

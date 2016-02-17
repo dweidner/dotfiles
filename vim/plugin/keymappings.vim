@@ -70,7 +70,8 @@ map <silent> <Leader>es :split %%
 map <silent> <Leader>ev :vsplit %%
 
 " Save current buffer
-nnoremap <silent> <Leader>w :w<CR>
+nnoremap <silent> <F2> :w<CR>
+inoremap <silent> <F2> <C-o>:w<CR>
 
 " Close current buffer and location list
 nnoremap <silent> <Leader>bd :lclose<CR>:bdelete<CR>
