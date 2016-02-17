@@ -26,11 +26,11 @@ snippet <? "Opening tag" b
 $0
 endsnippet
 
-snippet ?  "<? ... ?>" b
+snippet ?  "<? ... ?>"
 <?php $0 ?>
 endsnippet
 
-snippet ?e "<? echo ...; ?>" b
+snippet ?e "<? echo ...; ?>"
 <?php echo $0; ?>
 endsnippet
 
@@ -106,7 +106,7 @@ else {
 }
 endsnippet
 
-snippet elseif "elseif (...)"
+snippet elseif "elseif (...)" b
 elseif (${1}) {
 	$0
 }
@@ -186,11 +186,11 @@ endsnippet
 
 # Variables/Constants ------------------------------------------ {{{1
 
-snippet $ "Variable assignment..." b
+snippet $ "Variable assignment..."
 $${1:foo} = ${2};$0
 endsnippet
 
-snippet $? "Ternary assignment..." b
+snippet $? "Ternary assignment..."
 $${1:foo} = (${2}) ? ${3} : ${3};$0
 endsnippet
 
@@ -229,7 +229,7 @@ endsnippet
 
 # Class Declaration/Instantiation  ----------------------------- {{{1
 
-snippet new "New class instance..." b
+snippet new "New class instance..."
 	$${1:foo} = new ${2:${1/\w+\s*/\u$0/}}($3);$0
 endsnippet
 
@@ -280,7 +280,7 @@ function ${1}(${2}) {
 $0
 endsnippet
 
-snippet lambda "Annonymous function..."
+snippet lambda "Annonymous function..." b
 function(${1}) ${2:use ($var) }{
 	${VISUAL}${3}
 }${0}
@@ -460,19 +460,19 @@ endsnippet
 
 # Misc --------------------------------------------------------- {{{1
 
-snippet r "Require..." b
+snippet r "Require..."
 require '${1}';$0
 endsnippet
 
-snippet ro "Require once..." b
+snippet ro "Require once..."
 require_once '${1}';$0
 endsnippet
 
-snippet i "Include..." b
+snippet i "Include..."
 include '${1}';$0
 endsnippet
 
-snippet io "Include once..." b
+snippet io "Include once..."
 include_once '${1}';$0
 endsnippet
 
