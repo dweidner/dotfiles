@@ -8,8 +8,7 @@
 " 3. Window/Buffer Management
 " 4. Word Operations
 " 5. Line Operations
-" 6. User Interface
-" 7. Misc
+" 6. Misc
 " -------------------------------------
 
 
@@ -26,6 +25,9 @@ inoremap jj <Esc>
 
 " Expand %% to the same  directory of the current file
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
+
+" Toggle paste mode
+set pastetoggle=<F4>
 
 
 " 2. Movement ------------------------- {{{1
@@ -52,6 +54,10 @@ nnoremap <C-y> 3<C-y>
 " Move between display lines instead of numbered lines
 nnoremap <Up> gk
 nnoremap <Down> gj
+
+" Quickly move between urls
+nnoremap <silent> <buffer> [w :call jump#Jump('?\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
+nnoremap <silent> <buffer> ]w :call jump#Jump('/\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
 
 
 " 3. Window/Buffer Management --------- {{{1
@@ -97,16 +103,7 @@ vmap <special> <C-k> [egv
 vmap <special> <C-j> ]egv
 
 
-" 6. User Interface ------------------- {{{1
-
-" Toggle paste mode
-set pastetoggle=<F4>
-
-" Toggle numbers: No Numbers -> Absolute -> Relative
-nnoremap <silent> <F5> :let [&nu, &rnu] = [&nu+&rnu==0, &nu]<CR>
-
-
-" 7. Misc ----------------------------- {{{1
+" 6. Misc ----------------------------- {{{1
 
 " Reselect visual block after indent/outdent
 xnoremap < <gv
