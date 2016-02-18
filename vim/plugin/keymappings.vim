@@ -109,20 +109,6 @@ set pastetoggle=<F4>
 " Toggle numbers: No Numbers -> Absolute -> Relative
 nnoremap <silent> <F5> :let [&nu, &rnu] = [&nu+&rnu==0, &nu]<CR>
 
-" Toggle soft line wrapping
-function! s:ToggleWrap()
-  if &wrap
-    " Disable soft wrapping
-    set nowrap nolinebreak list
-    echo "nowrap"
-  else
-    " Enable soft wrapping
-    set wrap linebreak nolist
-    echo "  wrap"
-  endif
-endfunction
-nnoremap <silent> <F6> :call <sid>ToggleWrap()<CR>
-
 
 " 7. Misc ----------------------------- {{{1
 
