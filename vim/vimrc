@@ -108,24 +108,30 @@ set smartcase                         " Be case-sensitive when using capitals
 set nowrap                            " No line wrapping by default
 set textwidth=0                       " Avoid line breaks when pasting
 
-set foldcolumn=0                      " Do not show a fold column
-set nofoldenable                      " Open all folds by default
-set foldlevel=99
-set foldlevelstart=99
-
 set formatoptions-=o                  " Do not insert comment leader after o
 set formatoptions+=n                  " Recognize numbered lists in comments
 set formatoptions+=j                  " Remove comment leader when joining
 
 set nrformats-=octal                  " Don't use octals when incrementing
 
-set completeopt=longest,menuone       " Do not select the first entry
-set spelllang=en_us,de_de             " Languages to use for spell checks
+set complete-=i                       " Don't scan included files
+set completeopt-=preview              " Hide extra information in pum
+set completeopt+=longest              " Only insert the longest common text
+set completeopt+=menu                 " Show possible completions in a popup
+set completeopt+=menuone              " Show the popup for a single match
 
 set matchpairs+=<:>                   " Change html tags with ci< or ci>
 
+set nospell                           " Disable spell checking by default
+set spelllang=en_us,de_de             " Languages to use for spell checks
 
-" 5. Indentation and Tabs ----------- {{{1
+set foldcolumn=0                      " Do not show a fold column
+set nofoldenable                      " Open all folds by default
+set foldlevel=99
+set foldlevelstart=99
+
+
+" 4. Indentation and Tabs ----------- {{{1
 
 set autoindent                        " Start indentation at same position
 set smarttab                          " Insert blanks according to shiftwidth
@@ -136,7 +142,7 @@ set softtabstop=2                     " Set virtual tab stop
 set shiftround                        " Round indents to multiple of shiftwidth
 
 
-" 6. Vim Plugins ---------------------- {{{1
+" 5. Vim Plugins ---------------------- {{{1
 
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 
