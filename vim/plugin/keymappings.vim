@@ -56,6 +56,7 @@ nnoremap <Up> gk
 nnoremap <Down> gj
 
 " Quickly move between urls
+" Tip: Use gx to open the highlighted url in your browser
 nnoremap <silent> <buffer> [w :call jump#Jump('?\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
 nnoremap <silent> <buffer> ]w :call jump#Jump('/\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
 
