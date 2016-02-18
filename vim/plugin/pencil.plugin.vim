@@ -10,5 +10,3 @@ augroup end
 
 " Load vim pencil for specific filetypes only
 au dotpencil FileType markdown call pencil#init()
-                           \ | setl spell foldlevel=4 noruler nonumber norelativenumber
-
