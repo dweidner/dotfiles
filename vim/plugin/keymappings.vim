@@ -79,10 +79,6 @@ nnoremap <silent> <Leader>bd :lclose<CR>:bdelete<CR>
 
 " 4. Word Operations ------------------ {{{1
 
-" Convert word to lower/uppercase
-nnoremap <Leader>u mQviwU`Q
-nnoremap <Leader>l mQviwu`Q
-
 " Increment/decrement numbers
 nnoremap + <C-a>
 nnoremap - <C-x>

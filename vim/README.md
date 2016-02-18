@@ -84,8 +84,6 @@ Overview of default and custom key bindings in **VIM**.
 `dd` - delete entire *line*  
 `dw` - delete *word*  
 
-`Leader`+`x` - delete line without writing to the erase buffer[¹](#custom)  
-
 `gc{motion}` - comment or uncomment lines that *motion* moves over[²](#commentary)  
 `gcc` - comment or uncomment lines[²](#commentary)  
 
@@ -93,10 +91,12 @@ Overview of default and custom key bindings in **VIM**.
 `gu{motion}` - make text lowercase  
 `gU{motion}` - make text uppercase  
 
-`Leader`+`l` - convert *word* to lowercase[¹](#custom)  
-`Leader`+`u` - convert *word* to uppercase[¹](#custom)  
-`Leader`+`L` - convert *first letter* of word to lowercase[¹](#custom)  
-`Leader`+`U` - convert *first letter* of word to uppercase[¹](#custom)  
+`[Space` - add blank line above the cursor[³](#unimpaired)  
+`]Space` - add blank line below the cursor[³](#unimpaired)  
+`[e` - exchange the current line with the line above[³](#unimpaired)  
+`]e` - exchange the current line with the line below[³](#unimpaired)  
+
+`Leader`+`x` - delete line without writing to the erase buffer[¹](#custom)  
 
 ## File Navigation
 
@@ -141,6 +141,9 @@ Overview of default and custom key bindings in **VIM**.
 `z=` - give spelling suggestions  
 `zg` - mark word as correct  
 `zw` - mark word as wrong  
+
+`zug` - undo `zg`  
+`zuw` - undo `zw`  
 
 ## Folding
 
@@ -192,8 +195,12 @@ Overview of default and custom key bindings in **VIM**.
 
 ## Buffer Management
 
-`Leader`+`Tab` - switch to next buffer[¹](#custom)  
 `Leader`+`Space` - switch to alternate buffer[¹](#custom)  
+
+`[b` - Go to the previous buffer in buffer list (`:bprevious`)[³](#unimpaired)  
+`]b` - Go to the next buffer in buffer list (`:bnext`)[³](#unimpaired)  
+`[B` - Go to the first buffer in buffer list (`:bfirst`)[³](#unimpaired)  
+`]B` - Go to the last buffer in buffer list (`:blast`)[³](#unimpaired)  
 
 ## Window Management
 
