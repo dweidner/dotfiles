@@ -23,6 +23,9 @@ Thumbs.db
 # Sublime Text
 *.sublime-workspace
 
+# The Silver Searcher
+.agignore
+
 # Ignore tags created by ctags and cscope
 TAGS
 .TAGS
