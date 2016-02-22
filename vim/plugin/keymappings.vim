@@ -38,8 +38,11 @@ map ä ]
 map Ö {
 map Ä }
 
+" Jump section backward/forward
 map öö [[
 map ää ]]
+map öä []
+map äö ][
 
 " Move to the beginning/end of the line (default: top/bottom window)
 " @see <https://bitbucket.org/sjl/dotfiles/src>
@@ -57,8 +60,8 @@ nnoremap <Down> gj
 
 " Quickly move between urls
 " Tip: Use gx to open the highlighted url in your browser
-nnoremap <silent> <buffer> [w :call jump#Jump('?\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
-nnoremap <silent> <buffer> ]w :call jump#Jump('/\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
+nnoremap <silent> <buffer> [w :call custom#Jump('?\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
+nnoremap <silent> <buffer> ]w :call custom#Jump('/\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
 
 
 " 3. Window/Buffer Management --------- {{{1
@@ -72,16 +75,15 @@ nnoremap <Leader><Space> <C-^>
 
 " Open file in new buffer/split
 " @see <http://vimcasts.org/e/14>
-map <silent> <Leader>ew :edit %%
-map <silent> <Leader>es :split %%
-map <silent> <Leader>ev :vsplit %%
+map <silent> <Leader>ew :e %%
+map <silent> <Leader>es :sp %%
+map <silent> <Leader>ev :vs %%
 
-" Save current buffer
-nnoremap <silent> <F2> :w<CR>
-inoremap <silent> <F2> <C-o>:w<CR>
+" Save current buffer/file
+nnoremap <silent> <Leader>bw :w<CR>
 
-" Close current buffer and location list
-nnoremap <silent> <Leader>bd :lclose<CR>:bdelete<CR>
+" Close current buffer but try to keep an current split window
+nnoremap <silent> <Leader>bd :lc<CR>:bp<Bar>bd #<CR>
 
 
 " 4. Word Operations ------------------ {{{1
