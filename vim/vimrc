@@ -115,6 +115,7 @@ set formatoptions+=j                  " Remove comment leader when joining
 set nrformats-=octal                  " Don't use octals when incrementing
 
 set complete-=i                       " Don't scan included files
+set complete-=t                       " Avoid tag completion
 set completeopt-=preview              " Hide extra information in pum
 set completeopt+=longest              " Only insert the longest common text
 set completeopt+=menu                 " Show possible completions in a popup
