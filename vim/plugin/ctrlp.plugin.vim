@@ -6,12 +6,12 @@ let g:ctrlp_line_prefix = ''
 " Use `The Silver Searcher` if available
 if executable('ag')
   let g:ctrlp_user_command = 'ag %s
-    \ --nocolor --nogroup -g ""
+    \ --literal
+    \ --nocolor
+    \ --nogroup
+    \ --depth 20
     \ --files-with-matches
-    \ --ignore=".git"
-    \ --ignore=".svn"
-    \ --ignore=".hg"
-    \ --ignore="node_modules"'
+    \ -g ""'
 endif
 
 " Search by filename
