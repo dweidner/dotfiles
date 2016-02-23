@@ -1,6 +1,6 @@
 " autoload/custom.vim
 
-" Perform a motion but do not affect search history.
+" Perform a motion but preserve search history.
 " @see $VIMRUNTIME/ftplugin/python.vim
 function! custom#Jump(motion) range
   let cnt = v:count1

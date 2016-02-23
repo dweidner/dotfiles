@@ -192,11 +192,12 @@ call pathogen#helptags()
 " Utility
 " Plugin "ervandew/supertab"                  " Tab or Auto-Complete
 " Plugin "airblade/vim-rooter"                " Smart working directory
-" Plugin "keith/investigate.vim"              " Look up documentation
+" Plugin "svermeulen/vim-easyclip"            " Simplified clipboard
 " Plugin "junegunn/vim-easy-align"            " Align text elements
 " Plugin "tpope/vim-dispatch"                 " Async commands
 " Plugin "tpope/vim-eunuch"                   " Unix utilities in vim
 " Plugin "tpope/vim-repeat"                   " Repeat plugin commands
+" Plugin "keith/investigate.vim"              " Look up documentation
 " Plugin "benmills/vimux"                     " Run commands in tmux pane
 " Plugin "tmux-plugins/vim-tmux-focus-events" " Fix focus events in tmux
 
