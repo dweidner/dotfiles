@@ -52,7 +52,7 @@ if has('gui_running')
   set guioptions-=T                   " Hide toolbar
 
   set linespace=2                     " Increase spacing between lines
-  set columns=180 lines=60            " Provide enough space for two panes
+  set columns=180 lines=50            " Provide enough space for two panes
 
 endif
 
@@ -165,6 +165,7 @@ call pathogen#helptags()
 
 " Text Writing
 " Plugin "reedes/vim-pencil"                  " Soft wrap, better undo...
+" Plugin "junegunn/goyo.vim"                  " Distraction free writing
 
 " Syntax highlighting
 " Plugin "hail2u/vim-css3-syntax"             " Improve support for CSS3

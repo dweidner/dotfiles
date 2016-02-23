@@ -127,3 +127,6 @@
 [submodule "vim/bundle/vim-pencil"]
 	path = vim/bundle/vim-pencil
 	url = https://github.com/reedes/vim-pencil.git
+[submodule "vim/bundle/vim-goyo"]
+	path = vim/bundle/vim-goyo
+	url = https://github.com/junegunn/goyo.vim.git
