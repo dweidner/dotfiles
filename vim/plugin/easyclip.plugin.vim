@@ -20,12 +20,7 @@ xmap gs <plug>XEasyClipPaste
 let g:EasyClipUseCutDefaults = 0
 nmap x <Plug>MoveMotionPlug
 xmap x <Plug>MoveMotionXPlug
-nmap xx <Plug>MoveMotionLinePlug
-
-" Use custom binding for the cut operations
-let g:EasyClipUseCutDefaults = 0
-nmap x <Plug>MoveMotionPlug
-xmap x <Plug>MoveMotionXPlug
+nmap X <Plug>MoveMotionEndOfLinePlug
 nmap xx <Plug>MoveMotionLinePlug
 
 " Automatically turn on 'paste' mode for the duration of the paste operation

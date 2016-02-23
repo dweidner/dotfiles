@@ -73,18 +73,11 @@ nnoremap <Leader>ws <C-w>s<C-w>j
 " Switch to alternate buffer
 nnoremap <Leader><Space> <C-^>
 
-" Open file in new buffer/split
-" @see <http://vimcasts.org/e/14>
-map <silent> <Leader>ew :e %%
-map <silent> <Leader>es :sp %%
-map <silent> <Leader>ev :vs %%
-
-" Save current buffer/file
-nnoremap <silent> <Leader>bw :w<CR>
-
-" Close current buffer but try to keep an current split window
-nnoremap <silent> <Leader>bd :lc<CR>:bp<Bar>bd #<CR>
-
+" Save/close/switch buffers
+nnoremap <silent> <Leader>w :w<CR>
+nnoremap <silent> <Leader>d :lc<CR>:bp<Bar>bd #<CR>
+nnoremap <silent> <Leader>N :bp<CR>
+nnoremap <silent> <Leader>n :bn<CR>
 
 " 4. Word Operations ------------------ {{{1
 
@@ -111,6 +104,9 @@ vmap <special> <C-j> ]egv
 " Reselect visual block after indent/outdent
 xnoremap < <gv
 xnoremap > >gv
+
+" Toggle distraction free writing
+nnoremap <silent> <leader>z :Goyo<cr>
 
 
 " vim:foldmethod=marker:foldlevel=2
