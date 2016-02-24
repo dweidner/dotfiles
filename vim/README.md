@@ -1,6 +1,6 @@
 # Daniel’s vimrc
 
-These are my vim configuration files focused for Web Development in PHP and JavaScript.
+These are my vim configuration files focused on Web Development in PHP and JavaScript.
 
 ![vim screenshot](http://dweidner.github.io/dotfiles/images/screenshot-vim.png)
 > Screenshot of a vim instance running in Terminal.app
