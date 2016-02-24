@@ -1,7 +1,14 @@
-# Vim Cheat Sheet
+# Daniel’s vimrc
+
+These are my vim configuration files focused for Web Development in PHP and JavaScript.
+
+![vim screenshot](http://dweidner.github.io/dotfiles/images/screenshot-vim.png)
+> Screenshot of a vim instance running in Terminal.app
+
+## Vim Cheat Sheet
 Overview of default and custom key bindings in **VIM**.
 
-## Cursor movement
+### Cursor movement
 
 `h` - move left  
 `j` - move down  
@@ -11,10 +18,6 @@ Overview of default and custom key bindings in **VIM**.
 `gg` - move to the beginning of do the *document*  
 `5G` - move to line *5* of the *document*  
 `G` - move to the end of the *document*
-
-`H` - move to the top of the *window*  
-`M` - move to the middle of the *window*  
-`L` - move to the bottom of the *window*
 
 `w` - move forwards to the beginning of a *word*  
 `W` - move forwards to the beginning of a *word* (including punctuation)  
@@ -27,6 +30,8 @@ Overview of default and custom key bindings in **VIM**.
 `0` - move the beginning of the *line*  
 `^` - move to the first character of the *line*  
 `$` - move to the end of the *line*
+`H` - move the beginning of the *line*[¹](#custom)  
+`L` - move to the end of the *line*[¹](#custom)  
 
 `{` - move to previous *paragraph*/*function*/*block*  
 `}` - move to next *paragraph*/*function*/*block*  
@@ -38,7 +43,7 @@ Overview of default and custom key bindings in **VIM**.
 `t{char}` - move cursor before next occurrence of *char*  
 `T{char}` - move cursor after next occurrence of *char*  
 
-## Operators & Text objects
+### Operators & Text objects
 
 ```
 [operator][count][modifier][action]
@@ -69,7 +74,7 @@ Overview of default and custom key bindings in **VIM**.
 `b` - block from *(* to *)* (same as `(`, `)`)  
 `B` - block from *{* to *}* (same as `{`, `}`)  
 
-## Editing
+### Editing
 
 `r` - replace *character* under cursor  
 `s` - delete *character* and substitute text  
@@ -98,7 +103,7 @@ Overview of default and custom key bindings in **VIM**.
 
 `Leader`+`x` - delete line without writing to the erase buffer[¹](#custom)  
 
-## File Navigation
+### File Navigation
 
 `gf` - edit the file whose name is under the cursor  
 
@@ -108,7 +113,7 @@ Overview of default and custom key bindings in **VIM**.
 `gd` - go to definition of word under the cursor in current file  
 `g]` - list all tags that match the word under the cursor  
 
-## Undo & Redo
+### Undo & Redo
 
 `u` - undo last *command*  
 `Ctrl`+`r` - redo last *command*  
@@ -119,7 +124,7 @@ Overview of default and custom key bindings in **VIM**.
 `;` - repeat latest `f`, `F`, `t`, `T`  
 `,` - repeat latest `f`, `F`, `t`, `T` in opposite direction  
 
-## Copy & Paste
+### Copy & Paste
 
 `y$` - copy to the end of the *line*  
 `yy` - copy a *line*  
@@ -131,7 +136,7 @@ Overview of default and custom key bindings in **VIM**.
 `[p` - paste from clipboard before cursor but adjust indent to current line  
 `]p` - paste from clipboard after cursor but adjust indent to current line  
 
-## Spell checking
+### Spell checking
 
 `cos` - Toggle spell checking[³](#unimpaired)  
 
@@ -145,7 +150,7 @@ Overview of default and custom key bindings in **VIM**.
 `zug` - undo `zg`  
 `zuw` - undo `zw`  
 
-## Folding
+### Folding
 
 `zf{motion}` - create a fold  
 
@@ -157,7 +162,7 @@ Overview of default and custom key bindings in **VIM**.
 `zj` - Move downwards to the start of the next fold  
 `zk` - Move upwards to the end of the previous fold  
 
-## Insert Mode
+### Insert Mode
 
 `i` - insert before the cursor  
 `I` - insert at the beginning of the *line*  
@@ -169,7 +174,7 @@ Overview of default and custom key bindings in **VIM**.
 
 `jj` - exit *insert mode*[¹](#custom)  
 
-## Visual Mode
+### Visual Mode
 
 `v` - start *visual mode*  
 `V` - start linewise *visual mode*  
@@ -193,7 +198,7 @@ Overview of default and custom key bindings in **VIM**.
 `gn` - find next match of last search pattern and visual select it  
 `gN` - find previous match of last search pattern and visual select it  
 
-## Buffer Management
+### Buffer Management
 
 `Leader`+`Space` - switch to alternate buffer[¹](#custom)  
 
@@ -202,7 +207,7 @@ Overview of default and custom key bindings in **VIM**.
 `[B` - Go to the first buffer in buffer list (`:bfirst`)[³](#unimpaired)  
 `]B` - Go to the last buffer in buffer list (`:blast`)[³](#unimpaired)  
 
-## Window Management
+### Window Management
 
 `Ctrl`+`ws` - split window horizontally  
 `Ctrl`+`wv` - split window vertically  
@@ -220,7 +225,7 @@ Overview of default and custom key bindings in **VIM**.
 `Ctrl`+`e` - scroll window 3 lines down[¹](#custom)  
 `Ctrl`+`y` - scroll window 3 lines up[¹](#custom)  
 
-## [Surround](https://github.com/tpope/vim-surround)
+### [Surround](https://github.com/tpope/vim-surround)
 
 **Normal Mode:**  
 `ds` - delete a surrounding  
@@ -237,7 +242,7 @@ Overview of default and custom key bindings in **VIM**.
 **Insert Mode**  
 `Ctrl`+`s` - add a surrounding  
 
-## [Unimpaired](https://github.com/tpope/vim-unimpaired)
+### [Unimpaired](https://github.com/tpope/vim-unimpaired)
 
 `[a` - Edit previous file in argument list (`:previous`)  
 `]a` - Edit next file in argument list (`:next`)  
@@ -279,7 +284,7 @@ Overview of default and custom key bindings in **VIM**.
 **TIP:**  
 In order to make it easier to access the `[` and `]` mappings on german keyboards `ö` or `ä` are mapped as custom binding.  
 
-## [CtrlP](https://github.com/ctrlpvim/ctrlp.vim)
+### [CtrlP](https://github.com/ctrlpvim/ctrlp.vim)
 
 `Ctrl`+`p` - open *CtrlP*  
 `Ctrl`+`c` - exit *CtrlP*  
@@ -298,7 +303,7 @@ In order to make it easier to access the `[` and `]` mappings on german keyboard
 `Ctrl`+`z` - mark file  
 `Ctrl`+`o` - open marked files  
 
-## [(Ack) Quickfix Window](https://github.com/mileszs/ack.vim)
+### [(Ack) Quickfix Window](https://github.com/mileszs/ack.vim)
 
 `o` - open file  
 `O` - open file and close quickfix window  
