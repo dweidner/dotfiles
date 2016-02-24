@@ -60,8 +60,8 @@ nnoremap <Down> gj
 
 " Quickly move between urls
 " Tip: Use gx to open the highlighted url in your browser
-nnoremap <silent> <buffer> [w :call custom#Jump('?\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
-nnoremap <silent> <buffer> ]w :call custom#Jump('/\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
+nnoremap <silent> <buffer> [w :call util#Jump('?\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
+nnoremap <silent> <buffer> ]w :call util#Jump('/\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
 
 
 " 3. Window/Buffer Management --------- {{{1
@@ -80,10 +80,14 @@ nnoremap <Leader>w4 <C-w>s<C-w>v<C-w>k<C-w>v<C-w>h
 nnoremap <Leader><Space> <C-^>
 
 " Save/close/switch buffers
-nnoremap <silent> <Leader>w :w<CR>
-nnoremap <silent> <Leader>d :lc<CR>:bp<Bar>bd #<CR>
-nnoremap <silent> <Leader>N :bp<CR>
-nnoremap <silent> <Leader>n :bn<CR>
+nnoremap <silent> <Leader>bw :w<CR>
+nnoremap <silent> <Leader>bd :lc<CR>:bp<Bar>bd #<CR>
+nnoremap <silent> <Leader>bN :bp<CR>
+nnoremap <silent> <Leader>bn :bn<CR>
+
+" Compare the current buffer with the staged/last saved version
+nnoremap <silent> <Leader>bc :Gdiff<CR>
+nnoremap <silent> <Leader>bC :DiffOrig<CR>
 
 
 " 4. Word Operations ------------------ {{{1
