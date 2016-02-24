@@ -47,12 +47,14 @@ set undolevels=500                    " Reduce number of changes saved
 
 if has('gui_running')
 
-  set guifont=Menlo\ Regular:h15      " Select font to use
-  set guioptions-=m                   " Hide menubar
-  set guioptions-=T                   " Hide toolbar
+  "set guifont=Menlo\ Regular:h15      " Select font to use
+  "set linespace=2                     " Increase spacing between lines
 
-  set linespace=2                     " Increase spacing between lines
-  set columns=180 lines=50            " Provide enough space for two panes
+  set guifont=CamingoCode\ Regular:h16 " Prefer CamingoCode if available
+  set guioptions-=m                    " Hide menubar
+  set guioptions-=T                    " Hide toolbar
+
+  set columns=180 lines=50             " Provide enough space for two panes
 
 endif
 
@@ -171,9 +173,12 @@ call pathogen#helptags()
 " Syntax highlighting
 " Plugin "hail2u/vim-css3-syntax"             " Improve support for CSS3
 " Plugin "cakebaker/scss-syntax.vim"          " Improve higlighting for SASS
+" Plugin "StanAngeloff/php.vim"               " Support PHP 5.6 features
 " Plugin "othree/yajs.vim"                    " Add ES6 support
 " Plugin "evidens/vim-twig"                   " Improve hilighting for Twig
 " Plugin "tpope/vim-markdown"                 " Load *.md files as markdown
+" Plugin "tpope/vim-liquid"                   " Add Liquid & Jekyll support
+" Plugin "tejr/vim-tmux"                      " Highlighting for tmux scripts
 
 " Indentation
 " Plugin "gavocanov/vim-js-indent"            " Improve js indentation
