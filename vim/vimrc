@@ -153,6 +153,7 @@ call pathogen#helptags()
 " Appearance
 " Plugin "altercation/vim-colors-solarized"   " Color scheme of choice
 " Plugin "itchyny/lightline.vim"              " Customize vim's statusline
+" Plugin "airblade/vim-gitgutter"             " Show file changes in gutter
 
 " Web Development
 " Plugin "scrooloose/syntastic.git"           " Check file syntax
@@ -177,10 +178,6 @@ call pathogen#helptags()
 " Indentation
 " Plugin "gavocanov/vim-js-indent"            " Improve js indentation
 
-" Git Integration
-" Plugin "tpope/vim-fugitive"                 " Git integration
-" Plugin "airblade/vim-gitgutter"             " Check for file changes
-
 " Omnicomplete
 " Plugin "othree/html5.vim"                   " HTML5 & SVG omnicomplete
 " Plugin "shawncplus/phpcomplete.vim"         " PHP omnicomplete
@@ -198,8 +195,11 @@ call pathogen#helptags()
 " Plugin "tpope/vim-eunuch"                   " Unix utilities in vim
 " Plugin "tpope/vim-repeat"                   " Repeat plugin commands
 " Plugin "keith/investigate.vim"              " Look up documentation
-" Plugin "benmills/vimux"                     " Run commands in tmux pane
 " Plugin "tmux-plugins/vim-tmux-focus-events" " Fix focus events in tmux
+
+" Experimental/Seldomly Used
+" Plugin "benmills/vimux"                     " Run commands in tmux pane
+" Plugin "tpope/vim-fugitive"                 " Git integration
 
 " File Type Plugins
 filetype plugin indent on                     " Allow plugins per filetype
