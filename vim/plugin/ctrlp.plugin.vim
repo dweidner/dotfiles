@@ -1,5 +1,11 @@
 " plugin/ctrlp.plugin.vim
 
+" Customize the path of the cache files
+let g:ctrlp_cache_dir = g:vim_home_dir . '/tmp/ctrlp'
+
+" By default start CtrlP in the last used mode
+let g:ctrlp_cmd = 'CtrlPLastMode'
+
 " Avoid adding a prefix to each entry in the list
 let g:ctrlp_line_prefix = ''
 
@@ -9,13 +15,13 @@ if executable('ag')
     \ --literal
     \ --nocolor
     \ --nogroup
-    \ --depth 20
+    \ --depth 40
     \ --files-with-matches
     \ -g ""'
 endif
 
 " Search by filename
-nnoremap <Leader>p :CtrlPLastMode<CR>
+nnoremap <Leader>p :CtrlP<CR>
 
 " Search symbols in current file
 nnoremap <Leader>r :CtrlPBufTag<CR>
