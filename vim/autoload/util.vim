@@ -1,8 +1,8 @@
-" autoload/custom.vim
+" autoload/util.vim
 
 " Perform a motion but preserve search history.
 " @see $VIMRUNTIME/ftplugin/python.vim
-function! custom#Jump(motion) range
+function! util#Jump(motion) range
   let cnt = v:count1
   let save = @/            " save last search pattern
   mark '

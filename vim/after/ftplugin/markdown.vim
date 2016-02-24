@@ -14,5 +14,5 @@ let g:markdown_fenced_languages = [
   \ ]
 
 " Quickly move between headlines
-nnoremap <silent> <buffer> ]] :call custom#Jump('/^#.*')<CR>
-nnoremap <silent> <buffer> [[ :call custom#Jump('?^#.*')<CR>
+nnoremap <silent> <buffer> ]] :call util#Jump('/^#.*')<CR>
+nnoremap <silent> <buffer> [[ :call util#Jump('?^#.*')<CR>
