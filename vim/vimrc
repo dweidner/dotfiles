@@ -165,6 +165,8 @@ call pathogen#helptags()
 " Plugin "tpope/vim-commentary"               " Toggle comments
 " Plugin "itspriddle/vim-stripper"            " Remove trailing spaces
 " Plugin "SirVer/ultisnips"                   " Snippet manager
+" Plugin "keith/investigate.vim"              " Look up documentation
+" Plugin "tpope/vim-fugitive"                 " Git integration
 
 " Text Writing
 " Plugin "reedes/vim-pencil"                  " Soft wrap, better undo...
@@ -178,6 +180,7 @@ call pathogen#helptags()
 " Plugin "evidens/vim-twig"                   " Improve hilighting for Twig
 " Plugin "tpope/vim-markdown"                 " Load *.md files as markdown
 " Plugin "tpope/vim-liquid"                   " Add Liquid & Jekyll support
+" Plugin "tpope/vim-git"                      " Update syntax and indentation
 " Plugin "tejr/vim-tmux"                      " Highlighting for tmux scripts
 
 " Indentation
@@ -193,18 +196,16 @@ call pathogen#helptags()
 
 " Utility
 " Plugin "ervandew/supertab"                  " Tab or Auto-Complete
-" Plugin "airblade/vim-rooter"                " Smart working directory
-" Plugin "svermeulen/vim-easyclip"            " Simplified clipboard
+" Plugin "airblade/vim-rooter"                " Auto update working directory
+" Plugin "svermeulen/vim-easyclip"            " Simplified cut & paste
 " Plugin "junegunn/vim-easy-align"            " Align text elements
 " Plugin "tpope/vim-dispatch"                 " Async commands
 " Plugin "tpope/vim-eunuch"                   " Unix utilities in vim
 " Plugin "tpope/vim-repeat"                   " Repeat plugin commands
-" Plugin "keith/investigate.vim"              " Look up documentation
 " Plugin "tmux-plugins/vim-tmux-focus-events" " Fix focus events in tmux
 
 " Experimental/Seldomly Used
 " Plugin "benmills/vimux"                     " Run commands in tmux pane
-" Plugin "tpope/vim-fugitive"                 " Git integration
 
 " File Type Plugins
 filetype plugin indent on                     " Allow plugins per filetype
