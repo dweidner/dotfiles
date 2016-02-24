@@ -70,6 +70,12 @@ nnoremap <silent> <buffer> ]w :call custom#Jump('/\(https\{-}:\/\/[^\t\n ">]*\)'
 nnoremap <Leader>wv <C-w>v<C-w>l
 nnoremap <Leader>ws <C-w>s<C-w>j
 
+" Load frequently used window layouts
+nnoremap <Leader>w1 <C-w>o
+nnoremap <Leader>w2 <C-w>s<C-w>k
+nnoremap <Leader>w3 <C-w>s<C-w>j<C-w>v<C-w>k
+nnoremap <Leader>w4 <C-w>s<C-w>v<C-w>k<C-w>v<C-w>h
+
 " Switch to alternate buffer
 nnoremap <Leader><Space> <C-^>
 
@@ -78,6 +84,7 @@ nnoremap <silent> <Leader>w :w<CR>
 nnoremap <silent> <Leader>d :lc<CR>:bp<Bar>bd #<CR>
 nnoremap <silent> <Leader>N :bp<CR>
 nnoremap <silent> <Leader>n :bn<CR>
+
 
 " 4. Word Operations ------------------ {{{1
 
