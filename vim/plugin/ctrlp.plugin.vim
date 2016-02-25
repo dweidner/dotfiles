@@ -3,8 +3,8 @@
 " Customize the path of the cache files
 let g:ctrlp_cache_dir = g:vim_home_dir . '/tmp/ctrlp'
 
-" By default start CtrlP in the last used mode
-let g:ctrlp_cmd = 'CtrlPLastMode'
+" Allow to prefix <C-p> with a count to start in a specific mode
+let g:ctrlp_cmd = 'exe "CtrlP" . get(["", "Buffer", "MRU", "BufTag"], v:count)'
 
 " Avoid adding a prefix to each entry in the list
 let g:ctrlp_line_prefix = ''
@@ -20,9 +20,5 @@ if executable('ag')
     \ -g ""'
 endif
 
-" Search by filename
-nnoremap <Leader>p :CtrlP<CR>
-
 " Search symbols in current file
 nnoremap <Leader>r :CtrlPBufTag<CR>
-
