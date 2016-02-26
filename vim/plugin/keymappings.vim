@@ -124,8 +124,8 @@ vnoremap <C-f> y<ESC>/<C-r>"<CR>
 " TIP: Using @ as a separator to allow to search for /
 nnoremap <Leader>s :%s@@@gc<Left><Left><Left><Left>
 nnoremap <Leader>S :%s@@@g<Left><Left><Left>
-vnoremap <Leader>s :<C-w>%s@\%V@@gc<Left><Left><Left><Left>
-vnoremap <Leader>S :<C-w>%s@\%V@@g<Left><Left><Left>
+vnoremap <Leader>s :<C-u>%s@\%V@@gc<Left><Left><Left><Left>
+vnoremap <Leader>S :<C-u>%s@\%V@@g<Left><Left><Left>
 
 " Toggle distraction free writing using Goyo
 nnoremap <silent> <Leader>z :Goyo<cr>
