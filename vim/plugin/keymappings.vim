@@ -99,9 +99,6 @@ nnoremap - <C-x>
 
 " 5. Line Operations ------------------ {{{1
 
-" Remove line, but do not write it to the erase buffer
-nnoremap <Leader>x "_dd
-
 " Swap lines using vim-unimpaired
 " @see <https://github.com/davidosomething/dotfiles>
 nmap <special> <C-k> [e
@@ -116,8 +113,22 @@ vmap <special> <C-j> ]egv
 xnoremap < <gv
 xnoremap > >gv
 
-" Toggle distraction free writing
-nnoremap <silent> <leader>z :Goyo<cr>
+" Search (for word under the cursor) with Ack.vim
+nnoremap <C-f> :call ack#Ack('grep<bang>', input('Search: ', expand('<cword>')))<CR>
+
+" Search vor visually higlighted text in the current buffer
+" TIP: Once highlighted you can replace the text simply with: %s//<replacement>
+vnoremap <C-f> y<ESC>/<C-r>"<CR>
+
+" Easier access to vim's :substitute
+" TIP: Using @ as a separator to allow to search for /
+nnoremap <Leader>s :%s@@@gc<Left><Left><Left><Left>
+nnoremap <Leader>S :%s@@@g<Left><Left><Left>
+vnoremap <Leader>s :<C-w>%s@\%V@@gc<Left><Left><Left><Left>
+vnoremap <Leader>S :<C-w>%s@\%V@@g<Left><Left><Left>
+
+" Toggle distraction free writing using Goyo
+nnoremap <silent> <Leader>z :Goyo<cr>
 
 
 " vim:foldmethod=marker:foldlevel=2
