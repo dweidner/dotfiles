@@ -101,8 +101,6 @@ Overview of default and custom key bindings in **VIM**.
 `[e` - exchange the current line with the line above[³](#unimpaired)  
 `]e` - exchange the current line with the line below[³](#unimpaired)  
 
-`Leader`+`x` - delete line without writing to the erase buffer[¹](#custom)  
-
 ### File Navigation
 
 `gf` - edit the file whose name is under the cursor  
@@ -119,6 +117,8 @@ Overview of default and custom key bindings in **VIM**.
 `Ctrl`+`r` - redo last *command*  
 
 `.` - repeat last *command*  
+
+`&` - repeat last `:s`
 `g&` - repeat last `:s` on all lines  
 
 `;` - repeat latest `f`, `F`, `t`, `T`  
