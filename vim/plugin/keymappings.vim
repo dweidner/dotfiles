@@ -6,9 +6,8 @@
 " 1. General Mappings
 " 2. Movement
 " 3. Window/Buffer Management
-" 4. Word Operations
-" 5. Line Operations
-" 6. Misc
+" 4. Search/Replace
+" 5. Misc
 " -------------------------------------
 
 
@@ -20,29 +19,42 @@
 " space to the default leader key.
 map <Space> <Leader>
 
+" Customize mappings in normal mode to improve accessibility
+" on a german keyboard:
+" 1. Use ü/Ü and +/* for square/curly brackets.
+" 2. Make the shadowed star operator accessible via ö/Ö.
+" 3. Use ä/Ä for single/double quotes.
+" 4. Use -/_ for search forwards/backwards.
+noremap ü [
+noremap Ü {
+noremap + ]
+noremap * }
+noremap üü [[
+noremap ++ ]]
+noremap ü+ []
+noremap +ü ][
+noremap ö *
+noremap Ö #
+noremap ä '
+noremap Ä "
+noremap - /
+noremap _ ?
+
 " Avoid the escape key
 inoremap jj <Esc>
 
 " Expand %% to the same  directory of the current file
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 
+" Reselect visual block after indent/outdent
+xnoremap < <gv
+xnoremap > >gv
+
 " Toggle paste mode
 set pastetoggle=<F4>
 
 
 " 2. Movement ------------------------- {{{1
-
-" Make [,],{,} accessible on german keyboards
-map ö [
-map ä ]
-map Ö {
-map Ä }
-
-" Jump section backward/forward
-map öö [[
-map ää ]]
-map öä []
-map äö ][
 
 " Move to the beginning/end of the line (default: top/bottom window)
 " @see <https://bitbucket.org/sjl/dotfiles/src>
@@ -53,15 +65,6 @@ vnoremap L g_
 " Faster linewise scrolling
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
-
-" Move between display lines instead of numbered lines
-nnoremap <Up> gk
-nnoremap <Down> gj
-
-" Quickly move between urls
-" Tip: Use gx to open the highlighted url in your browser
-nnoremap <silent> <buffer> [w :call util#Jump('?\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
-nnoremap <silent> <buffer> ]w :call util#Jump('/\(https\{-}:\/\/[^\t\n ">]*\)')<CR>
 
 
 " 3. Window/Buffer Management --------- {{{1
@@ -90,28 +93,7 @@ nnoremap <silent> <Leader>bc :Gdiff<CR>
 nnoremap <silent> <Leader>bC :DiffOrig<CR>
 
 
-" 4. Word Operations ------------------ {{{1
-
-" Increment/decrement numbers
-nnoremap + <C-a>
-nnoremap - <C-x>
-
-
-" 5. Line Operations ------------------ {{{1
-
-" Swap lines using vim-unimpaired
-" @see <https://github.com/davidosomething/dotfiles>
-nmap <special> <C-k> [e
-nmap <special> <C-j> ]e
-vmap <special> <C-k> [egv
-vmap <special> <C-j> ]egv
-
-
-" 6. Misc ----------------------------- {{{1
-
-" Reselect visual block after indent/outdent
-xnoremap < <gv
-xnoremap > >gv
+" 4. Search/Replace ------------------- {{{1
 
 " Search (for word under the cursor) with Ack.vim
 nnoremap <C-f> :call ack#Ack('grep<bang>', input('Search: ', expand('<cword>')))<CR>
@@ -126,6 +108,16 @@ nnoremap <Leader>s :%s@@@gc<Left><Left><Left><Left>
 nnoremap <Leader>S :%s@@@g<Left><Left><Left>
 vnoremap <Leader>s :<C-u>%s@\%V@@gc<Left><Left><Left><Left>
 vnoremap <Leader>S :<C-u>%s@\%V@@g<Left><Left><Left>
+
+
+" 5. Misc ----------------------------- {{{1
+
+" Swap lines using vim-unimpaired
+" @see <https://github.com/davidosomething/dotfiles>
+nmap <special> <C-k> [e
+nmap <special> <C-j> ]e
+vmap <special> <C-k> [egv
+vmap <special> <C-j> ]egv
 
 " Toggle distraction free writing using Goyo
 nnoremap <silent> <Leader>z :Goyo<cr>
