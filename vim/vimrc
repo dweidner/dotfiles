@@ -123,6 +123,10 @@ set completeopt+=longest              " Only insert the longest common text
 set completeopt+=menu                 " Show possible completions in a popup
 set completeopt+=menuone              " Show the popup for a single match
 
+set diffopt+=vertical                 " Start diff mode with vertical splits
+set diffopt+=filler                   " Keep the windows synchronized
+set diffopt+=iwhite                   " Ignore changes in amount of whitespace
+
 set matchpairs+=<:>                   " Change html tags with ci< or ci>
 
 set nospell                           " Disable spell checking by default
