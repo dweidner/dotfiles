@@ -60,6 +60,9 @@ noremap Ä "
 noremap - /
 noremap _ ?
 
+" German Keyboard: Jump to the definition of the keyword under the cursor
+nnoremap <Leader>+ <C-]>
+
 
 " 3. Movement ------------------------- {{{1
 
