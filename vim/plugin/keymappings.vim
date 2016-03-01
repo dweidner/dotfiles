@@ -4,10 +4,11 @@
 " Table of Contents
 " -------------------------------------
 " 1. General Mappings
-" 2. Movement
-" 3. Window/Buffer Management
-" 4. Search/Replace
-" 5. Misc
+" 2. Localization
+" 3. Movement
+" 4. Window/Buffer Management
+" 5. Search/Replace
+" 6. Misc
 " -------------------------------------
 
 
@@ -18,27 +19,6 @@
 " nothing is displayed, when using showmode. As a workaround we simply map
 " space to the default leader key.
 map <Space> <Leader>
-
-" Customize mappings in normal mode to improve accessibility
-" on a german keyboard:
-" 1. Use ü/Ü and +/* for square/curly brackets.
-" 2. Make the shadowed star operator accessible via ö/Ö.
-" 3. Use ä/Ä for single/double quotes.
-" 4. Use -/_ for search forwards/backwards.
-noremap ü [
-noremap Ü {
-noremap + ]
-noremap * }
-noremap üü [[
-noremap ++ ]]
-noremap ü+ []
-noremap +ü ][
-noremap ö *
-noremap Ö #
-noremap ä '
-noremap Ä "
-noremap - /
-noremap _ ?
 
 " Avoid the escape key
 inoremap jj <Esc>
@@ -54,7 +34,34 @@ xnoremap > >gv
 set pastetoggle=<F4>
 
 
-" 2. Movement ------------------------- {{{1
+" 2. Localization --------------------- {{{1
+
+" German Keyboard: Square/curly bracket commands/vim-unimpaired
+map ü [
+map + ]
+noremap Ü {
+noremap * }
+
+" German Keyboard: Section forward/backward
+map üü [[
+map ++ ]]
+map ü+ []
+map +ü ][
+
+" German Keyboard: Make the shadowed star operator accessible via ö/Ö
+noremap ö *
+noremap Ö #
+
+" German Keyboard: Single/double quotes
+noremap ä '
+noremap Ä "
+
+" German Keyboard: Search forward/backward
+noremap - /
+noremap _ ?
+
+
+" 3. Movement ------------------------- {{{1
 
 " Move to the beginning/end of the line (default: top/bottom window)
 " @see <https://bitbucket.org/sjl/dotfiles/src>
@@ -67,7 +74,7 @@ nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
 
 
-" 3. Window/Buffer Management --------- {{{1
+" 4. Window/Buffer Management --------- {{{1
 
 " Split window vertically/horizontally
 nnoremap <Leader>wv <C-w>v<C-w>l
@@ -93,7 +100,7 @@ nnoremap <silent> <Leader>bc :Gdiff<CR>
 nnoremap <silent> <Leader>bC :DiffOrig<CR>
 
 
-" 4. Search/Replace ------------------- {{{1
+" 5. Search/Replace ------------------- {{{1
 
 " Search (for word under the cursor) with Ack.vim
 nnoremap <C-f> :call ack#Ack('grep<bang>', input('Search: ', expand('<cword>')))<CR>
@@ -110,7 +117,7 @@ vnoremap <Leader>s :<C-u>%s@\%V@@gc<Left><Left><Left><Left>
 vnoremap <Leader>S :<C-u>%s@\%V@@g<Left><Left><Left>
 
 
-" 5. Misc ----------------------------- {{{1
+" 6. Misc ----------------------------- {{{1
 
 " Swap lines using vim-unimpaired
 " @see <https://github.com/davidosomething/dotfiles>
