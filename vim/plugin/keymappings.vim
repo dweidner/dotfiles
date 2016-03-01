@@ -103,13 +103,19 @@ nnoremap <silent> <Leader>bC :DiffOrig<CR>
 " 5. Search/Replace ------------------- {{{1
 
 " Search (for word under the cursor) with Ack.vim
-nnoremap <C-f> :call ack#Ack('grep<bang>', input('Search: ', expand('<cword>')))<CR>
+nnoremap <C-f> ::call inputsave()<Bar>let s=input("Search: ", expand("<cword>"))<Bar>call inputrestore()<Bar>silent exe "Ack '".s."'"<CR>
 
-" Search vor visually higlighted text in the current buffer
-" TIP: Once highlighted you can replace the text simply with: %s//<replacement>
-vnoremap <C-f> y<ESC>/<C-r>"<CR>
+" Highlight word at cursor without changing current position
+" @see <https://github.com/jasoncodes/dotfiles>
+map  <silent> <Leader>h ::let view=winsaveview()<CR>*:call winrestview(view)<CR>
+vmap <silent> <Leader>h ::<C-u>let view=winsaveview()<CR>gv*:<C-u>call winrestview(view)<CR>
+map  <silent> <Leader>H <Leader>h:AckFromSearch!<CR>
 
-" Easier access to vim's :substitute
+" Hide matches from previous search
+noremap <silent> <Leader>/ :nohls<CR>
+noremap <silent> <Leader>- :nohls<CR>
+
+" Shortcuts to vim's :substitute
 " TIP: Using @ as a separator to allow to search for /
 nnoremap <Leader>s :%s@@@gc<Left><Left><Left><Left>
 nnoremap <Leader>S :%s@@@g<Left><Left><Left>
