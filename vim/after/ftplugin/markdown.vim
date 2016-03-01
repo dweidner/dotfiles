@@ -16,3 +16,9 @@ let g:markdown_fenced_languages = [
 " Quickly move between headlines
 nnoremap <silent> <buffer> ]] :call util#Jump('/^#.*')<CR>
 nnoremap <silent> <buffer> [[ :call util#Jump('?^#.*')<CR>
+
+" Preview file in Marked 2
+if has('mac')
+  command! Marked silent exe "!open -a 'Marked 2' '" . expand("%:p") . "'" | redraw!
+  nnoremap <silent> <buffer> <Leader>m :<C-u>Marked<CR>
+endif
