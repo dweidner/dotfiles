@@ -210,7 +210,7 @@ call pathogen#helptags()
 " Plugin "tmux-plugins/vim-tmux-focus-events" " Fix focus events in tmux
 
 " Experimental/Seldomly Used
-" Plugin "benmills/vimux"                     " Run commands in tmux pane
+" / None /
 
 " File Type Plugins
 filetype plugin indent on                     " Allow plugins per filetype
