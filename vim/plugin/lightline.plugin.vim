@@ -10,6 +10,12 @@
 " -------------------------------------
 
 
+" Create a new autocmd group for the lightline plugin
+augroup dotlightline
+  au!
+augroup end
+
+
 " 1. Lightline ------------------------ {{{1
 
 " Customize the statusline with lightline
@@ -62,6 +68,29 @@ function! LightLineFileEncoding()
   return fenc !=? 'utf-8' ? fenc : ''
 endfunction
 
+" Change the lightline colorscheme on the fly
+" @see |:help lightline-problem-13|
+function! s:LightLineColorSchemeUpdate()
+  if !exists('g:loaded_lightline')
+    return
+  endif
+  try
+    if g:colors_name =~# 'wombat\|solarized\|landscape\|jellybeans\|seoul256\|Tomorrow'
+      let g:lightline.colorscheme =
+            \ substitute(substitute(g:colors_name, '-', '_', 'g'), '256.*', '', '') .
+            \ (g:colors_name ==# 'solarized' ? '_' . &background : '')
+      call lightline#init()
+      call lightline#colorscheme()
+      call lightline#update()
+      call tmux#UpdateColorScheme()
+    endif
+  catch
+  endtry
+endfunction
+
+" Refresh lightline colors when the colorscheme changes
+au dotlightline ColorScheme * call s:LightLineColorSchemeUpdate()
+
 
 " 2. Git/Fugitive --------------------- {{{1
 
@@ -107,18 +136,13 @@ endfunction
 " 4. Syntastics ----------------------- {{{1
 
 " Update Syntastic status, will be triggered by autocmd
-function! s:UpdateSyntasticStatus()
+function! s:SyntasticStatusUpdate()
   SyntasticCheck
   call lightline#update()
 endfunction
 
-" Create a new autocmd group for the lightline plugin
-augroup dotlightline
-  au!
-augroup end
-
 " Trigger syntastic status update, when buffer is saved
-au dotlightline BufWritePost *.php,*.css,*.scss,*.js call s:UpdateSyntasticStatus()
+au dotlightline BufWritePost *.php,*.css,*.scss,*.js call s:SyntasticStatusUpdate()
 
 
 " vim:foldmethod=marker:foldlevel=2

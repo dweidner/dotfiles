@@ -34,6 +34,7 @@ if is_confirmed; then
   link_dotfile "inputrc"         ".inputrc"
   link_dotfile "vim"             ".vim"
   link_dotfile "gemrc"           ".gemrc"
+  link_dotfile "tmux"            ".tmux"
   link_dotfile "tmux.conf"       ".tmux.conf"
   link_dotfile "dircolors"       ".dircolors"
   link_dotfile "agignore"        ".agignore"
