@@ -1,4 +1,4 @@
-" .vimrc
+" vimrc
 
 if version >= 700                     " Ignore configuration on older systems
 
@@ -28,7 +28,7 @@ set encoding=utf-8                    " Encoding used in vim
 set ttyfast                           " Optimize for fast terminal connection
 set lazyredraw                        " No redraw for macros and commands
 set synmaxcol=512                     " Reduce number of columns to highlight
-set hidden                            " Hide modified buffers, no complaints
+set hidden                            " Hide modified buffers, don't complaint
 set autoread                          " Reload file if modified outside vim
 set history=1000                      " Increase number of commands saved
 set switchbuf+=useopen                " Reuse open buffers
