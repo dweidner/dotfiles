@@ -92,12 +92,6 @@ nnoremap <Leader>w4 <C-w>s<C-w>v<C-w>k<C-w>v<C-w>h
 " Switch to alternate buffer
 nnoremap <Leader><Space> <C-^>
 
-" Save/close/switch buffers
-nnoremap <silent> <Leader>bw :w<CR>
-nnoremap <silent> <Leader>bd :lc<CR>:bp<Bar>bd #<CR>
-nnoremap <silent> <Leader>bN :bp<CR>
-nnoremap <silent> <Leader>bn :bn<CR>
-
 " Compare the current buffer with the staged/last saved version
 nnoremap <silent> <Leader>bc :Gdiff<CR>
 nnoremap <silent> <Leader>bC :DiffOrig<CR>
