@@ -51,10 +51,10 @@ for plugin in $plugins; do
 done
 
 # Load common shell aliases
-source $DOTFILES_PATH/aliases
+source $DOTFILES_PATH/shell/aliases
 
 # Load zsh options
-for file in $DOTFILES_PATH/zsh/*.zsh; do
+for file in $DOTFILES_PATH/zsh/config/*.zshrc; do
   [ -f $file ] && source $file
 done
 

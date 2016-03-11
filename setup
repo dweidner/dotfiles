@@ -24,24 +24,24 @@ seek_confirmation "Link dotfiles (this may overwrite existing files)?"
 if is_confirmed; then
 
   # Copy '.gitconfig' if it does not exist
-  [[ ! -f "$HOME/.gitconfig" ]] && cp "$HOME/.dotfiles/git/config" "$HOME/.gitconfig"
+  [[ ! -f "$HOME/.gitconfig" ]] && cp "$HOME/.dotfiles/git/gitconfig" "$HOME/.gitconfig"
 
   # Create the necessary symbolic links between the `.dotfiles` and `HOME`
   # directory.
-  link_dotfile "zshrc"           ".zshrc"
-  link_dotfile "bashrc"          ".bashrc"
-  link_dotfile "bash_profile"    ".bash_profile"
-  link_dotfile "inputrc"         ".inputrc"
-  link_dotfile "vim"             ".vim"
-  link_dotfile "gemrc"           ".gemrc"
-  link_dotfile "tmux"            ".tmux"
-  link_dotfile "tmux.conf"       ".tmux.conf"
-  link_dotfile "dircolors"       ".dircolors"
-  link_dotfile "agignore"        ".agignore"
-  link_dotfile "ctags"           ".ctags"
-  link_dotfile "eslint"          ".eslint"
-  link_dotfile "git/attributes"  ".gitattributes"
-  link_dotfile "git/ignore"      ".gitignore"
+  link_dotfile "shell/bashrc"        ".bashrc"
+  link_dotfile "shell/bash_profile"  ".bash_profile"
+  link_dotfile "shell/inputrc"       ".inputrc"
+  link_dotfile "shell/dircolors"     ".dircolors"
+  link_dotfile "zsh/zshrc"           ".zshrc"
+  link_dotfile "zsh/zprofile"        ".zprofile"
+  link_dotfile "git/gitattributes"   ".gitattributes"
+  link_dotfile "git/gitignore"       ".gitignore"
+  link_dotfile "tmux/tmux.conf"      ".tmux.conf"
+  link_dotfile "vim"                 ".vim"
+  link_dotfile "gemrc"               ".gemrc"
+  link_dotfile "agignore"            ".agignore"
+  link_dotfile "ctags"               ".ctags"
+  link_dotfile "eslint"              ".eslint"
 
 fi
 
