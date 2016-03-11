@@ -1,0 +1,16 @@
+#!/bin/zsh
+
+# -----------------------------------------------
+# Table of Contents
+# -----------------------------------------------
+# 1. Utility Functions
+# 2. PATH environment variable
+# 3. MANPATH environment variable
+# 4. EDITOR environment variable
+# 5. Interactive Shells
+# -----------------------------------------------
+
+# Load configuration shared by bourne-like shells
+[[ -f "$HOME/.profile" ]] && source "$HOME/.profile"
+
+

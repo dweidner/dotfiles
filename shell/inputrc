@@ -1,3 +1,14 @@
+# shell/inputrc
+
+# -------------------------------------
+# Table of Contents
+# -------------------------------------
+# 1. General Settings
+# 2. Keybindings
+# 3. Autocomplete
+# -------------------------------------
+
+
 # 1. General Settings ----------------- {{{1
 
 set input-meta on
@@ -26,4 +37,4 @@ set visible-stats on                  # Show additional information
 set skip-completed-text on            # Look at the text after the cursor
 
 
-# vim:foldmethod=marker:foldlevel=1
+# vim:syntax=readline:foldmethod=marker:foldlevel=2
