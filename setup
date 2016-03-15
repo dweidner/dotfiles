@@ -38,10 +38,10 @@ if is_confirmed; then
   link_dotfile "git/gitignore"       ".gitignore"
   link_dotfile "tmux/tmux.conf"      ".tmux.conf"
   link_dotfile "vim"                 ".vim"
-  link_dotfile "gemrc"               ".gemrc"
-  link_dotfile "agignore"            ".agignore"
-  link_dotfile "ctags"               ".ctags"
-  link_dotfile "eslint"              ".eslint"
+  link_dotfile "misc/gemrc"          ".gemrc"
+  link_dotfile "misc/agignore"       ".agignore"
+  link_dotfile "misc/ctags"          ".ctags"
+  link_dotfile "misc/eslintrc"       ".eslintrc"
 
 fi
 
