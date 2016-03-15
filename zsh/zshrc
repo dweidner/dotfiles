@@ -1,62 +1,198 @@
-#!/usr/bin/env zsh
+# zsh/zshrc
 
-# Base folder containing all dotfiles
-export DOTFILES_PATH=~/.dotfiles
+# -----------------------------------------------
+# Table of Contents
+# -----------------------------------------------
+# 1. Sensible Defaults
+# 5. Colorize Shell
+# 2. ZSH History
+# 3. ZSH Completion
+# 4. ZSH Functions
+# 6. External Configuration
+# -----------------------------------------------
 
-# Customize zsh’s fpath
-fpath=( ~/.zfunctions $DOTFILES_PATH/zsh/functions $fpath )
 
-# Customize the path variable
-pathdirs=(
-  /usr/local/opt/coreutils/libexec/gnubin
-  /sbin
-  /usr/sbin
-  /usr/local/sbin
-  /bin
-  /usr/bin
-  /usr/local/bin
-  ~/.gem/bin
-  ~/.composer/vendor/bin
-  ~/.npm-packages/bin
-  $DOTFILES_PATH/bin
-  ~/bin
-)
+# 1. Sensible Defaults -------------------------- {{{1
 
-for dir in $pathdirs; do
-  [ -d $dir ] && path=($dir $path)
-done
+# Path to the home directory of the dotfiles repository
+DOTHOME="$HOME/.dotfiles"
 
-mandirs=(
-  /usr/share/man
-  /usr/local/share/man
-)
+# Disable BEEP on error
+setopt NO_BEEP
 
-for dir in $mandirs; do
-  [ -d $dir ] && manpath=($manpath $dir)
-done
+# Disable flow control characters (<Ctrl-r>/<Ctrl-q>)
+setopt NO_FLOW_CONTROL
 
-typeset -gU path mandirs
+# Try to correct the spelling of commands
+setopt CORRECT
 
-# Load custom functions
-for file in $DOTFILES_PATH/zsh/functions/*; do
+# Do not require a leading '.' in a filename to be matched explicitly
+setopt GLOB_DOTS
+
+# Make cd push the old directory onto the directory stack
+setopt AUTO_PUSHD
+
+# Have pushd with no arguments act like 'pushd $HOME'
+setopt PUSHD_TO_HOME
+
+# Do not print the directory stack after pushd or popd
+setopt PUSHD_SILENT
+
+# List jobs in the long format by default
+setopt LONG_LIST_JOBS
+
+# Restore terminal settings when exiting abnormally
+ttyctl -f
+
+# Autoload the run-help function for zsh builtin commands
+unalias run-help && autoload -Uz run-help && alias help="run-help"
+
+
+# 2. Colorize Shell ----------------------------- {{{1
+
+# Load zsh color module
+autoload -U colors && colors
+
+# Customize colorized output of the `list directory contents` command
+if is_mac && ! is_executable "dircolors"; then
+  export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD
+elif [[ -f "$HOME/.dircolors" ]] && is_executable "dircolors"; then
+  eval "$(dircolors -b "$HOME/.dircolors")"
+elif [[ -f "/etc/dircolors" ]] && is_executable "dircolors"; then
+  eval "$(dircolors -b "/etc/dircolors")"
+fi
+
+
+# 3. ZSH History -------------------------------- {{{1
+
+# Customize the path of the zsh history
+HISTFILE=$HOME/.zsh_history
+
+# Ignore duplicates and ignore lines starting with a space character
+HISTCONTROL=ignoreboth
+
+# Total number of entries saved in the command history
+HISTSIZE=1000
+SAVEHIST=1000
+
+# Read and write commands to the history file with timestamp
+setopt SHARE_HISTORY
+
+# Save each command's beginning timestamp and the duration to the history file
+setopt EXTENDED_HISTORY
+
+# Remove duplicate entries from the history file before losing a unique event
+setopt HIST_EXPIRE_DUPS_FIRST
+
+# Ignore duplicates of previous line
+setopt HIST_IGNORE_DUPS
+
+# Ignore command lines with a leading space
+setopt HIST_IGNORE_SPACE
+
+# Perform history expansion and reload the line into the editing buffer
+setopt HIST_VERIFY
+
+
+# 4. ZSH Completion ----------------------------- {{{1
+
+# a) Completion Options ---------- {{{2
+
+# List poissibilities on completion
+setopt NO_MENU_COMPLETE
+
+# Automatically  use  menu completion after the second consecutive request
+setopt AUTO_MENU
+
+# In completion, recognize exact matches even if they are ambiguous
+setopt REC_EXACT
+
+# Keep the cursor where it was before completion
+setopt COMPLETE_IN_WORD
+
+# Move the cursor to the end if a full comletion is inserted
+setopt ALWAYS_TO_END
+
+# b) Completion Styles ----------- {{{2
+
+# Setup new style completion system
+autoload -U compinit && compinit
+
+# Autocompletion with an arrow-key driven interface
+zstyle ':completion:*' menu select=1
+
+# Use cache to proxy the result list of complex commands like brew
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh/cache
+
+# Enable case-insensitive fuzzy matching of completions
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
+# Allow at maximum one error in the approximate completer
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
+
+# Ignore autocomplete functions
+zstyle ':completion:*:functions' ignored-patterns '_*'
+
+# Enable autocomplete for processes
+zstyle ':completion:*:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w -w"
+
+# Customize formatting and message
+zstyle ':completion:*:descriptions' format '%BCompleting %d%b'
+zstyle ':completion:*:messages' format '%d'
+zstyle ':completion:*:warnings' format 'No matches for: %d'
+zstyle ':completion:*:corrections' format '%B%d (errors: %e)%b'
+zstyle ':completion:*' verbose true
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' auto-description 'Specify: %d'
+
+# Use the same colors in the completion menu as used by the
+# `list directories` command
+if [ -n "$LS_COLORS" ]; then
+  zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+else
+  zstyle ':completion:*' list-colors ''
+fi
+
+
+# 5. ZSH Functions ------------------------------ {{{1
+
+# Add the custom function directory to the search path
+fpath=( $DOTHOME/zsh/functions $fpath )
+
+# Load all custom functions automatically upon their
+# first reference
+for file in $DOTHOME/zsh/functions/*; do
   autoload -Uz ${file##*/}
 done
 
-# Load zsh plugins
+
+# 6. External Configuration --------------------- {{{1
+
+# Load useful ZSH plugins
 plugins=( zsh-syntax-highlighting zsh-completions bd )
 
 for plugin in $plugins; do
-  plugin_file=$DOTFILES_PATH/zsh/plugins/$plugin/$plugin.plugin.zsh
+  plugin_file=$DOTHOME/zsh/plugins/$plugin/$plugin.plugin.zsh
   [ -f $plugin_file ] && source $plugin_file
 done
 
-# Load common shell aliases
-source $DOTFILES_PATH/shell/aliases
+# Load additional user configuration files
+configuration_files=(
+  $DOTHOME/zsh/zprompt
+  $DOTHOME/zsh/zinput
+  $DOTHOME/shell/aliases
+  $HOME/.zshrc_local
+)
 
-# Load zsh options
-for file in $DOTFILES_PATH/zsh/config/*.zshrc; do
+for file in $configuration_files; do
   [ -f $file ] && source $file
 done
 
-# Load user configuration
-[ -f ~/.zshrc.local ] && source ~/.zshrc.local
+# Automatically remove duplicates from these arrays
+typeset -U path cdpath fpath manpath
+
+
+# vim:syntax=zsh

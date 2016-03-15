@@ -3,15 +3,30 @@
 # -----------------------------------------------
 # Table of Contents
 # -----------------------------------------------
-# 1. Environment Variables
-# 2. Interactive Shells
+# 1. Utility Functions
+# 2. Environment Variables
+# 3. Interactive Shells
 # -----------------------------------------------
 
 # Load configuration file for “bourne-like" shells
 [ -r "$HOME/.profile" ] && source "$HOME/.profile"
 
 
-# 1. Environment Variables ---------------------- {{{1
+# 1. Utility Functions -------------------------- {{{1
+
+# Test whether the current operating system is a version of Mac OSX.
+is_mac() {
+  [[ "$OSTYPE" == darwin* ]]
+}
+
+# Test whether the given command can be executed.
+# - $1  Name of the command to execute
+is_executable() {
+  test -x "$(command -v "$1")"
+}
+
+
+# 2. Environment Variables ---------------------- {{{1
 
 # Select editor of choice
 is_executable "vim"  && EDITOR=vim
@@ -22,7 +37,7 @@ is_executable "pico" && EDITOR=pico
 export EDITOR
 
 
-# 2. Interactive Shell -------------------------- {{{1
+# 3. Interactive Shell -------------------------- {{{1
 
 case "$-" in *i*)
 

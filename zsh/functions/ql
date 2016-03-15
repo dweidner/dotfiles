@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# zsh/functions/ql
 
 #
 # Preview a file in quick look.
@@ -10,3 +10,5 @@
 ql() {
   qlmanage -p "$@" 2>/dev/null
 }
+
+# vim:syntax=zsh

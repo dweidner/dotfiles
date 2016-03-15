@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# zsh/functions/datauri
 
 #
 # Create a data URI from a file and copy it to the pasteboard.
@@ -23,3 +23,5 @@ datauri() {
     echo "$uri"
   fi
 }
+
+# vim:syntax=zsh
