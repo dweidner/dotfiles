@@ -1,0 +1,238 @@
+#!/usr/bin/env bash
+
+#
+# Allow the user to override environment variables
+#
+# $DOTFILES_DIRECTORY = Path of the local working copy.
+# $DOTFILES_REMOTE_REPOSITORY = Name of the remote git repository.
+#
+
+if [ -z "$DOTFILES_DIRECTORY" ]; then
+  DOTFILES_DIRECTORY="$HOME/.dotfiles"
+fi
+
+if [ -z "$DOTFILES_REMOTE_REPOSITORY" ]; then
+  DOTFILES_REMOTE_REPOSITORY="dweidner/dotfiles"
+fi
+
+#
+# Tells users how to use the script.
+#
+# Usage: usage
+#
+usage() {
+  cat <<EOT
+
+- Dotfiles Utility: ---------------------------------------
+  A utility script used to install and update all
+  dependencies of your local dotfiles installation.
+-----------------------------------------------------------
+
+  Usage: dotfiles [options]
+
+  Options:
+      -h, --help            Print usage information.
+      -l, --list            List submodules installed
+                            with the repository.
+      --ignore-submodules   Whether to Update submodules
+                            installed with the repository.
+
+  Copyright (c) Daniel Weidner
+  Licensed under the MIT license.
+
+-----------------------------------------------------------
+
+EOT
+}
+
+#
+# Test if a given folder is a git repository.
+#
+# Usage: is_git_repository directory
+#
+# $1 = Path of the directory.
+#
+is_git_repository() {
+  local dir="$1"
+
+  # Ensure the specified directory exists
+  if [[ ! -d "$dir" ]]; then
+    return 1
+  fi
+
+  # Switch to the directory before running the git command
+  pushd "$dir" >/dev/null
+
+  # Test whether the current working directory is a git repository
+  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    popd >/dev/null
+    return 0
+  else
+    popd >/dev/null
+    return 1
+  fi
+}
+
+#
+# Download a remote repository to a target directory.
+#
+# Usage: download_repository url target
+#
+# $1 = Url to load the repository from.
+# $2 = Target directory to copy the repository to.
+#
+download_repository() {
+  local src="$1"
+  local target="$2"
+
+  # Generate a unique name for the temporary archive
+  local prefix
+  prefix="$(basename "$0")"
+  local tmpfile
+  tmpfile="$(mktemp "/tmp/$prefix.tar.gz")"
+
+  # Load and extract the repository
+  curl -fsSLo "$tmpfile" "$src"
+  tar -zxf "$tmpfile" --strip-components 1 -C "$target"
+
+  # Cleanup the temporary files
+  rm -rf "$tmpfile"
+}
+
+#
+# Initialize a given directory as git repository.
+#
+# Usage: initialize_repository dir [remote]
+#
+#  $1 = Directory to initialize as git repository.
+# [$2] = Name of the remote repository.
+#
+initialize_repository() {
+  local dir="$1"
+  local remote_repository="$2"
+
+  # Switch to the given directory
+  pushd "$dir" >/dev/null
+
+  # Initialize the current directory as git repository
+  git init
+
+  # Fetch the remote repository and cleanup local working tree
+  if [ -n "$remote_repository" ]; then
+    git remote add origin "git@github.com:$repository.git"
+    git fetch origin master
+    git reset --hard FETCH_HEAD
+    git clean -fd
+  fi
+
+  # Switch back to the previous directory
+  popd >/dev/null
+}
+
+#
+# Update all submodules of the given working copy.
+#
+# Usage: update_submodules dir
+#
+# $1 = Path of the working copy.
+#
+update_submodules() {
+  local dir="$1"
+
+  # Ensure that a valid directory was given
+  if [[ ! -d "$dir" ]]; then
+    return 1
+  fi
+
+  # Switch to the working copy
+  pushd "$dir" >/dev/null
+
+  # Pull remote changes
+  git pull --rebase origin master
+
+  # Update submodules
+  git submodule update --init --recursive --quiet
+
+  # Revert the changes to the working directory
+  popd >/dev/null
+}
+
+#
+# Install the dotfiles repository to the target directory.
+#
+# Usage: install_dotfiles path
+#
+# $1 = Name of the repository to load.
+# $2 = Path to install the repository to.
+#
+install_dotfiles() {
+  local repository="$1"
+  local dir="$2"
+
+  if [[ -z "$repository" || -z "$dir" ]]; then
+    echo "dotfiles: Invalid arguments given."
+    return 1
+  fi
+
+  # Download and extract remote repository
+  if [[ ! -d "$dir" ]]; then
+    echo "Downloading remote repository..."
+    download_repository "https://github.com/$repository/tarball/master" "$dir"
+  fi
+
+  # Initialize repository and submodules
+  if ! is_git_repository "$dir"; then
+    echo "Initializing git repository..."
+    initialize_repository "$dir"
+  fi
+
+  # Test if installation was successfull
+  [[ -d "$dir" && -z $(is_git_repository "$dir") ]]
+}
+
+#
+# Script entry point
+#
+# $1 = One of the supported options.
+#
+main() {
+
+  # Display usage information
+  if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    usage
+    return 1
+  fi
+
+  # Set default values for options
+  local ignore_submodules=""
+
+  # Test for known options flags
+  for opt in "$@"; do
+    case $opt in
+      --ignore-submodules) ignore_submodules=true;;
+      -*|--*) echo "dotfiles: Unknown option $opt";;
+    esac
+  done
+
+  # Install the repository if not already done
+  if ! install_dotfiles "$DOTFILES_REMOTE_REPOSITORY" "$DOTFILES_DIRECTORY"; then
+    echo "dotfiles: Could not install dotfiles."
+    return 1
+  fi
+
+  # Update all dependencies added as submodules to the project
+  if [ -z "$ignore_submodules" ]; then
+    echo "Updating submodules..."
+    if ! update_submodules "$DOTFILES_DIRECTORY"; then
+      echo "dotfiles: Could not update submodules."
+      return 1
+    fi
+  fi
+
+  # TODO: Install/update npm/homebrew/gem
+  # TODO: Run osxdefaults
+
+  return 0
+}
+
+main "$@"
