@@ -3,9 +3,9 @@
 #
 # How to use the script.
 #
-# Usage e_usage
+# Usage usage
 #
-e_usage() {
+usage() {
   echo "usage: mount_encfs source target"
 }
 
@@ -38,7 +38,7 @@ main() {
   local target="$2"
 
   if [[ -z "$source" || -z "$target" ]]; then
-    e_usage
+    usage
     return 1
   fi
 
