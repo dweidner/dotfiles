@@ -35,7 +35,7 @@ alias rd='rmdir'
 
 # Enable colored output of the `list directory contents' command:
 # Prefer GNU `ls` which allows the use ~/.dircolors properly
-if is_formular_installed "coreutils"; then
+if brew list "coreutils" >/dev/null 2>&1; then
   ls_colorflag="--color"
   ls_binary="gls"
 elif ls --color >/dev/null 2>&1; then
@@ -57,6 +57,7 @@ alias grep="grep --color=auto"
 alias fgrep="fgrep --color=auto"
 alias egrep="egrep --color=auto"
 
+
 # 4. Operating System --------------------------- {{{1
 
 case "$OSTYPE" in
@@ -71,6 +72,7 @@ case "$OSTYPE" in
     alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
   ;;
 esac
+
 
 # 5. Misc --------------------------------------- {{{1
 
