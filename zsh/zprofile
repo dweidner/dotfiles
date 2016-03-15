@@ -1,16 +1,63 @@
-#!/bin/zsh
+# zsh/zprofile
 
 # -----------------------------------------------
 # Table of Contents
 # -----------------------------------------------
 # 1. Utility Functions
-# 2. PATH environment variable
-# 3. MANPATH environment variable
-# 4. EDITOR environment variable
-# 5. Interactive Shells
+# 2. Environment Variables
+# 3. Interactive Shells
 # -----------------------------------------------
 
+
 # Load configuration shared by bourne-like shells
-[[ -f "$HOME/.profile" ]] && source "$HOME/.profile"
+[ -f "$HOME/.profile" ] && source "$HOME/.profile"
 
 
+# 1. Utility Functions -------------------------- {{{1
+
+# Test whether the current operating system is a version of Mac OSX.
+is_mac() {
+  [[ "$OSTYPE" == darwin* ]]
+}
+
+# Test whether the given command can be executed.
+# - $1  Name of the command to execute
+is_executable() {
+  test -x "$(command -v "$1")"
+}
+
+
+# 2. Environment Variables ---------------------- {{{1
+
+# Select editor of choice
+is_executable "vim"  && EDITOR=vim
+is_executable "vi"   && EDITOR=vi
+is_executable "nano" && EDITOR=nano
+is_executable "pico" && EDITOR=pico
+
+export EDITOR
+
+
+# 3. Interactive Shells ------------------------- {{{1
+
+case "$-" in *i*)
+
+  # Customize preferences for frequently used binaries
+  export LESS="--ignore-case --LONG-PROMPT --RAW-CONTROL-CHAR"
+  export PAGER=less
+  export MANPAGER=$PAGER
+
+  # Directory used by the run-help function to find docs
+  is_dir "/usr/local/share/zsh/help" && export HELPDIR="/usr/local/share/zsh/help"
+
+  # NOTE: ---------------------------------------
+  # The zshrc configuration is loaded
+  # automatically for interactive shells.
+  # ---------------------------------------------
+  # [ -r "$HOME/.zshrc" ] && source "$HOME/.zshrc"
+  ;;
+
+esac
+
+
+# vim:syntax=zsh

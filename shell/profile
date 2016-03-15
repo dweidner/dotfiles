@@ -11,15 +11,28 @@
 
 # 1. Utility Functions -------------------------- {{{1
 
-# Test whether the current operating system is a version of Mac OSX.
-is_mac() {
-  [[ "$OSTYPE" == darwin* ]]
+# Test whether the given path points to a valid directory.
+# - $1  Path of the directory
+is_dir() {
+  [ -d "$1" ]
 }
 
-# Test whether the given command can be executed.
-# - $1  Name of the command to execute
-is_executable() {
-  test -x "$(command -v "$1")"
+# Prepend a new directory to the `PATH` environment variable.
+# - $1  Directory to prepend to the `PATH` variable
+path_prepend() {
+  is_dir "$1" && PATH="$1:$PATH"
+}
+
+# Append a new directory to the `PATH` environment variable.
+# - $1  Directory to append to the `PATH` variable
+path_append() {
+  is_dir "$1" && PATH="$PATH:$1"
+}
+
+# Append a new directory to the `MANPATH` environment variable.
+# - $1  Directory to prepend to the `MANPATH` variable
+manpath_append() {
+  is_dir "$1" && MANPATH="$MANPATH:$1"
 }
 
 # Test if a homebrew formular is installed on the system.
@@ -31,40 +44,25 @@ is_formular_installed() {
 
 # 2. PATH environment variable ------------------ {{{1
 
-# List of custom directories that should be appended to the `PATH`
-declare -a path_directories=(
-  "$HOME/.dotfiles/bin"
-  "$HOME/.gem/bin"
-  "$HOME/.composer/vendor/bin"
-  "$HOME/.npm-packages/bin"
-)
-
-# Append custom directories to the `PATH` if they exist
-for i in ${!path_directories[*]}; do
-  [ -d "${path_directories[$i]}" ] && PATH="$PATH:${path_directories[$i]}"
-done
+# List of custom directories to add the `PATH` variable
+path_prepend "/usr/local/bin"
+path_append  "$HOME/.dotfiles/bin"
+path_append  "$HOME/.gem/bin"
+path_append  "$HOME/.composer/bin"
+path_append  "$HOME/.npm-packages/bin"
 
 # Include GNU file, shell, and text utilities installed via homebrew
 if is_formular_installed "coreutils"; then
-  PATH="$PATH:$(brew --prefix coreutils)/libexec/gnubin"
+  path_append "$(brew --prefix coreutils)/libexec/gnubin"
 fi
-
-# Cleanup global scopes
-unset path_directories
-
-# Make changes to the `PATH` permanent
-export PATH
 
 
 # 3. MANPATH environment variable --------------- {{{1
 
 # Include man pages for gnu binaries
 if is_formular_installed "coreutils"; then
-  MANPATH="$MANPATH:$(brew --prefix coreutils)/libex/gnuman"
+  manpath_append "$(brew --prefix coreutils)/libexec/gnuman"
 fi
-
-# Make changes to `MANPATH` permanent
-export MANPATH
 
 
 # vim:syntax=sh:foldmethod=marker:foldlevel=2

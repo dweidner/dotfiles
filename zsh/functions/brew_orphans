@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# zsh/functions/brew_orphans
 
 #
 # List all installed homebrew formulars and those depending on them.
@@ -11,3 +11,5 @@ brew_orphans() {
     brew uses "$cask" --installed | awk '{printf("| %s \n", $0)}'; \
   done
 }
+
+# vim:syntax=zsh

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# zsh/functions/extract
 
 #
 # Extract various compression formats with a single function call
@@ -26,3 +26,5 @@ extract () {
     echo "extract: $1: No such file or directory"
   fi
 }
+
+# vim:syntax=zsh

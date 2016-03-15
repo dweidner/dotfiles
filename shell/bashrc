@@ -6,7 +6,7 @@
 # 1. Sensible Defaults
 # 2. Bash History
 # 3. Bash Completion
-# 4. Colorize Output
+# 4. Colorize Shell
 # 5. External Configuration
 # -----------------------------------------------
 
@@ -16,6 +16,9 @@
 
 
 # 1. Sensible Defaults -------------------------- {{{1
+
+# Path to the home directory of the dotfiles repository
+DOTHOME="$HOME/.dotfiles"
 
 # Autocorrect typos in path names
 shopt -s cdspell
@@ -58,7 +61,7 @@ elif [[ -f "/etc/bash_completion" ]]; then
 fi
 
 
-# 4. Colorize Output ---------------------------- {{{1
+# 4. Colorize Shell ----------------------------- {{{1
 
 # Customize colorized output of the `list directory contents` command
 if is_mac && ! is_executable "dircolors"; then
@@ -73,8 +76,8 @@ fi
 # 5. External Configuration --------------------- {{{1
 
 declare -a configuration_files=(
-  "$HOME/.dotfiles/shell/bash_prompt"
-  "$HOME/.dotfiles/shell/aliases"
+  "$DOTHOME/shell/bash_prompt"
+  "$DOTHOME/shell/aliases"
   "$HOME/.bash_local"
 )
 

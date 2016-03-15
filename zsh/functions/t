@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# zsh/functions/t
 
 #
 # Alias for tree. Display a colored list of all the contents of a
@@ -11,3 +11,5 @@
 t() {
   tree -aC -I '.cache|.Trash|.git|node_modules' --dirsfirst "$@" | less -FRNX;
 }
+
+# vim:syntax=zsh

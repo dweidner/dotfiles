@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# zsh/functions/h
 
 #
 # Search the bash history.
@@ -14,3 +14,5 @@ h() {
     history -n | grep "$1"
   fi
 }
+
+# vim:syntax=zsh
