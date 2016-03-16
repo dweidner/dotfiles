@@ -1,0 +1,36 @@
+# misc/brewformulae
+
+# Shells
+zsh
+bash
+bash-completion
+coreutils
+
+# Utilities
+homebrew/dupes/grep
+homebrew/dupes/openssh
+homebrew/fuse/encfs
+tmux
+git
+git-flow
+wget
+tree
+rsync
+
+# Development
+macvim --override-system-vim
+ctags
+dnsmasq
+node --without-npm
+mysql
+the_silver_searcher
+homebrew/php/php56
+hombrew/php/php56-xdebug
+homebrew/php/php56-mcrypt
+homebrew/php/adminer
+homebrew/php/php-code-sniffer
+homebrew/php/phpmd
+homebrew/php/composer
+homebrew/php/drush
+homebrew/php/drupalconsole
+homebrew/php/wp-cli

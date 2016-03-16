@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 #
-# Allow the user to override environment variables
+# Environment variables
 #
-# $DOTFILES_DIRECTORY = Path of the local working copy.
+# $DOTFILES_DIRECTORY         = Path of the local working copy.
 # $DOTFILES_REMOTE_REPOSITORY = Name of the remote git repository.
 #
 
@@ -16,6 +16,18 @@ if [ -z "$DOTFILES_REMOTE_REPOSITORY" ]; then
 fi
 
 #
+# Options/Flags
+#
+# $INSTALL_NPM_PACKAGES = Install list of npm packages
+# $INSTALL_FORMULAE     = Install list of hombrew formulae
+# $UPDATE_SUBMODULES    = Whether to update submodules or not
+#
+
+INSTALL_NPM_PACKAGES=0
+INSTALL_FORMULAE=0
+UPDATE_SUBMODULES=0
+
+#
 # Tells users how to use the script.
 #
 # Usage: usage
@@ -23,26 +35,75 @@ fi
 usage() {
   cat <<EOT
 
-- Dotfiles Utility: ---------------------------------------
-  A utility script used to install and update all
-  dependencies of your local dotfiles installation.
------------------------------------------------------------
+Usage: dotfiles [-h] [-l] [-u] [-n] [-b]
 
-  Usage: dotfiles [options]
+Options:
+   -h  Print usage information.
+   -l  List submodules installed with the repository.
+   -u  Update submodules installed with the repository.
+   -n  Install npm packages.
+   -b  Install homebrew formulae.
 
-  Options:
-      -h, --help            Print usage information.
-      -l, --list            List submodules installed
-                            with the repository.
-      --ignore-submodules   Whether to Update submodules
-                            installed with the repository.
-
-  Copyright (c) Daniel Weidner
-  Licensed under the MIT license.
-
------------------------------------------------------------
+Copyright (c) Daniel Weidner
+Licensed under the MIT license.
 
 EOT
+}
+
+#
+# Check for the existiance of flags and update corresponding
+# script variables.
+#
+# Usage: parse_options args
+#
+parse_options() {
+  set -- "$@"
+
+  local ARGN=$#
+  while [ "$ARGN" -ne 0 ]; do
+    case $1 in
+      -h) usage
+          exit 0
+          ;;
+      -l) list_submodules "$DOTFILES_DIRECTORY"
+          exit 0
+          ;;
+      -u) UPDATE_SUBMODULES=1
+          ;;
+      -n) INSTALL_NPM_PACKAGES=1
+          ;;
+      -b) INSTALL_FORMULAE=1
+          ;;
+      ?*) echo "ERROR: Unknown option."
+          usage
+          exit 0
+          ;;
+    esac
+    shift
+    ARGN=$((ARGN-1))
+  done
+}
+
+#
+# Test whether the given command can be executed.
+#
+# Usage: is_executable command
+#
+# $1 = Name of the command to execute.
+#
+is_executable() {
+  test -x "$(command -v "$1")"
+}
+
+#
+# Test if a homebrew formula is installed on the system.
+#
+# Usage: is_formula_installed formula
+#
+# $1 = Name of the homebrew formula.
+#
+is_formula_installed() {
+  brew list "$1" >/dev/null 2>&1
 }
 
 #
@@ -74,14 +135,15 @@ is_git_repository() {
 }
 
 #
-# Download a remote repository to a target directory.
+# Download a compressed archive and extract it to a target
+# directory.
 #
-# Usage: download_repository url target
+# Usage: download_archive url target
 #
-# $1 = Url to load the repository from.
+# $1 = Url to load the archive from.
 # $2 = Target directory to copy the repository to.
 #
-download_repository() {
+download_archive() {
   local src="$1"
   local target="$2"
 
@@ -97,6 +159,37 @@ download_repository() {
 
   # Cleanup the temporary files
   rm -rf "$tmpfile"
+}
+
+#
+# Strip comments and empty lines from a file.
+#
+# Usage: strip_comments file
+#
+# $1 = File to strip comments from.
+#
+strip_comments() {
+  egrep -v "(^#|^$)" "$1"
+}
+
+#
+# Reads the contents of a file containing a package list.
+#
+# Usage: read_package_list file
+#
+# $1 = Name of the package list to read.
+#
+read_package_list() {
+  local filename="$1"
+  local filepath="$HOME/.$filename"
+
+  if [[ ! -f "$filepath" ]]; then
+    filepath="$DOTFILES_DIRECTORY/misc/$filename"
+  fi
+
+  if [ -f "$filepath" ]; then
+    strip_comments "$filepath"
+  fi
 }
 
 #
@@ -130,6 +223,18 @@ initialize_repository() {
 }
 
 #
+# Displays an overview of installed submodules.
+#
+# Usage: list_submodules dir
+#
+# $1 = Path of the working copy.
+#
+list_submodules() {
+  local dir="$1"
+  # TODO: Provide an overview of installed submodules
+}
+
+#
 # Update all submodules of the given working copy.
 #
 # Usage: update_submodules dir
@@ -148,7 +253,7 @@ update_submodules() {
   pushd "$dir" >/dev/null
 
   # Pull remote changes
-  git pull --rebase origin master
+  git pull --rebase
 
   # Update submodules
   git submodule update --init --recursive --quiet
@@ -170,14 +275,14 @@ install_dotfiles() {
   local dir="$2"
 
   if [[ -z "$repository" || -z "$dir" ]]; then
-    echo "dotfiles: Invalid arguments given."
+    echo "ERROR: Invalid arguments given."
     return 1
   fi
 
   # Download and extract remote repository
   if [[ ! -d "$dir" ]]; then
     echo "Downloading remote repository..."
-    download_repository "https://github.com/$repository/tarball/master" "$dir"
+    download_archive "https://github.com/$repository/tarball/master" "$dir"
   fi
 
   # Initialize repository and submodules
@@ -191,28 +296,88 @@ install_dotfiles() {
 }
 
 #
+# Installs a list of npm packages from a configuration file.
+#
+# Usage: install_npm_packages
+#
+install_npm_packages() {
+
+  # Ensure npm is installed before installing packages
+  if is_executable "npm"; then
+
+    # Read package list into an array
+    IFS=$'\r\n' GLOBIGNORE='*'
+    local -a packages=($(read_package_list "npmpackages"))
+    unset IFS GLOBIGNORE
+
+    # Install packages in one go
+    if [ ${#packages[@]} -gt 0 ]; then
+      npm install "${packages[@]}" --global --quiet
+    else
+      echo "WARNING: No package list found."
+      return 1
+    fi
+
+    # Return the last exit code
+    return $?
+  fi
+
+  return 1
+}
+
+#
+# Installs a list of npm packages from a configuration file.
+#
+# Usage: install_homebrew_formulae
+#
+install_homebrew_formulae() {
+
+  # Ensure homebrew is installed before installing formulae
+  if is_executable "brew"; then
+
+    # Read formula list into an array
+    IFS=$'\r\n' GLOBIGNORE='*'
+    local -a formulae=($(read_package_list "brewformulae"))
+    unset IFS GLOBIGNORE
+
+    # Install formulae in one go
+    if [ ${#formulae[@]} -gt 0 ]; then
+
+      # Collect missing formulae
+      for formula in "${formulae[@]}"; do
+        formula_args=($formula)
+        if ! is_formula_installed "${formula_args[0]}"; then
+          missing=("${missing[@]}" "$formula")
+        fi
+      done
+
+      # Install missing formulae
+      if [ ${#missing[@]} -gt 0 ]; then
+        brew update
+        brew upgrade
+        brew install "${missing[@]}"
+        brew cleanup
+      fi
+    else
+      echo "WARNING: No formula list found."
+      return 1
+    fi
+
+    # Return the last exit code
+    return $?
+  fi
+
+  return 1
+}
+
+#
 # Script entry point
 #
 # $1 = One of the supported options.
 #
 main() {
-
-  # Display usage information
-  if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-    usage
-    return 1
-  fi
-
-  # Set default values for options
-  local ignore_submodules=""
-
-  # Test for known options flags
-  for opt in "$@"; do
-    case $opt in
-      --ignore-submodules) ignore_submodules=true;;
-      -*|--*) echo "dotfiles: Unknown option $opt";;
-    esac
-  done
+  # Handle script options
+  parse_options "$@"
 
   # Install the repository if not already done
   if ! install_dotfiles "$DOTFILES_REMOTE_REPOSITORY" "$DOTFILES_DIRECTORY"; then
@@ -220,16 +385,32 @@ main() {
     return 1
   fi
 
+  # Install all npm packages specified in a configuration file
+  if [ "$INSTALL_NPM_PACKAGES" -eq 1 ]; then
+    echo "Installing npm packages..."
+    if ! install_npm_packages; then
+      echo "ERROR: Could not install npm packages."
+    fi
+  fi
+
+  # Install all homebrew formulae specified in a configuration file
+  if [ "$INSTALL_FORMULAE" -eq 1 ]; then
+    echo "Installing homebrew formulae..."
+    if ! install_homebrew_formulae; then
+      echo "ERROR: Could not install homebrew formulae."
+    fi
+  fi
+
   # Update all dependencies added as submodules to the project
-  if [ -z "$ignore_submodules" ]; then
+  if [ "$UPDATE_SUBMODULES" -eq 1 ]; then
     echo "Updating submodules..."
     if ! update_submodules "$DOTFILES_DIRECTORY"; then
-      echo "dotfiles: Could not update submodules."
+      echo "ERROR: Could not update submodules."
       return 1
     fi
   fi
 
-  # TODO: Install/update npm/homebrew/gem
+  # TODO: Install XCode
   # TODO: Run osxdefaults
 
   return 0

@@ -35,9 +35,9 @@ manpath_append() {
   is_dir "$1" && MANPATH="$MANPATH:$1"
 }
 
-# Test if a homebrew formular is installed on the system.
-# - $1  Name of the homebrew formular
-is_formular_installed() {
+# Test if a homebrew formula is installed on the system.
+# - $1  Name of the homebrew formula
+is_formula_installed() {
   brew list "$1" >/dev/null 2>&1
 }
 
@@ -52,7 +52,7 @@ path_append  "$HOME/.composer/bin"
 path_append  "$HOME/.npm-packages/bin"
 
 # Include GNU file, shell, and text utilities installed via homebrew
-if is_formular_installed "coreutils"; then
+if is_formula_installed "coreutils"; then
   path_append "$(brew --prefix coreutils)/libexec/gnubin"
 fi
 
@@ -60,7 +60,7 @@ fi
 # 3. MANPATH environment variable --------------- {{{1
 
 # Include man pages for gnu binaries
-if is_formular_installed "coreutils"; then
+if is_formula_installed "coreutils"; then
   manpath_append "$(brew --prefix coreutils)/libexec/gnuman"
 fi
 
