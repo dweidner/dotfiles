@@ -20,11 +20,13 @@ fi
 #
 # $INSTALL_NPM_PACKAGES = Install list of npm packages
 # $INSTALL_FORMULAE     = Install list of hombrew formulae
+# $CREATE_SYMLINKS      = Create symbolic links to dotfiles
 # $UPDATE_SUBMODULES    = Whether to update submodules or not
 #
 
 INSTALL_NPM_PACKAGES=0
 INSTALL_FORMULAE=0
+CREATE_SYMLINKS=0
 UPDATE_SUBMODULES=0
 
 #
@@ -35,19 +37,35 @@ UPDATE_SUBMODULES=0
 usage() {
   cat <<EOT
 
-Usage: dotfiles [-h] [-l] [-u] [-n] [-b]
+Usage: dotfiles [-h] [-l] [-u] [-s] [-b] [-n]
 
 Options:
    -h  Print usage information.
    -l  List submodules installed with the repository.
    -u  Update submodules installed with the repository.
-   -n  Install npm packages.
+   -s  Create symbolic links (may overwrite existing).
    -b  Install homebrew formulae.
+   -n  Install npm packages.
+   -a  Combine options [-u], [-s], [-b] and [-n]
 
 Copyright (c) Daniel Weidner
 Licensed under the MIT license.
 
 EOT
+}
+
+#
+# Display script header.
+#
+# Usage: header
+#
+header() {
+  echo '                                     ';
+  echo '    __| | ___ | |_ / _(_) | ___  ___ ';
+  echo '   / _` |/ _ \| __| |_| | |/ _ \/ __|';
+  echo '  | (_| | (_) | |_|  _| | |  __/\__ \';
+  echo ' (_)__,_|\___/ \__|_| |_|_|\___||___/';
+  echo '                                     ';
 }
 
 #
@@ -70,9 +88,16 @@ parse_options() {
           ;;
       -u) UPDATE_SUBMODULES=1
           ;;
-      -n) INSTALL_NPM_PACKAGES=1
+      -s) CREATE_SYMLINKS=1
           ;;
       -b) INSTALL_FORMULAE=1
+          ;;
+      -n) INSTALL_NPM_PACKAGES=1
+          ;;
+      -a) UPDATE_SUBMODULES=1
+          CREATE_SYMLINKS=1
+          INSTALL_FORMULAE=1
+          INSTALL_NPM_PACKAGES=1
           ;;
       ?*) echo "ERROR: Unknown option."
           usage
@@ -82,15 +107,6 @@ parse_options() {
     shift
     ARGN=$((ARGN-1))
   done
-}
-
-#
-# Test whether the current operating system is a version of Mac OSX.
-#
-# Usage: is_mac
-#
-is_mac() {
-  [[ "$OSTYPE" == darwin* ]]
 }
 
 #
@@ -121,7 +137,7 @@ is_formula_installed() {
 # Usage: is_xcode_installed
 #
 is_xcode_installed() {
-  [ $(xcode-select -p >/dev/null; printf $?) -ne 0 ]
+  [ "$(xcode-select -p >/dev/null; printf "%s" "$?")" -eq 0 ]
 }
 
 #
@@ -153,6 +169,15 @@ is_git_repository() {
 }
 
 #
+# Test whether the user confirmed a question asked via readline.
+#
+# Usage: is_confirmed
+#
+is_confirmed() {
+  [[ "$REPLY" =~ ^[YyJj]$ ]]
+}
+
+#
 # Create a symbolic link to a file in the dotfiles repository.
 #
 # Usage: link dotfile symlink
@@ -161,7 +186,13 @@ is_git_repository() {
 # $2 = Relative path from the home directory.
 #
 link() {
-  [ -r "$DOTFILES_DIRECTORY/$1" ] && ln -fs "$DOTFILES_DIRECTORY/$1" "$HOME/$2"
+  if [ -r "$DOTFILES_DIRECTORY/$1" ]; then
+    ln -fs "$DOTFILES_DIRECTORY/$1" "$HOME/$2"
+    return $?
+  else
+    echo "ERROR: Can not create a symbolic link to $1"
+    return 1
+  fi
 }
 
 #
@@ -200,6 +231,18 @@ download_archive() {
 #
 strip_comments() {
   egrep -v "(^#|^$)" "$1"
+}
+
+#
+# Ask for user input.
+#
+# Usage: seek_confirmation question
+#
+# $1 = Question to ask.
+#
+seek_confirmation() {
+  read -r -n 1 -p "$* (y/n) "
+  printf "\n"
 }
 
 #
@@ -298,9 +341,19 @@ update_submodules() {
 # Usage: isntall_xcode
 #
 install_xcode() {
-  echo "Installing xcode command line tools..."
-  xcode-select --install
-  check_xcode
+  # Determine version of Mac OSX
+  local darwin_version=
+  darwin_version="$(uname -r)"
+
+  # Install the command line tools for OSX 10.9+.
+  if (( ${darwin_version%%.*} > 12 )); then
+    xcode-select --install
+    return $?
+  fi
+
+  # Not so easy to install the command line tools automatically
+  # for older versions of OSX
+  return 1
 }
 
 #
@@ -324,16 +377,23 @@ install_dotfiles() {
   if [[ ! -d "$dir" ]]; then
     echo "Downloading remote repository..."
     download_archive "https://github.com/$repository/tarball/master" "$dir"
+    echo "Done."
   fi
 
-  # Initialize repository and submodules
+  # Setup archive as git repository...
   if ! is_git_repository "$dir"; then
+
+    # Initialize repository and submodules
     echo "Initializing git repository..."
     initialize_repository "$dir"
-  fi
+    echo "Done."
 
-  # Create symbolic links
-  [[ $? ]] && link_dotfiles
+    # Create symbolic links
+    echo "Creating symbolic links..."
+    link_dotfiles
+    echo "Done."
+
+  fi
 
   # Test if installation was successfull
   [[ -d "$dir" && -z $(is_git_repository "$dir") ]]
@@ -366,37 +426,9 @@ link_dotfiles() {
   link "misc/ctags"           ".ctags"
   link "misc/agignore"        ".agignore"
   link "misc/eslintrc"        ".eslintrc"
-}
 
-#
-# Installs a list of npm packages from a configuration file.
-#
-# Usage: install_npm_packages
-#
-install_npm_packages() {
-
-  # Ensure npm is installed before installing packages
-  if is_executable "npm"; then
-
-    # Read package list into an array
-    IFS=$'\r\n' GLOBIGNORE='*'
-    local -a packages=($(read_package_list "npmpackages"))
-    unset IFS GLOBIGNORE
-
-    # Install packages in one go
-    if [ ${#packages[@]} -gt 0 ]; then
-      npm install "${packages[@]}" --global --quiet
-    else
-      echo "WARNING: No package list found."
-      return 1
-    fi
-
-    # Return the last exit code
-    return $?
-  fi
-
-  # TODO: Offer to install npm
-  return 1
+  # Avoid creating symbolic links twice
+  CREATE_SYMLINKS=0
 }
 
 #
@@ -407,42 +439,93 @@ install_npm_packages() {
 install_homebrew_formulae() {
 
   # Ensure homebrew is installed before installing formulae
-  if is_executable "brew"; then
+  if ! is_executable "brew"; then
 
-    # Read formula list into an array
-    IFS=$'\r\n' GLOBIGNORE='*'
-    local -a formulae=($(read_package_list "brewformulae"))
-    unset IFS GLOBIGNORE
+    # Offer to install homebrew
+    seek_confirmation "Install homebrew the missing package manager for OSX?"
 
-    # Install formulae in one go
-    if [ ${#formulae[@]} -gt 0 ]; then
-
-      # Collect missing formulae
-      for formula in "${formulae[@]}"; do
-        formula_args=($formula)
-        if ! is_formula_installed "${formula_args[0]}"; then
-          missing=("${missing[@]}" "$formula")
-        fi
-      done
-
-      # Install missing formulae
-      if [ ${#missing[@]} -gt 0 ]; then
-        brew update
-        brew upgrade
-        brew install "${missing[@]}"
-        brew cleanup
-      fi
+    if is_confirmed; then
+      echo "Installing homebrew package manager..."
+      ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+      echo "Done."
     else
-      echo "WARNING: No formula list found."
-      return 1
+      echo "Aborted."
     fi
 
-    # Return the last exit code
-    return $?
   fi
 
-  # TODO: Offer to install homebrew
-  return 1
+  # Read formula list into an array
+  IFS=$'\r\n' GLOBIGNORE='*'
+  local -a formulae=($(read_package_list "brewformulae"))
+  unset IFS GLOBIGNORE
+
+  # Install formulae in one go
+  if [ ${#formulae[@]} -gt 0 ]; then
+
+    # Collect missing formulae
+    for formula in "${formulae[@]}"; do
+      formula_args=($formula)
+      if ! is_formula_installed "${formula_args[0]}"; then
+        missing=("${missing[@]}" "$formula")
+      fi
+    done
+
+    # Install missing formulae
+    if [ ${#missing[@]} -gt 0 ]; then
+      brew update
+      brew upgrade
+      brew install "${missing[@]}"
+      brew cleanup
+    fi
+  else
+    echo "WARNING: No formula list found."
+    return 1
+  fi
+
+  # Return the last exit code
+  return $?
+
+}
+
+#
+# Installs a list of npm packages from a configuration file.
+#
+# Usage: install_npm_packages
+#
+install_npm_packages() {
+
+  # Ensure npm is installed before installing packages
+  if ! is_executable "npm"; then
+
+    # Offer to install npm
+    seek_confirmation "The node package manager is not installed. Install now?"
+
+    if is_confirmed; then
+      echo "Installing node package manager..."
+      curl -L https://www.npmjs.com/install.sh | sh
+      echo "Done."
+    else
+      echo "Aborted."
+    fi
+
+  fi
+
+  # Read package list into an array
+  IFS=$'\r\n' GLOBIGNORE='*'
+  local -a packages=($(read_package_list "npmpackages"))
+  unset IFS GLOBIGNORE
+
+  # Install packages in one go
+  if [ ${#packages[@]} -gt 0 ]; then
+    npm install "${packages[@]}" --global --quiet
+  else
+    echo "WARNING: No package list found."
+    return 1
+  fi
+
+  # Return the last exit code
+  return $?
+
 }
 
 #
@@ -451,8 +534,24 @@ install_homebrew_formulae() {
 # $1 = One of the supported options.
 #
 main() {
+  # Render the script header
+  header
+
   # Handle script options
   parse_options "$@"
+
+  # Install XCode
+  if ! is_xcode_installed; then
+    echo "WARNING: The XCode Command Line Tools must be installed first."
+    echo "Installing XCode Command Line Tools..."
+    if ! install_xcode; then
+      echo "ERROR: Could not install XCode Command Line Tools."
+      echo "Please install the Command Line Tools manually."
+      echo "Download the tools from: https://developer.apple.com/downloads"
+      exit 1
+    fi
+    echo "Done."
+  fi
 
   # Install the repository if not already done
   if ! install_dotfiles "$DOTFILES_REMOTE_REPOSITORY" "$DOTFILES_DIRECTORY"; then
@@ -460,10 +559,11 @@ main() {
     return 1
   fi
 
-  # Install XCode
-  if ! is_xcode_installed; then
-    echo "WARNING: The XCode Command Line Tools must be installed first."
-    install_xcode
+  # Create symbolic links if desired
+  if [ "$CREATE_SYMLINKS" -eq 1 ]; then
+    echo "Creating symbolic links..."
+    link_dotfiles
+    echo "Done."
   fi
 
   # Install all npm packages specified in a configuration file
@@ -472,6 +572,7 @@ main() {
     if ! install_npm_packages; then
       echo "ERROR: Could not install npm packages."
     fi
+    echo "Done."
   fi
 
   # Install all homebrew formulae specified in a configuration file
@@ -481,6 +582,7 @@ main() {
       echo "ERROR: Could not install homebrew formulae."
       return 1
     fi
+    echo "Done."
   fi
 
   # Update all dependencies added as submodules to the project
@@ -490,9 +592,19 @@ main() {
       echo "ERROR: Could not update submodules."
       return 1
     fi
+    echo "Done."
   fi
 
-  # TODO: Run osxdefaults
+  # Run osxdefaults by Mathias Bynens
+  seek_confirmation "Do you want to customize the OSX settings?"
+
+  if is_confirmed; then
+    echo "Setting OSX defaults..."
+    bash "$DOTFILES_DIRECTORY/bin/osxdefaults"
+    echo "Done."
+  else
+    echo "Aborted."
+  fi
 
   return 0
 }

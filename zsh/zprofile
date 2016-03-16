@@ -48,7 +48,7 @@ case "$-" in *i*)
   export MANPAGER=$PAGER
 
   # Directory used by the run-help function to find docs
-  is_dir "/usr/local/share/zsh/help" && export HELPDIR="/usr/local/share/zsh/help"
+  [ -d "/usr/local/share/zsh/help" ] && export HELPDIR="/usr/local/share/zsh/help"
 
   # NOTE: ---------------------------------------
   # The zshrc configuration is loaded
