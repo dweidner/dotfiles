@@ -85,6 +85,15 @@ parse_options() {
 }
 
 #
+# Test whether the current operating system is a version of Mac OSX.
+#
+# Usage: is_mac
+#
+is_mac() {
+  [[ "$OSTYPE" == darwin* ]]
+}
+
+#
 # Test whether the given command can be executed.
 #
 # Usage: is_executable command
@@ -104,6 +113,15 @@ is_executable() {
 #
 is_formula_installed() {
   brew list "$1" >/dev/null 2>&1
+}
+
+#
+# Test if xcode command line tools are installed. Note: Only works for OSX 10.9+.
+#
+# Usage: is_xcode_installed
+#
+is_xcode_installed() {
+  [ $(xcode-select -p >/dev/null; printf $?) -ne 0 ]
 }
 
 #
@@ -132,6 +150,18 @@ is_git_repository() {
     popd >/dev/null
     return 1
   fi
+}
+
+#
+# Create a symbolic link to a file in the dotfiles repository.
+#
+# Usage: link dotfile symlink
+#
+# $1 = Relative path to the file in the dotfiles repository.
+# $2 = Relative path from the home directory.
+#
+link() {
+  [ -r "$DOTFILES_DIRECTORY/$1" ] && ln -fs "$DOTFILES_DIRECTORY/$1" "$HOME/$2"
 }
 
 #
@@ -263,6 +293,17 @@ update_submodules() {
 }
 
 #
+# Install the xcode command line tools.
+#
+# Usage: isntall_xcode
+#
+install_xcode() {
+  echo "Installing xcode command line tools..."
+  xcode-select --install
+  check_xcode
+}
+
+#
 # Install the dotfiles repository to the target directory.
 #
 # Usage: install_dotfiles path
@@ -291,8 +332,40 @@ install_dotfiles() {
     initialize_repository "$dir"
   fi
 
+  # Create symbolic links
+  [[ $? ]] && link_dotfiles
+
   # Test if installation was successfull
   [[ -d "$dir" && -z $(is_git_repository "$dir") ]]
+}
+
+#
+# Create symbolic links between configuration files of the dotfiles repository
+# and files in the home directory.
+#
+# Usage: link_dotfiles
+#
+link_dotfiles() {
+  # Copy `.gitconfig` if it does not exist
+  [[ ! -f "$HOME/.gitconfig" ]] && cp "$DOTFILES_DIRECTORY/git/gitconfig" "$HOME/.gitconfig"
+
+  # Create the necessary symbolic links between the `dotfiles` and `HOME`
+  link "vim"                  ".vim"
+  link "shell/profile"        ".profile"
+  link "shell/bash_profile"   ".bash_profile"
+  link "shell/bashrc"         ".bashrc"
+  link "shell/inputrc"        ".inputrc"
+  link "shell/dircolors"      ".dircolors"
+  link "zsh/zprofile"         ".zprofile"
+  link "zsh/zshrc"            ".zshrc"
+  link "git/gitattributes"    ".gitattributes"
+  link "git/gitignore"        ".gitignore"
+  link "tmux/tmux.conf"       ".tmux.conf"
+  link "misc/gemrc"           ".gemrc"
+  link "misc/npmrc"           ".npmrc"
+  link "misc/ctags"           ".ctags"
+  link "misc/agignore"        ".agignore"
+  link "misc/eslintrc"        ".eslintrc"
 }
 
 #
@@ -322,6 +395,7 @@ install_npm_packages() {
     return $?
   fi
 
+  # TODO: Offer to install npm
   return 1
 }
 
@@ -367,6 +441,7 @@ install_homebrew_formulae() {
     return $?
   fi
 
+  # TODO: Offer to install homebrew
   return 1
 }
 
@@ -385,6 +460,12 @@ main() {
     return 1
   fi
 
+  # Install XCode
+  if ! is_xcode_installed; then
+    echo "WARNING: The XCode Command Line Tools must be installed first."
+    install_xcode
+  fi
+
   # Install all npm packages specified in a configuration file
   if [ "$INSTALL_NPM_PACKAGES" -eq 1 ]; then
     echo "Installing npm packages..."
@@ -398,6 +479,7 @@ main() {
     echo "Installing homebrew formulae..."
     if ! install_homebrew_formulae; then
       echo "ERROR: Could not install homebrew formulae."
+      return 1
     fi
   fi
 
@@ -410,7 +492,6 @@ main() {
     fi
   fi
 
-  # TODO: Install XCode
   # TODO: Run osxdefaults
 
   return 0
