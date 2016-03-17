@@ -38,6 +38,27 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # 01. Utility Functions ----------------------------------- {{{1
 
 #
+# Ask for user input.
+#
+# Usage: seek_confirmation question
+#
+# $1 = Question to ask.
+#
+seek_confirmation() {
+  read -r -n 1 -p "$* (y/n) "
+  printf "\n"
+}
+
+#
+# Test whether the user confirmed a question asked via readline.
+#
+# Usage: is_confirmed
+#
+is_confirmed() {
+  [[ "$REPLY" =~ ^[YyJj]$ ]]
+}
+
+#
 # Download a compressed archive and extract it to the `/tmp`-directory.
 #
 # Usage: download_archive url
@@ -45,8 +66,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # $1 = Url to load the archive from.
 #
 download_archive() {
-  local src="$1"
-  local target="$2"
+  local url="$1"
 
   # Generate a unique name for the temporary archive
   local prefix
@@ -55,7 +75,7 @@ download_archive() {
   tmpfile="$(mktemp "/tmp/$prefix.tar.gz")"
 
   # Download the archive
-  curl -fsSLo "$tmpfile" "$src"
+  curl -fsSLo "$tmpfile" "$url"
 
   # Generate a unique name for the temporary folder
   local tmpfolder
@@ -69,6 +89,80 @@ download_archive() {
 
   # Return the path to the extracted archive folder
   echo "$tmpfolder"
+}
+
+#
+# Import a color scheme into Terminal.app
+#
+# Usage: import_color_scheme file
+#
+# $1 = Path to the color scheme file to import.
+#
+import_color_scheme() {
+  local file="$1"
+  local filename=
+  local extension=
+
+  if [[ -f "$file" ]]; then
+    echo "ERROR: Color scheme not found $1"
+    return 1
+  fi
+
+  filename=$(basename "$file")
+  extension="${filename##*.}"
+  filename="${filename%.*}"
+
+  if [[ "$extension" != "terminal" ]]; then
+    echo "ERROR: Invalid color scheme $1"
+    return 1
+  fi
+
+osascript <<EOD
+tell application "Terminal"
+
+  local allOpenedWindows
+  local initialOpenedWindows
+  local windowID
+  set themeName to "$filename"
+  set themeFile to "$file"
+
+  (* Store the IDs of all the open terminal windows. *)
+  set initialOpenedWindows to id of every window
+
+  (* Open the custom theme so that it gets added to the list
+     of available terminal themes (note: this will open two
+     additional terminal windows). *)
+  do shell script "open '" & themeFile & "'"
+
+  (* Wait a little bit to ensure that the custom theme is added. *)
+  delay 1
+
+  (* Set the custom theme as the default terminal theme. *)
+  set default settings to settings set themeName
+
+  (* Get the IDs of all the currently opened terminal windows. *)
+  set allOpenedWindows to id of every window
+
+  repeat with windowID in allOpenedWindows
+
+    (* Close the additional windows that were opened in order
+       to add the custom theme to the list of terminal themes. *)
+    if initialOpenedWindows does not contain windowID then
+      close (every window whose id is windowID)
+
+    (* Change the theme for the initial opened terminal windows
+       to remove the need to close them in order for the custom
+       theme to be applied. *)
+    else
+      set current settings of tabs of (every window whose id is windowID) to settings set themeName
+    end if
+
+  end repeat
+
+end tell
+EOD
+
+return $?
 }
 
 
@@ -417,65 +511,22 @@ defaults write com.apple.mail SpellCheckingBehavior -string "NoSpellCheckingEnab
 defaults write com.apple.terminal StringEncodings -array 4
 
 # Use the Solarized Light theme by default in Terminal.app
-# a) Download the theme from Github
-# b) Extract it to the Temporary Folder
-# c) Import color scheme into Terminal.app
-# d) Remove temporary folders
-TMP_COLORSCHEME_FOLDER="$(download_archive "https://github.com/tomislav/osx-terminal.app-colors-solarized/tarball/master")"
+seek_confirmation "Do you want to import Solarized Color Scheme into the Terminal.app?"
+if is_confirmed; then
 
-if [ -d "$TMP_COLORSCHEME_FOLDER" ]; then
-
-# Import color scheme into Terminal.app
-osascript <<EOD
-tell application "Terminal"
-
-  local allOpenedWindows
-  local initialOpenedWindows
-  local windowID
-  set themeName to "Solarized Light"
-  set themeFile to "$TMP_COLORSCHEME_FOLDER/" & themeName & ".terminal"
-
-  (* Store the IDs of all the open terminal windows. *)
-  set initialOpenedWindows to id of every window
-
-  (* Open the custom theme so that it gets added to the list
-     of available terminal themes (note: this will open two
-     additional terminal windows). *)
-  do shell script "open '" & themeFile & "'"
-
-  (* Wait a little bit to ensure that the custom theme is added. *)
-  delay 1
-
-  (* Set the custom theme as the default terminal theme. *)
-  set default settings to settings set themeName
-
-  (* Get the IDs of all the currently opened terminal windows. *)
-  set allOpenedWindows to id of every window
-
-  repeat with windowID in allOpenedWindows
-
-    (* Close the additional windows that were opened in order
-       to add the custom theme to the list of terminal themes. *)
-    if initialOpenedWindows does not contain windowID then
-      close (every window whose id is windowID)
-
-    (* Change the theme for the initial opened terminal windows
-       to remove the need to close them in order for the custom
-       theme to be applied. *)
-    else
-      set current settings of tabs of (every window whose id is windowID) to settings set themeName
-    end if
-
-  end repeat
-
-end tell
-EOD
-
-# Remove temporary folders
-rm -r "$TMP_COLORSCHEME_FOLDER"
+  # Load the Solarized color scheme from Github
+  # a) Download the theme from Github
+  # b) Extract it to the Temporary Folder
+  # c) Import color scheme into Terminal.app
+  # d) Remove temporary folders
+  TMP_COLORSCHEME_FOLDER="$(download_archive "https://github.com/tomislav/osx-terminal.app-colors-solarized/tarball/master")"
+  if [ -d "$TMP_COLORSCHEME_FOLDER" ]; then
+    import_color_scheme "$TMP_COLORSCHEME_FOLDER/Solarized Dark.terminal"
+    import_color_scheme "$TMP_COLORSCHEME_FOLDER/Solarized Light.terminal"
+    rm -r "$TMP_COLORSCHEME_FOLDER"
+  fi
 
 fi
-
 
 # 11. Time Machine ------------------------------ {{{1
 
