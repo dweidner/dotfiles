@@ -44,9 +44,9 @@ is_formula_installed() {
 
 # 2. PATH environment variable ------------------ {{{1
 
-# List of custom directories to add the `PATH` variable
-path_prepend "/usr/local/bin"
-path_append  "$HOME/.dotfiles/bin"
+# Add custom directories to the path if they exist on the current system
+path_prepend "$HOME/.dotfiles/bin"
+path_prepend "$HOME/bin"
 path_append  "$HOME/.gem/bin"
 path_append  "$HOME/.composer/bin"
 path_append  "$HOME/.npm-packages/bin"
