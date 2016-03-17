@@ -65,6 +65,7 @@ fi
 
 # Customize colorized output of the `list directory contents` command
 if is_mac && ! is_executable "dircolors"; then
+  export CLICOLOR=1
   export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD
 elif [[ -f "$HOME/.dircolors" ]] && is_executable "dircolors"; then
   eval "$(dircolors -b "$HOME/.dircolors")"
