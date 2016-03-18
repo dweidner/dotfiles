@@ -592,7 +592,7 @@ show_status() {
 
   # Determine the status of each submodule.
   # shellcheck disable=SC2016,SC2033
-  status="$(git submodule foreach --quiet --recursive 'echo "$path $toplevel"' | xargs -n2 -P20 sh -c 'get_submodule_status "$@"' get_submodule_status | grep -v "^=")"
+  status="$(git submodule foreach --quiet --recursive 'echo "$path $toplevel"' | xargs -n2 -P20 sh -c 'get_submodule_status "$@"' get_submodule_status | grep "^-")"
 
   # Remove the internal functions from the global scope
   unset -f get_submodule_status get_upstream_status
