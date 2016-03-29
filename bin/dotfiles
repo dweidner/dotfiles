@@ -266,13 +266,16 @@ read_package_list() {
 get_upstream_status() {
   local dir="$1"
 
+  # Switch to the given directory
+  pushd "$dir" >/dev/null
+
+  # Grab the latest changes
+  git fetch --all >/dev/null
+
   # Determine the status of the current repository compared to the upstream
   local status=""
   local count=""
   count="$(git rev-list --count --left-right "@{upstream}"...HEAD 2>/dev/null)"
-
-  # Switch to the given directory
-  pushd "$dir" >/dev/null
 
   # Interpret the result of
   case "$count" in
@@ -305,21 +308,53 @@ get_upstream_status() {
 # Display the status of the dotfiles repository and all its submodules.
 # shellcheck disable=SC2032
 #
-# Usage: show_submodule_status name path toplevel
+# Usage: get_submodule_status path toplevel
 #
-# $1 = Name of the submodule.
-# $2 = Relative path to the submodule.
-# $3 = Absolute path to the parent repository.
+# $1 = Relative path to the submodule.
+# $2 = Absolute path to the parent repository.
 #
 get_submodule_status() {
   local path="$1"
   local toplevel="$2"
   local name="${path##*/}"
-  local status=""
 
+  local status=""
+  local remote_url=""
+
+  # Determine the status of the remote repository
   status="$(get_upstream_status "$toplevel/$path")"
 
-  printf "%-6s %s\n" "$status" "$name"
+  # Determine the url of the remote repository
+  pushd "$toplevel/$path" >/dev/null
+  remote_url="$(git config --get remote.origin.url)"
+  popd >/dev/null
+
+  printf "%-6s %-15s (%s)\n" "$status" "$name" "$remote_url"
+}
+
+#
+# Display changes made in to the remote branch since the last pull.
+# shellcheck disable=SC2032
+#
+# Usage: get_submodule_changes path toplevel
+#
+# $1 = Relative path to the submodule.
+# $2 = Absolute path to the parent repository.
+#
+get_submodule_changes() {
+  local path="$1"
+  local toplevel="$2"
+  local name="${path##*/}"
+
+  # Determine changes made to the remote repository since the last pull
+  local changes=""
+  pushd "$toplevel/$path" >/dev/null
+  changes="$(git --no-pager log --oneline HEAD..origin)"
+  popd >/dev/null
+
+  if [ -n "$changes" ]; then
+    printf "%s:\n%s\n\n" "$name" "$changes"
+  fi
 }
 
 #
@@ -581,10 +616,22 @@ install_npm_packages() {
 show_status() {
   local dir="$1"
   local status=""
+  local num_submodules=0
   local pending_updates=0
 
   # Switch to the given directory
   pushd "$dir" >/dev/null
+
+  # Determine the total number of submodules.
+  num_submodules="$(git submodule status | wc -l | tr -d '[:space:]')"
+
+  if [ "$num_submodules" -eq 0 ]; then
+    printf "» No submodules found.\n\n"
+    return 0
+  fi
+
+  # Print user information
+  printf "» Fetching updates for %s submodules...\n" "$num_submodules"
 
   # Export internal functions so we can use them within the
   # `git submodule foreach` loop
@@ -608,14 +655,46 @@ show_status() {
 
     # Summarize the modules with pending updates
     if [ "$pending_updates" -gt 0 ]; then
-      printf "» %s pending updates:\n%s\n\n" "$pending_updates" "$status"
-      return 0
+      printf "» Updates available for %s of %s submodules:\n%s\n\n" "$pending_updates" "$num_submodules" "$status"
+      return "$pending_updates"
     fi
 
   fi
 
   printf "» All submodules are up to date.\n\n"
   return 0
+}
+
+#
+# List changes made to the remote repositories of all added submodules.
+#
+# Usage: show_updates dir
+#
+# $1 = Path to the working tree.
+#
+show_updates() {
+  local dir="$1"
+  local changes=""
+
+  # Switch to the given directory
+  pushd "$dir" >/dev/null
+
+  # Export internal functions so we can use them within the
+  # `git submodule foreach` loop
+  export -f get_submodule_changes
+
+  # shellcheck disable=SC2016
+  changes="$(git submodule foreach --quiet --recursive 'echo "$path $toplevel"' | xargs -n2 -P20 sh -c 'get_submodule_changes "$@"' get_submodule_changes)"
+
+  # Remove the internal functions from the global scope
+  unset -f get_submodule_changes
+
+  # Switch back to the previous directory
+  popd >/dev/null
+
+  if [ -n "$changes" ]; then
+    printf "\n%b\n\n" "$changes" | less
+  fi
 }
 
 #
@@ -647,6 +726,28 @@ main() {
     return 1
   fi
 
+  # Display the status of submodules added to the repository
+  if ! show_status "$DOTFILES_DIRECTORY"; then
+    echo "» Found updates for at least one submodule."
+
+    # Ask if the users wants to show changes in the submodules
+    seek_confirmation "Do you want to list updates made to your submodules?"
+
+    if is_confirmed; then
+      show_updates "$DOTFILES_DIRECTORY"
+    fi
+
+    # Ask if the users wants to integrate submodule updates
+    seek_confirmation "Do you want to integrate the latest updates?"
+
+    if is_confirmed; then
+      UPDATE_SUBMODULES=1
+    else
+      UPDATE_SUBMODULES=0
+      echo "» Updates skipped."
+    fi
+  fi
+
   # Update all dependencies added as submodules to the project
   if [ "$UPDATE_SUBMODULES" -eq 1 ]; then
     echo "» Updating submodules..."
@@ -656,9 +757,6 @@ main() {
     fi
     echo "» Done."
   fi
-
-  # Display the status of submodules added to the repository
-  show_status "$DOTFILES_DIRECTORY"
 
   # Create symbolic links if desired
   if [ "$CREATE_SYMLINKS" -eq 1 ]; then
