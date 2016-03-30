@@ -11,6 +11,11 @@
 # $UPDATE_SUBMODULES          = Whether to update submodules or not
 #
 
+COLOR_FAIL="\e[1;31m"
+COLOR_SUCCESS="\e[1;32m"
+COLOR_WARN="\e[1;33m"
+COLOR_RESET="\e[0m"
+
 DOTFILES_DIRECTORY="$HOME/.dotfiles"
 DOTFILES_REMOTE_REPOSITORY="dweidner/dotfiles"
 INSTALL_NPM_PACKAGES=0
@@ -42,20 +47,6 @@ Copyright (c) Daniel Weidner
 Licensed under the MIT license.
 
 EOT
-}
-
-#
-# Display script header.
-#
-# Usage: header
-#
-header() {
-  echo '                                     ';
-  echo '    __| | ___ | |_ / _(_) | ___  ___ ';
-  echo '   / _` |/ _ \| __| |_| | |/ _ \/ __|';
-  echo '  | (_| | (_) | |_|  _| | |  __/\__ \';
-  echo ' (_)__,_|\___/ \__|_| |_|_|\___||___/';
-  echo '                                     ';
 }
 
 #
@@ -152,10 +143,10 @@ is_git_repository() {
   if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     popd >/dev/null
     return 0
-  else
-    popd >/dev/null
-    return 1
   fi
+
+  popd >/dev/null
+  return 1
 }
 
 #
@@ -180,36 +171,9 @@ link() {
     ln -fs "$DOTFILES_DIRECTORY/$1" "$HOME/$2"
     return $?
   else
-    echo "» ERROR: Can not create a symbolic link to $1"
+    print_error "Can not create a symbolic link to $1"
     return 1
   fi
-}
-
-#
-# Download a compressed archive and extract it to a target
-# directory.
-#
-# Usage: download_archive url target
-#
-# $1 = Url to load the archive from.
-# $2 = Target directory to copy the repository to.
-#
-download_archive() {
-  local src="$1"
-  local target="$2"
-
-  # Generate a unique name for the temporary archive
-  local prefix
-  prefix="$(basename "$0")"
-  local tmpfile
-  tmpfile="$(mktemp "/tmp/$prefix.tar.gz")"
-
-  # Load and extract the repository
-  curl -fsSLo "$tmpfile" "$src"
-  tar -zxf "$tmpfile" --strip-components 1 -C "$target"
-
-  # Cleanup the temporary files
-  rm -rf "$tmpfile"
 }
 
 #
@@ -221,6 +185,83 @@ download_archive() {
 #
 strip_comments() {
   egrep -v "(^#|^$)" "$1"
+}
+
+#
+# Print a status information.
+#
+# Usage: print_status message
+#
+# $1 = Message to print.
+#
+print_status() {
+  printf "● %s\n" "$1"
+}
+
+#
+# Print a error message.
+#
+# Usage: print_erro message
+#
+# $1 = Message to print.
+#
+print_error() {
+  printf "%b⨯ ERROR: %b%s\n" "$COLOR_FAIL" "$COLOR_RESET" "$1"
+}
+
+#
+# Print a warning message.
+#
+# Usage: print_warning message
+#
+# $1 = Message to print.
+#
+print_warning() {
+  printf "%b▴ WARNING: %b%s\n" "$COLOR_WARN" "$COLOR_RESET" "$1"
+}
+
+#
+# Notify user about a started process.
+#
+# Usage: process_started name [message]
+#
+#  $1  = Name of the process.
+# [$2] = Optional debug message.
+#
+process_started() {
+  local process="$1"
+  local message="${2:-Processing...}"
+  printf "● %s\n" "$message"
+}
+
+#
+# Notify user about a finished process.
+#
+# Usage: process_done name [message]
+#
+#  $1  = Name of the process.
+# [$2] = Optional debug message.
+#
+process_done() {
+  # shellcheck disable=SC2034
+  local process="$1"
+  local message="${2:-Done.}"
+  printf "%b✓ %s%b\n" "$COLOR_SUCCESS" "$message" "$COLOR_RESET"
+}
+
+#
+# Notify user about an aborted process.
+#
+# Usage: process_aborted name [message]
+#
+#  $1  = Name of the process.
+# [$2] = Optional debug message.
+#
+process_aborted() {
+  # shellcheck disable=SC2034
+  local process="$1"
+  local message="${2:-Aborted.}"
+  printf "%b⨯ %s%b\n" "$COLOR_FAIL" "$message" "$COLOR_RESET"
 }
 
 #
@@ -256,116 +297,41 @@ read_package_list() {
 }
 
 #
-# Determine how many commits the given working copy is ahead/behind
-# the upstream repository.
+# Download a compressed archive and extract it to a target
+# directory.
 #
-# Usage: get_upstream_status path
+# Usage: git_download_archive url target
 #
-# $1 = Path to the working copy.
+# $1 = Url to load the archive from.
+# $2 = Target directory to copy the repository to.
 #
-get_upstream_status() {
-  local dir="$1"
+git_download_archive() {
+  local src="$1"
+  local target="$2"
 
-  # Switch to the given directory
-  pushd "$dir" >/dev/null
+  # Generate a unique name for the temporary archive
+  local prefix
+  prefix="$(basename "$0")"
+  local tmpfile
+  tmpfile="$(mktemp "/tmp/$prefix.tar.gz")"
 
-  # Grab the latest changes
-  git fetch --all >/dev/null
+  # Load and extract the repository
+  curl -fsSLo "$tmpfile" "$src"
+  tar -zxf "$tmpfile" --strip-components 1 -C "$target"
 
-  # Determine the status of the current repository compared to the upstream
-  local status=""
-  local count=""
-  count="$(git rev-list --count --left-right "@{upstream}"...HEAD 2>/dev/null)"
-
-  # Interpret the result of
-  case "$count" in
-
-    # No upstream
-    "") status="?";;
-
-    # Equal
-    "0	0") status="=";;
-
-    # Ahead
-    "0	"*) status="+${count#0	}";;
-
-    # Behind
-    *"	0") status="-${count%	0}";;
-
-    # Diverged
-    *) status="+${count#*	}-${count%	*}";;
-
-  esac
-
-  # Switch back to the previous directory
-  popd >/dev/null
-
-  # Return the determined status
-  echo "$status"
-}
-
-#
-# Display the status of the dotfiles repository and all its submodules.
-# shellcheck disable=SC2032
-#
-# Usage: get_submodule_status path toplevel
-#
-# $1 = Relative path to the submodule.
-# $2 = Absolute path to the parent repository.
-#
-get_submodule_status() {
-  local path="$1"
-  local toplevel="$2"
-  local name="${path##*/}"
-
-  local status=""
-  local remote_url=""
-
-  # Determine the status of the remote repository
-  status="$(get_upstream_status "$toplevel/$path")"
-
-  # Determine the url of the remote repository
-  pushd "$toplevel/$path" >/dev/null
-  remote_url="$(git config --get remote.origin.url)"
-  popd >/dev/null
-
-  printf "%-6s %-15s (%s)\n" "$status" "$name" "$remote_url"
-}
-
-#
-# Display changes made in to the remote branch since the last pull.
-# shellcheck disable=SC2032
-#
-# Usage: get_submodule_changes path toplevel
-#
-# $1 = Relative path to the submodule.
-# $2 = Absolute path to the parent repository.
-#
-get_submodule_changes() {
-  local path="$1"
-  local toplevel="$2"
-  local name="${path##*/}"
-
-  # Determine changes made to the remote repository since the last pull
-  local changes=""
-  pushd "$toplevel/$path" >/dev/null
-  changes="$(git --no-pager log --oneline HEAD..origin)"
-  popd >/dev/null
-
-  if [ -n "$changes" ]; then
-    printf "%s:\n%s\n\n" "$name" "$changes"
-  fi
+  # Remove the archive
+  rm -rf "$tmpfile"
 }
 
 #
 # Initialize a given directory as git repository.
 #
-# Usage: initialize_repository dir [remote]
+# Usage: git_initialize_repository dir [remote]
 #
 #  $1 = Directory to initialize as git repository.
 # [$2] = Name of the remote repository.
 #
-initialize_repository() {
+git_initialize_repository() {
   local dir="$1"
   local remote_repository="$2"
 
@@ -388,13 +354,126 @@ initialize_repository() {
 }
 
 #
+# Run a bash function for each submodule.
+#
+# Usage: git_foreach_submodule fn
+#
+# $1 = Name of the function to run.
+#
+git_foreach_submodule() {
+  local args=(-c "$1 \"\$@\"" "$1")
+
+  # Export internal functions so we can use them within the
+  # `git submodule foreach` loop
+  # shellcheck disable=SC2163
+  export -f "$1"
+
+  # Run the specified script function foreach submodule
+  # shellcheck disable=SC2016
+  git submodule --quiet foreach --recursive 'echo "$name $path $toplevel"' | xargs -n3 -P20 sh "${args[@]}"
+
+  # Remove the internal functions from the global scope
+  # shellcheck disable=SC2163
+  unset -f "$1"
+}
+
+#
+# Display the status of the dotfiles repository and all its submodules.
+#
+# Usage: git_get_submodule_status name path toplevel
+#
+# $1 = Name of the submodule.
+# $2 = Relative path to the submodule.
+# $3 = Absolute path to the parent repository.
+#
+git_get_submodule_status() {
+  local name="$1"
+  local path="$2"
+  local toplevel="$3"
+
+  local count=""
+  local status=""
+  local remote_url=""
+  local remote_repository=""
+
+  if [[ ! -d "$toplevel/$path" ]]; then
+    return 1
+  fi
+
+  # Switch to the given directory
+  pushd "$toplevel/$path" >/dev/null
+
+  # Grab the latest changes
+  git fetch --quiet --all >/dev/null
+
+  # Determine the url of the remote repository
+  remote_url="$(git config --get remote.origin.url)"
+  remote_repository="${remote_url##*/}"
+  remote_repository="${remote_repository%.git}"
+
+  # Determine the status of the current repository
+  count="$(git rev-list --count --left-right "@{upstream}"...HEAD 2>/dev/null | tr -s '\t' '|')"
+
+  # Interpret the result
+  case "$count" in
+
+    # No upstream
+    "") status="?";;
+
+    # Equal
+    "0|0") status="$(printf "±%.2d" "0")";;
+
+    # Ahead
+    "0|"*) status="$(printf "%+.2d" "${count#0|}")";;
+
+    # Behind
+    *"|0") status="$(printf "%+.2d" "-${count%|0}")";;
+
+    # Diverged
+    *) status="$(printf "%+.2d %+.2d" "-${count%|*}" "${count#*|}")";;
+
+  esac
+
+  # Switch back to the previous directory
+  popd >/dev/null
+
+  # Render the module status
+  printf "%s %s\n" "$status" "$remote_repository"
+}
+
+#
+# Display changes made in to the remote branch since the last pull.
+#
+# Usage: git_get_submodule_changes name path toplevel
+#
+# $1 = Name of the submodule.
+# $2 = Relative path to the submodule.
+# $3 = Absolute path to the parent repository.
+#
+git_get_submodule_changes() {
+  local name="$1"
+  local path="$2"
+  local toplevel="$3"
+  local changes=""
+
+  # Determine changes made to the remote repository since the last pull
+  pushd "$toplevel/$path" >/dev/null
+  changes="$(git --no-pager log --oneline HEAD..origin)"
+  popd >/dev/null
+
+  if [ -n "$changes" ]; then
+    printf "%s:\n%s\n\n" "$name" "$changes"
+  fi
+}
+
+#
 # Update all submodules of the given working copy.
 #
-# Usage: update_submodules dir
+# Usage: git_update_submodules dir
 #
 # $1 = Path of the working copy.
 #
-update_submodules() {
+git_update_submodules() {
   local dir="$1"
 
   # Ensure that a valid directory was given
@@ -408,8 +487,12 @@ update_submodules() {
   # Pull remote changes
   git pull --rebase
 
-  # Update submodules
-  git submodule update --init --recursive --quiet
+  # Update the registered submodules to match what the superproject
+  git submodule --quiet update --init --recursive
+
+  # Fetch and merge updates from the remote repository for each submodule
+  # shellcheck disable=SC2016
+  git submodule --quiet foreach --recursive 'git pull origin $(git config -f "$toplevel/.gitmodules" "submodule.$name.branch" || echo "master")'
 
   # Revert the changes to the working directory
   popd >/dev/null
@@ -449,66 +532,34 @@ install_dotfiles() {
   local dir="$2"
 
   if [[ -z "$repository" || -z "$dir" ]]; then
-    echo "» ERROR: Invalid arguments given."
+    print_error "Invalid arguments given."
     return 1
   fi
 
   # Download and extract remote repository
   if [[ ! -d "$dir" ]]; then
-    echo "» Downloading remote repository..."
-    download_archive "https://github.com/$repository/tarball/master" "$dir"
-    echo "» Done."
+    process_started "git_download_archive" "Downloading remote repository..."
+    git_download_archive "https://github.com/$repository/tarball/master" "$dir"
+    process_done "git_download_archive"
   fi
 
   # Setup archive as git repository...
   if ! is_git_repository "$dir"; then
 
     # Initialize repository and submodules
-    echo "» Initializing git repository..."
-    initialize_repository "$dir"
-    echo "» Done."
+    process_started "git_initialize_repository" "Initializing git repository..."
+    git_initialize_repository "$dir"
+    process_done "git_initialize_repository"
 
     # Create symbolic links
-    echo "» Creating symbolic links..."
-    link_dotfiles
-    echo "» Done."
+    process_started "dotfiles_create_symlinks" "Creating symbolic links..."
+    dotfiles_create_symlinks
+    process_done "dotfiles_create_symlinks"
 
   fi
 
   # Test if installation was successfull
   [[ -d "$dir" && -z $(is_git_repository "$dir") ]]
-}
-
-#
-# Create symbolic links between configuration files of the dotfiles repository
-# and files in the home directory.
-#
-# Usage: link_dotfiles
-#
-link_dotfiles() {
-  # Copy `.gitconfig` if it does not exist
-  [[ ! -f "$HOME/.gitconfig" ]] && cp "$DOTFILES_DIRECTORY/git/gitconfig" "$HOME/.gitconfig"
-
-  # Create the necessary symbolic links between the `dotfiles` and `HOME`
-  link "vim"                  ".vim"
-  link "shell/profile"        ".profile"
-  link "shell/bash_profile"   ".bash_profile"
-  link "shell/bashrc"         ".bashrc"
-  link "shell/inputrc"        ".inputrc"
-  link "shell/dircolors"      ".dircolors"
-  link "zsh/zprofile"         ".zprofile"
-  link "zsh/zshrc"            ".zshrc"
-  link "git/gitattributes"    ".gitattributes"
-  link "git/gitignore"        ".gitignore"
-  link "tmux/tmux.conf"       ".tmux.conf"
-  link "misc/gemrc"           ".gemrc"
-  link "misc/npmrc"           ".npmrc"
-  link "misc/ctags"           ".ctags"
-  link "misc/agignore"        ".agignore"
-  link "misc/eslintrc"        ".eslintrc"
-
-  # Avoid creating symbolic links twice
-  CREATE_SYMLINKS=0
 }
 
 #
@@ -525,11 +576,11 @@ install_homebrew_formulae() {
     seek_confirmation "Install homebrew the missing package manager for OSX?"
 
     if is_confirmed; then
-      echo "» Installing homebrew package manager..."
+      process_started "install_homebrew" "Installing homebrew package manager..."
       ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-      echo "» Done."
+      process_done "install_homebrew"
     else
-      echo "» Aborted."
+      process_aborted "install_homebrew"
     fi
 
   fi
@@ -558,7 +609,7 @@ install_homebrew_formulae() {
       brew cleanup
     fi
   else
-    echo "» WARNING: No formula list found."
+    print_warning "No formular list found."
     return 1
   fi
 
@@ -580,11 +631,11 @@ install_npm_packages() {
     seek_confirmation "The node package manager is not installed. Install now?"
 
     if is_confirmed; then
-      echo "» Installing node package manager..."
+      process_started "install_npm" "Installing node package manager..."
       curl -L https://www.npmjs.com/install.sh | sh
-      echo "» Done."
+      process_done "install_npm"
     else
-      echo "» Aborted."
+      process_aborted "install_npm"
     fi
 
   fi
@@ -598,7 +649,7 @@ install_npm_packages() {
   if [ ${#packages[@]} -gt 0 ]; then
     npm install "${packages[@]}" --global --quiet
   else
-    echo "» WARNING: No package list found."
+    print_warning "No package list found."
     return 1
   fi
 
@@ -607,13 +658,59 @@ install_npm_packages() {
 }
 
 #
+# Display script header.
+#
+# Usage: dotfiles_show_header
+#
+dotfiles_show_header() {
+  echo '                                     ';
+  echo '    __| | ___ | |_ / _(_) | ___  ___ ';
+  echo '   / _` |/ _ \| __| |_| | |/ _ \/ __|';
+  echo '  | (_| | (_) | |_|  _| | |  __/\__ \';
+  echo ' (_)__,_|\___/ \__|_| |_|_|\___||___/';
+  echo '                                     ';
+}
+
+#
+# Create symbolic links between configuration files of the dotfiles repository
+# and files in the home directory.
+#
+# Usage: dotfiles_create_symlinks
+#
+dotfiles_create_symlinks() {
+  # Copy `.gitconfig` if it does not exist
+  [[ ! -f "$HOME/.gitconfig" ]] && cp "$DOTFILES_DIRECTORY/git/gitconfig" "$HOME/.gitconfig"
+
+  # Create the necessary symbolic links between the `dotfiles` and `HOME`
+  link "vim"                ".vim"
+  link "shell/profile"      ".profile"
+  link "shell/bash_profile" ".bash_profile"
+  link "shell/bashrc"       ".bashrc"
+  link "shell/inputrc"      ".inputrc"
+  link "shell/dircolors"    ".dircolors"
+  link "zsh/zprofile"       ".zprofile"
+  link "zsh/zshrc"          ".zshrc"
+  link "git/gitattributes"  ".gitattributes"
+  link "git/gitignore"      ".gitignore"
+  link "tmux/tmux.conf"     ".tmux.conf"
+  link "misc/gemrc"         ".gemrc"
+  link "misc/npmrc"         ".npmrc"
+  link "misc/ctags"         ".ctags"
+  link "misc/agignore"      ".agignore"
+  link "misc/eslintrc"      ".eslintrc"
+
+  # Avoid creating symbolic links twice
+  CREATE_SYMLINKS=0
+}
+
+#
 # Display the status of all submodules added to the dotfiles repository.
 #
-# Usage: show_status dir
+# Usage: dotfiles_show_status dir
 #
 # $1 = Path to the working tree.
 #
-show_status() {
+dotfiles_show_status() {
   local dir="$1"
   local status=""
   local num_submodules=0
@@ -623,26 +720,18 @@ show_status() {
   pushd "$dir" >/dev/null
 
   # Determine the total number of submodules.
-  num_submodules="$(git submodule status | wc -l | tr -d '[:space:]')"
+  num_submodules="$(git submodule status 2>/dev/null | wc -l | tr -d '[:space:]')"
 
   if [ "$num_submodules" -eq 0 ]; then
-    printf "» No submodules found.\n\n"
+    print_warning "No submodules found."
     return 0
   fi
 
   # Print user information
-  printf "» Fetching updates for %s submodules...\n" "$num_submodules"
-
-  # Export internal functions so we can use them within the
-  # `git submodule foreach` loop
-  export -f get_submodule_status get_upstream_status
+  print_status "$(printf "Fetching updates for %s submodules...\n" "$num_submodules")"
 
   # Determine the status of each submodule.
-  # shellcheck disable=SC2016,SC2033
-  status="$(git submodule foreach --quiet --recursive 'echo "$path $toplevel"' | xargs -n2 -P20 sh -c 'get_submodule_status "$@"' get_submodule_status | grep "^-")"
-
-  # Remove the internal functions from the global scope
-  unset -f get_submodule_status get_upstream_status
+  status="$(git_foreach_submodule "git_get_submodule_status" | grep "^-")"
 
   # Switch back to the previous directory
   popd >/dev/null
@@ -655,43 +744,37 @@ show_status() {
 
     # Summarize the modules with pending updates
     if [ "$pending_updates" -gt 0 ]; then
-      printf "» Updates available for %s of %s submodules:\n%s\n\n" "$pending_updates" "$num_submodules" "$status"
+      print_status "$(printf "Updates available for %s of %s submodules:\n%s\n\n" "$pending_updates" "$num_submodules" "$status")"
       return "$pending_updates"
     fi
 
   fi
 
-  printf "» All submodules are up to date.\n\n"
+  print_status "All submodules are up to date."
   return 0
 }
 
 #
 # List changes made to the remote repositories of all added submodules.
 #
-# Usage: show_updates dir
+# Usage: dotfiles_list_updates dir
 #
 # $1 = Path to the working tree.
 #
-show_updates() {
+dotfiles_list_updates() {
   local dir="$1"
   local changes=""
 
   # Switch to the given directory
   pushd "$dir" >/dev/null
 
-  # Export internal functions so we can use them within the
-  # `git submodule foreach` loop
-  export -f get_submodule_changes
-
-  # shellcheck disable=SC2016
-  changes="$(git submodule foreach --quiet --recursive 'echo "$path $toplevel"' | xargs -n2 -P20 sh -c 'get_submodule_changes "$@"' get_submodule_changes)"
-
-  # Remove the internal functions from the global scope
-  unset -f get_submodule_changes
+  # Retrieve the commit messages of the latest updates
+  changes="$(git_foreach_submodule "git_get_submodule_changes")"
 
   # Switch back to the previous directory
   popd >/dev/null
 
+  # Output changes if any are available
   if [ -n "$changes" ]; then
     printf "\n%b\n\n" "$changes" | less
   fi
@@ -701,87 +784,88 @@ show_updates() {
 # Script entry point
 #
 main() {
-  # Render the script header
-  header
-
   # Handle script options
   parse_options "$@"
 
+  # Render the script header
+  dotfiles_show_header
+
   # Install XCode
   if ! is_xcode_installed; then
-    echo "» WARNING: The XCode Command Line Tools must be installed first."
-    echo "» Installing XCode Command Line Tools..."
+    print_warning "The XCode Command Line Tools must be installed first."
+    process_started "install_xcode" "Installing XCode Command Line Tools..."
     if ! install_xcode; then
-      echo "» ERROR: Could not install XCode Command Line Tools."
-      echo "» Please install the Command Line Tools manually:"
-      echo "» <https://developer.apple.com/downloads>"
+      print_error "Could not install XCode Command Line Tools. Please install the Command Line Tools manually: https://developer.apple.com/downloads"
       exit 1
     fi
-    echo "Done."
+    process_done "insall_xcode"
   fi
 
   # Install the repository if not already done
   if ! install_dotfiles "$DOTFILES_REMOTE_REPOSITORY" "$DOTFILES_DIRECTORY"; then
-    echo "» ERROR: Could not install dotfiles."
+    print_error "Could not install dotfiles."
     return 1
   fi
 
   # Display the status of submodules added to the repository
-  if ! show_status "$DOTFILES_DIRECTORY"; then
-    echo "» Found updates for at least one submodule."
+  if ! dotfiles_show_status "$DOTFILES_DIRECTORY"; then
+    print_status "Found udpdates for at leas one submodule."
 
-    # Ask if the users wants to show changes in the submodules
-    seek_confirmation "Do you want to list updates made to your submodules?"
+    # Ask if the users wants to show the changes
+    seek_confirmation "Do you want to list the changes made to the remote repositories of your submodules?"
 
     if is_confirmed; then
-      show_updates "$DOTFILES_DIRECTORY"
+      dotfiles_list_updates "$DOTFILES_DIRECTORY"
+    else
+      process_aborted "dotfiles_list_updates"
     fi
 
     # Ask if the users wants to integrate submodule updates
-    seek_confirmation "Do you want to integrate the latest updates?"
+    seek_confirmation "Do you want to integrate the latest changes into your working copy?"
 
     if is_confirmed; then
       UPDATE_SUBMODULES=1
     else
       UPDATE_SUBMODULES=0
-      echo "» Updates skipped."
+      process_aborted "git_update_submodules"
     fi
   fi
 
   # Update all dependencies added as submodules to the project
   if [ "$UPDATE_SUBMODULES" -eq 1 ]; then
-    echo "» Updating submodules..."
-    if ! update_submodules "$DOTFILES_DIRECTORY"; then
-      echo "ERROR: Could not update submodules."
+    process_started "git_update_submodules" "Updating submodules..."
+    if ! git_update_submodules "$DOTFILES_DIRECTORY"; then
+      print_error "Could not update submodules."
       return 1
     fi
-    echo "» Done."
+    process_done "git_update_submodules"
   fi
 
   # Create symbolic links if desired
   if [ "$CREATE_SYMLINKS" -eq 1 ]; then
-    echo "» Creating symbolic links..."
-    link_dotfiles
-    echo "» Done."
+    process_started "dotfiles_create_symlinks" "Creating symbolic links..."
+    dotfiles_create_symlinks
+    process_done "dotfiles_create_symlinks"
   fi
 
   # Install all npm packages specified in a configuration file
   if [ "$INSTALL_NPM_PACKAGES" -eq 1 ]; then
-    echo "» Installing npm packages..."
+    process_started "install_npm_packages" "Installing npm packages..."
     if ! install_npm_packages; then
-      echo "» ERROR: Could not install npm packages."
+      print_error "Could not install npm packages."
+      return 1
     fi
-    echo "» Done."
+    process_done "install_npm_packages"
   fi
 
   # Install all homebrew formulae specified in a configuration file
   if [ "$INSTALL_FORMULAE" -eq 1 ]; then
-    echo "» Installing homebrew formulae..."
+    process_started "install_homebrew_formulae" "Installing hombrew formulae..."
     if ! install_homebrew_formulae; then
-      echo "» ERROR: Could not install homebrew formulae."
+      print_error "Could not install homebrew formulae."
       return 1
     fi
-    echo "» Done."
+    process_done "install_homebrew_formulae"
   fi
 
   # Run osxdefaults by Mathias Bynens
@@ -789,11 +873,11 @@ main() {
     seek_confirmation "Do you want to customize the OSX settings?"
 
     if is_confirmed; then
-      echo "» Setting OSX defaults..."
-      bash "$DOTFILES_DIRECTORY/bin/osxdefaults"
-      echo "» Done."
+      process_started "osxdefaults" "Setting OSX defaults..."
+      sh "$DOTFILES_DIRECTORY/bin/osxdefaults"
+      process_done "osxdefaults"
     else
-      echo "» Aborted."
+      process_aborted "osxdefaults"
     fi
   fi
 
