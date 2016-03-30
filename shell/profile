@@ -48,7 +48,7 @@ is_formula_installed() {
 path_prepend "$HOME/.dotfiles/bin"
 path_prepend "$HOME/bin"
 path_append  "$HOME/.gem/bin"
-path_append  "$HOME/.composer/bin"
+path_append  "$HOME/.composer/vendor/bin"
 path_append  "$HOME/.npm-packages/bin"
 
 # Include GNU file, shell, and text utilities installed via homebrew
