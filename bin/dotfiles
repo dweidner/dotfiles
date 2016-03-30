@@ -80,7 +80,7 @@ parse_options() {
           INSTALL_FORMULAE=1
           INSTALL_NPM_PACKAGES=1
           ;;
-      ?*) echo "» ERROR: Unknown option."
+      ?*) print_error "Unknown option."
           usage
           exit 0
           ;;
@@ -485,14 +485,14 @@ git_update_submodules() {
   pushd "$dir" >/dev/null
 
   # Pull remote changes
-  git pull --rebase
+  git pull --quiet --rebase 2>/dev/null
 
   # Update the registered submodules to match what the superproject
   git submodule --quiet update --init --recursive
 
   # Fetch and merge updates from the remote repository for each submodule
   # shellcheck disable=SC2016
-  git submodule --quiet foreach --recursive 'git pull origin $(git config -f "$toplevel/.gitmodules" "submodule.$name.branch" || echo "master")'
+  git submodule --quiet foreach --recursive 'git pull --quiet origin $(git config -f "$toplevel/.gitmodules" "submodule.$name.branch" || echo "master")'
 
   # Revert the changes to the working directory
   popd >/dev/null
