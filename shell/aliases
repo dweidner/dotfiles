@@ -62,6 +62,8 @@ alias egrep="egrep --color=auto"
 
 case "$OSTYPE" in
   darwin*) # Mac OSX
+    alias cdf='cd "$(pfd)"'
+    alias pushdf='pushd "$(pfd)"'
     alias finder="open -a Finder"
     alias chrome="open -a Google\ Chrome"
     alias firefox="open -a Firefox"

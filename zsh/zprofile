@@ -3,61 +3,47 @@
 # -----------------------------------------------
 # Table of Contents
 # -----------------------------------------------
-# 1. Utility Functions
-# 2. Environment Variables
-# 3. Interactive Shells
+# 1. Browsers
+# 2. Editors
+# 3. Less
+# 4. Help
 # -----------------------------------------------
 
 
 # Load configuration shared by bourne-like shells
-[ -f "$HOME/.profile" ] && source "$HOME/.profile"
+[ -s "$HOME/.profile" ] && source "$HOME/.profile"
 
 
-# 1. Utility Functions -------------------------- {{{1
+# 1. Browsers ----------------------------------- {{{1
 
-# Test whether the current operating system is a version of Mac OSX.
-is_mac() {
-  [[ "$OSTYPE" == darwin* ]]
-}
-
-# Test whether the given command can be executed.
-# - $1  Name of the command to execute
-is_executable() {
-  test -x "$(command -v "$1")"
-}
+if [[ "$OSTYPE" == darwin* ]]; then
+  export BROWSER="open"
+fi
 
 
-# 2. Environment Variables ---------------------- {{{1
+# 2. Editors ----------------------------------- {{{1
 
-# Select editor of choice
-is_executable "vim"  && EDITOR=vim
-is_executable "vi"   && EDITOR=vi
-is_executable "nano" && EDITOR=nano
-is_executable "pico" && EDITOR=pico
-
-export EDITOR
-
-
-# 3. Interactive Shells ------------------------- {{{1
-
-case "$-" in *i*)
-
-  # Customize preferences for frequently used binaries
-  export LESS="--ignore-case --LONG-PROMPT --RAW-CONTROL-CHAR"
-  export PAGER=less
-  export MANPAGER=$PAGER
-
-  # Directory used by the run-help function to find docs
-  [ -d "/usr/local/share/zsh/help" ] && export HELPDIR="/usr/local/share/zsh/help"
-
-  # NOTE: ---------------------------------------
-  # The zshrc configuration is loaded
-  # automatically for interactive shells.
-  # ---------------------------------------------
-  # [ -r "$HOME/.zshrc" ] && source "$HOME/.zshrc"
-  ;;
-
-esac
+for cmd in "vim" "vi" "nano" "pico"; do
+  if (( $+commands[$cmd] )); then
+    export EDITOR="$cmd"
+    break
+  fi
+done
 
 
-# vim:syntax=zsh
+# 3. Less -------------------------------------- {{{1
+
+export LESS="--ignore-case --hilite-search --hilite-unread --window=-4 --LONG-PROMPT --RAW-CONTROL-CHAR"
+export PAGER="less"
+export MANPAGER="$PAGER"
+
+
+# 4. Help -------------------------------------- {{{1
+
+# Directory used by the run-help function to find docs
+if [ -d "/usr/local/share/zsh/help" ]; then
+  export HELPDIR="/usr/local/share/zsh/help"
+fi
+
+
+# vim:syntax=zsh:foldmethod=marker:foldlevel=2

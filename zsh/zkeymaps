@@ -1,0 +1,94 @@
+# zsh/zkeymaps
+
+# -----------------------------------------------
+# Table of Contents
+# -----------------------------------------------
+# 1. General Keymappings
+# 2. EMACS mode
+# 3. VI mode
+# -----------------------------------------------
+
+
+# 1. General Keymappings ------------------------ {{{1
+
+zmodload zsh/terminfo
+
+# Retrieve the actual key sequences from the terminfo databases,
+# which works on almost all terminals on variaty of systems
+typeset -A key
+key=(
+  "Control"   '\C-'
+  "Escape"    '\e'
+  "Space"     " "
+  "Home"      "$termifo[khome]"
+  "End"       "$termino[kend]"
+  "Insert"    "$terminfo[kich1]"
+  "Delete"    "$terminfo[kdch1]"
+  "Up"        "$terminfo[kcuu1]"
+  "Down"      "$terminfo[kcud1]"
+  "Left"      "$terminfo[kcub1]"
+  "Right"     "$terminfo[kcuf1]"
+  "PageUp"    "$terminfo[kpp]"
+  "PageDown"  "$terminfo[knp]"
+)
+
+# Induce silent bindkey failure by binding to an invalid UTF-8 sequence.
+for k in "${(k)key[@]}"; do
+  [[ -z "$key[$k]" ]] && key[$k]='�'
+done
+
+# Bind the key sequences to Zsh Line Editor (ZLE) commands
+bindkey "${key[Space]}"   magic-space
+bindkey "${key[Home]}"    beginning-of-line
+bindkey "${key[End]}"     end-of-line
+bindkey "${key[Insert]}"  overwrite-mode
+bindkey "${key[Delete]}"  delete-char
+bindkey "${key[Left]}"    backward-char
+bindkey "${key[Right]}"   forward-char
+
+# Improve history search using Arrow Up/Down
+if (( $+widgets[history-substring-search-up] )); then
+  bindkey "${key[Up]}"    history-substring-search-up
+  bindkey "${key[Down]}"  history-substring-search-down
+else
+  bindkey "${key[Up]}"    up-line-or-history
+  bindkey "${key[Down]}"  down-line-or-history
+fi
+
+# Switch terminal into application mode when ZLE is active. This
+# ensures that values from the terminfo database are valid.
+function zle-line-init() {
+  (( $+terminfo[smkx] )) && echoti smkx
+}
+zle -N zle-line-init
+
+# Disable terminal application mode if ZLE is disabled.
+function zle-line-finish() {
+  (( $+terminfo[rmkx] )) && echoti rmkx
+}
+zle -N zle-line-finish
+
+
+# EMACS mode ------------------------------------ {{{1
+
+if (( $+widgets[history-substring-search-up] )); then
+  bindkey -M emacs "${key[Control]}P"  history-substring-search-up
+  bindkey -M emacs "${key[Control]}N"  history-substring-search-down
+else
+  bindkey -M emacs "${key[Control]}P"  up-line-or-history
+  bindkey -M emacs "${key[Control]}N"  down-line-or-history
+fi
+
+
+# VI mode --------------------------------------- {{{1
+
+if (( $+widgets[history-substring-search-up] )); then
+  bindkey -M vicmd "k"  history-substring-search-up
+  bindkey -M vicmd "j"  history-substring-search-down
+else
+  bindkey -M vicmd "k"  up-line-or-history
+  bindkey -M vicmd "j"  down-line-or-history
+fi
+
+
+# vim:syntax=zsh:foldmethod=marker:foldlevel=2

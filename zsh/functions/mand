@@ -1,0 +1,16 @@
+# zsh/functions/mand
+
+#
+# Open the given man page in the Dash.app.
+#
+# Usage: mand page
+#
+# 1$ = Name of the man page to open.
+#
+mand() {
+  if (( $# > 0 )); then
+    open "dash://manpages:$1" 2>/dev/null
+  fi
+}
+
+# vim:syntax=zsh

@@ -8,7 +8,9 @@
 # $1 = File to display in quick look.
 #
 ql() {
-  qlmanage -p "$@" 2>/dev/null
+  if (( $# > 0 )); then
+    qlmanage -p "$@" &> /dev/null
+  fi
 }
 
 # vim:syntax=zsh

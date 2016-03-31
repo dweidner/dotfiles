@@ -1,0 +1,21 @@
+# zsh/functions/pfs
+
+#
+# Print the absolute path of each selected item in the
+# the frontmost window of the Finder.app.
+#
+# Usage: pfs
+#
+pfs() {
+  osascript 2>&1 <<EOF
+    tell application "Finder" to set the_selection to selection
+
+    if the_selection is not {}
+      repeat with the_item in the_selection
+        log POSIX path of (the_item as alias)
+      end repeat
+    end if
+EOF
+}
+
+# vim:syntax=zsh

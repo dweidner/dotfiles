@@ -1,199 +1,146 @@
 # zsh/zshrc
 
-# -----------------------------------------------
+# ----------------------------------------------------
 # Table of Contents
-# -----------------------------------------------
+# ----------------------------------------------------
 # 1. Sensible Defaults
-# 5. Colorize Shell
-# 2. ZSH History
-# 3. ZSH Completion
+# 2. Command History
+# 3. DIR Colors
 # 4. ZSH Functions
-# 6. External Configuration
-# -----------------------------------------------
+# 5. ZSH Plugins
+# 6. ZSH Configuration
+# 7. Misc
+# ----------------------------------------------------
 
 
-# 1. Sensible Defaults -------------------------- {{{1
+# 1. Sensible Defaults ------------------------------- {{{1
 
-# Path to the home directory of the dotfiles repository
-DOTHOME="$HOME/.dotfiles"
+DOTHOME="$HOME/.dotfiles"  # Path to the home directory of the dotfiles
 
-# Disable BEEP on error
-setopt NO_BEEP
+ttyctl -f                  # Restore terminal settings when exiting abnormally
 
-# Disable flow control characters (<Ctrl-r>/<Ctrl-q>)
-setopt NO_FLOW_CONTROL
+setopt AUTO_PUSHD          # Make cd push the old directory onto the stack
+setopt PUSHD_TO_HOME       # Have pushd with no arguments act like 'pushd ~'
+setopt PUSHD_SILENT        # Do not print the directory stack after pushd/popd
+setopt PUSHD_IGNORE_DUPS   # Do not store duplicates in stack
+setopt EXTENDED_GLOB       # Use extended globbing syntax
+setopt NOTIFY              # Report status of background jobs immediately
+setopt LONG_LIST_JOBS      # List jobs in the long format by default
 
-# Try to correct the spelling of commands
-setopt CORRECT
-
-# Do not require a leading '.' in a filename to be matched explicitly
-setopt GLOB_DOTS
-
-# Make cd push the old directory onto the directory stack
-setopt AUTO_PUSHD
-
-# Have pushd with no arguments act like 'pushd $HOME'
-setopt PUSHD_TO_HOME
-
-# Do not print the directory stack after pushd or popd
-setopt PUSHD_SILENT
-
-# List jobs in the long format by default
-setopt LONG_LIST_JOBS
-
-# Restore terminal settings when exiting abnormally
-ttyctl -f
-
-# Autoload the run-help function for zsh builtin commands
-unalias run-help && autoload -Uz run-help && alias help="run-help"
+unsetopt BEEP              # Disable BEEP on error
+unsetopt HUP               # Don't kill jobs on shell exit
+unsetopt CHECK_JOBS        # Don't report on jobs when exiting shell
+unsetopt CLOBBER           # Do not overwrite files with > and >>
 
 
-# 2. Colorize Shell ----------------------------- {{{1
+# 2. Command History ---------------------------------- {{{1
+
+HISTFILE="$HOME/.zsh_history"  # Customize the path of the zsh history
+HISTCONTROL=ignoreboth         # Ignore duplicates and lines starting with space
+HISTSIZE=1000                  # Max number of entries saved in internal history
+SAVEHIST=1000                  # Max number of entries saved in history file
+
+setopt EXTENDED_HISTORY        # Add timestamp and duration to history
+setopt SHARE_HISTORY           # Read and write commands to history
+setopt INC_APPEND_HISTORY      # Immediately write to the history file
+setopt HIST_VERIFY             # Do not exuecute immediately on history expansion
+setopt HIST_IGNORE_SPACE       # Ignore command lines with a leading space
+setopt HIST_IGNORE_DUPS        # Ignore duplicates of previous line
+setopt HIST_IGNORE_ALL_DUPS    # Delete old record if new one is a duplicate
+setopt HIST_SAVE_NO_DUPS       # Avoid saving duplicates to the history file
+setopt HIST_EXPIRE_DUPS_FIRST  # Remove duplicate entries from history before
+                               # losing a unique event
+
+
+# 3. DIR Colors -------------------------------------- {{{1
 
 # Load zsh color module
 autoload -U colors && colors
 
 # Customize colorized output of the `list directory contents` command
-if is_mac && ! is_executable "dircolors"; then
+if [[ -f "$HOME/.dircolors" && (( $+commands[dircolors] )) ]]; then
+  eval "$(dircolors -b "$HOME/.dircolors")"
+elif [[ -f "/etc/dircolors" && (( $+commands[dircolors] )) ]]; then
+  eval "$(dircolors -b "/etc/dircolors")"
+elif [[ "$OSTYPE" == darwin* ]]; then
   export CLICOLOR=1
   export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD
-elif [[ -f "$HOME/.dircolors" ]] && is_executable "dircolors"; then
-  eval "$(dircolors -b "$HOME/.dircolors")"
-elif [[ -f "/etc/dircolors" ]] && is_executable "dircolors"; then
-  eval "$(dircolors -b "/etc/dircolors")"
 fi
 
 
-# 3. ZSH History -------------------------------- {{{1
-
-# Customize the path of the zsh history
-HISTFILE=$HOME/.zsh_history
-
-# Ignore duplicates and ignore lines starting with a space character
-HISTCONTROL=ignoreboth
-
-# Total number of entries saved in the command history
-HISTSIZE=1000
-SAVEHIST=1000
-
-# Read and write commands to the history file with timestamp
-setopt SHARE_HISTORY
-
-# Save each command's beginning timestamp and the duration to the history file
-setopt EXTENDED_HISTORY
-
-# Remove duplicate entries from the history file before losing a unique event
-setopt HIST_EXPIRE_DUPS_FIRST
-
-# Ignore duplicates of previous line
-setopt HIST_IGNORE_DUPS
-
-# Ignore command lines with a leading space
-setopt HIST_IGNORE_SPACE
-
-# Perform history expansion and reload the line into the editing buffer
-setopt HIST_VERIFY
-
-
-# 4. ZSH Completion ----------------------------- {{{1
-
-# a) Completion Options ---------- {{{2
-
-# List poissibilities on completion
-setopt NO_MENU_COMPLETE
-
-# Automatically  use  menu completion after the second consecutive request
-setopt AUTO_MENU
-
-# In completion, recognize exact matches even if they are ambiguous
-setopt REC_EXACT
-
-# Keep the cursor where it was before completion
-setopt COMPLETE_IN_WORD
-
-# Move the cursor to the end if a full comletion is inserted
-setopt ALWAYS_TO_END
-
-# b) Completion Styles ----------- {{{2
-
-# Setup new style completion system
-autoload -U compinit && compinit
-
-# Autocompletion with an arrow-key driven interface
-zstyle ':completion:*' menu select=1
-
-# Use cache to proxy the result list of complex commands like brew
-zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path ~/.zsh/cache
-
-# Enable case-insensitive fuzzy matching of completions
-zstyle ':completion:*' completer _complete _match _approximate
-zstyle ':completion:*:match:*' original only
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-
-# Allow at maximum one error in the approximate completer
-zstyle ':completion:*:approximate:*' max-errors 1 numeric
-
-# Ignore autocomplete functions
-zstyle ':completion:*:functions' ignored-patterns '_*'
-
-# Enable autocomplete for processes
-zstyle ':completion:*:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w -w"
-
-# Customize formatting and message
-zstyle ':completion:*:descriptions' format '%BCompleting %d%b'
-zstyle ':completion:*:messages' format '%d'
-zstyle ':completion:*:warnings' format 'No matches for: %d'
-zstyle ':completion:*:corrections' format '%B%d (errors: %e)%b'
-zstyle ':completion:*' verbose true
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*' auto-description 'Specify: %d'
-
-# Use the same colors in the completion menu as used by the
-# `list directories` command
-if [ -n "$LS_COLORS" ]; then
-  zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-else
-  zstyle ':completion:*' list-colors ''
-fi
-
-
-# 5. ZSH Functions ------------------------------ {{{1
+# 4. ZSH Functions ----------------------------------- {{{1
 
 # Add the custom function directory to the search path
-fpath=( $DOTHOME/zsh/functions $fpath )
+fpath=( "$DOTHOME/zsh/functions" "$DOTHOME/zsh/completions" $fpath )
 
 # Load all custom functions automatically upon their
 # first reference
-for file in $DOTHOME/zsh/functions/*; do
+for file in "$DOTHOME/zsh/functions/"*; do
   autoload -Uz ${file##*/}
 done
 
+# Clean up temporary variables
+unset file
 
-# 6. External Configuration --------------------- {{{1
 
-# Load useful ZSH plugins
-plugins=( zsh-syntax-highlighting zsh-completions bd )
+# 5. ZSH Plugins ------------------------------------- {{{1
 
-for plugin in $plugins; do
-  plugin_file=$DOTHOME/zsh/plugins/$plugin/$plugin.plugin.zsh
-  [ -f $plugin_file ] && source $plugin_file
-done
-
-# Load additional user configuration files
-configuration_files=(
-  $DOTHOME/zsh/zprompt
-  $DOTHOME/zsh/zinput
-  $DOTHOME/shell/aliases
-  $HOME/.zshrc_local
+# Set the sequence of the plugins to load
+zsh_plugins=(
+  zsh-syntax-highlighting
+  zsh-history-substring-search
+  zsh-completions
+  pure
+  bd
 )
 
-for file in $configuration_files; do
-  [ -f $file ] && source $file
+# Autoload ZSH plugins specified in the collection
+for plugin in $zsh_plugins; do
+  plugin_path="$DOTHOME/zsh/plugins/$plugin"
+  for plugin_file in "$plugin_path/$plugin"{.plugin,}.zsh; do
+    if [ -s "$plugin_file" ]; then
+      source "$plugin_file"
+      break
+    fi
+  done
 done
 
-# Automatically remove duplicates from these arrays
+# Cleanup temporary variables
+unset zsh_plugins plugin{,_path,_file}
+
+
+# 6. ZSH Configuration ------------------------------- {{{1
+
+# Load additional configuration files
+zsh_config_files=(
+  "$DOTHOME/zsh/zcompletion"
+  "$DOTHOME/zsh/zprompt"
+  "$DOTHOME/zsh/zkeymaps"
+  "$DOTHOME/shell/aliases"
+  "$HOME/.zshrc_local"
+)
+
+for config_file in $zsh_config_files; do
+  [ -s "$config_file" ] && source "$config_file"
+done
+
+# Cleanup temporary variables
+unset zsh_config_files config_file
+
+
+# 7. Misc -------------------------------------------- {{{1
+
+# Enable magic quoting of urls
+autoload -U url-quote-magic
+zle -N self-insert url-quote-magic
+
+# Autoload the run-help function for zsh builtin commands
+unalias run-help
+autoload -Uz run-help
+alias help="run-help"
+
+# Automatically remove duplicates from these path variables
 typeset -U path cdpath fpath manpath
 
 
-# vim:syntax=zsh
+# vim:syntax=zsh:foldmethod=marker:foldlevel=2

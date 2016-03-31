@@ -5,14 +5,8 @@
 # @see <https://github.com/sindresorhus/pure>
 # -----------------------------------------------
 
-# Autoload the zsh prompt module to allow easy customization
-autoload -U promptinit && promptinit
-
-# Customize the symbol used as prompt (default: ❯)
-PURE_PROMPT_SYMBOL="$"
-
-# Select pure as default prompt theme
-prompt pure
-
+autoload -U promptinit && promptinit  # Autoload the zsh prompt module
+PURE_PROMPT_SYMBOL="$"                # Customize symbol used (default: ❯)
+prompt pure                           # Select pure as default theme
 
 # vim:syntax=zsh

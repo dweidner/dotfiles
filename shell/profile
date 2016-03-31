@@ -11,28 +11,22 @@
 
 # 1. Utility Functions -------------------------- {{{1
 
-# Test whether the given path points to a valid directory.
-# - $1  Path of the directory
-is_dir() {
-  [ -d "$1" ]
-}
-
 # Prepend a new directory to the `PATH` environment variable.
 # - $1  Directory to prepend to the `PATH` variable
 path_prepend() {
-  is_dir "$1" && PATH="$1:$PATH"
+  [ -d "$1" ] && PATH="$1:$PATH"
 }
 
 # Append a new directory to the `PATH` environment variable.
 # - $1  Directory to append to the `PATH` variable
 path_append() {
-  is_dir "$1" && PATH="$PATH:$1"
+  [ -d "$1" ] && PATH="$PATH:$1"
 }
 
 # Append a new directory to the `MANPATH` environment variable.
 # - $1  Directory to prepend to the `MANPATH` variable
 manpath_append() {
-  is_dir "$1" && MANPATH="$MANPATH:$1"
+  [ -d "$1" ] && MANPATH="$MANPATH:$1"
 }
 
 # Test if a homebrew formula is installed on the system.
@@ -48,8 +42,8 @@ is_formula_installed() {
 path_prepend "$HOME/.dotfiles/bin"
 path_prepend "$HOME/bin"
 path_append  "$HOME/.gem/bin"
-path_append  "$HOME/.composer/vendor/bin"
 path_append  "$HOME/.npm-packages/bin"
+path_append  "$HOME/.composer/vendor/bin"
 
 # Include GNU file, shell, and text utilities installed via homebrew
 if is_formula_installed "coreutils"; then
