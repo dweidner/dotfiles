@@ -4,10 +4,12 @@
 # Table of Contents
 # -----------------------------------------------
 # 1. System Administration
-# 2. Directory Navigation
-# 3. Colorized Output
-# 4. Operating System
-# 5. Misc
+# 2. Application Shortcuts
+# 3. Directory Navigation
+# 4. List Directory Contents
+# 5. File Pattern Searcher
+# 6. File-Copying Tools
+# 7. System-specific
 # -----------------------------------------------
 
 
@@ -19,8 +21,26 @@ alias sudo='sudo '
 # Run the last command as root
 alias plz='sudo !!'
 
+# Intuitive map function e.g.: find . -name .gitattributes | map dirname
+alias map="xargs -n1"
 
-# 2. Directory Navigation ----------------------- {{{1
+# Reload the shell (i.e. invoke as a login shell)
+alias reload='exec $SHELL -l'
+
+
+# 2. Application Shortcuts ---------------------- {{{1
+
+# Git is just two much to type... :P
+alias g="git"
+
+# Short alias for the selected shell editor
+alias e="$EDITOR"
+
+# Open file in default browser
+alias o="$BROWSER"
+
+
+# 3. Directory Navigation ----------------------- {{{1
 
 # Directory navigation
 alias ..='cd ..'
@@ -31,26 +51,28 @@ alias md='mkdir -p'
 alias rd='rmdir'
 
 
-# 3. Colorized Output --------------------------- {{{1
+# 4. List Directory Contents -------------------- {{{1
 
 # Enable colored output of the `list directory contents' command:
 # Prefer GNU `ls` which allows the use ~/.dircolors properly
 if brew list "coreutils" >/dev/null 2>&1; then
-  ls_colorflag="--color"
+  ls_flags="--color --group-directories-first"
   ls_binary="gls"
 elif ls --color >/dev/null 2>&1; then
-  ls_colorflag="--color"
-  ls_binary="gls"
+  ls_flags="--color --group-directories-first"
+  ls_binary="ls"
 else
-  ls_colorflag="-G"
+  ls_flags="-G"
   ls_binary="ls"
 fi
 
-alias ls="command $ls_binary $ls_colorflag"
-alias ll="$ls_binary -alhF $ls_colorflag"
+alias ls="command $ls_binary $ls_flags"
+alias ll="ls -alhF"
 
-unset ls_binary
-unset ls_colorflag
+unset ls_binary ls_flags
+
+
+# 5. File Pattern Searcher ---------------------- {{{1
 
 # Prefer colored grep output
 alias grep="grep --color=auto"
@@ -58,9 +80,17 @@ alias fgrep="fgrep --color=auto"
 alias egrep="egrep --color=auto"
 
 
-# 4. Operating System --------------------------- {{{1
+# 6. File-Copying Tools ------------------------- {{{1
+
+# Creata rsync aliases for frequently used argument combinations
+alias rsyncp='rsync --archive --compress --verbose --progress --partial --human-readable --rsh ssh'
+alias rsyncfat='rsync --recursive --links --devices --specials --size-only --no-times --no-perms --no-owner --no-group --verbose --progress --human-readable'
+
+
+# 7. System-specific ---------------------------- {{{1
 
 case "$OSTYPE" in
+
   darwin*) # Mac OSX
     alias cdf='cd "$(pfd)"'
     alias pushdf='pushd "$(pfd)"'
@@ -73,26 +103,8 @@ case "$OSTYPE" in
     alias cleanup="find . -type f -name .DS_Store -ls -delete"
     alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
   ;;
+
 esac
-
-
-# 5. Misc --------------------------------------- {{{1
-
-# Git is just two much to type... :P
-alias g="git"
-
-# Short alias for the selected shell editor
-alias e="$EDITOR"
-
-# Creata rsync aliases for frequently used argument combinations
-alias rsyncp='rsync --archive --compress --verbose --progress --partial --human-readable --rsh ssh'
-alias rsyncfat='rsync --recursive --links --devices --specials --size-only --no-times --no-perms --no-owner --no-group --verbose --progress --human-readable'
-
-# Intuitive map function e.g.: find . -name .gitattributes | map dirname
-alias map="xargs -n1"
-
-# Reload the shell (i.e. invoke as a login shell)
-alias reload='exec $SHELL -l'
 
 
 # vim:syntax=sh:foldmethod=marker:foldlevel=2
