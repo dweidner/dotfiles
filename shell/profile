@@ -1,62 +1,60 @@
 # shell/profile
 
-# -----------------------------------------------
+# ----------------------------------------------------
 # Table of Contents
-# -----------------------------------------------
-# 1. Utility Functions
-# 2. PATH environment variable
-# 3. MANPATH environment variable
-# -----------------------------------------------
+# ----------------------------------------------------
+# 1. PATH environment variable
+# 2. MANPATH environment variable
+# ----------------------------------------------------
+
+# 1. PATH environment variable ----------------------- {{{1
+
+typeset -a directories_to_prepend directories_to_append
+
+# Directories to be prepended to PATH
+directories_to_prepend=(
+  "$HOME/.gem/bin"
+  "$HOME/.npm-packages/bin"
+  "$HOME/.composer/vendor/bin"
+  "$HOME/.dotfiles/bin"
+  "$HOME/bin"
+)
+
+# Directories to be appended to PATH
+directories_to_append=(
+  "/usr/local/opt/coreutils/libexec/gnubin"
+)
+
+# Prepend directories to the PATH if they exist
+for d in $directories_to_prepend; do
+  [ -d "$d" ] && PATH="$d:$PATH"
+done
+
+# Append directories to the PATH if they exist
+for d in $directories_to_append; do
+  [ -d "$d" ] && PATH="$PATH:$d"
+done
+
+# Cleanup the global scope
+unset directories_to_prepend directories_to_append
+
+# Export the changes to the PATH variable
+export PATH
 
 
-# 1. Utility Functions -------------------------- {{{1
+# 2. MANPATH environment variable -------------------- {{{1
 
-# Prepend a new directory to the `PATH` environment variable.
-# - $1  Directory to prepend to the `PATH` variable
-path_prepend() {
-  [ -d "$1" ] && PATH="$1:$PATH"
-}
+typeset -a manuals_to_include
 
-# Append a new directory to the `PATH` environment variable.
-# - $1  Directory to append to the `PATH` variable
-path_append() {
-  [ -d "$1" ] && PATH="$PATH:$1"
-}
+# Directories to be appended to MANPATH
+manuals_to_include=(
+  "/usr/local/opt/coreutils/libexec/gnuman"
+)
 
-# Append a new directory to the `MANPATH` environment variable.
-# - $1  Directory to prepend to the `MANPATH` variable
-manpath_append() {
-  [ -d "$1" ] && MANPATH="$MANPATH:$1"
-}
-
-# Test if a homebrew formula is installed on the system.
-# - $1  Name of the homebrew formula
-is_formula_installed() {
-  brew list "$1" >/dev/null 2>&1
-}
-
-
-# 2. PATH environment variable ------------------ {{{1
-
-# Add custom directories to the path if they exist on the current system
-path_prepend "$HOME/.dotfiles/bin"
-path_prepend "$HOME/bin"
-path_append  "$HOME/.gem/bin"
-path_append  "$HOME/.npm-packages/bin"
-path_append  "$HOME/.composer/vendor/bin"
-
-# Include GNU file, shell, and text utilities installed via homebrew
-if is_formula_installed "coreutils"; then
-  path_append "$(brew --prefix coreutils)/libexec/gnubin"
-fi
-
-
-# 3. MANPATH environment variable --------------- {{{1
-
-# Include man pages for gnu binaries
-if is_formula_installed "coreutils"; then
-  manpath_append "$(brew --prefix coreutils)/libexec/gnuman"
-fi
+# Append directories to the MANPATH if the exist
+for d in $manuals_to_include; do
+  [ -d "$d" ] && MANPATH="$MANPATH:$d"
+done
 
 
 # vim:syntax=sh:foldmethod=marker:foldlevel=2

@@ -1,0 +1,51 @@
+# shell/helpers
+
+# ----------------------------------------------------
+# Table of Contents
+# ----------------------------------------------------
+# 1. System Utilities
+# 2. OSX Utilities
+# ----------------------------------------------------
+
+# A simple guard to prevent the helper functions from being loaded twice
+[ -z "$DOTFILES_LIBRARY" ] && export DOTFILES_LIBRARY=1 || return
+
+
+# 1. System Utilities -------------------------------- {{{1
+
+#
+# Test whether the given command can be executed.
+#
+# Usage: is_executable command
+#
+# $1 = Name of the command to execute
+#
+is_executable() {
+  test -x "$(command -v "$1")"
+}
+
+
+# 2. OSX Utilities ----------------------------------- {{{1
+
+#
+# Test whether the current operating system is a version of Mac OSX.
+#
+# Usage: is_mac
+#
+is_mac() {
+  [[ "$OSTYPE" == darwin* ]]
+}
+
+#
+# Test if a homebrew formula is installed on the system.
+#
+# Usage: is_formula_installed formula
+#
+# $1 = Name of the homebrew formula
+#
+is_formula_installed() {
+  brew list "$1" >/dev/null 2>&1
+}
+
+
+# vim:syntax=sh:foldmethod=marker:foldlevel=2

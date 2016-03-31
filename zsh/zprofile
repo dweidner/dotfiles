@@ -33,7 +33,7 @@ done
 
 # 3. Less -------------------------------------- {{{1
 
-export LESS="--ignore-case --hilite-search --hilite-unread --window=-4 --LONG-PROMPT --RAW-CONTROL-CHAR"
+export LESS="--no-init --quit-if-one-screen --window=4 --ignore-case --hilite-search --hilite-unread --LONG-PROMPT --RAW-CONTROL-CHAR"
 export PAGER="less"
 export MANPAGER="$PAGER"
 

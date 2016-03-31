@@ -3,19 +3,24 @@
 # ----------------------------------------------------
 # Table of Contents
 # ----------------------------------------------------
-# 1. Sensible Defaults
-# 2. Command History
-# 3. DIR Colors
-# 4. ZSH Functions
-# 5. ZSH Plugins
-# 6. ZSH Configuration
-# 7. Misc
+# 1. Dotfiles Setup
+# 2. Sensible Defaults
+# 3. Command History
+# 4. DIR Colors
+# 5. ZSH Functions
+# 6. ZSH Plugins
+# 7. ZSH Configuration
+# 8. Misc
 # ----------------------------------------------------
 
 
-# 1. Sensible Defaults ------------------------------- {{{1
+# 1. Dotfiles Setup ---------------------------------- {{{1
 
-DOTHOME="$HOME/.dotfiles"  # Path to the home directory of the dotfiles
+export DOTFILES="$HOME/.dotfiles"  # Expose the dotfiles directory
+source "$DOTFILES/shell/helpers"   # Load frequently used utility functions
+
+
+# 2. Sensible Defaults ------------------------------- {{{1
 
 ttyctl -f                  # Restore terminal settings when exiting abnormally
 
@@ -33,7 +38,7 @@ unsetopt CHECK_JOBS        # Don't report on jobs when exiting shell
 unsetopt CLOBBER           # Do not overwrite files with > and >>
 
 
-# 2. Command History ---------------------------------- {{{1
+# 3. Command History ---------------------------------- {{{1
 
 HISTFILE="$HOME/.zsh_history"  # Customize the path of the zsh history
 HISTCONTROL=ignoreboth         # Ignore duplicates and lines starting with space
@@ -52,7 +57,7 @@ setopt HIST_EXPIRE_DUPS_FIRST  # Remove duplicate entries from history before
                                # losing a unique event
 
 
-# 3. DIR Colors -------------------------------------- {{{1
+# 4. DIR Colors -------------------------------------- {{{1
 
 # Load zsh color module
 autoload -U colors && colors
@@ -68,14 +73,14 @@ elif [[ "$OSTYPE" == darwin* ]]; then
 fi
 
 
-# 4. ZSH Functions ----------------------------------- {{{1
+# 5. ZSH Functions ----------------------------------- {{{1
 
 # Add the custom function directory to the search path
-fpath=( "$DOTHOME/zsh/functions" "$DOTHOME/zsh/completions" $fpath )
+fpath=( "$DOTFILES/zsh/functions" "$DOTFILES/zsh/completions" $fpath )
 
 # Load all custom functions automatically upon their
 # first reference
-for file in "$DOTHOME/zsh/functions/"*; do
+for file in "$DOTFILES/zsh/functions/"*; do
   autoload -Uz ${file##*/}
 done
 
@@ -83,7 +88,7 @@ done
 unset file
 
 
-# 5. ZSH Plugins ------------------------------------- {{{1
+# 6. ZSH Plugins ------------------------------------- {{{1
 
 # Set the sequence of the plugins to load
 zsh_plugins=(
@@ -96,7 +101,7 @@ zsh_plugins=(
 
 # Autoload ZSH plugins specified in the collection
 for plugin in $zsh_plugins; do
-  plugin_path="$DOTHOME/zsh/plugins/$plugin"
+  plugin_path="$DOTFILES/zsh/plugins/$plugin"
   for plugin_file in "$plugin_path/$plugin"{.plugin,}.zsh; do
     if [ -s "$plugin_file" ]; then
       source "$plugin_file"
@@ -109,14 +114,14 @@ done
 unset zsh_plugins plugin{,_path,_file}
 
 
-# 6. ZSH Configuration ------------------------------- {{{1
+# 7. ZSH Configuration ------------------------------- {{{1
 
 # Load additional configuration files
 zsh_config_files=(
-  "$DOTHOME/zsh/zcompletion"
-  "$DOTHOME/zsh/zprompt"
-  "$DOTHOME/zsh/zkeymaps"
-  "$DOTHOME/shell/aliases"
+  "$DOTFILES/zsh/zcompletion"
+  "$DOTFILES/zsh/zprompt"
+  "$DOTFILES/zsh/zkeymaps"
+  "$DOTFILES/shell/aliases"
   "$HOME/.zshrc_local"
 )
 
@@ -128,7 +133,7 @@ done
 unset zsh_config_files config_file
 
 
-# 7. Misc -------------------------------------------- {{{1
+# 8. Misc -------------------------------------------- {{{1
 
 # Enable magic quoting of urls
 autoload -U url-quote-magic
