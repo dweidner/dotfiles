@@ -20,7 +20,7 @@ export DOTFILES="$HOME/.dotfiles"  # Expose the dotfiles directory
 source "$DOTFILES/shell/helpers"   # Load frequently used utility functions
 
 
-# 1. Sensible Defaults ------------------------------- {{{1
+# 2. Sensible Defaults ------------------------------- {{{1
 
 shopt -s cdspell          # Autocorrect typos in path names
 shopt -s checkwinsize     # Ensure LINES and COLUMNS match the window size
@@ -29,7 +29,7 @@ shopt -s globstar         # Allow the use of ** to match subdirectories
 shopt -s nocaseglob       # Enable case-insensitive globbing
 
 
-# 2. Command History --------------------------------- {{{1
+# 3. Command History --------------------------------- {{{1
 
 shopt -s histappend       # Append to history, rather than overwriting it
 
@@ -38,7 +38,7 @@ HISTSIZE=1000             # Max number of entries saved in history file
 HISTTIMEFORMAT='%F %T%t'  # Distinguish history lines by date/time
 
 
-# 3. DIR Colors -------------------------------------- {{{1
+# 4. DIR Colors -------------------------------------- {{{1
 
 # Customize colorized output of the `list directory contents` command
 if [[ -f "$HOME/.dircolors" ]] && is_executable "dircolors"; then
@@ -51,7 +51,7 @@ elif is_mac; then
 fi
 
 
-# 4. Bash Completion --------------------------------- {{{1
+# 5. Bash Completion --------------------------------- {{{1
 
 # Enable auto completion for external binaries and their arguments
 if is_formula_installed "bash_completion"; then
@@ -61,7 +61,7 @@ elif [[ -f "/etc/bash_completion" ]]; then
 fi
 
 
-# 5. Bash Configuration ------------------------------ {{{1
+# 6. Bash Configuration ------------------------------ {{{1
 
 declare -a bash_config_files=(
   "$DOTFILES/shell/bash_prompt"
