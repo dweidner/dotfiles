@@ -7,9 +7,6 @@
 # 2. OSX Utilities
 # ----------------------------------------------------
 
-# A simple guard to prevent the helper functions from being loaded twice
-[ -z "$DOTFILES_LIBRARY" ] && export DOTFILES_LIBRARY=1 || return
-
 
 # 1. System Utilities -------------------------------- {{{1
 
