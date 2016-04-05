@@ -68,6 +68,7 @@ fi
 
 alias ls="command $ls_binary $ls_flags"
 alias ll="ls -alhF"
+alias lt="ls -tlhF"
 
 unset ls_binary ls_flags
 
