@@ -39,6 +39,9 @@ alias e="$EDITOR"
 # Open file in default browser
 alias o="$BROWSER"
 
+# Create an alias for less which allows movement through a file
+alias l="less"
+
 
 # 3. Directory Navigation ----------------------- {{{1
 
@@ -54,7 +57,7 @@ alias rd='rmdir'
 # 4. List Directory Contents -------------------- {{{1
 
 # Enable colored output of the `list directory contents' command:
-# Prefer GNU `ls` which allows the use ~/.dircolors properly
+# Prefer GNU `ls` which allows the use of ~/.dircolors
 if brew list "coreutils" >/dev/null 2>&1; then
   ls_flags="--color --group-directories-first"
   ls_binary="gls"
@@ -92,18 +95,25 @@ alias rsyncfat='rsync --recursive --links --devices --specials --size-only --no-
 
 case "$OSTYPE" in
 
+  # Mac OSX --------------------------- {{{2
   darwin*) # Mac OSX
     alias cdf='cd "$(pfd)"'
     alias pushdf='pushd "$(pfd)"'
+
     alias finder="open -a Finder"
     alias chrome="open -a Google\ Chrome"
     alias firefox="open -a Firefox"
     alias safari="open -a Safari"
+
+    alias hide='chflags hidden'
+    alias unhide='chflags nohidden'
+
     alias pubkey="more ~/.ssh/id_rsa.pub | pbcopy"
     alias update="sudo softwareupdate -i -a; brew update; brew upgrade --all; brew cleanup; npm update npm -g; npm update -g; sudo gem update --system; gem update"
+
     alias cleanup="find . -type f -name .DS_Store -ls -delete"
     alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
-  ;;
+  ;; # }}}2
 
 esac
 

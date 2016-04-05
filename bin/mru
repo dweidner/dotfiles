@@ -20,7 +20,7 @@ USE_CREATION_DATE=0
 usage() {
   cat <<EOT
 
-Usage: mru [-c] [-h] [-l] [-r]
+Usage: mru [-c] [-e cmd] [-h] [-l] [-r]
 
 Options:
   -c  Use the creation date instead of the time last modified
@@ -111,11 +111,11 @@ strip_comments() {
 #
 # Sort the contents of the file by the value of the first column.
 #
-# Usage: sort_file_content file
+# Usage: sort_file_contents file
 #
 # $1 = Path to the file to sort.
 #
-sort_file_content() {
+sort_file_contents() {
   local sort_args=( -k1 )
 
   if [ "$REVERSE_ORDER" -eq "0" ]; then
@@ -134,7 +134,7 @@ sort_file_content() {
 open_latest() {
   # shellcheck disable=SC2155
   local file="$(mru | head -n1)"
-  local cmd="${1:-open}"
+  local cmd="${1:-$EDITOR}"
 
   # Replace the tilde character with the path to the current home directory
   file="${file/#\~/$HOME}"
@@ -153,10 +153,10 @@ open_latest() {
 locate_mru_file() {
   local -a files
 
-  files[0]="$HOME/.vim/tmp/ctrlp/mru/cache.txt"
-  files[1]="$HOME/.cache/ctrlp/mru/cache.txt"
-  files[2]="$HOME/.vim/tmp/viminfo"
-  files[3]="$HOME/.viminfo"
+  files[0]="$HOME/.vim/tmp/ctrlp/mru/cachea.txt"
+  files[1]="$HOME/.cache/ctrlp/mru/cachea.txt"
+  files[2]="$HOME/.vim/tmp/viminfoa"
+  files[3]="$HOME/.viminfoa"
 
   for file in "${files[@]}"; do
     if [ -f "$file" ]; then
@@ -179,7 +179,7 @@ read_mru_file() {
   local file="$(locate_mru_file)"
 
   if [[ ! -f "$file" ]]; then
-    throw "mru file not found"
+    return 1
   fi
 
   # Read the file contents of the mru file
@@ -188,6 +188,8 @@ read_mru_file() {
   else
     strip_comments "$file"
   fi
+
+  return 0
 }
 
 #
@@ -209,6 +211,14 @@ main() {
     stat_args+=( -f "$stat_format" )
   fi
 
+  # Retrieve a list of files recently used
+  # shellcheck disable=SC2155
+  local files="$(read_mru_file)"
+
+  if [ -n "$files" ]; then
+    throw "Empty or invalid file list"
+  fi
+
   # Generate a temporary file that holds the meta information required
   # for the sorting process.
   # shellcheck disable=SC2155
@@ -219,10 +229,10 @@ main() {
     if [ -f "$file" ]; then
       printf "%s\t%s\n" "$(stat "${stat_args[@]}" "$file")" "$file" >> "$tmpfile"
     fi
-  done < <( read_mru_file ) # <=Input Redirection <(=Process Substitution
+  done <<< "$files"
 
   # Sort the contents of the temporary file by the value of the first column
-  sort_file_content "$tmpfile"
+  sort_file_contents "$tmpfile"
 
   # Output the list of most recently used files in the desired order
   if (( LONG_LIST )); then
