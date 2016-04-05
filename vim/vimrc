@@ -18,11 +18,6 @@ if version >= 700                     " Ignore configuration on older systems
 let g:vim_home_dir   = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
 let g:vim_plugin_dir = g:vim_home_dir . '/bundle'
 
-exe 'set viminfo+=n' . expand(g:vim_home_dir . '/tmp/viminfo')
-exe 'set directory=' . g:vim_home_dir . '/tmp/swap//'
-exe 'set undodir='   . g:vim_home_dir . '/tmp/undo//'
-exe 'set backupdir=' . g:vim_home_dir . '/tmp/backup//'
-
 set nocompatible                      " Break backwards compatibility with vi
 set encoding=utf-8                    " Encoding used in vim
 set ttyfast                           " Optimize for fast terminal connection
@@ -41,6 +36,13 @@ set splitbelow                        " Split to the bottom
 set noswapfile                        " Do not create swap files for buffers
 set undofile                          " Save undo history to file
 set undolevels=500                    " Reduce number of changes saved
+
+" Temporary Files --------------------- {{{2
+exe 'set viminfo+=n' . g:vim_home_dir . '/tmp/viminfo'
+exe 'set directory=' . g:vim_home_dir . '/tmp/swap//'
+exe 'set undodir='   . g:vim_home_dir . '/tmp/undo//'
+exe 'set backupdir=' . g:vim_home_dir . '/tmp/backup//'
+" }}}
 
 
 " 2. Look & Feel ---------------------- {{{1
