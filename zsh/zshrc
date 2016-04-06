@@ -64,9 +64,9 @@ autoload -U colors && colors
 
 # Customize colorized output of the `list directory contents` command
 if [[ -f "$HOME/.dircolors" && (( $+commands[dircolors] )) ]]; then
-  eval "$(dircolors -b "$HOME/.dircolors")"
+  eval "$(dircolors --sh "$HOME/.dircolors")"
 elif [[ -f "/etc/dircolors" && (( $+commands[dircolors] )) ]]; then
-  eval "$(dircolors -b "/etc/dircolors")"
+  eval "$(dircolors --sh "/etc/dircolors")"
 elif [[ "$OSTYPE" == darwin* ]]; then
   export CLICOLOR=1
   export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD
