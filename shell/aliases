@@ -15,50 +15,37 @@
 
 # 1. System Administration ---------------------- {{{1
 
-# Allow aliases to be used with sudo
-alias sudo='sudo '
 
-# Run the last command as root
-alias plz='sudo !!'
-
-# Intuitive map function e.g.: find . -name .gitattributes | map dirname
-alias map="xargs -n1"
-
-# Reload the shell (i.e. invoke as a login shell)
-alias reload='exec $SHELL -l'
+alias sudo='sudo '             # Allow aliases to be used with sudo
+alias plz='sudo !!'            # Run the last command as root
+alias map="xargs -n1"          # Intuitive map function
+alias reload='exec $SHELL -l'  # Reload the shell
 
 
-# 2. Application Shortcuts ---------------------- {{{1
+# 2. General Aliases ---------------------------- {{{1
 
-# Git is just two much to type... :P
-alias g="git"
+alias ..="cd .."               # Switch to the parent directory
+alias cd..='cd ..'             # Correct missing space
 
-# Short alias for the selected shell editor
-alias e="$EDITOR"
+alias md='mkdir -p'            # Create intermediate directories
+alias rd='rmdir'               # Remove a directory
 
-# Open file in default browser
-alias o="$BROWSER"
+alias pu="pushd"               # Push a directory to the stack
+alias po="popd"                # Remove the last directory from the stack
 
-
-# 3. Directory Navigation ----------------------- {{{1
-
-# Directory navigation
-alias ..='cd ..'
-alias cd..='cd ..'
-
-# Create or remove directory
-alias md='mkdir -p'
-alias rd='rmdir'
+alias g="git"                  # Alias for the `stupid content tracker`
+alias e="$EDITOR"              # Open a file in the default editor
+alias o="$BROWSER"             # Open a file in the default browser
 
 
-# 4. List Directory Contents -------------------- {{{1
+# 3. List Directory Contents -------------------- {{{1
 
 # Prefer GNU `ls` on OSX which allows the use of ~/.dircolors
 if gls >/dev/null 2>&1; then
   LS_BINARY="gls"
 fi
 
-# Enable colored output of the `list directory contents' command:
+# Enable colored output for the `list directory contents' command
 typeset -ga ls_options
 
 if command "${LS_BINARY:-ls}" --color=auto >/dev/null 2>&1; then
@@ -67,14 +54,19 @@ elif command "${LS_BINARY:-ls}" -G >/dev/null 2>&1; then
   ls_options+=( -G )
 fi
 
-# Provide frequently used aliases to quickly list directory contents
 alias ls="command ${LS_BINARY:-ls} ${ls_options[*]}"
-alias ll="command ${LS_BINARY:-ls} -lhF ${ls_options[*]}"
-alias la="command ${LS_BINARY:-ls} -alhF ${ls_options[*]}"
-alias lt="command ${LS_BINARY:-ls} -tlhF ${ls_options[*]}"
+
+# Provide aliases which allow to easily customize the directory listing:
+alias ll="ls -lhF"        # Human readable sizes.
+alias la="ll -A"          # Human readable sizes, hidden files.
+alias lt="ll -tr"         # By date, most recent last.
+alias lu="lt -u"          # By date, most recent last, show access time.
+alias lc="lt -c"          # By date, most recent last, show change time.
+alias lx="ll -XB"         # By extension (GNU only).
+alias lz="ll -Sr"         # By size, largest last.
 
 
-# 5. File Pattern Searcher ---------------------- {{{1
+# 4. File Pattern Searcher ---------------------- {{{1
 
 # Test whether the current system supports the color option
 typeset -ga grep_options
@@ -83,22 +75,22 @@ if echo "?" | grep --color=auto "?" >/dev/null 2>&1; then
   grep_options+=( --color=auto )
 fi
 
-# Use colors for grep if supported by the current system
-if (( $#grep_options > 0 )); then
+# Enable colored output for the grep command if supported by the system
+if [[ "${#grep_options[@]}" -ne 0 ]]; then
   alias grep="grep ${grep_options[*]}"
   alias fgrep="fgrep ${grep_options[*]}"
   alias egrep="egrep ${grep_options[*]}"
 fi
 
 
-# 6. File-Copying Tools ------------------------- {{{1
+# 5. File-Copying Tools ------------------------- {{{1
 
 # Creata rsync aliases for frequently used argument combinations
 alias rsyncp='rsync --archive --compress --verbose --progress --partial --human-readable --rsh ssh'
 alias rsyncfat='rsync --recursive --links --devices --specials --size-only --no-times --no-perms --no-owner --no-group --verbose --progress --human-readable'
 
 
-# 7. System-specific ---------------------------- {{{1
+# 6. System-specific ---------------------------- {{{1
 
 case "$OSTYPE" in
 
