@@ -136,6 +136,11 @@ unset zsh_config_files config_file
 
 # 8. Misc -------------------------------------------- {{{1
 
+# Suggest installation of a command with homebrew
+if brew command command-not-found-init >/dev/null 2>&1; then
+  eval "$(brew command-not-found-init)"
+fi
+
 # Enable magic quoting of urls
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
