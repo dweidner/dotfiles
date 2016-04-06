@@ -39,9 +39,6 @@ alias e="$EDITOR"
 # Open file in default browser
 alias o="$BROWSER"
 
-# Create an alias for less which allows movement through a file
-alias l="less"
-
 
 # 3. Directory Navigation ----------------------- {{{1
 
@@ -56,32 +53,42 @@ alias rd='rmdir'
 
 # 4. List Directory Contents -------------------- {{{1
 
-# Enable colored output of the `list directory contents' command:
-# Prefer GNU `ls` which allows the use of ~/.dircolors
-if brew list "coreutils" >/dev/null 2>&1; then
-  ls_flags="--color --group-directories-first"
-  ls_binary="gls"
-elif ls --color >/dev/null 2>&1; then
-  ls_flags="--color --group-directories-first"
-  ls_binary="ls"
-else
-  ls_flags="-G"
-  ls_binary="ls"
+# Prefer GNU `ls` on OSX which allows the use of ~/.dircolors
+if gls >/dev/null 2>&1; then
+  LS_BINARY="gls"
 fi
 
-alias ls="command $ls_binary $ls_flags"
-alias ll="ls -alhF"
-alias lt="ls -tlhF"
+# Enable colored output of the `list directory contents' command:
+typeset -ga ls_options
 
-unset ls_binary ls_flags
+if command "${LS_BINARY:-ls}" --color=auto >/dev/null 2>&1; then
+  ls_options+=( --color=auto )
+elif command "${LS_BINARY:-ls}" -G >/dev/null 2>&1; then
+  ls_options+=( -G )
+fi
+
+# Provide frequently used aliases to quickly list directory contents
+alias ls="command ${LS_BINARY:-ls} ${ls_options[*]}"
+alias ll="command ${LS_BINARY:-ls} -lhF ${ls_options[*]}"
+alias la="command ${LS_BINARY:-ls} -alhF ${ls_options[*]}"
+alias lt="command ${LS_BINARY:-ls} -tlhF ${ls_options[*]}"
 
 
 # 5. File Pattern Searcher ---------------------- {{{1
 
-# Prefer colored grep output
-alias grep="grep --color=auto"
-alias fgrep="fgrep --color=auto"
-alias egrep="egrep --color=auto"
+# Test whether the current system supports the color option
+typeset -ga grep_options
+
+if echo "?" | grep --color=auto "?" >/dev/null 2>&1; then
+  grep_options+=( --color=auto )
+fi
+
+# Use colors for grep if supported by the current system
+if (( $#grep_options > 0 )); then
+  alias grep="grep ${grep_options[*]}"
+  alias fgrep="fgrep ${grep_options[*]}"
+  alias egrep="egrep ${grep_options[*]}"
+fi
 
 
 # 6. File-Copying Tools ------------------------- {{{1
@@ -96,7 +103,7 @@ alias rsyncfat='rsync --recursive --links --devices --specials --size-only --no-
 case "$OSTYPE" in
 
   # Mac OSX --------------------------- {{{2
-  darwin*) # Mac OSX
+  darwin*)
     alias cdf='cd "$(pfd)"'
     alias pushdf='pushd "$(pfd)"'
 
@@ -113,6 +120,10 @@ case "$OSTYPE" in
 
     alias cleanup="find . -type f -name .DS_Store -ls -delete"
     alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
+
+    alias llog="sudo $PAGER /var/log/system.log"
+    alias tlog="sudo tail -f /var/log/system.log"
+    alias elog="tail -f /var/log/apache2/error_log"
   ;; # }}}2
 
 esac
