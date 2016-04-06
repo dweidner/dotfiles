@@ -1,23 +1,22 @@
 # zsh/zkeymaps
 
-# -----------------------------------------------
+# ----------------------------------------------------
 # Table of Contents
-# -----------------------------------------------
-# 1. General Keymappings
-# 2. EMACS mode
-# 3. VI mode
-# -----------------------------------------------
+# ----------------------------------------------------
+# 1. Keymappings
+# 2. Custom Commands
+# ----------------------------------------------------
 
 
-# 1. General Keymappings ------------------------ {{{1
+# 1. Keymappings ------------------------------------- {{{1
 
-zmodload zsh/terminfo
+zmodload zsh/terminfo zsh/complist
 
 # Retrieve the actual key sequences from the terminfo databases,
 # which works on almost all terminals on variaty of systems
 typeset -A key
 key=(
-  "Control"   '\C-'
+  "Ctrl"      '\C-'
   "Escape"    '\e'
   "Space"     " "
   "Home"      "$termifo[khome]"
@@ -37,6 +36,9 @@ for k in "${(k)key[@]}"; do
   [[ -z "$key[$k]" ]] && key[$k]='�'
 done
 
+# Use emacs-like key bindings by default
+bindkey -e
+
 # Bind the key sequences to Zsh Line Editor (ZLE) commands
 bindkey "${key[Space]}"   magic-space
 bindkey "${key[Home]}"    beginning-of-line
@@ -55,6 +57,55 @@ else
   bindkey "${key[Down]}"  down-line-or-history
 fi
 
+# Improve the behavior of the delete-word command
+bindkey "${key[Ctrl]}w" slash-backward-delete-word
+
+# Accept a completion and try to complete again via menu completion.
+# Especially useful to navigate a directory hierarchy.
+bindkey -M menuselect "${key[Ctrl]}o" accept-and-infer-next-history
+
+# Insert the currently selected menu item, but keep the menu open
+bindkey -M menuselect "+" accept-and-menu-complete
+
+# Expand abbreviations
+bindkey "${key[Ctrl]}x." magic-abbr-expand
+bindkey "${key[Ctrl]}xa" help-magic-abbr
+
+# Insert file path from file menu
+autoload insert-files && zle -N insert-files
+bindkey "${key[Ctrl]}xf" insert-files
+
+# Insert the current date (format: YYYYmmdd)
+bindkey "${key[Ctrl]}xd" insert-current-date
+
+# Jump to the end of the first word (to add additional options)
+bindkey "${key[Ctrl]}x1" jump-to-end-of-first-word
+
+
+# 2. EMACS mode ---------------------------- {{{2
+
+if (( $+widgets[history-substring-search-up] )); then
+  bindkey -M emacs "${key[Ctrl]}P"  history-substring-search-up
+  bindkey -M emacs "${key[Ctrl]}N"  history-substring-search-down
+else
+  bindkey -M emacs "${key[Ctrl]}P"  up-line-or-history
+  bindkey -M emacs "${key[Ctrl]}N"  down-line-or-history
+fi
+
+
+# 3. VI mode ------------------------------- {{{2
+
+if (( $+widgets[history-substring-search-up] )); then
+  bindkey -M vicmd "k"  history-substring-search-up
+  bindkey -M vicmd "j"  history-substring-search-down
+else
+  bindkey -M vicmd "k"  up-line-or-history
+  bindkey -M vicmd "j"  down-line-or-history
+fi
+
+
+# 2. Custom Commands --------------------------------- {{{1
+
 # Switch terminal into application mode when ZLE is active. This
 # ensures that values from the terminfo database are valid.
 function zle-line-init() {
@@ -68,27 +119,32 @@ function zle-line-finish() {
 }
 zle -N zle-line-finish
 
+# Customize the behavior of backward-delete-word. This allows to delete
+# a directory from a full POSIX path.
+function slash-backward-delete-word() {
+  local WORDCHARS="${WORDCHARS:s@/@}"
+    zle backward-kill-word
+}
+zle -N slash-backward-delete-word
 
-# EMACS mode ------------------------------------ {{{1
+# Jump to the end of the first word (e.g. in order to add addition options)
+function jump-to-end-of-first-word() {
+  local words
+  words=(${(z)BUFFER})
 
-if (( $+widgets[history-substring-search-up] )); then
-  bindkey -M emacs "${key[Control]}P"  history-substring-search-up
-  bindkey -M emacs "${key[Control]}N"  history-substring-search-down
-else
-  bindkey -M emacs "${key[Control]}P"  up-line-or-history
-  bindkey -M emacs "${key[Control]}N"  down-line-or-history
-fi
+  if (( $#words <= 1 )); then
+    CURSOR=${#BUFFER}
+  else
+    CURSOR=${#${words[1]}}
+  fi
+}
+zle -N jump-to-end-of-first-word
 
-
-# VI mode --------------------------------------- {{{1
-
-if (( $+widgets[history-substring-search-up] )); then
-  bindkey -M vicmd "k"  history-substring-search-up
-  bindkey -M vicmd "j"  history-substring-search-down
-else
-  bindkey -M vicmd "k"  up-line-or-history
-  bindkey -M vicmd "j"  down-line-or-history
-fi
+# Insert the current date as timestamp
+function insert-current-date() {
+  LBUFFER+=${(%):-'%D{%Y%m%d}'}
+}
+zle -N insert-current-date
 
 
 # vim:syntax=zsh:foldmethod=marker:foldlevel=2

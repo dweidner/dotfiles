@@ -120,6 +120,7 @@ unset zsh_plugins plugin{,_path,_file}
 zsh_config_files=(
   "$DOTFILES/zsh/zcompletion"
   "$DOTFILES/zsh/zprompt"
+  "$DOTFILES/zsh/zabbr"
   "$DOTFILES/zsh/zkeymaps"
   "$DOTFILES/shell/aliases"
   "$HOME/.zshrc_local"
