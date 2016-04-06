@@ -47,17 +47,17 @@ export PATH
 typeset -a manuals_to_include
 
 # Directories to be appended to MANPATH
-manuals_to_include=(
+manuals_to_append=(
   "/usr/local/opt/coreutils/libexec/gnuman"
 )
 
 # Append directories to the MANPATH if the exist
-for d in $manuals_to_include; do
+for d in $manuals_to_append; do
   [ -d "$d" ] && MANPATH="$MANPATH:$d"
 done
 
 # Cleanup global scope
-unset manuals_to_include
+unset manuals_to_append
 
 # Export the changes to the MANPATH variable
 export MANPATH
