@@ -1,0 +1,14 @@
+# zsh/functions/cdl
+
+#
+# Switch to the given directory and list the directory contents.
+#
+# Usage: cdl dir
+#
+# $1 = Directory to change to.
+#
+cdl() {
+  cd "$1" && command "${LS_BINARY:-ls}" -lhF "${ls_options[@]}"
+}
+
+# vim:syntax=zsh
