@@ -45,7 +45,7 @@ if gls >/dev/null 2>&1; then
 fi
 
 # Collect options passed to the ls command
-typeset -ga ls_options
+typeset -a ls_options
 
 # Distinguish between BSD and GNU ls and add the appropriate option
 if ls_supports --color=auto; then
@@ -73,7 +73,7 @@ grep_supports() {
 }
 
 # Collect options passed to the grep command
-typeset -ga grep_options
+typeset -a grep_options
 
 # Test for color support and add the option to the collection
 if grep_supports --color=auto; then
@@ -96,7 +96,7 @@ rsync_supports() {
 }
 
 # Collect options passed to the custom rsync alias
-typeset -ga rsync_options
+typeset -a rsync_options
 
 # Enable recursion and preserve permissions, (sym)links, time, group and owner
 rsync_options+=( --archive --hard-links )
