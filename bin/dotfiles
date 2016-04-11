@@ -300,13 +300,13 @@ read_package_list() {
 # Download a compressed archive and extract it to a target
 # directory.
 #
-# Usage: git_download_archive url target
+# Usage: git_download_archive repository target
 #
-# $1 = Url to load the archive from.
+# $1 = Name of the repository to download.
 # $2 = Target directory to copy the repository to.
 #
 git_download_archive() {
-  local src="$1"
+  local repository="$1"
   local target="$2"
 
   # Generate a unique name for the temporary archive
@@ -316,7 +316,7 @@ git_download_archive() {
   tmpfile="$(mktemp "/tmp/$prefix.tar.gz")"
 
   # Load and extract the repository
-  curl -fsSLo "$tmpfile" "$src"
+  curl -fsSLo "$tmpfile" "https://github.com/$repository/tarball/master"
   tar -zxf "$tmpfile" --strip-components 1 -C "$target"
 
   # Remove the archive
@@ -391,11 +391,6 @@ git_get_submodule_status() {
   local path="$2"
   local toplevel="$3"
 
-  local count=""
-  local status=""
-  local remote_url=""
-  local remote_repository=""
-
   if [[ ! -d "$toplevel/$path" ]]; then
     return 1
   fi
@@ -403,18 +398,37 @@ git_get_submodule_status() {
   # Switch to the given directory
   pushd "$toplevel/$path" >/dev/null
 
-  # Grab the latest changes
-  git fetch --quiet --all >/dev/null
+  # Determine the current upstream branch and the corresponding sha
+  local upstream_branch=""
+  local upstream_branch_sha=""
+
+  upstream_branch="$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null)"
+  upstream_branch="${upstream_branch#refs/remotes/origin/}"
+  [[ -z "$upstream_branch" ]] && upstream_branch="master"
+  upstream_branch_sha="$(git rev-parse "refs/remotes/origin/$upstream_branch")"
 
   # Determine the url of the remote repository
+  local remote_url=""
+  local remote_repository=""
   remote_url="$(git config --get remote.origin.url)"
   remote_repository="${remote_url##*/}"
   remote_repository="${remote_repository%.git}"
 
-  # Determine the status of the current repository
-  count="$(git rev-list --count --left-right "@{upstream}"...HEAD 2>/dev/null | tr -s '\t' '|')"
+  # Grab the latest changes. Perform an API request that ensures that the given
+  # SHA matches the latest SHA of the upstream repository.
+  local response=""
+  response="$(curl --silent --max-time 3 --output /dev/null --write-out "%{http_code}" --header "Accept: application/vnd.github.chitauri-preview+sha" --header "If-None-Match: \"$upstream_branch_sha\"" "https://api.github.com/repos/$remote_repository/commits/$upstream_branch")"
 
-  # Interpret the result
+  if [[ "$response" != "304" ]]; then
+    git fetch --force --quiet origin "refs/heads/$upstream_branch:refs/remotes/origin/$upstream_branch"
+  fi
+
+  # Determine the status of the current repository
+  local count=""
+  local status=""
+
+  count="$(git rev-list --count --left-right "refs/remotes/origin/$upstream_branch"...HEAD 2>/dev/null | tr -s '\t' '|')"
+
   case "$count" in
 
     # No upstream
@@ -539,7 +553,7 @@ install_dotfiles() {
   # Download and extract remote repository
   if [[ ! -d "$dir" ]]; then
     process_started "git_download_archive" "Downloading remote repository..."
-    git_download_archive "https://github.com/$repository/tarball/master" "$dir"
+    git_download_archive "$repository" "$dir"
     process_done "git_download_archive"
   fi
 
