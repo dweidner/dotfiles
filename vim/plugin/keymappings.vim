@@ -96,6 +96,9 @@ nnoremap <Leader><Space> <C-^>
 nnoremap <silent> <Leader>bc :Gdiff<CR>
 nnoremap <silent> <Leader>bC :DiffOrig<CR>
 
+" Delete the buffer but try to keep the split window intact
+nnoremap <silent> <leader>bd :lclose<bar>b#<bar>bd #<CR>
+
 
 " 5. Search/Replace ------------------- {{{1
 
