@@ -782,6 +782,9 @@ dotfiles_list_updates() {
   # Switch to the given directory
   pushd "$dir" >/dev/null
 
+  # Update the registered submodules to match what the superproject expects
+  git submodule update --init --recursive --quiet
+
   # Retrieve the commit messages of the latest updates
   changes="$(git_foreach_submodule "git_get_submodule_changes")"
 
