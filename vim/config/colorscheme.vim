@@ -1,4 +1,4 @@
-" plugin/coloscheme.vim
+" config/coloscheme.vim
 
 " Enable syntax highlighting if supported by the current version
 if has('syntax') && !exists('g:syntax_on')

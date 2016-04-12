@@ -1,4 +1,4 @@
-" plugin/easyclip.plugin.vim
+" config/plugin.easyclip.vim
 
 " Save and share clipboard among vim instances
 let g:EasyClipShareYanks = 1

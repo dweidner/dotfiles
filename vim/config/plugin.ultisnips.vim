@@ -1,4 +1,4 @@
-" plugin/ultisnips.plugin.vim
+" config/plugin.ultisnips.vim
 
 " Directory of private snippet definition files.
 " Note: Directories named `snippets` are reserved for SnipMate.

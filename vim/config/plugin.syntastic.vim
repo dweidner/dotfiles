@@ -1,4 +1,4 @@
-" plugin/syntastic.plugin.vim
+" config/plugin.syntastic.vim
 
 " -------------------------------------
 " Table of Contents

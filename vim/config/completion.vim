@@ -1,4 +1,4 @@
-" plugin/completion.vim
+" config/completion.vim
 
 " Select completion function for frequently used languages
 augroup dotcompletion

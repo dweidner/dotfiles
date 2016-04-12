@@ -165,7 +165,7 @@ call pathogen#helptags()
 " Plugin "airblade/vim-gitgutter"             " Show file changes in gutter
 
 " Web Development
-" Plugin "scrooloose/syntastic.git"           " Check file syntax
+" Plugin "scrooloose/syntastic"               " Check file syntax
 " Plugin "ludovicchabant/vim-gutentags"       " Auto-generate ctags
 " Plugin "mattn/emmet-vim"                    " Writing html markup
 " Plugin "tpope/vim-surround"                 " Wrap text objects
@@ -211,10 +211,7 @@ call pathogen#helptags()
 " Plugin "tpope/vim-repeat"                   " Repeat plugin commands
 " Plugin "tmux-plugins/vim-tmux-focus-events" " Fix focus events in tmux
 
-" Experimental/Seldomly Used
-" / None /
-
-" File Type Plugins
+runtime! config/*.vim                         " Load additional config files
 filetype plugin indent on                     " Allow plugins per filetype
 set secure                                    " Block write operations and ↪
                                               " autocmd in local vimrc

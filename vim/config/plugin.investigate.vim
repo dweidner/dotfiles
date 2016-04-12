@@ -1,4 +1,4 @@
-" plugin/investigate.plugin.vim
+" config/plugin.investigate.vim
 
 " Use dash if available on the current system
 let g:investigate_use_dash = 1

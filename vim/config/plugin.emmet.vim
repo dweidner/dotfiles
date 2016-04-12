@@ -1,4 +1,4 @@
-" plugin/emmet.plugin.vim
+" config/plugin.emmet.vim
 
 " Avoid loading emmet globally
 let g:user_emmet_install_global = 0

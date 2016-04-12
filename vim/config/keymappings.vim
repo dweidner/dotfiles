@@ -1,4 +1,4 @@
-" plugin/keymappings.vim
+" config/keymappings.vim
 
 " -------------------------------------
 " Table of Contents
@@ -92,10 +92,6 @@ nnoremap <Leader>w4 <C-w>s<C-w>v<C-w>k<C-w>v<C-w>h
 " Switch to alternate buffer
 nnoremap <Leader><Space> <C-^>
 
-" Compare the current buffer with the staged/last saved version
-nnoremap <silent> <Leader>bc :Gdiff<CR>
-nnoremap <silent> <Leader>bC :DiffOrig<CR>
-
 " Delete the buffer but try to keep the split window intact
 nnoremap <silent> <leader>bd :lclose<bar>b#<bar>bd #<CR>
 
@@ -116,7 +112,7 @@ noremap <silent> <Leader>/ :nohls<CR>
 noremap <silent> <Leader>- :nohls<CR>
 
 " Shortcuts to vim's :substitute
-" TIP: Using @ as a separator to allow to search for /
+" TIP: Using @ as a separator to allow to searching for /
 nnoremap <Leader>s :%s@@@gc<Left><Left><Left><Left>
 nnoremap <Leader>S :%s@@@g<Left><Left><Left>
 vnoremap <Leader>s :<C-u>%s@\%V@@gc<Left><Left><Left><Left>

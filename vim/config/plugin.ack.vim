@@ -1,4 +1,4 @@
-" plugin/ack.plugin.vim
+" config/plugin.ack.vim
 
 " Use the silver searcher if available
 if executable('ag')
