@@ -103,7 +103,7 @@ nnoremap <silent> <leader>bd :lclose<bar>b#<bar>bd #<CR>
 " 5. Search/Replace ------------------- {{{1
 
 " Search (for word under the cursor) with Ack.vim
-nnoremap <C-f> ::call inputsave()<Bar>let s=input("Search: ", expand("<cword>"))<Bar>call inputrestore()<Bar>silent exe "Ack '".s."'"<CR>
+nnoremap <Leader>f ::call inputsave()<Bar>let s=input("Search: ", expand("<cword>"))<Bar>call inputrestore()<Bar>silent exe "Ack '".s."'"<CR>
 
 " Highlight word at cursor without changing current position
 " @see <https://github.com/jasoncodes/dotfiles>
