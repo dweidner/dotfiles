@@ -711,7 +711,6 @@ dotfiles_create_symlinks() {
   link "misc/npmrc"         ".npmrc"
   link "misc/ctags"         ".ctags"
   link "misc/agignore"      ".agignore"
-  link "misc/eslintrc"      ".eslintrc"
 
   # Avoid creating symbolic links twice
   CREATE_SYMLINKS=0
