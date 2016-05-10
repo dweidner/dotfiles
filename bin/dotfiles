@@ -638,22 +638,6 @@ install_homebrew_formulae() {
 #
 install_npm_packages() {
 
-  # Ensure npm is installed before installing packages
-  if ! is_executable "npm"; then
-
-    # Offer to install npm
-    seek_confirmation "The node package manager is not installed. Install now?"
-
-    if is_confirmed; then
-      process_started "install_npm" "Installing node package manager..."
-      curl -L https://www.npmjs.com/install.sh | sh
-      process_done "install_npm"
-    else
-      process_aborted "install_npm"
-    fi
-
-  fi
-
   # Read package list into an array
   IFS=$'\r\n' GLOBIGNORE='*'
   local -a packages=($(read_package_list "npmpackages"))

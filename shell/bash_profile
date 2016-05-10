@@ -6,8 +6,7 @@
 # 1. Browsers
 # 2. Editors
 # 3. Less
-# 4. Node.js
-# 5. Misc
+# 4. Misc
 # -----------------------------------------------
 
 # Load configuration file for “bourne-like" shells
@@ -39,12 +38,7 @@ export PAGER="less -X"
 export MANPAGER="$PAGER"
 
 
-# 4. Node.js ------------------------------------ {{{1
-
-export NVM_DIR="$HOME/.nvm"
-
-
-# 5. Misc --------------------------------------. {{{1
+# 4. Misc --------------------------------------. {{{1
 
 # Source bash configuration for interactive shells
 [ -r "$HOME/.bashrc" ] && source "$HOME/.bashrc"

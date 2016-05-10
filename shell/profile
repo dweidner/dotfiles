@@ -15,7 +15,7 @@ typeset -a directories_to_prepend directories_to_append
 directories_to_prepend=(
   "$HOME/.rbenv/bin"
   "$HOME/.rbenv/shims"
-  "$HOME/.npm-packages/bin"
+  "$HOME/.nodenv/shims"
   "$HOME/.composer/vendor/bin"
   "$HOME/.dotfiles/bin"
   "$HOME/bin"

@@ -18,11 +18,11 @@ tree
 rsync
 
 # Development
+rbenv
+nodenv
 macvim --override-system-vim
 ctags
 dnsmasq
-nvm
-rbenv
 mysql
 the_silver_searcher
 homebrew/php/php56
