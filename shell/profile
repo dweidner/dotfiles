@@ -13,7 +13,8 @@ typeset -a directories_to_prepend directories_to_append
 
 # Directories to be prepended to PATH
 directories_to_prepend=(
-  "$HOME/.gem/bin"
+  "$HOME/.rbenv/bin"
+  "$HOME/.rbenv/shims"
   "$HOME/.npm-packages/bin"
   "$HOME/.composer/vendor/bin"
   "$HOME/.dotfiles/bin"

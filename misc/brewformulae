@@ -21,7 +21,8 @@ rsync
 macvim --override-system-vim
 ctags
 dnsmasq
-node --without-npm
+nvm
+rbenv
 mysql
 the_silver_searcher
 homebrew/php/php56

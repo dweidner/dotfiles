@@ -6,7 +6,8 @@
 # 1. Browsers
 # 2. Editors
 # 3. Less
-# 4. Help
+# 4. Node.js
+# 5. Misc
 # -----------------------------------------------
 
 
@@ -38,7 +39,12 @@ export PAGER="less"
 export MANPAGER="$PAGER"
 
 
-# 4. Help -------------------------------------- {{{1
+# 4. Node.js ------------------------------------ {{{1
+
+export NVM_DIR="$HOME/.nvm"
+
+
+# 5. Misc --------------------------------------. {{{1
 
 # Directory used by the run-help function to find docs
 if [ -d "/usr/local/share/zsh/help" ]; then
