@@ -39,12 +39,6 @@ let g:syntastic_stl_format='%E{⨯ %e}%B{ · }%W{▴ %w} '
 " Disable style checkers for php
 let g:syntastic_php_checkers = ['php']
 
-" Use eslint instead of jshint
-let g:syntastic_javascript_checkers = ['eslint']
-
-" Use stylelint for sass files
-let g:syntastic_scss_checkers = ['stylelint']
-
 " Ignore some of the errors displayed by html5-tidy
 let g:syntastic_html_tidy_ignore_errors = [
     \  'plain text isn''t allowed in <head> elements',
