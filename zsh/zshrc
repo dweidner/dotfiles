@@ -136,11 +136,6 @@ unset zsh_config_files config_file
 
 # 8. Misc -------------------------------------------- {{{1
 
-# Load node version manager
-if brew list "nvm" >/dev/null 2>&1; then
-  source "$(brew --prefix nvm)/nvm.sh"
-fi
-
 # Suggest installation of a command with homebrew
 if brew command command-not-found-init >/dev/null 2>&1; then
   eval "$(brew command-not-found-init)"
