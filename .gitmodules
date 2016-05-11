@@ -7,27 +7,12 @@
 [submodule "zsh/plugins/zsh-bd"]
 	path = zsh/plugins/bd
 	url = https://github.com/Tarrasch/zsh-bd.git
-[submodule "tmux/plugins/tmux-prefix-highlight"]
-	path = tmux/plugins/tmux-prefix-highlight
-	url = https://github.com/tmux-plugins/tmux-prefix-highlight.git
-[submodule "tmux/plugins/tmux-yank"]
-	path = tmux/plugins/tmux-yank
-	url = https://github.com/tmux-plugins/tmux-yank.git
-[submodule "tmux/plugins/tmux-open"]
-	path = tmux/plugins/tmux-open
-	url = https://github.com/tmux-plugins/tmux-open.git
-[submodule "tmux/plugins/tmux-copycat"]
-	path = tmux/plugins/tmux-copycat
-	url = https://github.com/tmux-plugins/tmux-copycat.git
 [submodule "zsh/plugins/zsh-completions"]
 	path = zsh/plugins/zsh-completions
 	url = https://github.com/zsh-users/zsh-completions.git
-[submodule "tmux/plugins/tmux-sessionist"]
-	path = tmux/plugins/tmux-sessionist
-	url = https://github.com/tmux-plugins/tmux-sessionist.git
-[submodule "tmux/plugins/tmux-pain-control"]
-	path = tmux/plugins/tmux-pain-control
-	url = https://github.com/tmux-plugins/tmux-pain-control.git
 [submodule "zsh/plugins/zsh-history-substring-search"]
 	path = zsh/plugins/zsh-history-substring-search
 	url = https://github.com/zsh-users/zsh-history-substring-search.git
+[submodule "tmux/plugins/tpm"]
+	path = tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm

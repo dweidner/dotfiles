@@ -690,6 +690,7 @@ dotfiles_create_symlinks() {
   link "zsh/zshrc"          ".zshrc"
   link "git/gitattributes"  ".gitattributes"
   link "git/gitignore"      ".gitignore"
+  link "tmux"               ".tmux"
   link "tmux/tmux.conf"     ".tmux.conf"
   link "misc/ctags"         ".ctags"
   link "misc/agignore"      ".agignore"
