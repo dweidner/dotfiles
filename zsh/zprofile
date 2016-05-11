@@ -44,7 +44,7 @@ export MANPAGER="$PAGER"
 if brew list zplug >/dev/null 2>&1; then
   export ZPLUG_HOME="$(brew --prefix zplug)"
   export ZPLUG_REPOS="$HOME/.zsh/plugins"
-  export ZPLUG_LOADFILE="$HOME/.zsh_plugins.zsh"
+  export ZPLUG_LOADFILE="$HOME/.zpackages"
   export ZPLUG_CACHE_FILE="$HOME/.cache/zplug/cache"
 fi
 

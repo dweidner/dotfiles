@@ -18,11 +18,11 @@ fi
 
 # 2. Plugins ------------------------------------ {{{1
 
-zplug "sindresorhus/pure"                       # Minimal and fast prompt
-zplug "Tarrasch/zsh-bd"                         # Jump back to a directory
-zplug "zsh-users/zsh-completions"               # Completion definitions
-zplug "zsh-users/zsh-syntax-highlighting"       # Syntax highlighting
-zplug "zsh-users/zsh-history-substring-search"  # History search feature
+zplug "sindresorhus/pure"                           # Minimal and fast prompt
+zplug "Tarrasch/zsh-bd"                             # Jump back to a directory
+zplug "zsh-users/zsh-completions", nice:-10         # Completion definitions
+zplug "zsh-users/zsh-history-substring-search"      # History search feature
+zplug "zsh-users/zsh-syntax-highlighting", nice:10  # Syntax highlighting
 
 
 # 3. Autoload Plugins --------------------------- {{{1
@@ -36,7 +36,7 @@ if ! zplug check --verbose; then
 fi
 
 # Load all installed plugins
-zplug load --verbose
+zplug load
 
 
 # vim:syntax=zsh

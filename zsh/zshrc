@@ -86,7 +86,7 @@ unset file
 
 # 6. ZSH Plugins ---------------------- {{{1
 
-if (( $+commands[zplug] )); then
+if [ -n "$ZPLUG_HOME" ]; then
   source "$DOTFILES/zsh/zpackages"
 fi
 
