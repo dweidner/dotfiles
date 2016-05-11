@@ -2,11 +2,12 @@
 
 # Shells
 zsh
+zplug
 bash
 bash-completion
-coreutils
 
 # Utilities
+coreutils
 homebrew/dupes/grep
 homebrew/dupes/openssh
 homebrew/fuse/encfs
@@ -22,12 +23,12 @@ rbenv
 nodenv
 nodenv/nodenv/nodenv-package-json-engine
 macvim --override-system-vim
+the_silver_searcher
 ctags
 dnsmasq
 mysql
-the_silver_searcher
 homebrew/php/php56
-hombrew/php/php56-xdebug
+homebrew/php/php56-xdebug
 homebrew/php/php56-mcrypt
 homebrew/php/adminer
 homebrew/php/php-code-sniffer
