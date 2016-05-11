@@ -1,4 +1,4 @@
-# zsh/lib/zcompletion.zsh
+# zsh/lib/completion.zsh
 
 # -------------------------------------
 # Table of Contents

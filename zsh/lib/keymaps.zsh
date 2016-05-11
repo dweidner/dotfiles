@@ -1,4 +1,4 @@
-# zsh/lib/zkeymaps.zsh
+# zsh/lib/keymaps.zsh
 
 # -------------------------------------
 # Table of Contents
