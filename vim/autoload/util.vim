@@ -1,5 +1,10 @@
 " autoload/util.vim
 
+if exists('g:did_util_vim') || &cp || version < 700
+  finish
+endif
+let g:did_util_vim = 1
+
 " Perform a motion but preserve search history.
 " @see $VIMRUNTIME/ftplugin/python.vim
 function! util#Jump(motion) range
