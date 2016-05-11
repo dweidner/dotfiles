@@ -1,8 +1,8 @@
 # zsh/zshrc
 
-# ----------------------------------------------------
+# -------------------------------------
 # Table of Contents
-# ----------------------------------------------------
+# -------------------------------------
 # 1. Dotfiles Setup
 # 2. Sensible Defaults
 # 3. Command History
@@ -11,16 +11,17 @@
 # 6. ZSH Plugins
 # 7. ZSH Configuration
 # 8. Misc
-# ----------------------------------------------------
+# -------------------------------------
 
 
-# 1. Dotfiles Setup ---------------------------------- {{{1
+# 1. Dotfiles Setup ------------------- {{{1
 
 export DOTFILES="$HOME/.dotfiles"  # Expose the dotfiles directory
 source "$DOTFILES/shell/helpers"   # Load frequently used utility functions
+source "$DOTFILES/shell/aliases"   # Load shell aliases
 
 
-# 2. Sensible Defaults ------------------------------- {{{1
+# 2. Sensible Defaults ---------------- {{{1
 
 ttyctl -f                  # Restore terminal settings when exiting abnormally
 
@@ -38,9 +39,9 @@ unsetopt CHECK_JOBS        # Don't report on jobs when exiting shell
 unsetopt CLOBBER           # Do not overwrite files with > and >>
 
 
-# 3. Command History ---------------------------------- {{{1
+# 3. Command History ------------------ {{{1
 
-HISTFILE="$HOME/.zsh_history"  # Customize the path of the zsh history
+HISTFILE="$HOME/.zhistory"     # Customize the path of the zsh history
 HISTCONTROL=ignoreboth         # Ignore duplicates and lines starting with space
 HISTSIZE=1000                  # Max number of entries saved in internal history
 SAVEHIST=1000                  # Max number of entries saved in history file
@@ -57,12 +58,10 @@ setopt HIST_EXPIRE_DUPS_FIRST  # Remove duplicate entries from history before
                                # losing a unique event
 
 
-# 4. DIR Colors -------------------------------------- {{{1
+# 4. DIR Colors ----------------------- {{{1
 
-# Load zsh color module
 autoload -U colors && colors
 
-# Customize colorized output of the `list directory contents` command
 if [[ -f "$HOME/.dircolors" && (( $+commands[dircolors] )) ]]; then
   eval "$(dircolors --sh "$HOME/.dircolors")"
 elif [[ -f "/etc/dircolors" && (( $+commands[dircolors] )) ]]; then
@@ -73,84 +72,40 @@ elif [[ "$OSTYPE" == darwin* ]]; then
 fi
 
 
-# 5. ZSH Functions ----------------------------------- {{{1
+# 5. ZSH Functions -------------------- {{{1
 
-# Add the custom function directory to the search path
-fpath=( "$DOTFILES/zsh/functions" "$DOTFILES/zsh/completions" $fpath )
+fpath=( "$DOTFILES/zsh/functions" $fpath )
+fpath=( "$DOTFILES/zsh/completions" $fpath )
 
-# Load all custom functions automatically upon their
-# first reference
-for file in "$DOTFILES/zsh/functions/"*; do
+for file ($DOTFILES/zsh/functions/*(N)); do
   autoload -Uz ${file##*/}
 done
 
-# Clean up temporary variables
 unset file
 
 
-# 6. ZSH Plugins ------------------------------------- {{{1
+# 6. ZSH Plugins ---------------------- {{{1
 
-# Set the sequence of the plugins to load
-zsh_plugins=(
-  zsh-syntax-highlighting
-  zsh-history-substring-search
-  zsh-completions
-  pure
-  bd
-)
-
-# Autoload ZSH plugins specified in the collection
-for plugin in $zsh_plugins; do
-  plugin_path="$DOTFILES/zsh/plugins/$plugin"
-  for plugin_file in "$plugin_path/$plugin"{.plugin,}.zsh; do
-    if [ -s "$plugin_file" ]; then
-      source "$plugin_file"
-      break
-    fi
-  done
-done
-
-# Cleanup temporary variables
-unset zsh_plugins plugin{,_path,_file}
-
-
-# 7. ZSH Configuration ------------------------------- {{{1
-
-# Load additional configuration files
-zsh_config_files=(
-  "$DOTFILES/zsh/zcompletion"
-  "$DOTFILES/zsh/zprompt"
-  "$DOTFILES/zsh/zabbr"
-  "$DOTFILES/zsh/zkeymaps"
-  "$DOTFILES/shell/aliases"
-  "$HOME/.zshrc_local"
-)
-
-for config_file in $zsh_config_files; do
-  [ -s "$config_file" ] && source "$config_file"
-done
-
-# Cleanup temporary variables
-unset zsh_config_files config_file
-
-
-# 8. Misc -------------------------------------------- {{{1
-
-# Suggest installation of a command with homebrew
-if brew command command-not-found-init >/dev/null 2>&1; then
-  eval "$(brew command-not-found-init)"
+if (( $+commands[zplug] )); then
+  source "$DOTFILES/zsh/zpackages"
 fi
 
-# Enable magic quoting of urls
-autoload -U url-quote-magic
-zle -N self-insert url-quote-magic
 
-# Autoload the run-help function for zsh builtin commands
-unalias run-help
-autoload -Uz run-help
-alias help="run-help"
+# 7. ZSH Configuration ---------------- {{{1
 
-# Automatically remove duplicates from these path variables
+for file ($DOTFILES/zsh/lib/*.zsh(N)); do
+  source "$file"
+done
+
+unset file
+
+
+# 8. Misc ----------------------------- {{{1
+
+if [ -s "$HOME/.zlocal" ]; then
+  source "$HOME/.zlocal"
+fi
+
 typeset -U path cdpath fpath manpath
 
 

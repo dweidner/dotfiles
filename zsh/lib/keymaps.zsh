@@ -1,14 +1,14 @@
-# zsh/zkeymaps
+# zsh/lib/zkeymaps.zsh
 
-# ----------------------------------------------------
+# -------------------------------------
 # Table of Contents
-# ----------------------------------------------------
+# -------------------------------------
 # 1. Keymappings
 # 2. Custom Commands
-# ----------------------------------------------------
+# -------------------------------------
 
 
-# 1. Keymappings ------------------------------------- {{{1
+# 1. Keymappings ---------------------- {{{1
 
 zmodload zsh/terminfo zsh/complist
 
@@ -82,7 +82,7 @@ bindkey "${key[Ctrl]}xd" insert-current-date
 bindkey "${key[Ctrl]}x1" jump-to-end-of-first-word
 
 
-# 2. EMACS mode ---------------------------- {{{2
+# a) EMACS mode ----------------------- {{{2
 
 if (( $+widgets[history-substring-search-up] )); then
   bindkey -M emacs "${key[Ctrl]}P"  history-substring-search-up
@@ -93,7 +93,7 @@ else
 fi
 
 
-# 3. VI mode ------------------------------- {{{2
+# b) VI mode -------------------------- {{{2
 
 if (( $+widgets[history-substring-search-up] )); then
   bindkey -M vicmd "k"  history-substring-search-up
@@ -104,7 +104,7 @@ else
 fi
 
 
-# 2. Custom Commands --------------------------------- {{{1
+# 2. Custom Commands ------------------ {{{1
 
 # Switch terminal into application mode when ZLE is active. This
 # ensures that values from the terminfo database are valid.
@@ -147,4 +147,4 @@ function insert-current-date() {
 zle -N insert-current-date
 
 
-# vim:syntax=zsh:foldmethod=marker:foldlevel=2
+# vim:foldmethod=marker:foldlevel=2

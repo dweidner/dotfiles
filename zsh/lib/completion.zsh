@@ -1,15 +1,15 @@
-# zsh/zcompletion
+# zsh/lib/zcompletion.zsh
 
-# -----------------------------------------------
+# -------------------------------------
 # Table of Contents
-# -----------------------------------------------
+# -------------------------------------
 # 1. Completion Options
 # 2. Completion Styles
 # 3. Colorize Completions
-# -----------------------------------------------
+# -------------------------------------
 
 
-# 1. Completion Options ------------------------- {{{1
+# 1. Completion Options --------------- {{{1
 
 setopt COMPLETE_IN_WORD   # Complete from both ends of a word
 setopt ALWAYS_TO_END      # Move the cursor to the end of a completed word
@@ -22,7 +22,7 @@ unsetopt FLOW_CONTROL     # Disable start/stop characters in editor
 unsetopt MENU_COMPLETE    # List poissibilities on completion
 
 
-# 2. Completion Styles -------------------------- {{{1
+# 2. Completion Styles ---------------- {{{1
 
 # Setup new style completion system
 autoload -Uz compinit && compinit -i
@@ -32,7 +32,11 @@ zstyle ':completion:*' menu select=1
 
 # Use cache to proxy the result list of complex commands like brew
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path "$HOME/.zcompcache"
+zstyle ':completion:*' cache-path "$HOME/.cache/zsh/compcache"
+
+if [[ ! -d "$HOME/.cache/zsh/compcache" ]]; then
+  mkdir -p "$HOME/.cache/zsh/compcache"
+fi
 
 # Enable case-insensitive fuzzy matching of completions
 zstyle ':completion:*' completer _complete _match _approximate
@@ -69,7 +73,7 @@ zstyle ':completion:*:manuals' separate-sections true
 zstyle ':completion:*:manuals.(^1*)' insert-sections true
 
 
-# 3. Colorize Completions ----------------------- {{{1
+# 3. Colorize Completions ------------- {{{1
 
 # Use the same colors in the completion menu as used by the
 # `list directories` command
@@ -80,4 +84,4 @@ else
 fi
 
 
-# vim:syntax=zsh:foldmethod=marker:foldlevel=2
+# vim:foldmethod=marker:foldlevel=2

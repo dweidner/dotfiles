@@ -1,6 +1,0 @@
-# shell/bash_completion
-
-# User defined auto completion functions:
-# Sourced by /etc/bash_completion
-
-# vim:syntax=sh

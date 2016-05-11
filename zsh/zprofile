@@ -1,27 +1,27 @@
 # zsh/zprofile
 
-# -----------------------------------------------
+# -------------------------------------
 # Table of Contents
-# -----------------------------------------------
+# -------------------------------------
 # 1. Browsers
 # 2. Editors
 # 3. Less
 # 4. Misc
-# -----------------------------------------------
+# -------------------------------------
 
 
 # Load configuration shared by bourne-like shells
 [ -s "$HOME/.profile" ] && source "$HOME/.profile"
 
 
-# 1. Browsers ----------------------------------- {{{1
+# 1. Browsers ------------------------- {{{1
 
 if [[ "$OSTYPE" == darwin* ]]; then
   export BROWSER="open"
 fi
 
 
-# 2. Editors ----------------------------------- {{{1
+# 2. Editors -------------------------- {{{1
 
 for cmd in "vim" "vi" "nano" "pico"; do
   if (( $+commands[$cmd] )); then
@@ -31,14 +31,22 @@ for cmd in "vim" "vi" "nano" "pico"; do
 done
 
 
-# 3. Less -------------------------------------- {{{1
+# 3. Less ----------------------------- {{{1
 
 export LESS="--no-init --quit-if-one-screen --window=4 --ignore-case --hilite-search --hilite-unread --LONG-PROMPT --RAW-CONTROL-CHAR"
 export PAGER="less"
 export MANPAGER="$PAGER"
 
 
-# 4. Misc --------------------------------------. {{{1
+# 4. Misc ----------------------------- {{{1
+
+# Setup zpure a zsh plugin manager
+if brew list zplug >/dev/null 2>&1; then
+  export ZPLUG_HOME="$(brew --prefix zplug)"
+  export ZPLUG_REPOS="$HOME/.zsh/plugins"
+  export ZPLUG_LOADFILE="$HOME/.zsh_plugins.zsh"
+  export ZPLUG_CACHE_FILE="$HOME/.cache/zplug/cache"
+fi
 
 # Directory used by the run-help function to find docs
 if [ -d "/usr/local/share/zsh/help" ]; then

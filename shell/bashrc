@@ -8,7 +8,8 @@
 # 3. Command History
 # 4. DIR Colors
 # 5. Bash Completion
-# 6. Bash Configuration
+# 6. Bash Prompt
+# 7. Misc
 # ----------------------------------------------------
 
 
@@ -18,6 +19,7 @@
 
 export DOTFILES="$HOME/.dotfiles"  # Expose the dotfiles directory
 source "$DOTFILES/shell/helpers"   # Load frequently used utility functions
+source "$DOTFILES/shell/aliases"   # Load shell aliases
 
 
 # 2. Sensible Defaults ------------------------------- {{{1
@@ -61,21 +63,20 @@ elif [[ -f "/etc/bash_completion" ]]; then
 fi
 
 
-# 6. Bash Configuration ------------------------------ {{{1
+# 6. Bash Prompt ------------------------------------- {{{1
 
-declare -a bash_config_files=(
-  "$DOTFILES/shell/bash_prompt"
-  "$DOTFILES/shell/aliases"
-  "$HOME/.bash_local"
-)
+# Load configuration file that customizes the bash prompt
+if [ -s "$HOME/.bash_prompt" ]; then
+  source "$HOME/.bash_prompt"
+fi
 
-# Load configuration files
-for i in ${!bash_config_files[*]}; do
-  [[ -s "${bash_config_files[$i]}" ]] && source "${bash_config_files[$i]}"
-done
 
-# Cleanup global scope
-unset bash_config_files
+# 7. Misc -------------------------------------------- {{{1
+
+# Load user configuration file
+if [ -s "$HOME/.bash_local" ]; then
+  source "$HOME/.bash_local"
+fi
 
 
 # vim:syntax=sh:foldmethod=marker:foldlevel=2

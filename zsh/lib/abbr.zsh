@@ -1,4 +1,4 @@
-# zsh/zabbr
+# zsh/lib/zabbr.zsh
 
 # Abbreviations Expansion
 # @see <http://zshwiki.org/home/examples/zleiab>
@@ -31,6 +31,3 @@ function help-magic-abbr() {
   )"
 }
 zle -N help-magic-abbr
-
-
-# vim:syntax=zsh

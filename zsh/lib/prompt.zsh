@@ -1,4 +1,4 @@
-# zsh/zprompt
+# zsh/lib/zprompt.zsh
 
 # PURE: -----------------------------------------
 # Pretty, minimal and fast ZSH prompt
@@ -8,5 +8,3 @@
 autoload -U promptinit && promptinit  # Autoload the zsh prompt module
 PURE_PROMPT_SYMBOL="$"                # Customize symbol used (default: ❯)
 prompt pure                           # Select pure as default theme
-
-# vim:syntax=zsh
