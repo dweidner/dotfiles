@@ -20,6 +20,7 @@ rsync
 # Development
 rbenv
 nodenv
+nodenv/nodenv/nodenv-package-json-engine
 macvim --override-system-vim
 ctags
 dnsmasq
