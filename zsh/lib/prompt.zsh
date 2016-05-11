@@ -1,4 +1,8 @@
-# zsh/lib/zprompt.zsh
+# zsh/lib/prompt.zsh
+
+# Ensure pure is installed via zplug
+zplug check "sindresorhus/pure" >/dev/null 2>&1 || return
+
 
 # PURE: -----------------------------------------
 # Pretty, minimal and fast ZSH prompt
