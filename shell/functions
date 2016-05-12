@@ -57,10 +57,13 @@ function grab() {
 # [$1] = Task to do.
 #
 function todo() {
+  local title="${TODO_TITLE:-"# TODO"}"
+  local file="${TODO_FILE:-"$HOME/.todo"}"
+
   if [ "$#" -eq 0 ]; then
-    cat "$HOME/.todo"
+    echo "$title" && [ -s "$file" ] && cat "$file" || echo "» Nothing to Do"
   else
-    echo "- [ ] $*" > "$HOME/.todo" && todo
+    echo "- [ ] $*" > "$file" && todo
   fi
 }
 

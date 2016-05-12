@@ -75,10 +75,10 @@ fi
 
 # 5. ZSH Functions -------------------- {{{1
 
-fpath=( "$DOTFILES/zsh/functions" $fpath )
-fpath=( "$DOTFILES/zsh/completions" $fpath )
+fpath=( "$HOME/.zfunctions" $fpath )
+fpath=( "$HOME/.zcompletions" $fpath )
 
-for file ($DOTFILES/zsh/functions/*(N)); do
+for file ($HOME/.zfunctions/*(N)); do
   autoload -Uz ${file##*/}
 done
 
