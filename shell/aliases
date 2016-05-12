@@ -56,13 +56,13 @@ fi
 
 alias ls="command ${LS_BINARY:-ls} ${ls_options[*]}"
 
-alias ll="ls -lhF"        # Human readable sizes.
-alias la="ll -A"          # Human readable sizes, hidden files.
-alias lt="ll -tr"         # By date, most recent last.
-alias lu="lt -u"          # By date, most recent last, show access time.
-alias lc="lt -c"          # By date, most recent last, show change time.
-alias lx="ll -XB"         # By extension (GNU only).
-alias lz="ll -Sr"         # By size, largest last.
+alias ll="ls -lhF"  # Human readable sizes.
+alias la="ll -A"    # Human readable sizes, hidden files.
+alias lt="ll -tr"   # By date, most recent last.
+alias lu="lt -u"    # By date, most recent last, show access time.
+alias lc="lt -c"    # By date, most recent last, show change time.
+alias lx="ll -XB"   # By extension (GNU only).
+alias lz="ll -Sr"   # By size, largest last.
 
 
 # 3. GREP: File Pattern Searcher ---------------- {{{1

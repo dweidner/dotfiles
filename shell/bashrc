@@ -20,6 +20,7 @@
 export DOTFILES="$HOME/.dotfiles"  # Expose the dotfiles directory
 source "$DOTFILES/shell/helpers"   # Load frequently used utility functions
 source "$DOTFILES/shell/aliases"   # Load shell aliases
+source "$DOTFILES/shell/functions" # Load shell functions
 
 
 # 2. Sensible Defaults ------------------------------- {{{1
