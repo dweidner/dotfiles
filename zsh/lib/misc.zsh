@@ -1,4 +1,4 @@
-# zsh/lib/help.zsh
+# zsh/lib/misc.zsh
 
 # Autoload the run-help function for zsh builtin commands
 unalias run-help
