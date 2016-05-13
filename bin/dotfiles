@@ -21,7 +21,6 @@ DOTFILES_REMOTE_REPOSITORY="dweidner/dotfiles"
 INSTALL_NPM_PACKAGES=0
 INSTALL_FORMULAE=0
 CREATE_SYMLINKS=0
-UPDATE_SUBMODULES=0
 UPDATE_OSX_SETTINGS=0
 
 #
@@ -36,7 +35,6 @@ Usage: dotfiles [-h] [-u] [-s] [-b] [-n] [-x] [-a]
 
 Options:
    -h  Print usage information.
-   -u  Update submodules installed with the repository.
    -s  Create symbolic links (may overwrite existing).
    -b  Install homebrew formulae.
    -n  Install npm packages.
@@ -64,8 +62,6 @@ parse_options() {
       -h) usage
           exit 0
           ;;
-      -u) UPDATE_SUBMODULES=1
-          ;;
       -s) CREATE_SYMLINKS=1
           ;;
       -b) INSTALL_FORMULAE=1
@@ -74,8 +70,7 @@ parse_options() {
           ;;
       -x) UPDATE_OSX_SETTINGS=1
           ;;
-      -a) UPDATE_SUBMODULES=1
-          UPDATE_OSX_SETTINGS=1
+      -a) UPDATE_OSX_SETTINGS=1
           CREATE_SYMLINKS=1
           INSTALL_FORMULAE=1
           INSTALL_NPM_PACKAGES=1
@@ -354,165 +349,6 @@ git_initialize_repository() {
 }
 
 #
-# Run a bash function for each submodule.
-#
-# Usage: git_foreach_submodule fn
-#
-# $1 = Name of the function to run.
-#
-git_foreach_submodule() {
-  local args=(-c "$1 \"\$@\"" "$1")
-
-  # Export internal functions so we can use them within the
-  # `git submodule foreach` loop
-  # shellcheck disable=SC2163
-  export -f "$1"
-
-  # Run the specified script function foreach submodule
-  # shellcheck disable=SC2016
-  git submodule --quiet foreach --recursive 'echo "$name $path $toplevel"' | xargs -n3 -P20 sh "${args[@]}"
-
-  # Remove the internal functions from the global scope
-  # shellcheck disable=SC2163
-  unset -f "$1"
-}
-
-#
-# Display the status of the dotfiles repository and all its submodules.
-#
-# Usage: git_get_submodule_status name path toplevel
-#
-# $1 = Name of the submodule.
-# $2 = Relative path to the submodule.
-# $3 = Absolute path to the parent repository.
-#
-git_get_submodule_status() {
-  local name="$1"
-  local path="$2"
-  local toplevel="$3"
-
-  if [[ ! -d "$toplevel/$path" ]]; then
-    return 1
-  fi
-
-  # Switch to the given directory
-  pushd "$toplevel/$path" >/dev/null
-
-  # Determine the current upstream branch and the corresponding sha
-  local upstream_branch=""
-  local upstream_branch_sha=""
-
-  upstream_branch="$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null)"
-  upstream_branch="${upstream_branch#refs/remotes/origin/}"
-  [[ -z "$upstream_branch" ]] && upstream_branch="master"
-  upstream_branch_sha="$(git rev-parse "refs/remotes/origin/$upstream_branch")"
-
-  # Determine the url of the remote repository
-  local remote_url=""
-  local remote_repository=""
-  remote_url="$(git config --get remote.origin.url)"
-  remote_repository="${remote_url##*/}"
-  remote_repository="${remote_repository%.git}"
-
-  # Grab the latest changes. Perform an API request that ensures that the given
-  # SHA matches the latest SHA of the upstream repository.
-  local response=""
-  response="$(curl --silent --max-time 3 --output /dev/null --write-out "%{http_code}" --header "Accept: application/vnd.github.chitauri-preview+sha" --header "If-None-Match: \"$upstream_branch_sha\"" "https://api.github.com/repos/$remote_repository/commits/$upstream_branch")"
-
-  if [[ "$response" != "304" ]]; then
-    git fetch --force --quiet origin "refs/heads/$upstream_branch:refs/remotes/origin/$upstream_branch"
-  fi
-
-  # Determine the status of the current repository
-  local count=""
-  local status=""
-
-  count="$(git rev-list --count --left-right "refs/remotes/origin/$upstream_branch"...HEAD 2>/dev/null | tr -s '\t' '|')"
-
-  case "$count" in
-
-    # No upstream
-    "") status="?";;
-
-    # Equal
-    "0|0") status="$(printf "±%.2d" "0")";;
-
-    # Ahead
-    "0|"*) status="$(printf "%+.2d" "${count#0|}")";;
-
-    # Behind
-    *"|0") status="$(printf "%+.2d" "-${count%|0}")";;
-
-    # Diverged
-    *) status="$(printf "%+.2d %+.2d" "-${count%|*}" "${count#*|}")";;
-
-  esac
-
-  # Switch back to the previous directory
-  popd >/dev/null
-
-  # Render the module status
-  printf "%s %s\n" "$status" "$remote_repository"
-}
-
-#
-# Display changes made in to the remote branch since the last pull.
-#
-# Usage: git_get_submodule_changes name path toplevel
-#
-# $1 = Name of the submodule.
-# $2 = Relative path to the submodule.
-# $3 = Absolute path to the parent repository.
-#
-git_get_submodule_changes() {
-  local name="$1"
-  local path="$2"
-  local toplevel="$3"
-  local changes=""
-
-  # Determine changes made to the remote repository since the last pull
-  pushd "$toplevel/$path" >/dev/null
-  changes="$(git --no-pager log --oneline HEAD..origin)"
-  popd >/dev/null
-
-  if [ -n "$changes" ]; then
-    printf "%s:\n%s\n\n" "$name" "$changes"
-  fi
-}
-
-#
-# Update all submodules of the given working copy.
-#
-# Usage: git_update_submodules dir
-#
-# $1 = Path of the working copy.
-#
-git_update_submodules() {
-  local dir="$1"
-
-  # Ensure that a valid directory was given
-  if [[ ! -d "$dir" ]]; then
-    return 1
-  fi
-
-  # Switch to the working copy
-  pushd "$dir" >/dev/null
-
-  # Pull remote changes
-  git pull --quiet --rebase 2>/dev/null
-
-  # Update the registered submodules to match what the superproject
-  git submodule --quiet update --init --recursive
-
-  # Fetch and merge updates from the remote repository for each submodule
-  # shellcheck disable=SC2016
-  git submodule --quiet foreach --recursive 'git pull --quiet origin $(git config -f "$toplevel/.gitmodules" "submodule.$name.branch" || echo "master")'
-
-  # Revert the changes to the working directory
-  popd >/dev/null
-}
-
-#
 # Install the xcode command line tools.
 #
 # Usage: isntall_xcode
@@ -690,8 +526,6 @@ dotfiles_create_symlinks() {
   link "zsh"                 ".zsh"
   link "zsh/zshrc"           ".zshrc"
   link "zsh/zprofile"        ".zprofile"
-  link "zsh/zfunctions"      ".zfunctions"
-  link "zsh/zcompletions"    ".zcompletions"
   link "tmux"                ".tmux"
   link "tmux/tmux.conf"      ".tmux.conf"
   link "git/gitattributes"   ".gitattributes"
@@ -701,86 +535,6 @@ dotfiles_create_symlinks() {
 
   # Avoid creating symbolic links twice
   CREATE_SYMLINKS=0
-}
-
-#
-# Display the status of all submodules added to the dotfiles repository.
-#
-# Usage: dotfiles_show_status dir
-#
-# $1 = Path to the working tree.
-#
-dotfiles_show_status() {
-  local dir="$1"
-  local status=""
-  local num_submodules=0
-  local pending_updates=0
-
-  # Switch to the given directory
-  pushd "$dir" >/dev/null
-
-  # Determine the total number of submodules.
-  num_submodules="$(git submodule status 2>/dev/null | wc -l | tr -d '[:space:]')"
-
-  if [ "$num_submodules" -eq 0 ]; then
-    print_warning "No submodules found."
-    return 0
-  fi
-
-  # Print user information
-  print_status "$(printf "Fetching updates for %s submodules...\n" "$num_submodules")"
-
-  # Determine the status of each submodule.
-  status="$(git_foreach_submodule "git_get_submodule_status" | grep "^-")"
-
-  # Switch back to the previous directory
-  popd >/dev/null
-
-  # Only show submodules which are behind the upstream
-  if [ -n "$status" ]; then
-
-    # Count the total number of modules that require an update
-    pending_updates="$(echo -ne "$status" | wc -l |  tr -d '[:space:]')"
-
-    # Summarize the modules with pending updates
-    if [ "$pending_updates" -gt 0 ]; then
-      print_status "$(printf "Updates available for %s of %s submodules:\n%s\n\n" "$pending_updates" "$num_submodules" "$status")"
-      return "$pending_updates"
-    fi
-
-  fi
-
-  print_status "All submodules are up to date."
-  return 0
-}
-
-#
-# List changes made to the remote repositories of all added submodules.
-#
-# Usage: dotfiles_list_updates dir
-#
-# $1 = Path to the working tree.
-#
-dotfiles_list_updates() {
-  local dir="$1"
-  local changes=""
-
-  # Switch to the given directory
-  pushd "$dir" >/dev/null
-
-  # Update the registered submodules to match what the superproject expects
-  git submodule update --init --recursive --quiet
-
-  # Retrieve the commit messages of the latest updates
-  changes="$(git_foreach_submodule "git_get_submodule_changes")"
-
-  # Switch back to the previous directory
-  popd >/dev/null
-
-  # Output changes if any are available
-  if [ -n "$changes" ]; then
-    printf "\n%b\n\n" "$changes" | less
-  fi
 }
 
 #
@@ -808,40 +562,6 @@ main() {
   if ! install_dotfiles "$DOTFILES_REMOTE_REPOSITORY" "$DOTFILES_DIRECTORY"; then
     print_error "Could not install dotfiles."
     return 1
-  fi
-
-  # Display the status of submodules added to the repository
-  if ! dotfiles_show_status "$DOTFILES_DIRECTORY"; then
-    print_status "Found udpdates for at leas one submodule."
-
-    # Ask if the users wants to show the changes
-    seek_confirmation "Do you want to list the changes made to the remote repositories of your submodules?"
-
-    if is_confirmed; then
-      dotfiles_list_updates "$DOTFILES_DIRECTORY"
-    else
-      process_aborted "dotfiles_list_updates"
-    fi
-
-    # Ask if the users wants to integrate submodule updates
-    seek_confirmation "Do you want to integrate the latest changes into your working copy?"
-
-    if is_confirmed; then
-      UPDATE_SUBMODULES=1
-    else
-      UPDATE_SUBMODULES=0
-      process_aborted "git_update_submodules"
-    fi
-  fi
-
-  # Update all dependencies added as submodules to the project
-  if [ "$UPDATE_SUBMODULES" -eq 1 ]; then
-    process_started "git_update_submodules" "Updating submodules..."
-    if ! git_update_submodules "$DOTFILES_DIRECTORY"; then
-      print_error "Could not update submodules."
-      return 1
-    fi
-    process_done "git_update_submodules"
   fi
 
   # Create symbolic links if desired

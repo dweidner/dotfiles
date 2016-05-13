@@ -46,8 +46,8 @@ HISTTIMEFORMAT='%F %T%t'  # Distinguish history lines by date/time
 # Customize colorized output of the `list directory contents` command
 if [[ -f "$HOME/.dircolors" ]] && is_executable "dircolors"; then
   eval "$(dircolors --sh "$HOME/.dircolors")"
-elif [[ -f "/etc/dircolors" ]] && is_executable "dircolors"; then
-  eval "$(dircolors --sh "/etc/dircolors")"
+elif is_executable "dircolors"; then
+  eval "$(dircolors --sh "$DOTFILES/shell/dircolors")"
 elif is_mac; then
   export CLICOLOR=1
   export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD

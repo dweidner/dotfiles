@@ -65,9 +65,9 @@ autoload -U colors && colors
 
 if [[ -f "$HOME/.dircolors" && (( $+commands[dircolors] )) ]]; then
   eval "$(dircolors --sh "$HOME/.dircolors")"
-elif [[ -f "/etc/dircolors" && (( $+commands[dircolors] )) ]]; then
-  eval "$(dircolors --sh "/etc/dircolors")"
-elif [[ "$OSTYPE" == darwin* ]]; then
+elif (( $+commands[dircolors] )); then
+  eval "$(dircolors --sh "$DOTFILES/shell/dircolors")"
+elif is_mac; then
   export CLICOLOR=1
   export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD
 fi
@@ -75,10 +75,10 @@ fi
 
 # 5. ZSH Functions -------------------- {{{1
 
-fpath=( "$HOME/.zfunctions" $fpath )
-fpath=( "$HOME/.zcompletions" $fpath )
+fpath=( "$HOME/.zfunctions" "$DOTFILES/zsh/zfunctions" $fpath )
+fpath=( "$HOME/.zcompletions" "$DOTFILES/zsh/zcompletions" $fpath )
 
-for file ($HOME/.zfunctions/*(N)); do
+for file ($DOTFILES/zsh/zfunctions/*(N)); do
   autoload -Uz ${file##*/}
 done
 
@@ -87,14 +87,35 @@ unset file
 
 # 6. ZSH Plugins ---------------------- {{{1
 
-if [ -n "$ZPLUG_HOME" ]; then
-  source "$DOTFILES/zsh/zpackages"
+zplug_load_packages() {
+  source "$ZPLUG_HOME/init.zsh"
+
+  if [ -s "$HOME/.zpackages" ]; then
+    source "$HOME/.zpackages"
+  else
+    source "$DOTFILES/zsh/zpackages"
+  fi
+
+  if ! zplug check --verbose; then
+    printf "Install missing zsh plugins? [y/N] "
+    if read -q; then
+      echo; zplug install
+    fi
+  fi
+
+  zplug load
+}
+
+if [[ -n "$ZPLUG_HOME" && -s "$ZPLUG_HOME/init.zsh" ]]; then
+  zplug_load_packages
 fi
+
+unset -f zplug_load_packages
 
 
 # 7. ZSH Configuration ---------------- {{{1
 
-for file ($DOTFILES/zsh/lib/*.zsh(N)); do
+for file ($DOTFILES/zsh/config/*.zsh(N)); do
   source "$file"
 done
 
