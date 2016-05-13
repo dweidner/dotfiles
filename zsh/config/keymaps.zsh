@@ -36,9 +36,6 @@ for k in "${(k)key[@]}"; do
   [[ -z "$key[$k]" ]] && key[$k]='�'
 done
 
-# Use emacs-like key bindings by default
-bindkey -e
-
 # Bind the key sequences to Zsh Line Editor (ZLE) commands
 bindkey "${key[Space]}"   magic-space
 bindkey "${key[Home]}"    beginning-of-line

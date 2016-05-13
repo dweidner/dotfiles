@@ -25,6 +25,7 @@ source "$DOTFILES/shell/functions" # Load shell functions
 # 2. Sensible Defaults ---------------- {{{1
 
 ttyctl -f                  # Restore terminal settings when exiting abnormally
+bindkey -e                 # Use emacs-like key bindings by default
 
 setopt AUTO_PUSHD          # Make cd push the old directory onto the stack
 setopt PUSHD_TO_HOME       # Have pushd with no arguments act like 'pushd ~'
@@ -87,14 +88,17 @@ unset file
 
 # 6. ZSH Plugins ---------------------- {{{1
 
-zplug_load_packages() {
+#
+# Helper function to load zplug packages.
+#
+# Usage: zplug_load
+#
+zplug_load() {
   source "$ZPLUG_HOME/init.zsh"
 
-  if [ -s "$HOME/.zpackages" ]; then
-    source "$HOME/.zpackages"
-  else
-    source "$DOTFILES/zsh/zpackages"
-  fi
+  local file
+  [ -s "$HOME/.zpackages" ] && file="$HOME/.zpackages" || file="$DOTFILES/zsh/zpackages"
+  [ -s "$file" ] && source "$file"
 
   if ! zplug check --verbose; then
     printf "Install missing zsh plugins? [y/N] "
@@ -106,11 +110,11 @@ zplug_load_packages() {
   zplug load
 }
 
-if [[ -n "$ZPLUG_HOME" && -s "$ZPLUG_HOME/init.zsh" ]]; then
-  zplug_load_packages
-fi
+# Load zsh plugins if plugin manager is installed
+[[ -s "$ZPLUG_HOME/init.zsh" ]] && zplug_load
 
-unset -f zplug_load_packages
+# Cleanup shell environment
+unset -f zplug_load
 
 
 # 7. ZSH Configuration ---------------- {{{1
