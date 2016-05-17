@@ -20,7 +20,12 @@ source "$FZF_BASE/shell/completion.zsh"
 source "$FZF_BASE/shell/key-bindings.zsh"
 
 # Use a solarized light inspired color scheme
-export FZF_DEFAULT_OPTS='
-  --color fg:240,bg:230,hl:33,fg+:241,bg+:221,hl+:33
-  --color info:33,prompt:33,pointer:166,marker:166,spinner:33
-'
+FZF_DEFAULT_OPTS+=" --color light,hl:33,hl+:33,fg+:241,bg+:221"
+FZF_DEFAULT_OPTS+=" --color info:33,prompt:33,pointer:166,marker:166,spinner:33"
+
+# Alternative: Use a solarized dark inspired color scheme
+# FZF_DEFAULT_OPTS+=" --color dark,hl:33,hl+:37,bg+:136,fg+:254"
+# FZF_DEFAULT_OPTS+=" --color info:254,prompt:37,spinner:108,pointer:235,marker:235"
+
+# Export changes to the collection of default options used by fzf
+export FZF_DEFAULT_OPTS
