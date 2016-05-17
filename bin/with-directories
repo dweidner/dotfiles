@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+#
+# A helper script to output all parent directories of a list of files in STDIN.
+# Can be useful for tools like ag or ack where only files are listed.
+#
+# @see <https://github.com/junegunn/dotfiles>
+#
+# Usage:
+# ag -g "" | with-directories
+#
+
+require 'set'
+
+dirs = Set.new
+
+while line = STDIN.gets
+  dir = File.dirname(line)
+  anc = []
+  while dir != "." && dirs.add?(dir)
+    anc << dir
+    dir = File.dirname(dir)
+  end
+  begin
+    puts anc.reverse unless anc.empty?
+    print line
+  rescue Errno::EPIPE
+    break
+  end
+end

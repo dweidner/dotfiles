@@ -15,19 +15,19 @@ abbreviations=(
 )
 
 # Custom ZLE command used to expand abbreviations
-function magic-abbr-expand() {
+function dotfiles-magic-abbr-expand() {
   local MATCH
   setopt extendedglob
   LBUFFER=${LBUFFER%%(#m)[_a-zA-Z0-9]#}
   LBUFFER+=${abbreviations[$MATCH]:-$MATCH}
 }
-zle -N magic-abbr-expand
+zle -N dotfiles-magic-abbr-expand
 
 # Custom ZLE command used to display available abbreviations
-function help-magic-abbr() {
+function dotfiles-help-magic-abbr() {
   zle -M "$(
     print "Abbreviation Expansion:";
     print -a -C 2 ${(kv)abbreviations}
   )"
 }
-zle -N help-magic-abbr
+zle -N dotfiles-help-magic-abbr
