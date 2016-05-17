@@ -35,7 +35,7 @@ source "$FZF_BASE/shell/key-bindings.zsh"
 
 # Use “The Silver Search” as the default command for FZF
 if (( $+commands[ag] )); then
-  export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g "" 2>/dev/null'
+  export FZF_DEFAULT_COMMAND='ag --hidden --silent --ignore .git -g ""'
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND | with-directories"
 fi
 

@@ -18,32 +18,40 @@
   default = simple
 
 [alias]
-    # Basic shortcuts
-    b  = branch
-    d  = diff
-    m  = merge
-    mt = mergetool
-    am = commit --amend
-    cl = clone --recursive
-    ci = commit
-    ca = !git add --all && git commit -m
-    co = checkout
-    ec = config --global -e
-    st = status -s
-    up = !git pull --rebase --prune $@ && git submodule update --init --recursive
+  # Basic shortcuts
+  br = branch
+  ci = commit
+  cl = clone --recursive
+  cp = cherry-pick
+  co = checkout
+  di = diff
+  ec = config --global -e
+  me = merge
+  mt = mergetool
+  st = status -s
 
-    # Logging
-    ls = log --pretty=nice --decorate
-    ll = log --pretty=nice --decorate --numstat --no-renames
+  # Search files under version control
+  gr = grep --break --heading --line-number
 
-    # List branches, tags and remotes
-    tags = tag -l
-    branches = branch -a
-    remotes = remote -v
-    contributors = shortlog --summary --numbered
+  # Logging
+  ls = log --pretty=nice --decorate
+  ll = log --pretty=nice --decorate --numstat --no-renames
+  lg = log --pretty=nice --decorate --numstat --no-renames --graph
+  mrc = log --pretty=nice --decorate --numstat --no-renames -1
 
-    # Tools/Helpers
-    gitignore = "!gi() { curl -L -s https://www.gitignore.io/api/$@; }; gi"
+  # List branches, tags and remotes
+  tags = tag -l
+  branches = branch -a
+  remotes = remote -v
+  contributors = shortlog --summary --numbered
+
+  # Tools/Helpers
+  ignore-changes = update-index --asume-unchanged
+  track-changes = update-index --no-assume-unchanged
+  gitignore = "!gi() { curl -L -s https://www.gitignore.io/api/$@; }; gi"
+
+[grep]
+  extendregexp = true
 
 [diff]
   tool = opendiff
