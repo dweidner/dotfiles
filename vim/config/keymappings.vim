@@ -20,6 +20,9 @@
 " space to the default leader key.
 map <Space> <Leader>
 
+" Ensure that InsertLeave is fired, when quiting insert mode with Ctrl-C
+inoremap <C-C> <Esc>
+
 " Avoid the escape key
 inoremap jj <Esc>
 

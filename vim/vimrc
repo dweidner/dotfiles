@@ -246,13 +246,13 @@ call plug#begin(g:vim_plugin_dir)
   " ²  Auto update working directory
   " ³  Support async commands
   " ⁴  Repeat plugin commands
-  " ⁵  Fix focus events in tmux
+  " ⁵  Fix cursor/focus events in tmux
   " -----------------------------------
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'airblade/vim-rooter'
   Plug 'tpope/vim-dispatch'
   Plug 'tpope/vim-repeat'
-  Plug 'tmux-plugins/vim-tmux-focus-events'
+  Plug 'sjl/vitality.vim'
   " }}}
 
 call plug#end()
