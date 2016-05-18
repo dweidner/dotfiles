@@ -1,0 +1,34 @@
+# zsh/functions/tm
+
+#
+# A wrapper for teamocil. Manage windows and panes in tmux
+# with YAML files.
+#
+# Usage: tm [layout]
+#
+# $1 = Name of the layout to load.
+#
+tm() {
+  local layout="$1"
+
+  if (( $# == 0 )); then
+    echo "Usage: tm [name]"
+    return 1
+  fi
+
+  # Create a new layout if it does not exist
+  if ! teamocil --show "$layout" >/dev/null 2>&1; then
+    teamocil --edit "$layout"
+  fi
+
+  # Attach to the tmux session if it already exists
+  if tmux has-session -t "$layout" >/dev/null 2>&1; then
+    tmux attach -t "$layout"
+    return 0
+  fi
+
+  # Load the teamocil tmux layout
+  tmux new-session -s "$layout" teamocil "$layout"
+}
+
+# vim:syntax=zsh

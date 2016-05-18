@@ -1,0 +1,3 @@
+#compdef tm
+
+_arguments '*:teamocil layouts:_files -W ~/.teamocil -g "*.yml(:r)"'
