@@ -74,8 +74,8 @@ augroup dotmisc
   " Terminal.app does not change the cursor
   " when switching between normal mode and
   " insert mode. We change the color of the
-  " cursorline here to make the active mode
-  " more obvious.
+  " current line number here to make the
+  " active insert mode more obvious.
   if ($TERM_PROGRAM == 'Apple_Terminal')
     au InsertEnter * exe printf('hi! CursorLineNr ctermfg=%s ctermbg=2', &bg == 'dark' ? 15 : 8)
     au InsertLeave * exe printf('hi! CursorLineNr ctermfg=%s ctermbg=none', &bg == 'dark' ? 11 : 130)
