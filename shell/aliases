@@ -147,14 +147,8 @@ case "$OSTYPE" in
     alias unhide='chflags nohidden'
 
     alias pubkey="more ~/.ssh/id_rsa.pub | pbcopy"
-    alias update="sudo softwareupdate -i -a; brew update; brew upgrade --all; brew cleanup; npm update -g; nodenv rehash; gem update; rbenv rehash"
-
     alias cleanup="find . -type f -name .DS_Store -ls -delete"
     alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl"
-
-    alias llog="sudo $PAGER /var/log/system.log"
-    alias tlog="sudo tail -f /var/log/system.log"
-    alias elog="tail -f /var/log/apache2/error_log"
   ;; # }}}2
 
 esac

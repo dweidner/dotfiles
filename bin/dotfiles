@@ -1,23 +1,21 @@
 #!/usr/bin/env bash
 
+DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+DOTFILES_REMOTE="${DOTFILES_REMOTE:-dweidner/dotfiles}"
+
+source "$DOTFILES/shell/helpers"
+
 #
 # Options/Flags
 #
-# $DOTFILES_DIRECTORY         = Path of the local working copy.
-# $DOTFILES_REMOTE_REPOSITORY = Name of the remote git repository.
-# $INSTALL_NPM_PACKAGES       = Install list of npm packages
-# $INSTALL_FORMULAE           = Install list of hombrew formulae
-# $CREATE_SYMLINKS            = Create symbolic links to dotfiles
-# $UPDATE_SUBMODULES          = Whether to update submodules or not
+# $DOTFILES             = Path of the local working copy.
+# $DOTFILES_REMOTE      = Name of the remote git repository.
+# $INSTALL_NPM_PACKAGES = Install list of npm packages
+# $INSTALL_FORMULAE     = Install list of hombrew formulae
+# $CREATE_SYMLINKS      = Create symbolic links to dotfiles
+# $UPDATE_SUBMODULES    = Whether to update submodules or not
 #
 
-COLOR_FAIL="\e[1;31m"
-COLOR_SUCCESS="\e[1;32m"
-COLOR_WARN="\e[1;33m"
-COLOR_RESET="\e[0m"
-
-DOTFILES_DIRECTORY="$HOME/.dotfiles"
-DOTFILES_REMOTE_REPOSITORY="dweidner/dotfiles"
 INSTALL_NPM_PACKAGES=0
 INSTALL_FORMULAE=0
 CREATE_SYMLINKS=0
@@ -162,8 +160,8 @@ is_confirmed() {
 # $2 = Relative path from the home directory.
 #
 link() {
-  if [ -r "$DOTFILES_DIRECTORY/$1" ]; then
-    ln -fs "$DOTFILES_DIRECTORY/$1" "$HOME/$2"
+  if [ -r "$DOTFILES/$1" ]; then
+    ln -fs "$DOTFILES/$1" "$HOME/$2"
     return $?
   else
     print_error "Can not create a symbolic link to $1"
@@ -183,39 +181,6 @@ strip_comments() {
 }
 
 #
-# Print a status information.
-#
-# Usage: print_status message
-#
-# $1 = Message to print.
-#
-print_status() {
-  printf "● %s\n" "$1"
-}
-
-#
-# Print a error message.
-#
-# Usage: print_erro message
-#
-# $1 = Message to print.
-#
-print_error() {
-  printf "%b⨯ ERROR: %b%s\n" "$COLOR_FAIL" "$COLOR_RESET" "$1"
-}
-
-#
-# Print a warning message.
-#
-# Usage: print_warning message
-#
-# $1 = Message to print.
-#
-print_warning() {
-  printf "%b▴ WARNING: %b%s\n" "$COLOR_WARN" "$COLOR_RESET" "$1"
-}
-
-#
 # Notify user about a started process.
 #
 # Usage: process_started name [message]
@@ -226,7 +191,7 @@ print_warning() {
 process_started() {
   local process="$1"
   local message="${2:-Processing...}"
-  printf "● %s\n" "$message"
+  print_status "$message"
 }
 
 #
@@ -241,7 +206,7 @@ process_done() {
   # shellcheck disable=SC2034
   local process="$1"
   local message="${2:-Done.}"
-  printf "%b✓ %s%b\n" "$COLOR_SUCCESS" "$message" "$COLOR_RESET"
+  print_success "$message"
 }
 
 #
@@ -255,20 +220,8 @@ process_done() {
 process_aborted() {
   # shellcheck disable=SC2034
   local process="$1"
-  local message="${2:-Aborted.}"
-  printf "%b⨯ %s%b\n" "$COLOR_FAIL" "$message" "$COLOR_RESET"
-}
-
-#
-# Ask for user input.
-#
-# Usage: seek_confirmation question
-#
-# $1 = Question to ask.
-#
-seek_confirmation() {
-  read -r -n 1 -p "● $* (y/n) "
-  printf "\n"
+  local message="${2:-Failed.}"
+  print_error "$message"
 }
 
 #
@@ -283,7 +236,7 @@ read_package_list() {
   local filepath="$HOME/.$filename"
 
   if [[ ! -f "$filepath" ]]; then
-    filepath="$DOTFILES_DIRECTORY/misc/$filename"
+    filepath="$DOTFILES/misc/$filename"
   fi
 
   if [ -f "$filepath" ]; then
@@ -513,7 +466,7 @@ dotfiles_show_header() {
 #
 dotfiles_create_symlinks() {
   # Copy `.gitconfig` if it does not exist
-  [[ ! -f "$HOME/.gitconfig" ]] && cp "$DOTFILES_DIRECTORY/git/gitconfig" "$HOME/.gitconfig"
+  [[ ! -f "$HOME/.gitconfig" ]] && cp "$DOTFILES/git/gitconfig" "$HOME/.gitconfig"
 
   # Create the necessary symbolic links between the `dotfiles` and `HOME`
   link "vim"                 ".vim"
@@ -559,7 +512,7 @@ main() {
   fi
 
   # Install the repository if not already done
-  if ! install_dotfiles "$DOTFILES_REMOTE_REPOSITORY" "$DOTFILES_DIRECTORY"; then
+  if ! install_dotfiles "$DOTFILES_REMOTE" "$DOTFILES"; then
     print_error "Could not install dotfiles."
     return 1
   fi
@@ -597,7 +550,7 @@ main() {
 
     if is_confirmed; then
       process_started "osxdefaults" "Setting OSX defaults..."
-      sh "$DOTFILES_DIRECTORY/bin/osxdefaults"
+      sh "$DOTFILES/bin/osxdefaults"
       process_done "osxdefaults"
     else
       process_aborted "osxdefaults"
