@@ -17,6 +17,7 @@ if executable('ag')
     \ --nogroup
     \ --depth 40
     \ --files-with-matches
+    \ --skip-vcs-ignores
     \ -g ""'
 endif
 
