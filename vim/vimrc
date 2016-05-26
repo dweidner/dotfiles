@@ -198,6 +198,7 @@ call plug#begin(g:vim_plugin_dir)
   Plug 'tpope/vim-commentary'
   Plug 'junegunn/vim-easy-align'
   Plug 'itspriddle/vim-stripper'
+  Plug 'ciaranm/detectindent'
   Plug 'mattn/emmet-vim', { 'for': ['html', 'html.twig', 'php', 'css', 'scss', 'sass'] }
 
   " d) Text Writing ------------------- {{{2
