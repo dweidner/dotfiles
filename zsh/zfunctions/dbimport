@@ -1,0 +1,72 @@
+# zsh/zfunctions/dbimport
+
+#
+# Import a database dump from a given file.
+#
+# Usage: dbimport [file] [database]
+#
+# $1 = Path to the file to import
+# $2 = Optional name of target database
+#
+dbimport() {
+  local file="$1"
+  local database="$2"
+
+  if (( $# == 0 )); then
+    echo "Usage: dbimport [file] [database]"
+    return 1
+  fi
+
+  if [[ ! -s "$file" ]]; then
+    echo "⨯ Cannot read input file ‘$file’."
+    return 1
+  fi
+
+  local filename="${file##*/}"
+  local extension="${filename##*.}"
+
+  if [ -z "$database" ]; then
+    database="${filename%%.*}"
+    database="${database//[[:digit:]]/}"
+    database="${database//_/}"
+  fi
+
+  if [[ "$extension" == "gz" ]]; then
+    echo "● Extracting database dump…"
+    gzip -d -k "$file" >/dev/null || return 1
+    file="${file%.*}"
+  fi
+
+  echo "● We are going to check whether a database with the name ‘$database’ already exists. You will be prompted for your password…"
+
+  if mysqlshow "$database" -u root -p >/dev/null 2>&1; then
+    read -r -n 1 -p "Database already exists. Overwrite? (y/n) " && printf "\n"
+    if [[ "$REPLY" =~ ^[YyJj]$ ]]; then
+      echo "⨯ Aborted."
+      return 1
+    fi
+    echo "▴ WARNING: The existing database ‘$database’ will be overwritten…"
+  else
+    echo "● No database with the name ‘$database’ exists. It will be created for you."
+  fi
+
+  echo "● Importing ‘$file’ into database ‘$database’. You will be prompted for your password…"
+  mysql -u root -p -t<<EOSQL
+DROP DATABASE IF EXISTS $database;
+CREATE DATABASE $database;
+USE $database;
+SOURCE $file;
+EOSQL
+
+  local code=$?
+
+  if (( $code == 0)); then
+    echo "✓ Successfully imported your database dump."
+    return $code
+  else
+    echo "⨯ An error occured while trying to import the database dump."
+    return $code
+  fi
+}
+
+# vim:syntax=zsh

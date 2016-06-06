@@ -1,0 +1,24 @@
+# zsh/zfunctions/dbexport
+
+#
+# Dump a given database to a file.
+#
+# Usage: dbexport [database] [directory]
+#
+# $1 = Name of the database to export
+# $2 = Optional output directory (defaults to ~/Downloads)
+#
+dbexport() {
+  local database="$1"
+  local directory="${2:-$HOME/Downloads}"
+
+  if (( $# == 0 )); then
+    echo "Usage: dbexport [database] [directory]"
+    return 1
+  fi
+
+  echo "Exporting the database ‘$database’ to ‘$directory’. You will be prompted for your password…"
+  mysqldump -u root -p "$database" | gzip > "$directory/$(date "+%Y%m%d")_$database.sql.gz"
+}
+
+# vim:syntax=zsh
