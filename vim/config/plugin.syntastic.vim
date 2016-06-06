@@ -12,7 +12,7 @@
 
 " 1. Start Behavior ------------------------ {{{1
 
-let g:syntastic_check_on_open=1             " Run syntax check when opening a file
+let g:syntastic_check_on_open=0             " Avoid syntax check when opening a file
 let g:syntastic_check_on_wq=0               " Avoid running tests on close
 let g:syntastic_always_populate_loc_list=1  " Populate location list with errors
 
