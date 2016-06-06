@@ -1,4 +1,4 @@
-# zsh/lib/fzf.zsh
+# zsh/config/fzf.zsh
 
 # -------------------------------------
 # Table of Contents

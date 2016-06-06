@@ -1,4 +1,4 @@
-# zsh/functions/pfs
+# zsh/zfunctions/pfs
 
 #
 # Print the absolute path of each selected item in the

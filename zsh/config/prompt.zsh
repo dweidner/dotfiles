@@ -1,4 +1,4 @@
-# zsh/lib/prompt.zsh
+# zsh/config/prompt.zsh
 
 #
 # Helper function to display the projects node version.

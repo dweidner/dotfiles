@@ -1,4 +1,4 @@
-# zsh/functions/tm
+# zsh/zfunctions/tm
 
 #
 # A wrapper for teamocil. Manage windows and panes in tmux

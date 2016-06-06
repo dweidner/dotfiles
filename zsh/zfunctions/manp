@@ -1,4 +1,4 @@
-# zsh/functions/manp
+# zsh/zfunctions/manp
 
 #
 # Open the given man pages in the Preview.app.

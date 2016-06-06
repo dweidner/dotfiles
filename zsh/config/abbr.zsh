@@ -1,4 +1,4 @@
-# zsh/lib/abbr.zsh
+# zsh/config/abbr.zsh
 
 # Abbreviations Expansion
 # @see <http://zshwiki.org/home/examples/zleiab>

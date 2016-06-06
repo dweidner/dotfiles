@@ -1,4 +1,4 @@
-# zsh/lib/keymaps.zsh
+# zsh/config/keymaps.zsh
 
 # -------------------------------------
 # Table of Contents
@@ -78,7 +78,7 @@ bindkey "${key[Ctrl]}xm" dotfiles-select-mru
 bindkey "${key[Ctrl]}xg" dotfiles-select-modified
 
 # Insert the current date (format: YYYYmmdd)
-bindkey "${key[Ctrl]}xd" dotfiles-current-date
+bindkey "${key[Ctrl]}xd" dotfiles-insert-current-date
 
 # Jump to the end of the first word (to add additional options)
 bindkey "${key[Ctrl]}x1" dotfiles-jump-to-end-of-first-word

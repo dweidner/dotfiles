@@ -1,4 +1,4 @@
-# zsh/functions/brew_orphans
+# zsh/zfunctions/brew_orphans
 
 #
 # List all installed homebrew formulars and those depending on them.

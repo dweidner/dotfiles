@@ -1,4 +1,4 @@
-# zsh/functions/mand
+# zsh/zfunctions/mand
 
 #
 # Open the given man page in the Dash.app.

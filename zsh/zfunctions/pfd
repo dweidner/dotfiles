@@ -1,4 +1,4 @@
-# zsh/functions/pfd
+# zsh/zfunctions/pfd
 
 #
 # Print the absolute path of the active directory in
