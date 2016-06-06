@@ -483,6 +483,7 @@ dotfiles_create_symlinks() {
   link "tmux/tmux.conf"      ".tmux.conf"
   link "git/gitattributes"   ".gitattributes"
   link "git/gitignore"       ".gitignore"
+  link "misc/gemrc"          ".gemrc"
   link "misc/ctags"          ".ctags"
   link "misc/agignore"       ".agignore"
 
