@@ -11,7 +11,7 @@ prompt_dotfiles_node_version() {
 
   # Determine the node version used in the current directory
   local version
-  version="$(nodenv local 2>&1)"
+  version="$(nodenv local 2>/dev/null)"
 
   # The current directory does not use a local node version
   [[ $? -ne 0 || -z "$version" ]] && return
@@ -31,7 +31,7 @@ prompt_dotfiles_ruby_version() {
 
   # Determine the ruby version used in the current directory
   local version
-  version="$(rbenv local 2>&1)"
+  version="$(rbenv local 2>/dev/null)"
 
   # The current directory does not use a local ruby version
   [[ $? -ne 0 || -z "$version" ]] && return
