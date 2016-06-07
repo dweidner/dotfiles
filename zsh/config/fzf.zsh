@@ -68,8 +68,17 @@ fd() {
 # Open all files selected in the fuzzy finder in the default editor.
 fe() {
   local files
+  files=(${(f)"$(fzf-tmux --query="$1" --multi --select-1 --exit-0 --bind ctrl-a:select-all,ctrl-d:deselect-all)"})
 
-  files=(${(f)"$(fzf-tmux --query="$1" --multi --select-1 --exit-0)"})
+  if [ -n "$files" ]; then
+    ${EDITOR:-vim} -- "${files[@]}"
+  fi
+}
+
+# Search file containing the given keyword open them in the default editor.
+fs() {
+  local files
+  files=(${(f)"$(ag --nogroup --column --color "$1" | fzf-tmux --ansi --multi --delimiter : --nth 4.. --bind ctrl-a:select-all,ctrl-d:deselect-all --exit-0)"})
 
   if [ -n "$files" ]; then
     ${EDITOR:-vim} -- "${files[@]}"
@@ -77,7 +86,7 @@ fe() {
 }
 
 # Search and browse the git history of the current git repository.
-fgh() {
+fh() {
   is_git_repository &&
     git log --pretty=nice --decorate "$@" |
     fzf --ansi --no-sort --reverse --tiebreak=index \
