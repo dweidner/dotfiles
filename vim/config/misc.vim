@@ -58,10 +58,8 @@ endif
 
 " 3. Autocommands --------------------- {{{1
 
-" Create a new auto command group
 augroup dotmisc
 
-  " Remove all commands
   au!
 
   " Jump to last known position
@@ -86,3 +84,12 @@ augroup dotmisc
   au FileType help nn <silent><buffer> Q :q<CR>
 
 augroup end
+
+" Lazy loads some plugins on first InsertEnter
+augroup dotlazyload
+  au!
+  au InsertEnter * call call('plug#load', g:plug_lazyload) | au! dotlazyload
+augroup end
+
+
+" vim:foldmethod=marker:foldlevel=2

@@ -186,15 +186,13 @@ call plug#begin(g:vim_plugin_dir)
 
   " c) Text Editing ------------------- {{{2
   " ¹  Check file syntax
-  " ²  Snippet manager
-  " ³  Wrap text objects
-  " ⁴  Toggle comments
-  " ⁵  Align text elements
-  " ⁶  Remove trailing spaces
-  " ⁷  Write html markup easily
+  " ²  Wrap text objects
+  " ³  Toggle comments
+  " ⁴  Align text elements
+  " ⁵  Remove trailing spaces
+  " ⁶  Write html markup easily
   " -----------------------------------
   Plug 'scrooloose/syntastic'
-  Plug 'SirVer/ultisnips'
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-unimpaired'
   Plug 'tpope/vim-commentary'
@@ -211,13 +209,15 @@ call plug#begin(g:vim_plugin_dir)
   Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
 
   " e) Completion --------------------- {{{2
-  " ¹  Tab or Auto-Complete
-  " ²  HTML5 & SVG omnicomplete
+  " ¹  Snippet manager
+  " ²  Tab or Auto-Complete
   " ³  PHP omnicomplete
+  " ⁴  HTML5 & SVG omnicomplete
   " -----------------------------------
-  Plug 'ervandew/supertab'
-  Plug 'othree/html5.vim',           { 'for': ['html', 'svg', 'php'] }
+  Plug 'SirVer/ultisnips',           { 'on': [] }
+  Plug 'Valloric/YouCompleteMe',     { 'on': [], 'do': function('util#BuildYouCompleteMe') }
   Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
+  Plug 'othree/html5.vim',           { 'for': ['html', 'svg', 'php'] }
 
   " f) Syntax/File Type Additions ----- {{{2
   " ¹  Support PHP 5.6 features
@@ -258,9 +258,14 @@ call plug#begin(g:vim_plugin_dir)
 
 call plug#end()
 
+" Lazy loads some plugins on first InsertEnter
+let g:plug_lazyload = [
+  \ 'ultisnips',
+  \ 'YouCompleteMe'
+  \]
+
 runtime! config/*.vim                 " Load additional config files
 set secure                            " Block some write operations and autocmd
-
 
 " }}}1
 

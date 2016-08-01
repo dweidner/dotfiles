@@ -37,3 +37,11 @@ function! util#GetNodeModulePath(module)
   " Trim whitespace from the path
   return substitute(path, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
 endfunction
+
+" A helper function that installs bundle dependencies for the
+" YouCompleteMe plugin
+function! util#BuildYouCompleteMe(info)
+  if a:info.status == 'installed' || a:info.force
+    !./install.py --tern-completer
+  endif
+endfunction
