@@ -35,13 +35,13 @@ snippet ?e "<? echo ...; ?>"
 endsnippet
 
 snippet ?if "<? if (...): ?>" b
-<?php if(${1}): ?>
+<?php if (${1}): ?>
 	${VISUAL}$0
 <?php endif; ?>
 endsnippet
 
 snippet ?ifelse "<? if (...): ?>" b
-<?php if(${1}): ?>
+<?php if (${1}): ?>
 	${2}
 <?php else: ?>
 	$0
@@ -431,6 +431,16 @@ endsnippet
 
 snippet @spkg "DocBlock: subpackage"
 @subpackage ${1}
+endsnippet
+
+snippet @tpl+ "DocBlock: start template"
+/**#@+
+ * ${1}
+ */$0
+endsnippet
+
+snippet @tpl- "DocBlock: end template"
+/**#@-*/
 endsnippet
 
 
