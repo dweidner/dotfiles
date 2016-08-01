@@ -169,13 +169,15 @@ call plug#begin(g:vim_plugin_dir)
 
   " b) System Integration ------------- {{{2
   " ¹  Navigate files/buffers
-  " ²  Search file contents
-  " ³  Simplified cut & paste
-  " ⁴  Unix utilities in vim
-  " ⁵  Git integration
-  " ⁶  Look up documentation
+  " ²  Open locally modified files
+  " ³  Search file contents
+  " ⁴  Simplified cut & paste
+  " ⁵  Unix utilities in vim
+  " ⁶  Git integration
+  " ⁷  Look up documentation
   " -----------------------------------
   Plug 'ctrlpvim/ctrlp.vim'
+  Plug 'jasoncodes/ctrlp-modified.vim'
   Plug 'mileszs/ack.vim'
   Plug 'svermeulen/vim-easyclip'
   Plug 'tpope/vim-eunuch'
@@ -227,8 +229,7 @@ call plug#begin(g:vim_plugin_dir)
   " ⁷  Load *.md files as markdown
   " ⁸  Update syntax and indentation
   " ⁹  Add Liquid & Jekyll support
-  " ¹⁰ Highlighting for tmux scripts
-  " ¹¹ Highlighting & quote concealing
+  " ¹⁰ Highlighting & quote concealing
   " -----------------------------------
   Plug 'StanAngeloff/php.vim',      { 'for': 'php' }
   Plug 'evidens/vim-twig',          { 'for': 'html.twig' }
@@ -239,7 +240,6 @@ call plug#begin(g:vim_plugin_dir)
   Plug 'tpope/vim-markdown',        { 'for': 'markdown' }
   Plug 'tpope/vim-git',             { 'for': ['git', 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendmail'] }
   Plug 'tpope/vim-liquid',          { 'for': 'liquid' }
-  Plug 'tejr/vim-tmux',             { 'for': 'tmux' }
   Plug 'elzr/vim-json',             { 'for': 'json' }
 
   " g) Misc/Utility ------------------- {{{2
