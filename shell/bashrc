@@ -57,9 +57,9 @@ fi
 # 5. Bash Completion --------------------------------- {{{1
 
 # Enable auto completion for external binaries and their arguments
-if is_formula_installed "bash-completion"; then
-  source "$(brew --prefix)/etc/bash_completion"
-elif [[ -f "/etc/bash_completion" ]]; then
+if [[ -s "/usr/local/etc/bash_completion" ]]; then
+  source "/usr/local/etc/bash_completion"
+elif [[ -s "/etc/bash_completion" ]]; then
   source "/etc/bash_completion"
 fi
 

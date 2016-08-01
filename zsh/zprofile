@@ -41,8 +41,8 @@ export MANPAGER="$PAGER"
 # 4. Misc ----------------------------- {{{1
 
 # Setup zpure a zsh plugin manager
-if brew list zplug >/dev/null 2>&1; then
-  export ZPLUG_HOME="$(brew --prefix zplug)"
+if [ -s "/usr/local/opt/zplug/init.zsh" ]; then
+  export ZPLUG_HOME="${ZPLUG_HOME:-/usr/local/opt/zplug}"
   export ZPLUG_REPOS="$HOME/.zsh/plugins"
   export ZPLUG_LOADFILE="$HOME/.zpackages"
   export ZPLUG_CACHE_FILE="$HOME/.cache/zplug/cache"

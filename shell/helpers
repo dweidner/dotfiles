@@ -99,17 +99,6 @@ is_mac() {
   [[ "$OSTYPE" == darwin* ]]
 }
 
-#
-# Test if a homebrew formula is installed on the system.
-#
-# Usage: is_formula_installed formula
-#
-# $1 = Name of the homebrew formula
-#
-is_formula_installed() {
-  brew list "$1" >/dev/null 2>&1
-}
-
 
 # 4. Git Utilities ----------------------------------- {{{1
 

@@ -15,11 +15,7 @@
 (( $+commands[fzf] )) || return
 
 # Try to determine the source path
-if type brew >/dev/null 2>&1; then
-  FZF_BASE="$(brew --prefix fzf)"
-else
-  FZF_BASE="${FZF_BASE:-/usr/local/opt/fzf}"
-fi
+FZF_BASE="${FZF_BASE:-/usr/local/opt/fzf}"
 
 # Ensure that the path we retrieved exists
 [ -d "$FZF_BASE" ] || return
