@@ -40,6 +40,11 @@ export MANPAGER="$PAGER"
 
 # 4. Misc ----------------------------- {{{1
 
+# Install applications installed with homebrew to ~/Applications
+if (( $+commands[brew] )); then
+  export HOMEBREW_CASK_OPTS="--appdir=~/Applications"
+fi
+
 # Setup zpure a zsh plugin manager
 if [ -s "/usr/local/opt/zplug/init.zsh" ]; then
   export ZPLUG_HOME="${ZPLUG_HOME:-/usr/local/opt/zplug}"
