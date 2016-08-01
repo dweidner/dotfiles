@@ -88,7 +88,9 @@ augroup end
 " Lazy loads some plugins on first InsertEnter
 augroup dotlazyload
   au!
-  au InsertEnter * call call('plug#load', g:plug_lazyload) | au! dotlazyload
+  au InsertEnter * call call('plug#load', g:plug_lazyload)
+        \| call UltiSnips#FileTypeChanged()
+        \| au! dotlazyload
 augroup end
 
 
