@@ -227,8 +227,7 @@ call plug#begin(g:vim_plugin_dir)
   " ⁷  Load *.md files as markdown
   " ⁸  Update syntax and indentation
   " ⁹  Add Liquid & Jekyll support
-  " ¹⁰ Highlighting for tmux scripts
-  " ¹¹ Highlighting & quote concealing
+  " ¹⁰ Highlighting & quote concealing
   " -----------------------------------
   Plug 'StanAngeloff/php.vim',      { 'for': 'php' }
   Plug 'evidens/vim-twig',          { 'for': 'html.twig' }
@@ -239,7 +238,6 @@ call plug#begin(g:vim_plugin_dir)
   Plug 'tpope/vim-markdown',        { 'for': 'markdown' }
   Plug 'tpope/vim-git',             { 'for': ['git', 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendmail'] }
   Plug 'tpope/vim-liquid',          { 'for': 'liquid' }
-  Plug 'tejr/vim-tmux',             { 'for': 'tmux' }
   Plug 'elzr/vim-json',             { 'for': 'json' }
 
   " g) Misc/Utility ------------------- {{{2
