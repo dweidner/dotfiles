@@ -10,12 +10,6 @@
 " -------------------------------------
 
 
-" Create a new autocmd group for the lightline plugin
-augroup dotlightline
-  au!
-augroup end
-
-
 " 1. Lightline ------------------------ {{{1
 
 " Customize the statusline with lightline
@@ -89,7 +83,7 @@ function! s:LightLineColorSchemeUpdate()
 endfunction
 
 " Refresh lightline colors when the colorscheme changes
-au dotlightline ColorScheme * call s:LightLineColorSchemeUpdate()
+au vimrc ColorScheme * call s:LightLineColorSchemeUpdate()
 
 
 " 2. Git/Fugitive --------------------- {{{1
@@ -142,7 +136,7 @@ function! s:SyntasticStatusUpdate()
 endfunction
 
 " Trigger syntastic status update, when buffer is saved
-au dotlightline BufWritePost *.php,*.css,*.scss,*.js call s:SyntasticStatusUpdate()
+au vimrc BufWritePost *.php,*.css,*.scss,*.js call s:SyntasticStatusUpdate()
 
 
 " vim:foldmethod=marker:foldlevel=2

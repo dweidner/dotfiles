@@ -172,7 +172,7 @@ Overview of default and custom key bindings in **VIM**.
 `O` - append a new *line* above the current  
 `ea` - insert at the end of the *word*  
 
-`jj` - exit *insert mode*[¹](#custom)  
+`jk` - exit *insert mode*[¹](#custom)  
 
 ### Visual Mode
 
@@ -207,6 +207,9 @@ Overview of default and custom key bindings in **VIM**.
 `[B` - Go to the first buffer in buffer list (`:bfirst`)[³](#unimpaired)  
 `]B` - Go to the last buffer in buffer list (`:blast`)[³](#unimpaired)  
 
+`Ctrl`+`s` - save current buffer
+`Ctrl`+`w` - save current buffer
+
 ### Window Management
 
 `Ctrl`+`ws` - split window horizontally  
@@ -224,6 +227,10 @@ Overview of default and custom key bindings in **VIM**.
 
 `Ctrl`+`e` - scroll window 3 lines down[¹](#custom)  
 `Ctrl`+`y` - scroll window 3 lines up[¹](#custom)  
+
+`Ctrl`+`q` - close current window
+`Leader`+`q` - close current window
+`Leader`+`Q` - close all windows and discard changes
 
 ### [Surround](https://github.com/tpope/vim-surround)
 

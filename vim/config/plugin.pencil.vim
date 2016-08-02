@@ -4,8 +4,4 @@
 let g:pencil#wrapModeDefault = 'soft'
 
 " Load vim pencil for specific filetypes only
-augroup dotpencil
-  au!
-  au FileType markdown call pencil#init()
-augroup end
-
+autocmd vimrc FileType markdown call pencil#init()
