@@ -24,7 +24,9 @@ map <Space> <Leader>
 inoremap <C-C> <Esc>
 
 " Avoid the escape key
-inoremap jj <Esc>
+inoremap jk <Esc>
+xnoremap jk <Esc>
+cnoremap jk <C-c>
 
 " Expand %% to the same  directory of the current file
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
@@ -35,6 +37,12 @@ xnoremap > >gv
 
 " Toggle paste mode
 set pastetoggle=<F4>
+
+" Quit vim
+inoremap <C-q> <Esc>:quit<CR>
+nnoremap <C-q> :quit<CR>
+nnoremap <Leader>q :quit<CR>
+nnoremap <Leader>Q :quitall!<CR>
 
 
 " 2. Localization --------------------- {{{1
@@ -79,8 +87,25 @@ vnoremap L g_
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
 
+" Movement in insert mode
+inoremap <C-h> <C-o>h
+inoremap <C-l> <C-o>a
+inoremap <C-j> <C-o>j
+inoremap <C-k> <C-o>k
+
 
 " 4. Window/Buffer Management --------- {{{1
+
+" Switch to alternate buffer
+nnoremap <Leader><Space> <C-^>
+
+" Save the current buffer
+inoremap <C-s> <C-o>:update<CR>
+nnoremap <C-s> :update<CR>
+
+" Circular window navigation
+nnoremap <tab> <C-w>w
+nnoremap <S-tab> <C-w>W
 
 " Split window vertically/horizontally
 nnoremap <Leader>wv <C-w>v<C-w>l
@@ -92,23 +117,7 @@ nnoremap <Leader>w2 <C-w>s<C-w>k
 nnoremap <Leader>w3 <C-w>s<C-w>j<C-w>v<C-w>k
 nnoremap <Leader>w4 <C-w>s<C-w>v<C-w>k<C-w>v<C-w>h
 
-" Switch to alternate buffer
-nnoremap <Leader><Space> <C-^>
-
-" Delete the buffer but try to keep the split window intact
-nnoremap <silent> <leader>bd :lclose<bar>b#<bar>bd #<CR>
-
-
 " 5. Search/Replace ------------------- {{{1
-
-" Search (for word under the cursor) with Ack.vim
-nnoremap <Leader>f ::call inputsave()<Bar>let s=input("Search: ", expand("<cword>"))<Bar>call inputrestore()<Bar>silent exe "Ack '".s."'"<CR>
-
-" Highlight word at cursor without changing current position
-" @see <https://github.com/jasoncodes/dotfiles>
-map  <silent> <Leader>h ::let view=winsaveview()<CR>*:call winrestview(view)<CR>
-vmap <silent> <Leader>h ::<C-u>let view=winsaveview()<CR>gv*:<C-u>call winrestview(view)<CR>
-map  <silent> <Leader>H <Leader>h:AckFromSearch!<CR>
 
 " Hide matches from previous search
 noremap <silent> <Leader>/ :nohls<CR>
@@ -133,6 +142,9 @@ vmap <special> <C-j> ]egv
 
 " Toggle distraction free writing using Goyo
 nnoremap <silent> <Leader>z :Goyo<cr>
+
+" qq to record, Q to replay a macro
+nmap Q @q
 
 
 " vim:foldmethod=marker:foldlevel=2
