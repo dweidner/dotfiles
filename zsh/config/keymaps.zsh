@@ -68,17 +68,17 @@ bindkey -M menuselect "+" accept-and-menu-complete
 bindkey "${key[Ctrl]}x." dotfiles-magic-abbr-expand
 bindkey "${key[Ctrl]}xa" dotfiles-help-magic-abbr
 
+# Insert directory path from menu
+bindkey "${key[Ctrl]}xd" dotfiles-insert-directory
+
 # Insert file path from file menu
 bindkey "${key[Ctrl]}xf" dotfiles-insert-files
 
 # Search and insert path from the most recently used file
-bindkey "${key[Ctrl]}xm" dotfiles-select-mru
+bindkey "${key[Ctrl]}xr" dotfiles-select-mru
 
 # Search and insert path from files with changes compaired to the HEAD commit
-bindkey "${key[Ctrl]}xg" dotfiles-select-modified
-
-# Insert the current date (format: YYYYmmdd)
-bindkey "${key[Ctrl]}xd" dotfiles-insert-current-date
+bindkey "${key[Ctrl]}xm" dotfiles-select-modified
 
 # Jump to the end of the first word (to add additional options)
 bindkey "${key[Ctrl]}x1" dotfiles-jump-to-end-of-first-word
@@ -129,12 +129,6 @@ function slash-backward-delete-word() {
 }
 zle -N slash-backward-delete-word
 
-# Insert the current date as timestamp
-function dotfiles-insert-current-date() {
-  LBUFFER+=${(%):-'%D{%Y%m%d}'}
-}
-zle -N dotfiles-insert-current-date
-
 # Select a file using fzf fuzzy finder or fallback using the insert-files
 # widget shipping with zsh
 function dotfiles-insert-files() {
@@ -146,6 +140,15 @@ function dotfiles-insert-files() {
 }
 autoload insert-files && zle -N insert-files
 zle -N dotfiles-insert-files
+
+# Select a directory using fzf fuzzy finder
+function dotfiles-insert-directory() {
+  if (( $+functions[__fzf_select_dir] )); then
+    LBUFFER+="$(__fzf_select_dir)"
+    zle redisplay
+  fi
+}
+zle -N dotfiles-insert-directory
 
 # Select most recently used file via fzf fuzzy finder
 function dotfiles-select-mru() {
