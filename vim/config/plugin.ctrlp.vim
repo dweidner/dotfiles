@@ -1,7 +1,7 @@
 " config/plugin.ctrlp.vim
 
 " Customize the path of the cache files
-let g:ctrlp_cache_dir = g:vim_home_dir . '/tmp/ctrlp'
+let g:ctrlp_cache_dir = g:vim_home . '/tmp/ctrlp'
 
 " Allow to prefix <C-p> with a count to start in a specific mode
 let g:ctrlp_cmd = 'exe "CtrlP" . get(["", "Buffer", "Modified", "MRU"], v:count)'

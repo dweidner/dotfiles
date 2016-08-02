@@ -2,6 +2,5 @@
 
 " Use the silver searcher if available
 if executable('ag')
-  let g:ackprg = 'ag --vimgrep'
-  let g:ack_use_dispatch = 1
+  let &grepprg = 'ag --nogroup --nocolor --column'
 endif

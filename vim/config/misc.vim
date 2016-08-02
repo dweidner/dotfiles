@@ -4,8 +4,7 @@
 " Table of Contents
 " -------------------------------------
 " 1. MacVim
-" 2. MatchIt
-" 3. Autocommands
+" 2. Autocommands
 " -------------------------------------
 
 
@@ -31,7 +30,7 @@ if executable('mvim')
     endif
 
     " Save the current file and open MacVim
-    write
+    update
     echom files
     silent execute "!mvim " . files
 
@@ -47,20 +46,9 @@ if executable('mvim')
 endif
 
 
-" 2. MatchIt -------------------------- {{{1
+" 2. Autocommands --------------------- {{{1
 
-" Load matchit.vim which is shipped with
-" vim in version 7.x
-if !exists('g:loaded_matchit') && findfile('bundle/matchit.vim', &rtp) ==# ''
-  runtime! macros/matchit.vim
-endif
-
-
-" 3. Autocommands --------------------- {{{1
-
-augroup dotmisc
-
-  au!
+augroup vimrc
 
   " Jump to last known position
   " @see help docs on last-position-jump
@@ -83,14 +71,6 @@ augroup dotmisc
   au FileType help nn <silent><buffer> q :q<CR>
   au FileType help nn <silent><buffer> Q :q<CR>
 
-augroup end
-
-" Lazy loads some plugins on first InsertEnter
-augroup dotlazyload
-  au!
-  au InsertEnter * call call('plug#load', g:plug_lazyload)
-        \| call UltiSnips#FileTypeChanged()
-        \| au! dotlazyload
 augroup end
 
 
