@@ -386,9 +386,9 @@ install_homebrew_formulae() {
   brew install encfs
 
   # Install PHP in version 5.6
-  brew install --with-homebrew-curl --without-apache
-  brew install php5-xdebug
-  brew install php5-mcrypt
+  brew install php56 --with-homebrew-curl --without-apache
+  brew install php56-xdebug
+  brew install php56-mcrypt
   brew install composer
   brew install adminer
   brew install drush
@@ -419,9 +419,12 @@ install_homebrew_formulae() {
   brew cask install --appdir="~/Applications" imagealpha
   brew cask install --appdir="~/Applications" imageoptim
   brew cask install --appdir="~/Applications" jadengeller-helium
+  brew cask install --appdir="~/Applications" mountain
   brew cask install --appdir="~/Applications" slack
   brew cask install --appdir="~/Applications" spotify
   brew cask install --appdir="~/Applications" the-unarchiver
+  brew cask install --appdir="~/Applications" transmission
+  brew cask install --appdir="~/Applications" viscosity
   brew cask install --appdir="~/Applications" visual-studio-code
   brew cask install virtualbox
 
