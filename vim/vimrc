@@ -25,10 +25,12 @@ silent! if plug#begin()
 " ¹  Customize vim's statusline
 " ²  Show file changes in gutter
 " ³  Highlight colors in CSS/SASS
+" ⁴  Highlight overly long lines
 " -----------------------------------
 Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'ap/vim-css-color'
+Plug 'whatyouhide/vim-lengthmatters', { 'on': ['LengthmattersEnable', 'LengthmattersDisable', 'LengthmattersToggle'] }
 
 " b) System Integration ------------- {{{2
 " ¹  Navigate files/buffers
@@ -112,12 +114,14 @@ Plug 'elzr/vim-json',             { 'for': 'json' }
 " ²  Auto update working directory
 " ³  Support async commands
 " ⁴  Repeat plugin commands
-" ⁵  Fix cursor/focus events in tmux
+" ⁵  Remember cursor position
+" ⁶  Fix cursor/focus events in tmux
 " -----------------------------------
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'airblade/vim-rooter'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-repeat'
+Plug 'dietsche/vim-lastplace'
 Plug 'sjl/vitality.vim'
 " }}}
 
