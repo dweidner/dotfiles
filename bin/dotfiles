@@ -454,6 +454,7 @@ install_npm_packages() {
 install_apps() {
   # Ensure cask is available
   brew tap caskroom/cask
+  brew tap caskroom/versions
   brew tap caskroom/fonts
 
   # Install macOS applications via CASK
@@ -478,6 +479,7 @@ install_apps() {
     "viscosity"
     "visual-studio-code"
     "virtualbox"
+    "adobe-photoshop-lightroom571"
   )
 
   for name in "${casks[@]}"; do
