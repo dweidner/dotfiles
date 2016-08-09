@@ -1,0 +1,77 @@
+# zsh/zfunctions/splitimg
+
+#
+# Split the given image to separate pdf pages.
+#
+# Usage: splitimg file {a6|a5|a4|a3|1200x1024} {format}
+#
+# $1 = File path of the image to convert
+#
+splitimg() {
+  local image="$1"
+  local size="$2"
+  local format="${3:-pdf}"
+  local output="${image%.*}.$format"
+  local dpi=150
+  local width=0
+  local height=0
+
+  # Determine output size
+  case "${(L)size}" in
+    [0-9]*x[0-9]*)
+      width=${size%x*}
+      height=${size#*x}
+      ;;
+    a6)
+      width=$((dpi * 4.1))
+      height=$((dpi * 5.8))
+      ;;
+    a5)
+      width=$((dpi * 5.8))
+      height=$((dpi * 8.3))
+      ;;
+    a3)
+      width=$((dpi * 11.7))
+      height=$((dpi * 16.5))
+      ;;
+    *) # Assume a size of a4
+      size="a4"
+      width=$((dpi * 8.3))
+      height=$((dpi * 11.7))
+      ;;
+  esac
+
+  # Ensure a file name is given
+  if [[ ! -r "$image" ]] || (( $width <= 0 )) || (( $height <= 0 )); then
+    echo "Usage: $0 file {a6|a5|a4|a3|1200x1024} {format}"
+    return 1
+  fi
+
+  # Ask whether we should overwrite existing files
+  if [[ "$format" == "pdf" ]] && [[ -f "$output" ]]; then
+    read "REPLY?Overwrite $output (y/n [n]) "
+    if [[ ! "$REPLY" =~ ^[YyJj]$ ]]; then
+      return 1
+    fi
+  fi
+
+  # Switch orientation
+  if (( $(identify -format '%w' "$image") > $(identify -format '%h' "$image") )); then
+    local tmp=$width
+    width=$height
+    height=$tmp
+  fi
+
+  # Fill (multiple) pdf pages with the given image file
+  convert "$image" \
+    -compress jpeg -quality 100 \
+    -units PixelsPerInch \
+    -density ${dpi}x${dpi} \
+    -resize ${width}x${height}\^ +repage \
+    -crop ${width}x${height} +repage \
+    -background white \
+    -extent ${width}x${height} \
+    "$output"
+}
+
+# vim:syntax=zsh
