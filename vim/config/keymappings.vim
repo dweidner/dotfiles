@@ -104,8 +104,8 @@ inoremap <C-s> <C-o>:update<CR>
 nnoremap <C-s> :update<CR>
 
 " Circular window navigation
-nnoremap <tab> <C-w>w
-nnoremap <S-tab> <C-w>W
+nnoremap <Tab> <C-w>w
+nnoremap <S-Tab> <C-w>W
 
 " Split window vertically/horizontally
 nnoremap <Leader>wv <C-w>v<C-w>l
