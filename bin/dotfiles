@@ -405,8 +405,6 @@ install_homebrew_formulae() {
 
   # Install prefered editor
   brew install macvim --override-system-vim
-  brew install the_silver_searcher
-  brew install ctags
 
   # Install version manager for node and ruby
   brew install rbenv
@@ -415,6 +413,11 @@ install_homebrew_formulae() {
   brew install nodenv
   nodenv install 5.12.0
   nodenv global 5.12.0
+
+  # Install utilities
+  brew install the_silver_searcher
+  brew install ctags
+  brew install imagemagick
 
   brew cleanup
 }
