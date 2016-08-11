@@ -166,6 +166,8 @@ exe 'set viminfo+=n' . g:vim_home . '/tmp/viminfo'
 exe 'set directory=' . g:vim_home . '/tmp/swap//'
 exe 'set undodir='   . g:vim_home . '/tmp/undo//'
 exe 'set backupdir=' . g:vim_home . '/tmp/backup//'
+exe 'set spellfile+=' . g:vim_home . '/spell/en.utf-8.add'
+exe 'set spellfile+=' . g:vim_home . '/spell/de.utf-8.add'
 
 
 " 3. Look & Feel ---------------------- {{{1
@@ -250,7 +252,7 @@ set diffopt+=iwhite                   " Ignore changes in amount of whitespace
 set matchpairs+=<:>                   " Change html tags with ci< or ci>
 
 set nospell                           " Disable spell checking by default
-set spelllang=en_us,de_de             " Languages to use for spell checks
+set spelllang=en,de                   " Languages to use for spell checks
 
 set foldcolumn=0                      " Do not show a fold column
 set nofoldenable                      " Open all folds by default
