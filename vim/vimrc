@@ -9,7 +9,8 @@
 " 4. Text Editing and Searching
 " 5. Indentation and Tabs
 " 6. Mappings & Controls
-" 7. Misc
+" 7. Auto Commands
+" 8. Misc
 " -------------------------------------
 
 set nocompatible
@@ -126,12 +127,12 @@ call plug#begin()
 
 call plug#end()
 
-augroup plug_lazyload
+augroup lazyload
   autocmd!
   autocmd InsertEnter * call plug#load('ultisnips', 'YouCompleteMe')
         \| call UltiSnips#FileTypeChanged()
-        \| autocmd! plug_lazyload
-augroup end
+        \| autocmd! lazyload
+augroup END
 
 
 " 2. General settings ----------------- {{{1
@@ -359,6 +360,9 @@ set backspace=indent,eol,start        " Change the behavior of backspace
   nnoremap <C-e> 3<C-e>
   nnoremap <C-y> 3<C-y>
 
+  " Select previously changed or yanked text
+  nnoremap <Leader>v '[v']
+
   " Movement in insert mode
   inoremap <C-h> <C-o>h
   inoremap <C-l> <C-o>a
@@ -430,7 +434,19 @@ set backspace=indent,eol,start        " Change the behavior of backspace
   "}}}2
 
 
-" 7. Misc ----------------------------- {{{1
+" 7. Auto Commands -------------------- {{{1
+
+augroup vimrc
+
+  " Dynamically hide the cursorline
+  au WinEnter    * set cursorline
+  au WinLeave    * set nocursorline
+  au InsertEnter * set nocursorline
+  au InsertLeave * set cursorline
+
+augroup END
+
+" 8. Misc ----------------------------- {{{1
 
 runtime! macros/matchit.vim           " Load matchit.vim
 runtime! config/plugin.*.vim          " Load additional plugin configuration
