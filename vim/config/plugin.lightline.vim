@@ -17,7 +17,7 @@ let g:lightline = {
   \ 'colorscheme': 'solarized',
   \ 'active': {
   \   'left': [ [ 'mode', 'paste' ], [ 'filename' ], [ 'ctrlp', 'fugitive' ] ],
-  \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'busy', 'syntastic', 'wrap', 'fileformat', 'fileencoding' ] ]
+  \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'busy', 'syntastic', 'fileformat', 'fileencoding' ] ]
   \ },
   \ 'mode_map': {
   \   'n': ' N ',
@@ -36,7 +36,6 @@ let g:lightline = {
   \   'ctrlp': 'CtrlPMark',
   \   'fugitive': 'LightLineFugitive',
   \   'busy': 'LightLineBusyFlag',
-  \   'wrap': 'PencilMode',
   \   'fileformat': 'LightLineFileFormat',
   \   'fileencoding': 'LightLineFileEncoding'
   \ },
@@ -76,7 +75,6 @@ function! s:LightLineColorSchemeUpdate()
       call lightline#init()
       call lightline#colorscheme()
       call lightline#update()
-      call tmux#UpdateColorScheme()
     endif
   catch
   endtry

@@ -14,8 +14,8 @@ let g:markdown_fenced_languages = [
   \ ]
 
 " Quickly move between headlines
-nnoremap <silent> <buffer> ]] :call util#Jump('/^#.*')<CR>
-nnoremap <silent> <buffer> [[ :call util#Jump('?^#.*')<CR>
+nnoremap <silent> <buffer> ]] :call dw#Jump('/^#.*')<CR>
+nnoremap <silent> <buffer> [[ :call dw#Jump('?^#.*')<CR>
 
 " Preview file in Marked 2
 if has('mac')
