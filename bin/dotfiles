@@ -98,15 +98,6 @@ is_executable() {
 }
 
 #
-# Test whether the current operating system is a version of Mac OSX.
-#
-# Usage: is_mac
-#
-is_mac() {
-  [[ "$OSTYPE" == darwin* ]]
-}
-
-#
 # Test if xcode command line tools are installed. Note: Only works for OSX 10.9+.
 #
 # Usage: is_xcode_installed
@@ -141,15 +132,6 @@ is_git_repository() {
 
   popd >/dev/null
   return 1
-}
-
-#
-# Test whether the user confirmed a question asked via readline.
-#
-# Usage: is_confirmed
-#
-is_confirmed() {
-  [[ "$REPLY" =~ ^[YyJj]$ ]]
 }
 
 #
@@ -575,9 +557,7 @@ create_symlinks() {
   link "misc/gemrc"          ".gemrc"
   link "misc/ctags"          ".ctags"
   link "misc/agignore"       ".agignore"
-
-  # Avoid creating symbolic links twice
-  CREATE_SYMLINKS=0
+  link "misc/backup_ignore"  ".backup_ignore"
 }
 
 #
