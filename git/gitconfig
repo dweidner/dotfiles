@@ -7,48 +7,108 @@
   attributesfile = ~/.gitattributes
 
 [pretty]
-  # %h <short-sha>
-  # %s <commit-message>
-  # %d <pointer-names>
-  # %an <commit-author-name>
-  # %ar <relative-time>
-  nice = "format:%C(yellow)%h%C(reset) %C(red)%d%C(reset) %s -- %C(blue)%an%C(reset); %ar"
+  nice = "format:%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn]%Creset %Cblue%G?%Creset"
 
 [push]
   default = simple
 
 [alias]
-  # Basic shortcuts
-  br = branch
-  ci = commit
-  cl = clone --recursive
-  cp = cherry-pick
-  co = checkout
-  di = diff
-  ec = config --global -e
-  me = merge
-  mt = mergetool
-  st = status -s
+  # Git Aliases
+  # @see <https://github.com/GitAlias/gitalias>
+  a = add
+  b = branch
+  c = commit
+  d = diff
+  f = fetch
+  g = grep
+  l = log
+  m = merge
+  o = checkout
+  p = pull
+  r = remote
+  s = status
+  w = whatchanged
 
-  # Search files under version control
-  gr = grep --break --heading --line-number
+  # git add
+  aa = add --all
+  au = add --update
 
-  # Logging
-  ls = log --pretty=nice --decorate
-  ll = log --pretty=nice --decorate --numstat --no-renames
-  lg = log --pretty=nice --decorate --numstat --no-renames --graph
-  mrc = log --pretty=nice --decorate --numstat --no-renames -1
-
-  # List branches, tags and remotes
-  tags = tag -l
+  # git branch
   branches = branch -a
-  remotes = remote -v
-  contributors = shortlog --summary --numbered
 
-  # Tools/Helpers
+  # git checkout
+  co = checkou
+  ours = !"f() { git checkout --ours $@ && git add $@; }; f"
+  theirs = !"f() { git checkout --theirs $@ && git add $@; }; f"
+
+  # git config
+  aliases = "!git config --get-regexp '^alias\.' | colrm 1 6 | sed 's/ / = /'"
+
+  # git commit
+  ca = commit --amend
+  ci = commit --interactive
+  cm = commit --message
+  put = !git commit --all --message="$1" && git push
+
+  # git diff[tool]
+  dc = diff --cached
+  ds = diff --staged
+  dt = !"for name in $(git diff --name-only $1); do git difftool $1 $name & done"
+  dw = diff --word-diff
+
+  # git grep
+  gg = grep --break --heading --line-number
+
+  # git log
+  lg = log --graph
+  lk = log --graph --topo-order --abbrev-commit --date=short --decorate --all --boundary --pretty=nice
+  ll = log -n 10 --graph --topo-order --abbrev-commit --date=short --decorate --all --boundary --pretty=nice
+  lm = !git log --author $(git config user.email)
+  lo = log --oneline
+  lp = log --patch
+  search = !"f() { query=\"$1\"; shift; git log -S\"$query\" \"$@\"; }; f \"$@\""
+  incoming = !git remote update --prune; git log ..@{upstream}
+  outgoing = log @{upstream}..
+  contributors = shortlog --summary --numbered --no-merges
+
+  # git ls-files
+  ls = ls-files
+  ignored = !"f() { a=\"$(git ls-files -v | grep ^h | cut -c 3-)\"; b=\"$(git ls-files --others -i --exclude-standard)\"; [ -n \"$a\" ] && printf \"ASSUMED UNCHANGED:\\n%s\\n\" \"$a\"; [ -n \"$b\" ] && printf \"IGNORED FILES:\\n%s\\n\" \"$b\"; }; f"
+
+  # git pull
+  pr = pull --rebase
+  get = !git pull --rebase && git submodule update --init --recursive
+
+  # git push
+  publish = !"git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)"
+  unpublish = !"git push origin :$(git rev-parse --abbrev-ref HEAD)"
+
+  # git remote
+  remotes = remote -v
+
+  # git reset
+  undo = reset --soft HEAD~1
+
+  # git stash
+  save = stash save
+  pop = stash pop
+  snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
+
+  # git status
+  ss = status --short
+
+  # git submodule
+  sm = submodule
+
+  # git tag
+  tags = tag -n1 --list
+
+  # git update-index
   ignore-changes = update-index --asume-unchanged
-  track-changes = update-index --no-assume-unchanged
-  gitignore = "!gi() { curl -L -s https://www.gitignore.io/api/$@; }; gi"
+  include-changes = update-index --no-assume-unchanged
+
+  # misc
+  gitignore = "!f() { curl -L -s https://www.gitignore.io/api/$@; }; f"
 
 [grep]
   extendregexp = true
