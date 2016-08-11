@@ -12,12 +12,14 @@ source "$DOTFILES/shell/helpers"
 # $DOTFILES_REMOTE      = Name of the remote git repository.
 # $INSTALL_NPM_PACKAGES = Install list of npm packages
 # $INSTALL_FORMULAE     = Install list of hombrew formulae
+# $INSTALL_APPS         = Install macOS applications
 # $CREATE_SYMLINKS      = Create symbolic links to dotfiles
 # $UPDATE_SUBMODULES    = Whether to update submodules or not
 #
 
 INSTALL_NPM_PACKAGES=0
 INSTALL_FORMULAE=0
+INSTALL_APPS=0
 CREATE_SYMLINKS=0
 UPDATE_OSX_SETTINGS=0
 
@@ -72,6 +74,7 @@ parse_options() {
           CREATE_SYMLINKS=1
           INSTALL_FORMULAE=1
           INSTALL_NPM_PACKAGES=1
+          INSTALL_APPS=1
           ;;
       ?*) print_error "Unknown option."
           usage
@@ -92,15 +95,6 @@ parse_options() {
 #
 is_executable() {
   test -x "$(command -v "$1")"
-}
-
-#
-# Test whether the current operating system is a version of Mac OSX.
-#
-# Usage: is_mac
-#
-is_mac() {
-  [[ "$OSTYPE" == darwin* ]]
 }
 
 #
@@ -138,15 +132,6 @@ is_git_repository() {
 
   popd >/dev/null
   return 1
-}
-
-#
-# Test whether the user confirmed a question asked via readline.
-#
-# Usage: is_confirmed
-#
-is_confirmed() {
-  [[ "$REPLY" =~ ^[YyJj]$ ]]
 }
 
 #
@@ -354,8 +339,6 @@ install_homebrew_formulae() {
   fi
 
   brew doctor
-  brew tap caskroom/cask
-  brew tap caskroom/fonts
   brew tap homebrew/php
   brew tap homebrew/dupes
   brew tap homebrew/fuse
@@ -386,9 +369,9 @@ install_homebrew_formulae() {
   brew install encfs
 
   # Install PHP in version 5.6
-  brew install --with-homebrew-curl --without-apache
-  brew install php5-xdebug
-  brew install php5-mcrypt
+  brew install php56 --with-homebrew-curl --without-apache
+  brew install php56-xdebug
+  brew install php56-mcrypt
   brew install composer
   brew install adminer
   brew install drush
@@ -404,38 +387,6 @@ install_homebrew_formulae() {
 
   # Install prefered editor
   brew install macvim --override-system-vim
-  brew install the_silver_searcher
-  brew install ctags
-
-  # Install macOS applications via CASK
-  brew cask install --appdir="~/Applications" 1password
-  brew cask install --appdir="~/Applications" alfred
-  brew cask install --appdir="~/Applications" bartender
-  brew cask install --appdir="~/Applications" dropbox
-  brew cask install --appdir="~/Applications" firefox
-  brew cask install --appdir="~/Applications" fluid
-  brew cask install --appdir="~/Applications" google-chrome
-  brew cask install --appdir="~/Applications" hazel
-  brew cask install --appdir="~/Applications" imagealpha
-  brew cask install --appdir="~/Applications" imageoptim
-  brew cask install --appdir="~/Applications" jadengeller-helium
-  brew cask install --appdir="~/Applications" slack
-  brew cask install --appdir="~/Applications" spotify
-  brew cask install --appdir="~/Applications" the-unarchiver
-  brew cask install --appdir="~/Applications" visual-studio-code
-  brew cask install virtualbox
-
-  # Improve quicklook
-  brew cask install qlcolorcode
-  brew cask install qlmarkdown
-  brew cask install qlstephen
-
-  # Install some additional fonts
-  brew cask install font-open-sans
-  brew cask install font-camingocode
-  brew cask install font-source-code-pro
-  brew cask install skyfonts
-  find /usr/local/Caskroom/skyfonts -type d -name SkyFonts.app -exec open {} \;
 
   # Install version manager for node and ruby
   brew install rbenv
@@ -445,8 +396,12 @@ install_homebrew_formulae() {
   nodenv install 5.12.0
   nodenv global 5.12.0
 
+  # Install utilities
+  brew install the_silver_searcher
+  brew install ctags
+  brew install imagemagick
+
   brew cleanup
-  brew cask cleanup
 }
 
 #
@@ -459,14 +414,119 @@ install_npm_packages() {
     return 1
   fi
 
-  npm install -g "npm-check-updates"
-  npm install -g "yo"
-  npm install -g "jshint"
-  npm install -g "eslint"
-  npm install -g "grunt-cli"
-  npm install -g "gulp-cli"
-  npm install -g "autoprefixer"
-  npm install -g "node-sass"
+  typeset -a packages
+  packages=(
+    "npm-check-updates"
+    "yo"
+    "jshint"
+    "eslint"
+    "grunt-cli"
+    "gulpt-cli"
+    "autoprefixer"
+    "node-sass"
+  )
+
+  for name in "${packages[@]}"; do
+    npm install -g "$name"
+  done
+}
+
+#
+# Install macOS applications via the terminal.
+#
+# Usage: install_apps
+#
+install_apps() {
+  # Ensure cask is available
+  brew tap caskroom/cask
+  brew tap caskroom/versions
+  brew tap caskroom/fonts
+
+  # Install macOS applications via CASK
+  typeset -a casks
+  casks=(
+    "1password"
+    "alfred"
+    "bartender"
+    "dropbox"
+    "fluid"
+    "google-chrome"
+    "hazel"
+    "imagealpha"
+    "imageoptim"
+    "jadengeller-helium"
+    "mountain"
+    "slack"
+    "spotify"
+    "skyfonts"
+    "the-unarchiver"
+    "transmission"
+    "viscosity"
+    "visual-studio-code"
+    "virtualbox"
+    "adobe-photoshop-lightroom571"
+  )
+
+  for name in "${casks[@]}"; do
+    brew cask install --appdir="~/Applications" "$name"
+  done
+
+  # Improve quicklook
+  typeset -a extensions
+  extensions=(
+    "qlcolorcode"
+    "qlmarkdown"
+    "qlstepen"
+  )
+
+  for name in "${extensions[@]}"; do
+    brew cask install "$name"
+  done
+
+  # Install some additional system fonts
+  typeset -a fonts
+  fonts=(
+    "open-sans"
+    "camingocode"
+    "source-code-pro"
+  )
+
+  for name in "${fonts[@]}"; do
+    brew cask install "font-$name"
+  done
+
+  # Launch Skyfonts to sync fonts via the service
+  find /usr/local/Caskroom/skyfonts -type d -name SkyFonts.app -exec open {} \;
+
+  # Reminder about applications that are licensed via the AppStore
+  typeset -a apps
+  apps=(
+    "Affinity Designer"
+    "Pixelmatator"
+    "iA Writer"
+    "Marked 2"
+    "Readkit"
+    "Dash 3"
+    "Yummy FTP Pro"
+    "Meta"
+    "Daisy Disk"
+    "ColorSnapper 2"
+    "Magnet"
+  )
+
+  print_status "You have licensed some of your applications via the AppStore:"
+  for name in "${apps[@]}"; do
+    printf "\t-%s" "$name"
+  done
+
+  seek_confirmation "Do you want to launch the AppStore now?"
+  if is_confirmed; then
+    open -a "App Store"
+  fi
+
+  # Cleanup downloaded packages
+  brew cask cleanup
+
 }
 
 #
@@ -497,9 +557,7 @@ create_symlinks() {
   link "misc/gemrc"          ".gemrc"
   link "misc/ctags"          ".ctags"
   link "misc/agignore"       ".agignore"
-
-  # Avoid creating symbolic links twice
-  CREATE_SYMLINKS=0
+  link "misc/backup_ignore"  ".backup_ignore"
 }
 
 #
@@ -509,31 +567,53 @@ main() {
   # Handle script options
   parse_options "$@"
 
-  # Install XCode on macOS
-  if is_mac && ! is_xcode_installed; then
-    print_warning "The XCode Command Line Tools must be installed first."
-    process_started "install_xcode" "Installing XCode Command Line Tools..."
-    if ! install_xcode; then
-      print_error "Could not install XCode Command Line Tools. Please install the Command Line Tools manually: https://developer.apple.com/downloads"
-      exit 1
-    fi
-    process_done "insall_xcode"
-  fi
-
   # Download and install the repository if not already done
   if ! install_dotfiles "$DOTFILES_REMOTE" "$DOTFILES"; then
     print_error "Could not install dotfiles."
     return 1
   fi
 
-  # Install frequently used homebrew formulae
-  if is_mac && [ "$INSTALL_FORMULAE" -eq 1 ]; then
-    process_started "install_homebrew_formulae" "Installing hombrew formulae..."
-    if ! install_homebrew_formulae; then
-      print_error "Could not install homebrew formulae."
-      return 1
+  if is_mac; then
+    # Install XCode on macOS
+    if ! is_xcode_installed; then
+      print_warning "The XCode Command Line Tools must be installed first."
+      process_started "install_xcode" "Installing XCode Command Line Tools..."
+      if ! install_xcode; then
+        print_error "Could not install XCode Command Line Tools. Please install the Command Line Tools manually: https://developer.apple.com/downloads"
+        exit 1
+      fi
+      process_done "insall_xcode"
     fi
-    process_done "install_homebrew_formulae"
+
+    # Install frequently used homebrew formulae
+    if [ "$INSTALL_FORMULAE" -eq 1 ]; then
+      process_started "install_homebrew_formulae" "Installing hombrew formulae..."
+      if ! install_homebrew_formulae; then
+        print_error "Could not install homebrew formulae."
+        return 1
+      fi
+      process_done "install_homebrew_formulae"
+    fi
+
+    # Install macOS applications
+    if [ "$INSTALL_APPS" -eq 1 ]; then
+      process_started "install_apps" "Installing macOS applications..."
+      install_apps
+      process_done "install_apps"
+    fi
+
+    # Run osxdefaults by Mathias Bynens
+    if [ "$UPDATE_OSX_SETTINGS" -eq 1 ]; then
+      seek_confirmation "Do you want to customize the OSX settings?"
+
+      if is_confirmed; then
+        process_started "osxdefaults" "Setting OSX defaults..."
+        sh "$DOTFILES/bin/osxdefaults"
+        process_done "osxdefaults"
+      else
+        process_aborted "osxdefaults"
+      fi
+    fi
   fi
 
   # Install frequently used npm packages
@@ -544,19 +624,6 @@ main() {
       return 1
     fi
     process_done "install_npm_packages"
-  fi
-
-  # Run osxdefaults by Mathias Bynens
-  if is_mac && [ "$UPDATE_OSX_SETTINGS" -eq 1 ]; then
-    seek_confirmation "Do you want to customize the OSX settings?"
-
-    if is_confirmed; then
-      process_started "osxdefaults" "Setting OSX defaults..."
-      sh "$DOTFILES/bin/osxdefaults"
-      process_done "osxdefaults"
-    else
-      process_aborted "osxdefaults"
-    fi
   fi
 
   # Create symbolic links if desired

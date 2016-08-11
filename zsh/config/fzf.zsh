@@ -71,28 +71,46 @@ fe() {
   fi
 }
 
-# Search file containing the given keyword open them in the default editor.
+# Search a file containing the given keyword and open it in the default editor.
 fs() {
-  local files
-  files=(${(f)"$(ag --nogroup --column --color "$1" | fzf-tmux --ansi --multi --delimiter : --nth 4.. --bind ctrl-a:select-all,ctrl-d:deselect-all --exit-0)"})
+  local result
+  local file
+  local line
+  result="$(ag --nogroup --column --color "$1" | fzf-tmux --ansi --delimiter=':' --with-nth 1,4.. --bind ctrl-a:select-all,ctrl-d:deselect-all --exit-0)"
+  file="$(echo "$result" | cut -d':' -f1)"
+  line="$(echo "$result" | cut -d':' -f2)"
 
-  if [ -n "$files" ]; then
-    ${EDITOR:-vim} -- "${files[@]}"
+  if [ -r "$file" ]; then
+    if [[ "$EDITOR" == "vim" ]] && [ "$line" -gt 0 ]; then
+      ${EDITOR:-vim} +$line -- "$file"
+    else
+      ${EDITOR:-vim} -- "$file"
+    fi
   fi
 }
 
 # Search and browse the git history of the current git repository.
 fh() {
   is_git_repository &&
-    git log --pretty=nice --decorate "$@" |
+    git log --graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
     fzf --ansi --no-sort --reverse --tiebreak=index \
       --bind=ctrl-s:toggle-sort \
-      --bind "ctrl-m:execute: (
-          grep -o '[a-f0-9]\{7,\}' |
-          head -1 |
-          xargs -I % sh -c 'git show --color=always % | less -R'
-        ) << 'FZF-EOF'
-        {}"
+      --bind "ctrl-m:execute:
+                (grep -o '[a-f0-9]\{7\}' | head -1 |
+                xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+                {}
+FZF-EOF"
+}
+
+# Search directories
+__fzf_select_dir() {
+  find -L . \( -path '*/\.*' -o -fstype dev -o -fstype proc \) \
+    -prune \
+    -o -type f -print \
+    -o -type d -print \
+    -o -type l -print 2>/dev/null \
+    | sed 1d \
+    | fzf-tmux --multi
 }
 
 # Search files that have differences between the index file and the current
@@ -102,14 +120,6 @@ __fzf_select_modified() {
     git status --short |
     fzf-tmux -d 40% --multi --ansi --nth 2..,.. |
     awk '{print $2}'
-}
-
-# Search recently used files.
-__fzf_select_mru() {
-  mru | fzf-tmux --multi | while read file; do
-    echo -n "${file//\~/$HOME}"
-  done
-  echo
 }
 
 

@@ -87,6 +87,15 @@ seek_confirmation() {
   printf "\n"
 }
 
+#
+# Test whether the user confirmed a question asked via readline.
+#
+# Usage: is_confirmed
+#
+is_confirmed() {
+  [[ "$REPLY" =~ ^[YyJj]$ ]]
+}
+
 
 # 3. OSX Utilities ----------------------------------- {{{1
 

@@ -1,16 +1,26 @@
 #!/usr/bin/env bash
 
-BACKUP_LOGFILE="$HOME/Library/Logs/backup.log"
-BACKUP_IGNORE="$HOME/.backup_ignore"
+#
+# Backup Utility
+#
+# This script backups an OS X system to an external volume, effectively
+# cloning it. It is based on [0], [1], [2] and [3] for OS X and [4] and [5] for
+# Linux.
+#
+# Sources:
+# [0] https://gist.github.com/necolas/1145450
+# [1] https://gist.github.com/tvwerkhoven/4541989
+# [2] http://rajeev.name/2008/09/01/automated-osx-backups-with-launchd-and-rsync/
+# [3] http://nicolasgallagher.com/mac-osx-bootable-backup-drive-with-rsync/
+# [4] https://wiki.archlinux.org/index.php/Full_System_Backup_with_rsync
+# [5] http://xpt.sourceforge.net/techdocs/nix/disk/general/disk16-CloneOrBackupDisks/single/
+#
 
-#
-# Telss users how to use the script
-#
-# Usage: usage
-#
-usage() {
-  echoc "usage: backup [source] [target]"
-}
+SCRIPT_NAME=$0
+
+BACKUP_IGNORE="$HOME/.backup_ignore"
+BACKUP_SRC="${BACKUP_SRC:-/}"
+BACKUP_DST="${BACKUP_DST:-/Volumes/Backup}"
 
 #
 # Displays script information.
@@ -18,74 +28,17 @@ usage() {
 # Usage: header
 #
 header() {
-  echoc ""
-  echoc "Backup Utility" "bold"
-  echoc "
-  This script copies the given source directory and all its
-  contents to a backup directory.
+  echo <<"EOF"
 
-  Root priviliges are required to ensure all files are copied correctly.
-  You will be prompted for a password...
-  "
-}
+Backup Utility
 
-#
-# Test if rsync is available in the users $PATH.
-#
-# Usage: is_rsync_executable
-#
-is_rsync_executable() {
-  type "rsync" >/dev/null 2>&1
-}
+This script backups an OS X system to an external volume, effectively
+cloning it.
 
-#
-# Test if the given directory is readable.
-#
-# Usage: is_dir_readable directory
-#
-# $1 = Path to the direcotry
-#
-is_dir_readable() {
-  [ -d "$1" ]
-}
+Root priviliges are required to ensure all files are copied correctly.
+You will be prompted for a password...
 
-#
-# Test if the given file is readable.
-#
-# Usage: is_file_readable file
-#
-# $1 = Path to the file
-#
-is_file_readable() {
-  [ -f "$1" ]
-}
-
-#
-# Print a message in a given color.
-#
-# Usage: echoc message [color] [format]
-#
-# $1 = Message to print
-# $2 = Color to use [red|green|yellow]
-#
-echoc() {
-  local msg="$1"
-  local color="$2"
-
-  local prefix
-  local suffix
-
-  if [ -n "$color" ]; then
-    case "$color" in
-      red)     prefix=$(tput setaf 1)  ;;
-      green)   prefix=$(tput setaf 2)  ;;
-      yellow)  prefix=$(tput setaf 3)  ;;
-      bold)    prefix=$(tput bold)     ;;
-    esac
-    suffix=$(tput sgr0)
-  fi
-
-  printf "%b%s%b\n" "$prefix" "$msg" "$suffix"
+EOF
 }
 
 #
@@ -96,135 +49,86 @@ echoc() {
 # $1 = Question to ask.
 #
 seek_confirmation() {
-  read -r -n 1 -p "$(tput setaf 2)$* (y/n) $(tput sgr0)"
-  printf "\n"
+  read -r -n 1 -p "$* (y/n) "
+  echo
 }
 
 #
-# Display backup statistics.
+# Test whether the user confirmed a question asked via readline.
 #
-# Usage: show_statistics starttime endtime [logfile]
+# Usage: is_confirmed
 #
-#  $1  = Time the backup was started
-#  $2  = Time the backup was finished
-#
-show_statistics() {
-  local duration=$((2 - 1))
-
-  if [ "$duration" -lt 60 ]; then
-    duration="$duration seconds"
-  elif [ "$duration" -lt 3600 ]; then
-    duration="$((duration / 60)) minutes and $((duration % 60)) seconds"
-  else
-    duration="$((duration / 3600)) hours and $(((duration % 3600) / 60)) minutes"
-  fi
-
-  local num_files
-  num_files=$(awk '/Number of files: /{print $7}' "$BACKUP_LOGFILE")
-
-  local num_files_transferred
-  num_files_transferred=$(awk '/Number of regular files transferred: /{print $NF}' "$BACKUP_LOGFILE")
-
-  printf '=%.0s' {1..50}; printf '\n'
-  echoc "Summary:" "bold"
-  echoc "- Number of files: $num_files"
-  echoc "- Number of regular files transferred: $num_files_transferred"
-  echoc "- Total Duration: $duration"
-  printf '=%.0s' {1..50}; printf '\n\n'
+is_confirmed() {
+  [[ "$REPLY" =~ ^[YyJj]$ ]]
 }
 
 #
-# Report errors and warnings that occured during
-# the backup process.
+# Check if the given directory is listed in the list of mounted volumes.
+# Backups should always be copied to an external volume.
 #
-# Usage: show_errors
+# Usage: is_external_disk dir
 #
-show_errors() {
-  local warnings
-  local num_warnings
-
-  warnings=$(grep "rsync:" "$BACKUP_LOGFILE" | awk -F"rsync: " '{print "- "$2}')
-  num_warnings=$(echo "$warnings" | wc -l | tr -d ' ')
-
-  if [ -z "$warnings" ]; then
-    warnings="– None –"
-  fi
-
-  echoc "Warnings ($((num_warnings - 1))):" "yellow"
-  echoc "$warnings"; echo
-
-  local errors
-  local num_errors
-
-  errors=$(grep "rsync error:" "$BACKUP_LOGFILE" | awk -F"rsync error: " '{print "- "$2}')
-  num_errors=$(echo "$errors" | wc -l | tr -d ' ')
-
-  if [ -z "$errors" ]; then
-    errors="– None –"
-  fi
-
-  echoc "Errors ($((num_errors - 1))):" "red"
-  echoc "$errors"; echo
-
-  return "$((num_errors - 1))"
+# $1 = Directory to test
+#
+is_external_disk() {
+  local dst="$1"
+  local name="${1##*/}"
+  local id="$(mount | grep "$name" | awk '{ print $1 }')"
+  [ "$name" -a "$id" ]
 }
 
 #
-# Run incremental backup using rsync and bless.
+# Run the rsync backup with the following flags:
 #
-# Usage: backup source target
+# --archive
+#   --recursive:     traverse all directories
+#   --links:         keep symlinks
+#   --perms:         preserve perms
+#   --times:         preserve mod times
+#   --owner:         preserve owner (super-user only)
+#   --group:         preserve group
+#   --devices:       preserve device files (super-user only)
+#   --specials:      preserve special files
+# --hard-links:      preserve hard links
+# --fileflags:       preserve file-flags
+# --acls:            preserve ACLs
+# --hfs-compression: preserve HFS compression if supported
+# --protect-decmpfs: preserve HFS compression as xattrs
+# --crtimes:         preserve create times
+# --one-file-system: don't cross FSs
+# --delete:          delete extraneous files from destination dirs
 #
-#  $1  = Source directory
-#  $2  = Target direcotry
+# Usage: backup src dst
+#
+# $1 = Source directory
+# $2 = Target directory of the backup
 #
 backup() {
-  local source="$1"
-  local target="$2"
+  typeset -a flags
 
-  # Remove old logfiles
-  if [ -f "$BACKUP_LOGFILE" ]; then
-    rm -f "$BACKUP_LOGFILE"
-  fi
+  # Ask the user if we should ignore some files during the backup
+  if [ -r "$BACKUP_IGNORE" ]; then
+    seek_confirmation "$SCRIPT_NAME: Found a .backup_ignore file in your home directory. Do you want to use that file?"
 
-  sudo rsync --archive \
-         --hard-links \
-         --executability \
-         --xattrs \
-         --acls \
-         --one-file-system \
-         --verbose \
-         --delete \
-         --progress \
-         --stats \
-         --timeout=999 \
-         --log-file="$BACKUP_LOGFILE" \
-         --exclude-from="$BACKUP_IGNORE" \
-         "$source" \
-         "$target"
-
-  # Check for errors
-  if [ $? -ne 0 ]; then
-    echoc "» An error occured during the backup. See the log for more details." "red"
-  else
-    echoc "» Backup finished successfully." "green"
-  fi
-
-  # Make the backup bootable
-  seek_confirmation "» Make the backup bootable?"
-
-  if [[ "$REPLY" =~ ^[YyJj]$ ]]; then
-    sudo bless -folder "$target/System/Library/CoreServices"
-
-    # Check for errors
-    if [ $? -ne 0 ]; then
-      echoc "» Could not make the backup bootable." "red"
-      return 1
-    else
-      echoc "» Your backup is now bootable." "green"
+    if [[ "$REPLY" =~ ^[YyJj]$ ]]; then
+      flags+=( --exclude-from="$BACKUP_IGNORE" )
     fi
   fi
 
-  return 0
+  # Create a clone of the source directory using rsync
+  time rsync \
+    "${flags[*]}" \
+    --archive \
+    --hard-links \
+    --fileflags \
+    --acls \
+    --hfs-compression \
+    --protect-decmpfs \
+    --crtimes \
+    --one-file-system \
+    --delete \
+    "$src" \
+    "$dst"
 }
 
 #
@@ -234,64 +138,58 @@ backup() {
 # $2 = Target directory of the backup
 #
 main() {
-  local source="$1"
-  local target="$2"
-
-  # Ensure any arguments are given
-  if [[ -z "$source" || -z "$target" ]]; then
-    usage
-    return 1
-  fi
+  # Allow users to customize source and destination directory
+  local src="${1:-$BACKUP_SRC}"
+  local dst="${2:-$BACKUP_DST}"
 
   # Ask for root priviliges
   header
   sudo -v
   echo
 
-  # Ensure rsync is available
-  if ! is_rsync_executable; then
-    echoc "backup: rsync not found: Ensure it is in your PATH." "red"
-    return 1
-  fi
-
   # Ensure the source directory is available
-  if ! is_dir_readable "$source"; then
-    echoc "backup: Source directory not found: $source" "red"
+  if [ ! -r "$src" ]; then
+    echo "$SCRIPT_NAME: Can not read from source '$src'"
     return 1
   fi
 
-  # Ensure target directory is available
-  if ! is_dir_readable "$target"; then
-    echoc "backup: Target directory not found: $target" "red"
+  # Ensure destination directory is available
+  if [ ! -w "$dst" ]; then
+    echo "$SCRIPT_NAME: Can not write to destination '$dst'"
     return 1
   fi
 
-  # Ask the user if we should ignore some files during the backup
-  if is_file_readable "$BACKUP_IGNORE"; then
-    seek_confirmation "» Found a .backup_ignore file in your home directory. Do you want to use that file?"
+  # Ensure the destination directory is an external volume
+  if ! is_external_disk "$dst"; then
+    echo "$SCRIPT_NAME: Destination '$dst' not found in the list of mounted volumes - are you sure this is an external disk?"
+    return 1
+  fi
 
-    if [[ "$REPLY" =~ ^[Nn]$ ]]; then
-      BACKUP_IGNORE=""
-    fi
+  # Temporarily disable time machine on OSX
+  if type tmutil >/dev/null 2>&1; then
+    echo "$SCRIPT_NAME: Temporarily disabling Time Machine..."
+    tmutil disable
   fi
 
   # Start the backup process
-  echoc "» Running backup. This may take some time..." "green"; echo
+  echo "$SCRIPT_NAME: Running backup from '$src' to '$dst'. This may take some time..."
+  backup "$src" "$dst"
 
-  local starttime
-  starttime="$(date +%s)"
+  # Finish the backup process
+  echo "$SCRIPT_NAME: Backup complete."
 
-  backup "$source" "$target"
+  # Make the backup bootable
+  if type bless >/dev/null 2>&1; then
+   if [ -d "$dst/System/Library/CoreServices" ]; then
+      bless -folder "$dst/System/Library/CoreServices"
+    fi
+  fi
 
-  local endtime
-  endtime="$(date +%s)"
-
-  # Summarize results
-  show_statistics "$starttime" "$endtime"
-  show_errors
-  echoc "» Backup done. Relax :)." "green"
-
-  return 0
+  # Re-enable time machine
+  if type tmutil >/dev/null 2>&1; then
+    echo "$SCRIPT_NAME: Enabling Time Machine..."
+    tmutil enable
+  fi
 }
 
 main "$@"

@@ -11,17 +11,25 @@
 
 typeset -a directories_to_prepend directories_to_append
 
-# Directories to be prepended to PATH
+# Add path and enable shims for nodenv, a node version manager
+if type nodenv >/dev/null 2>&1; then
+  eval "$(nodenv init -)"
+fi
+
+# Add path and enable shims for rbenv, a ruby version manager
+if type rbenv >/dev/null 2>&1; then
+  eval "$(rbenv init -)"
+fi
+
+# Custom directories to be prepended to PATH if they exist
 directories_to_prepend=(
-  "$HOME/.rbenv/bin"
-  "$HOME/.rbenv/shims"
-  "$HOME/.nodenv/shims"
   "$HOME/.composer/vendor/bin"
   "$HOME/.dotfiles/bin"
+  "$HOME/.bin"
   "$HOME/bin"
 )
 
-# Directories to be appended to PATH
+# Custom directories to be appended to PATH if they exist
 directories_to_append=(
   "/usr/local/opt/coreutils/libexec/gnubin"
 )
@@ -45,7 +53,7 @@ export PATH
 
 # 2. MANPATH environment variable -------------------- {{{1
 
-typeset -a manuals_to_include
+typeset -a manuals_to_append
 
 # Directories to be appended to MANPATH
 manuals_to_append=(

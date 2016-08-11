@@ -2,7 +2,7 @@
 
 " Save and share clipboard among vim instances
 let g:EasyClipShareYanks = 1
-let g:EasyClipShareYanksDirectory = g:vim_home_dir . '/tmp'
+let g:EasyClipShareYanksDirectory = g:vim_home . '/tmp'
 
 " Enable auto formatting when pasting text
 let g:EasyClipAutoFormat = 1
