@@ -12,121 +12,124 @@
 
 set nocompatible
 
-let s:darwin = has('mac')
 let g:vim_home  = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
 let g:plug_home = g:vim_home . '/bundle'
+
+let s:darwin = has('mac')
+let s:gui = has('gui_running')
 
 
 " 1. Vim Plugins ---------------------- {{{1
 
-silent! if plug#begin()
+call plug#begin()
 
-" a) Appearance --------------------- {{{2
-" ¹  Customize vim's statusline
-" ²  Show file changes in gutter
-" ³  Highlight colors in CSS/SASS
-" ⁴  Highlight overly long lines
-" -----------------------------------
-Plug 'itchyny/lightline.vim'
-Plug 'airblade/vim-gitgutter'
-Plug 'ap/vim-css-color'
-Plug 'whatyouhide/vim-lengthmatters', { 'on': ['LengthmattersEnable', 'LengthmattersDisable', 'LengthmattersToggle'] }
+  " a) Appearance --------------------- {{{2
+  " ¹  Start screen for vim
+  " ²  Customize vim's statusline
+  " ³  Show file changes in gutter
+  " ⁴  Highlight colors in CSS/SASS
+  " ⁵  Highlight overly long lines
+  " -----------------------------------
+  Plug 'mhinz/vim-startify'
+  Plug 'itchyny/lightline.vim'
+  Plug 'airblade/vim-gitgutter'
+  Plug 'ap/vim-css-color'
+  Plug 'whatyouhide/vim-lengthmatters', { 'on': ['LengthmattersEnable', 'LengthmattersDisable', 'LengthmattersToggle'] }
 
-" b) System Integration ------------- {{{2
-" ¹  Navigate files/buffers
-" ²  Open locally modified files
-" ³  Search file contents
-" ⁴  Simplified cut & paste
-" ⁵  Unix utilities in vim
-" ⁶  Git integration
-" ⁷  Look up documentation
-" -----------------------------------
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'jasoncodes/ctrlp-modified.vim'
-Plug 'mileszs/ack.vim'
-Plug 'svermeulen/vim-easyclip'
-Plug 'tpope/vim-eunuch'
-Plug 'tpope/vim-fugitive'
-if s:darwin
-  Plug 'keith/investigate.vim'
-endif
+  " b) System Integration ------------- {{{2
+  " ¹  Navigate files/buffers
+  " ²  Open locally modified files
+  " ³  Search file contents
+  " ⁴  Simplified cut & paste
+  " ⁵  Unix utilities in vim
+  " ⁶  Git integration
+  " ⁷  Look up documentation
+  " -----------------------------------
+  Plug 'ctrlpvim/ctrlp.vim'
+  Plug 'jasoncodes/ctrlp-modified.vim'
+  Plug 'mileszs/ack.vim'
+  Plug 'svermeulen/vim-easyclip'
+  Plug 'tpope/vim-eunuch'
+  Plug 'tpope/vim-fugitive'
+  if s:darwin
+    Plug 'keith/investigate.vim'
+  endif
 
-" c) Text Editing ------------------- {{{2
-" ¹  Check file syntax
-" ²  Wrap text objects
-" ³  Remove trailing spaces
-" ⁴  Align text elements
-" ⁵  Toggle comments
-" ⁶  Write html markup easily
-" -----------------------------------
-Plug 'scrooloose/syntastic'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-unimpaired'
-Plug 'itspriddle/vim-stripper'
-Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)', 'EasyAlign'] }
-Plug 'ciaranm/detectindent',    { 'on': 'DetectIndent' }
-Plug 'tpope/vim-commentary',    { 'on': '<Plug>Commentary' }
-Plug 'mattn/emmet-vim',         { 'for': ['html', 'html.twig', 'php', 'css', 'scss', 'sass'] }
+  " c) Text Editing ------------------- {{{2
+  " ¹  Check file syntax
+  " ²  Wrap text objects
+  " ³  Remove trailing spaces
+  " ⁴  Align text elements
+  " ⁵  Toggle comments
+  " ⁶  Write html markup easily
+  " -----------------------------------
+  Plug 'scrooloose/syntastic'
+  Plug 'tpope/vim-surround'
+  Plug 'tpope/vim-unimpaired'
+  Plug 'itspriddle/vim-stripper'
+  Plug 'junegunn/vim-easy-align', { 'on': ['<Plug>(EasyAlign)', 'EasyAlign'] }
+  Plug 'ciaranm/detectindent',    { 'on': 'DetectIndent' }
+  Plug 'tpope/vim-commentary',    { 'on': '<Plug>Commentary' }
+  Plug 'mattn/emmet-vim',         { 'for': ['html', 'html.twig', 'php', 'css', 'scss', 'sass'] }
 
-" d) Text Writing ------------------- {{{2
-" ¹  Soft wrap, better undo...
-" ²  Distraction free writing
-" -----------------------------------
-Plug 'reedes/vim-pencil', { 'for': 'markdown' }
-Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
+  " d) Text Writing ------------------- {{{2
+  " ¹  Soft wrap, better undo...
+  " ²  Distraction free writing
+  " -----------------------------------
+  Plug 'reedes/vim-pencil', { 'for': 'markdown' }
+  Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
 
-" e) Completion --------------------- {{{2
-" ¹  Snippet manager
-" ²  Tab or Auto-Complete
-" ³  PHP omnicomplete
-" ⁴  HTML5 & SVG omnicomplete
-" -----------------------------------
-Plug 'SirVer/ultisnips',           { 'on': [] }
-Plug 'Valloric/YouCompleteMe',     { 'on': [], 'do': function('util#BuildYouCompleteMe') }
-Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
-Plug 'othree/html5.vim',           { 'for': ['html', 'svg', 'php'] }
+  " e) Completion --------------------- {{{2
+  " ¹  Snippet manager
+  " ²  Tab or Auto-Complete
+  " ³  PHP omnicomplete
+  " ⁴  HTML5 & SVG omnicomplete
+  " -----------------------------------
+  Plug 'SirVer/ultisnips',           { 'on': [] }
+  Plug 'Valloric/YouCompleteMe',     { 'on': [], 'do': function('util#BuildYouCompleteMe') }
+  Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
+  Plug 'othree/html5.vim',           { 'for': ['html', 'svg', 'php'] }
 
-" f) Syntax/File Type Additions ----- {{{2
-" ¹  Support PHP 5.6 features
-" ²  Improve hilighting for Twig
-" ³  Add ES6 support
-" ⁴  Improve js indentation
-" ⁵  Improve higlighting for SASS
-" ⁶  Improve support for CSS3
-" ⁷  Load *.md files as markdown
-" ⁸  Update syntax and indentation
-" ⁹  Add Liquid & Jekyll support
-" ¹⁰ Highlighting & quote concealing
-" -----------------------------------
-Plug 'StanAngeloff/php.vim',      { 'for': 'php' }
-Plug 'evidens/vim-twig',          { 'for': 'html.twig' }
-Plug 'othree/yajs.vim',           { 'for': 'javascript' }
-Plug 'gavocanov/vim-js-indent',   { 'for': 'javascript' }
-Plug 'cakebaker/scss-syntax.vim', { 'for': 'scss' }
-Plug 'hail2u/vim-css3-syntax',    { 'for': ['css', 'scss'] }
-Plug 'tpope/vim-markdown',        { 'for': 'markdown' }
-Plug 'tpope/vim-git',             { 'for': ['git', 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendmail'] }
-Plug 'tpope/vim-liquid',          { 'for': 'liquid' }
-Plug 'elzr/vim-json',             { 'for': 'json' }
+  " f) Syntax/File Type Additions ----- {{{2
+  " ¹  Support PHP 5.6 features
+  " ²  Improve hilighting for Twig
+  " ³  Add ES6 support
+  " ⁴  Improve js indentation
+  " ⁵  Improve higlighting for SASS
+  " ⁶  Improve support for CSS3
+  " ⁷  Load *.md files as markdown
+  " ⁸  Update syntax and indentation
+  " ⁹  Add Liquid & Jekyll support
+  " ¹⁰ Highlighting & quote concealing
+  " -----------------------------------
+  Plug 'StanAngeloff/php.vim',      { 'for': 'php' }
+  Plug 'evidens/vim-twig',          { 'for': 'html.twig' }
+  Plug 'othree/yajs.vim',           { 'for': 'javascript' }
+  Plug 'gavocanov/vim-js-indent',   { 'for': 'javascript' }
+  Plug 'cakebaker/scss-syntax.vim', { 'for': 'scss' }
+  Plug 'hail2u/vim-css3-syntax',    { 'for': ['css', 'scss'] }
+  Plug 'tpope/vim-markdown',        { 'for': 'markdown' }
+  Plug 'tpope/vim-git',             { 'for': ['git', 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendmail'] }
+  Plug 'tpope/vim-liquid',          { 'for': 'liquid' }
+  Plug 'elzr/vim-json',             { 'for': 'json' }
 
-" g) Misc/Utility ------------------- {{{2
-" ¹  Auto-generate ctags
-" ²  Auto update working directory
-" ³  Support async commands
-" ⁴  Repeat plugin commands
-" ⁵  Remember cursor position
-" ⁶  Fix cursor/focus events in tmux
-" -----------------------------------
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'airblade/vim-rooter'
-Plug 'tpope/vim-dispatch'
-Plug 'tpope/vim-repeat'
-Plug 'dietsche/vim-lastplace'
-Plug 'sjl/vitality.vim'
-" }}}
+  " g) Misc/Utility ------------------- {{{2
+  " ¹  Auto-generate ctags
+  " ²  Auto update working directory
+  " ³  Support async commands
+  " ⁴  Repeat plugin commands
+  " ⁵  Remember cursor position
+  " ⁶  Fix cursor/focus events in tmux
+  " -----------------------------------
+  Plug 'ludovicchabant/vim-gutentags'
+  Plug 'airblade/vim-rooter'
+  Plug 'tpope/vim-dispatch'
+  Plug 'tpope/vim-repeat'
+  Plug 'dietsche/vim-lastplace'
+  Plug 'sjl/vitality.vim'
+  " }}}
 
 call plug#end()
-endif
 
 augroup plug_lazyload
   autocmd!
@@ -173,7 +176,7 @@ exe 'set backupdir=' . g:vim_home . '/tmp/backup//'
 
 " 3. Look & Feel ---------------------- {{{1
 
-if has('gui_running')
+if s:gui
 
   "set guifont=Menlo\ Regular:h15      " Select font to use
   "set linespace=2                     " Increase spacing between lines

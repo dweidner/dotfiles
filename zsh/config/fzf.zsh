@@ -122,13 +122,5 @@ __fzf_select_modified() {
     awk '{print $2}'
 }
 
-# Search recently used files.
-__fzf_select_mru() {
-  mru | fzf-tmux --multi | while read file; do
-    echo -n "${file//\~/$HOME}"
-  done
-  echo
-}
-
 
 # vim:foldmethod=marker:foldlevel=2

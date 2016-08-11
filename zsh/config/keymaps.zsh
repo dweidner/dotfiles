@@ -150,17 +150,6 @@ function dotfiles-insert-directory() {
 }
 zle -N dotfiles-insert-directory
 
-# Select most recently used file via fzf fuzzy finder
-function dotfiles-select-mru() {
-  if (( $+functions[__fzf_select_mru] )); then
-    LBUFFER+="$(__fzf_select_mru)"
-    zle redisplay
-  elif (( $+widgets[_most_recent_file] )); then
-    zle _most_recent_file
-  fi
-}
-zle -N dotfiles-select-mru
-
 # Select files that have differences between the index file and the current
 # HEAD commit via fzf fuzzy finder
 function dotfiles-select-modified() {
