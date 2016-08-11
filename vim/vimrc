@@ -422,6 +422,11 @@ set backspace=indent,eol,start        " Change the behavior of backspace
   " qq to record, Q to replay a macro
   nmap Q @q
 
+  " Insert the current time/date
+  " @see <https://https://github.com/mhinz/dotfiles>
+  inoremap <silent> <c-g><c-t> <c-r>=repeat(complete(col('.'), map(["%H:%M:%S", "%H:%M"],'strftime(v:val)')+[localtime()]), 0)<cr>
+  inoremap <silent> <c-g><c-d> <c-r>=repeat(complete(col('.'), map(["%A, %d %B %Y", "%d %B %Y", "%d.%m.%Y", "%Y%m%d"],'strftime(v:val)')+[localtime()]), 0)<cr>
+
   "}}}2
 
 
