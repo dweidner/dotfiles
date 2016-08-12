@@ -293,7 +293,6 @@ set backspace=indent,eol,start        " Change the behavior of backspace
   " the default leader key.
   map <Space> <Leader>
 
-
   " Avoid the escape key
   inoremap jk <Esc>
   xnoremap jk <Esc>
@@ -422,6 +421,10 @@ set backspace=indent,eol,start        " Change the behavior of backspace
   nmap <special> <C-j> ]e
   vmap <special> <C-k> [egv
   vmap <special> <C-j> ]egv
+
+  " Lazy load vim-commentary and toggle comment
+  map  gc  <Plug>Commentary
+  nmap gcc <Plug>CommentaryLine
 
   " qq to record, Q to replay a macro
   nmap Q @q
