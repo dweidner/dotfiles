@@ -487,6 +487,10 @@ nmap <special> <C-j> ]e
 vmap <special> <C-k> [egv
 vmap <special> <C-j> ]egv
 
+" Start EasAlign in interacitve mode
+nmap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
+
 " Lazy load vim-commentary and toggle comment
 map  gc  <Plug>Commentary
 nmap gcc <Plug>CommentaryLine
