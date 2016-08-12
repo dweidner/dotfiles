@@ -207,8 +207,7 @@ Overview of default and custom key bindings in **VIM**.
 `[B` - Go to the first buffer in buffer list (`:bfirst`)[³](#unimpaired)  
 `]B` - Go to the last buffer in buffer list (`:blast`)[³](#unimpaired)  
 
-`Ctrl`+`s` - save current buffer
-`Ctrl`+`w` - save current buffer
+`Ctrl`+`s` - save current buffer  
 
 ### Window Management
 
@@ -219,11 +218,6 @@ Overview of default and custom key bindings in **VIM**.
 
 `Leader`+`ws` - split window horizontally and move to new window[¹](#custom)  
 `Leader`+`wv` - split window vertically and move to new window[¹](#custom)  
-
-`Ctrl`+`wh` - switch to window on the left  
-`Ctrl`+`wj` - switch to window below  
-`Ctrl`+`wk` - switch to window above  
-`Ctrl`+`wl` - switch to window on the right  
 
 `Ctrl`+`e` - scroll window 3 lines down[¹](#custom)  
 `Ctrl`+`y` - scroll window 3 lines up[¹](#custom)  
