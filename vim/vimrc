@@ -48,22 +48,20 @@ call plug#begin()
   " ¹  Navigate files/buffers
   " ²  Open locally modified files
   " ³  Search file contents
-  " ⁴  Simplified cut & paste
-  " ⁵  Unix utilities in vim
-  " ⁶  Git integration
-  " ⁷  Look up documentation
+  " ⁴  Unix utilities in vim
+  " ⁵  Git integration
+  " ⁶  Look up documentation
+  " ⁷  Integrate fuzzy file finder
   " -----------------------------------
   Plug 'ctrlpvim/ctrlp.vim'
   Plug 'jasoncodes/ctrlp-modified.vim'
   Plug 'mileszs/ack.vim'
-  Plug 'svermeulen/vim-easyclip'
   Plug 'tpope/vim-eunuch'
   Plug 'tpope/vim-fugitive'
 
   if s:use_mac_plugins
     Plug 'keith/investigate.vim'
   endif
-
   if s:use_fzf_plugin
     Plug '/usr/local/opt/fzf'
   endif
@@ -123,18 +121,41 @@ call plug#begin()
   " ¹  Auto-generate ctags
   " ²  Auto update working directory
   " ³  Support async commands
-  " ⁴  Repeat plugin commands
-  " ⁵  Create parent directories
-  " ⁶  Remember cursor position
-  " ⁷  Fix cursor/focus events in tmux
+  " ⁴  Create parent directories
+  " ⁵  Remember cursor position
+  " ⁶  Fix cursor/focus events in tmux
+  " ⁷  Repeat plugin commands
+  " ⁸  Simplified cut & paste
   " -----------------------------------
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'airblade/vim-rooter'
   Plug 'tpope/vim-dispatch'
-  Plug 'tpope/vim-repeat'
   Plug 'duggiefresh/vim-easydir'
   Plug 'dietsche/vim-lastplace'
   Plug 'sjl/vitality.vim'
+  Plug 'tpope/vim-repeat'
+    \| Plug 'svermeulen/vim-easyclip'
+
+  " g) Try out ------------------------ {{{2
+  " ¹  Auto-generate jsdoc tags
+  " ²  Paramter completion for js
+  " ³  Syntax completion for js
+  " ⁴  Better increament via Ctrl-A/X
+  " ⁵  Load tab settings from config
+  " ⁶  Replacement for CtrlP
+  " ⁷  Substitute preview
+  " -----------------------------------
+  " Plug 'heavenshell/vim-jsdoc'
+  " Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
+  " Plug '1995eaton/vim-better-javascript-completion'
+  " Plug 'nishigori/increment-activator'
+  " Plug 'sgur/vim-editorconfig'
+  " Plug 'Shougo/unite.vim'
+  "      \| Plug 'Shougo/vimfiler.vim'
+  "      \| Plug 'Shougo/unite-outline'
+  "      \| Plug 'tsukkee/unite-tag'
+  " Plug 'osyo-manga/vim-over'
+
   " }}}
 
 call plug#end()
