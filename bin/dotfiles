@@ -362,6 +362,7 @@ install_homebrew_formulae() {
   brew install coreutils
   brew install tmux
   brew install wget
+  brew install curl
   brew install tree
   brew install rsync
   brew install grep
@@ -464,7 +465,7 @@ install_apps() {
     "viscosity"
     "visual-studio-code"
     "virtualbox"
-    "adobe-photoshop-lightroom571"
+    "adobe-photoshop-lightroom441"
   )
 
   for name in "${casks[@]}"; do

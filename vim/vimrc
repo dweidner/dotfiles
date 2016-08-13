@@ -17,7 +17,6 @@ set nocompatible
 " 10. File Globbing
 " 11. Input & Mappings
 " 12. Auto Commands
-" 13. Plugin Configuration
 " -------------------------------------
 
 
@@ -517,12 +516,6 @@ augroup vimrc
   autocmd InsertLeave * set cursorline
 
 augroup END
-
-
-" 13. Plugin configuration  ----------- {{{1
-
-runtime! macros/matchit.vim           " Load matchit.vim
-runtime! config/plugin.*.vim          " Load additional plugin configuration
 
 " }}}1
 

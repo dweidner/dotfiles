@@ -42,7 +42,7 @@
   theirs = !"f() { git checkout --theirs $@ && git add $@; }; f"
 
   # git config
-  aliases = "!git config --get-regexp '^alias\.' | colrm 1 6 | sed 's/ / = /'"
+  aliases = "!git config --get-regexp '^alias\\.' | colrm 1 6 | sed 's/ / = /'"
 
   # git commit
   ca = commit --amend
