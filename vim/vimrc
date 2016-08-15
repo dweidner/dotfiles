@@ -286,9 +286,6 @@ set completeopt+=menuone              " Show the popup event for single match
 set completeopt-=preview              " Hide extra information in pum
 
 
-set matchpairs+=<:>                   " Change html tags with ci< or ci>
-
-
 " 7. Auto Formatting ------------------ {{{1
 
 set formatoptions-=o                  " Don't insert comment leader after o/O
@@ -370,10 +367,12 @@ xnoremap > >gv
 
 " b) Localization --------------------- {{{2
 
-" Some keys are simply hard to reach on
-" a german keyboard. I use the keys for
-" Umlauts to make some of them more
-" accessible in normal mode.
+" Some key mappings are hard to reach
+" on a german keyboard. As a workaround
+" I remap the Umlaut keys on a german
+" keyboard to the corresponding keys in
+" a ASCII/US layout. That helps at
+" least in vim’s normal mode.
 
 " Square/curly bracket commands
 map ü [
