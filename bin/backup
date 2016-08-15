@@ -16,7 +16,7 @@
 # [5] http://xpt.sourceforge.net/techdocs/nix/disk/general/disk16-CloneOrBackupDisks/single/
 #
 
-SCRIPT_NAME=$0
+SCRIPT_NAME="${0##*/}"
 
 BACKUP_IGNORE="$HOME/.backup_ignore"
 BACKUP_SRC="${BACKUP_SRC:-/}"
@@ -28,7 +28,7 @@ BACKUP_DST="${BACKUP_DST:-/Volumes/Backup}"
 # Usage: header
 #
 header() {
-  echo <<"EOF"
+  cat <<"EOF"
 
 Backup Utility
 
@@ -116,7 +116,7 @@ backup() {
   fi
 
   # Create a clone of the source directory using rsync
-  time rsync \
+  sudo time rsync \
     "${flags[*]}" \
     --archive \
     --hard-links \
@@ -126,6 +126,7 @@ backup() {
     --protect-decmpfs \
     --crtimes \
     --one-file-system \
+    --update \
     --delete \
     "$src" \
     "$dst"
@@ -154,7 +155,7 @@ main() {
   fi
 
   # Ensure destination directory is available
-  if [ ! -w "$dst" ]; then
+  if [ ! -d "$dst" ]; then
     echo "$SCRIPT_NAME: Can not write to destination '$dst'"
     return 1
   fi
@@ -168,7 +169,7 @@ main() {
   # Temporarily disable time machine on OSX
   if type tmutil >/dev/null 2>&1; then
     echo "$SCRIPT_NAME: Temporarily disabling Time Machine..."
-    tmutil disable
+    sudo tmutil disable
   fi
 
   # Start the backup process
@@ -188,7 +189,7 @@ main() {
   # Re-enable time machine
   if type tmutil >/dev/null 2>&1; then
     echo "$SCRIPT_NAME: Enabling Time Machine..."
-    tmutil enable
+    sudo tmutil enable
   fi
 }
 
