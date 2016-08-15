@@ -27,7 +27,7 @@ function cdl() {
 }
 
 #
-# Create a given directory and change the switch to it.
+# Create a given directory and then switch to it.
 #
 # Usage: mkcd directory
 #
