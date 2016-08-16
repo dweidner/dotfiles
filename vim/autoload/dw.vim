@@ -22,26 +22,6 @@ function! dw#Jump(motion) range
 endfunction
 
 "
-" A helper function used to retrieve the absolute path of
-" a locally installed node module.
-" @see <http://blog.pixelastic.com/2015/10/05/use-local-eslint-in-syntastic/>
-"
-function! dw#GetNodeModulePath(module)
-  if !executable('npm')
-    return
-  endif
-
-  " Retrieve the path using the shell command which
-  silent let path = system('PATH=$(npm bin):$PATH && which ' .  shellescape(a:module))
-  if v:shell_error
-    return
-  endif
-
-  " Trim whitespace from the path
-  return substitute(path, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
-endfunction
-
-"
 " A helper function that installs bundle dependencies for the
 " YouCompleteMe plugin.
 "
