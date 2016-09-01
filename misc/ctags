@@ -1,38 +1,38 @@
---exclude=.git
---exclude=.svn
---exclude=.hg
+--exclude=.git/*
+--exclude=.svn/*
+--exclude=.hg/*
+--exclude=.DS_Store*
 --exclude=.tags
 --exclude=tags
---exclude=node_modules
---exclude=bower_components
---exclude=tmp
---exclude=log
---exclude=\*.min.\*
---exclude=\*.map
---exclude=\*.swp
---exclude=\*.bak
+--exclude=TAGS
+--exclude=cscope.*
+--exclude=node_modules/*
+--exclude=bower_components/*
+--exclude=bundle/*
+--exclude=dist/*
+--exclude=docs/*
+--exclude=log/*
+--exclude=*/vendor/*
+--exclude=*/tmp/*
+--exclude=wp/*
+--exclude=*-min.*
+--exclude=*.min.*
+--exclude=*.map
+--exclude=*.json
+--exclude=*.log
+--exclude=*.md
+--exclude=*.txt
+--exclude=*.rtf
+--exclude=*.sql
+--exclude=*.swp
+--exclude=*.bak
+--exclude=*.zip
+--exclude=*.tar.*
 
---langdef=markdown
---langmap=markdown:.md.markdown.mdown.mkd.mkdn
---regex-markdown=/^#[ \t]+(.*)/\1/h,heading1/
---regex-markdown=/^##[ \t]+(.*)/\1/h,heading2/
---regex-markdown=/^###[ \t]+(.*)/\1/h,heading3/
+--languages=JavaScript,PHP,Sh,Vim
 
---langdef=css
---langmap=css:.css
---langmap=css:+.scss
---langmap=css:+.sass
---langmap=css:+.styl
---langmap=css:+.less
---regex-css=/^[ \t]*(([A-Za-z0-9_-]+[ \t\n,]+)+)\{/\1/t,tag,tags/
---regex-css=/^[ \t]*#([A-Za-z0-9_-]+)/#\1/i,id,ids/
---regex-css=/^[ \t]*\.([A-Za-z0-9_-]+)/.\1/c,class,classes/
+--langmap=php:.engine.inc.module.theme.install.php --PHP-kinds=+cf-v
 
---langdef=js
---langmap=js:.js
---regex-JavaScript=/([A-Za-z0-9._$\(\)]+)[ \t]*[:=][ \t]*function[ \t]*\(/\1/m,method/
---regex-JavaScript=/([A-Za-z0-9._$\#\(\)]+)[ \t]*[:][ \t]*([A-Za-z0-9._\-\#\'\"]+)[ \t]*/\1/p,property/
---regex-JavaScript=/([A-Za-z0-9._$\#\(\)]+)[ \t]*[:][ \t]*([A-Za-z0-9\'\"._\-\#\(]+)[ \t]*\{/\1/p,property/
---regex-JavaScript=/var ([A-Za-z0-9._$\#]+)[ \t]*[=][ \t]*([A-Za-z0-9._'"\$\#\[\{]+)[,|;]/\1/v,variable/
---regex-JavaScript=/([A-Za-z0-9._$\#]+)[ \t]*[=][ \t]*([A-Za-z0-9._'"\$\#]+)extend\(/\1/c,class/
-
+--fields=afiklmnsSzt
+--tag-relative=yes
+--recurse=yes
