@@ -1,37 +1,66 @@
 #!/usr/bin/env bash
 
+#
+# Constants
+#
+# $COLOR_SUCCESS = Color used for success messages
+# $COLOR_WARN    = Color used for warning messages
+# $COLOR_ERROR   = Color used for error messages
+# $COLOR_RESET   = Reset color information
+#
+
 COLOR_SUCCESS=${COLOR_SUCCESS:-"\e[1;32m"}
 COLOR_WARN=${COLOR_WARN:-"\e[1;33m"}
 COLOR_ERROR=${COLOR_ERROR:-"\e[1;31m"}
 COLOR_RESET="\e[0m"
 
+#
+# Options
+#
+# $DOTFILES         = Path of the local working copy.
+# $DOTFILES_REMOTE  = Name of the remote git repository.
+#
+
 DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 DOTFILES_REMOTE="${DOTFILES_REMOTE:-dweidner/dotfiles}"
 
 #
-# Options/Flags
+# Flags
 #
-# $DOTFILES             = Path of the local working copy.
-# $DOTFILES_REMOTE      = Name of the remote git repository.
-# $INSTALL_NPM_PACKAGES = Install list of npm packages
+# $INSTALL_NODE_MODULES = Install list of node modules
 # $INSTALL_FORMULAE     = Install list of hombrew formulae
 # $INSTALL_APPS         = Install macOS applications
 # $CREATE_SYMLINKS      = Create symbolic links to dotfiles
 # $UPDATE_SUBMODULES    = Whether to update submodules or not
 #
 
-INSTALL_NPM_PACKAGES=0
+INSTALL_NODE_MODULES=0
 INSTALL_FORMULAE=0
 INSTALL_APPS=0
 CREATE_SYMLINKS=0
 UPDATE_OSX_SETTINGS=0
 
 #
+# Command aliases
+#
+
+brew() {
+  "${BREW:-/usr/local/bin/brew}" "$@"
+}
+serivce() {
+  sudo "${BREW:-/usr/local/bin/brew}" services "$@"
+}
+rbenv() {
+  "${RBENV:-/usr/local/bin/rbenv}" "$@"
+}
+nodenv() {
+  "${NODENV:-/usr/local/bin/nodenv}" "$@"
+}
+
+#
 # Tells users how to use the script.
 #
-# Usage: usage
-#
-usage() {
+dotfiles::usage() {
   cat <<EOT
 
 Usage: dotfiles [-h] [-u] [-s] [-b] [-n] [-x] [-a]
@@ -54,29 +83,27 @@ EOT
 # Check for the existiance of flags and update corresponding
 # script variables.
 #
-# Usage: parse_options args
-#
 parse_options() {
   set -- "$@"
 
   local ARGN=$#
   while [ "$ARGN" -ne 0 ]; do
     case $1 in
-      -h) usage
+      -h) dotfiles::usage
           exit 0
           ;;
       -s) CREATE_SYMLINKS=1
           ;;
       -b) INSTALL_FORMULAE=1
           ;;
-      -n) INSTALL_NPM_PACKAGES=1
+      -n) INSTALL_NODE_MODULES=1
           ;;
       -x) UPDATE_OSX_SETTINGS=1
           ;;
       -a) UPDATE_OSX_SETTINGS=1
           CREATE_SYMLINKS=1
           INSTALL_FORMULAE=1
-          INSTALL_NPM_PACKAGES=1
+          INSTALL_NODE_MODULES=1
           INSTALL_APPS=1
           ;;
       ?*) print_error "Unknown option."
@@ -92,16 +119,12 @@ parse_options() {
 #
 # Test whether the current operating system is a version of Mac OSX.
 #
-# Usage: is_mac
-#
 is_mac() {
   [[ "$OSTYPE" == darwin* ]]
 }
 
 #
 # Test whether the given command can be executed.
-#
-# Usage: is_executable command
 #
 # $1 = Name of the command to execute.
 #
@@ -112,8 +135,6 @@ is_executable() {
 #
 # Print a status information.
 #
-# Usage: print_status message
-#
 # $1 = Message to print.
 #
 print_status() {
@@ -122,8 +143,6 @@ print_status() {
 
 #
 # Print a success message.
-#
-# Usage: print_success message
 #
 # $1 = Message to print.
 #
@@ -134,8 +153,6 @@ print_success() {
 #
 # Print a warning message.
 #
-# Usage: print_warning message
-#
 # $1 = Message to print.
 #
 print_warning() {
@@ -145,18 +162,14 @@ print_warning() {
 #
 # Print a error message.
 #
-# Usage: print_error message
-#
 # $1 = Message to print.
 #
 print_error() {
-  printf "%b⨯ ERROR: %b%s\n" "$COLOR_ERROR" "$COLOR_RESET" "$1"
+  printf "%b⨯ ERROR: %b%s\n" "$COLOR_ERROR" "$COLOR_RESET" "$1" >&2
 }
 
 #
 # Ask for user input.
-#
-# Usage: seek_confirmation question
 #
 # $1 = Question to ask.
 #
@@ -168,25 +181,12 @@ seek_confirmation() {
 #
 # Test whether the user confirmed a question asked via readline.
 #
-# Usage: is_confirmed
-#
 is_confirmed() {
   [[ "$REPLY" =~ ^[YyJj]$ ]]
 }
 
 #
-# Test if xcode command line tools are installed. Note: Only works for OSX 10.9+.
-#
-# Usage: is_xcode_installed
-#
-is_xcode_installed() {
-  [ "$(xcode-select -p >/dev/null; printf "%s" "$?")" -eq 0 ]
-}
-
-#
 # Test if a given folder is a git repository.
-#
-# Usage: is_git_repository directory
 #
 # $1 = Path of the directory.
 #
@@ -212,79 +212,18 @@ is_git_repository() {
 }
 
 #
-# Create a symbolic link to a file in the dotfiles repository.
-#
-# Usage: link dotfile symlink
-#
-# $1 = Relative path to the file in the dotfiles repository.
-# $2 = Relative path from the home directory.
-#
-link() {
-  if [ -r "$DOTFILES/$1" ]; then
-    ln -fs "$DOTFILES/$1" "$HOME/$2"
-    return $?
-  else
-    print_error "Can not create a symbolic link to $1"
-    return 1
-  fi
-}
-
-#
-# Notify user about a started process.
-#
-# Usage: process_started name [message]
-#
-#  $1  = Name of the process.
-# [$2] = Optional debug message.
-#
-process_started() {
-  local process="$1"
-  local message="${2:-Processing...}"
-  print_status "$message"
-}
-
-#
-# Notify user about a finished process.
-#
-# Usage: process_done name [message]
-#
-#  $1  = Name of the process.
-# [$2] = Optional debug message.
-#
-process_done() {
-  # shellcheck disable=SC2034
-  local process="$1"
-  local message="${2:-Done.}"
-  print_success "$message"
-}
-
-#
-# Notify user about an aborted process.
-#
-# Usage: process_aborted name [message]
-#
-#  $1  = Name of the process.
-# [$2] = Optional debug message.
-#
-process_aborted() {
-  # shellcheck disable=SC2034
-  local process="$1"
-  local message="${2:-Failed.}"
-  print_error "$message"
-}
-
-#
 # Download a compressed archive and extract it to a target
 # directory.
-#
-# Usage: download_github_archive repository target
 #
 # $1 = Name of the repository to download.
 # $2 = Target directory to copy the repository to.
 #
-download_github_archive() {
+download_repository() {
   local repository="$1"
   local target="$2"
+
+  # Notify users about started process
+  print_status "Downloading remote repository ..."
 
   # Generate a unique name for the temporary archive
   local prefix
@@ -298,79 +237,20 @@ download_github_archive() {
 
   # Remove the archive
   rm -rf "$tmpfile"
-}
 
-#
-# Initialize a given directory as git repository.
-#
-# Usage: initialize_git_repository dir [remote]
-#
-#  $1 = Directory to initialize as git repository.
-# [$2] = Name of the remote repository.
-#
-initialize_git_repository() {
-  local dir="$1"
-  local remote_repository="$2"
-
-  # Switch to the given directory
-  pushd "$dir" >/dev/null
-
-  # Initialize the current directory as git repository
-  git init
-
-  # Fetch the remote repository and cleanup local working tree
-  if [ -n "$remote_repository" ]; then
-    git remote add origin "git@github.com:$repository.git"
-    git fetch origin master
-    git reset --hard FETCH_HEAD
-    git clean -fd
-  fi
-
-  # Switch back to the previous directory
-  popd >/dev/null
-}
-
-#
-# Install the xcode command line tools.
-#
-# Usage: isntall_xcode
-#
-install_xcode() {
-  # Determine version of Mac OSX
-  local darwin_version=
-  darwin_version="$(uname -r)"
-
-  # Install the command line tools for OSX 10.9+.
-  if (( ${darwin_version%%.*} > 12 )); then
-    xcode-select --install
-    return $?
-  fi
-
-  # Not so easy to install the command line tools automatically
-  # for older versions of OSX
-  return 1
-}
-
-#
-# Insall homebrew the missing package manager for macOS.
-#
-# Usage: install_homebrew()
-#
-install_homebrew() {
-  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  # Notify user about finished process
+  print_success "Done."
 }
 
 #
 # Install the dotfiles repository to the target directory.
 #
-# Usage: install_dotfiles path
-#
 # $1 = Name of the repository to load.
 # $2 = Path to install the repository to.
 #
 install_dotfiles() {
-  local repository="$1"
-  local dir="$2"
+  local repository="${1:-$DOTFILES_REMOTE}"
+  local dir="${2:-$DOTFILES}"
 
   if [[ -z "$repository" || -z "$dir" ]]; then
     print_error "Invalid arguments given."
@@ -379,19 +259,18 @@ install_dotfiles() {
 
   # Download and extract remote repository
   if [[ ! -d "$dir" ]]; then
-    process_started "download_github_archive" "Downloading remote repository..."
-    download_github_archive "$repository" "$dir"
-    process_done "download_github_archive"
+    download_repository "$repository" "$dir"
   fi
 
   # Setup archive as git repository...
   if ! is_git_repository "$dir"; then
-
-    # Initialize repository and submodules
-    process_started "initialize_git_repository" "Initializing git repository..."
-    initialize_git_repository "$dir"
-    process_done "initialize_git_repository"
-
+    pushd "$dir" >/dev/null
+    git init
+    git remote add origin "git@github.com:$repository.git"
+    git fetch origin master
+    git reset --hard FETCH_HEAD
+    git clean -fd
+    popd >/dev/null
   fi
 
   # Test if installation was successfull
@@ -399,72 +278,106 @@ install_dotfiles() {
 }
 
 #
+# Test if xcode command line tools are installed. Note: Only works for OSX 10.9+.
+#
+is_xcode_installed() {
+  [ "$(xcode-select -p >/dev/null; printf "%s" "$?")" -eq 0 ]
+}
+
+#
+# Install the xcode command line tools.
+#
+install_xcode() {
+  local darwin_version
+  darwin_version="$(uname -r)"
+
+  # Older versions of macOS require a manual installation
+  if (( ${darwin_version%%.*} > 12 )); then
+    return 1
+  fi
+
+  # Install the Xcode command line tools
+  print_status "Installing XCode Command Line Tools ..."
+  if xcode-select --install; then
+    print_success "Done."
+    return 0
+  fi
+
+  return 1
+}
+
+#
+# Insall homebrew the missing package manager for macOS.
+#
+install_homebrew() {
+  print_status "Installing homebrew ..."
+
+  if ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"; then
+    print_success "Done."
+    return 0
+  fi
+
+  return 1
+}
+
+#
 # Install command line utilities via Homebrew the missing package manager
 # for macOS.
 #
-# Usage: install_homebrew
-#
-install_homebrew_formulae() {
+install_formulae() {
+  typeset -a taps
+  taps=(
+    "homebrew/php"
+    "homebrew/dupes"
+    "homebrew/fuse"
+  )
+
+  typeset -a formulae
+  formulae=(
+    "bash"
+    "bash-completion"
+    "zsh"
+    "zplug"
+    "coreutils"
+    "tmux"
+    "git"
+    "git-flow"
+    "rsync"
+    "grep"
+    "curl"
+    "wget"
+    "tree"
+    "openssh"
+    "encfs"
+    "adminer"
+    "composer"
+    "drush"
+    "drupalconsole"
+    "wp-cli"
+    "universal-ctags"
+    "the_silver_searcher"
+    "imagemagick"
+  )
+
   # Install homebrew if not available
   if ! is_executable "brew"; then
-    process_started "install_homebrew" "Installing hombrew..."
     if ! install_homebrew; then
-      print_error "Could not install homebrew"
+      print_error "Could not install homebrew."
       return 1
     fi
-    process_done "install_homebrew"
   fi
 
-  brew doctor
-  brew tap homebrew/php
-  brew tap homebrew/dupes
-  brew tap homebrew/fuse
+  # Update homebrew formulae
   brew update
+  brew doctor
 
-  # Install, setup and run DNSmasq
-  brew install dnsmasq
-  sudo brew services start dnsmasq
-  sudo mkdir -p /etc/resolver
-  echo "nameserver 127.0.0.1" > /etc/resolver/dev
+  # Start installation process
+  print_status "Installing homebrew formulae ..."
 
-  # Update shell
-  brew install bash
-  brew install bash-completion
-  brew install zsh
-  brew install zplug
-
-  # Update system utilities
-  brew install git
-  brew install git-flow
-  brew install coreutils
-  brew install tmux
-  brew install wget
-  brew install curl
-  brew install tree
-  brew install rsync
-  brew install grep
-  brew install openssh
-  brew install encfs
-
-  # Install PHP in version 5.6
-  brew install php56 --with-homebrew-curl --without-apache
-  brew install php56-xdebug
-  brew install php56-mcrypt
-  brew install composer
-  brew install adminer
-  brew install drush
-  brew install drupalconsole
-  brew install wp-cli
-  brew install phpmd
-  brew install php-code-sniffer
-
-  # Install the latest version of mysql
-  brew install mysql
-  eysql_secure_installation
-  brew services restart mysql
-
-  # Install prefered editor
-  brew install macvim --override-system-vim
+  # Add additional repositories
+  for tap in "${taps[@]}"; do
+    brew tap "$tap"
+  done
 
   # Install version manager for node and ruby
   brew install rbenv
@@ -474,24 +387,44 @@ install_homebrew_formulae() {
   nodenv install 5.12.0
   nodenv global 5.12.0
 
-  # Install utilities
-  brew install the_silver_searcher
-  brew install ctags
-  brew install imagemagick
+  # Install, setup and run DNSmasq
+  brew install dnsmasq
+  serivce start dnsmasq
+  sudo mkdir -p /etc/resolver
+  echo "nameserver 127.0.0.1" > /etc/resolver/dev
 
+  # Install PHP in version 5.6 with additional modules
+  brew install php56 --with-homebrew-curl --without-apache
+  brew install php56-xdebug
+  brew install php56-mcrypt
+
+  # Install the latest version of mysql
+  brew install mysql
+  /usr/local/bin/mysql_secure_installation
+  serivce restart mysql
+
+  # Install prefered editor
+  brew install macvim --override-system-vim
+
+  # Install php code sniffer and additional coding standards
+  if brew install php-code-sniffer; then
+    install_coding_standards
+  fi
+
+  # Install additional formulae
+  for formula in "${formulae[@]}"; do
+    brew install "$formula"
+  done
+
+  # Remove old downloads and finish process
   brew cleanup
+  print_success "Done."
 }
 
 #
 # Install frequently used node modules using the node package manager.
 #
-# Usage: install_npm_packages
-#
-install_npm_packages() {
-  if ! is_executable "npm"; then
-    return 1
-  fi
-
+install_node_modules() {
   typeset -a packages
   packages=(
     "npm-check-updates"
@@ -504,25 +437,28 @@ install_npm_packages() {
     "node-sass"
   )
 
-  for name in "${packages[@]}"; do
-    npm install -g "$name"
+  print_status "Installing node modules ..."
+
+  for package in "${packages[@]}"; do
+    npm install -g "$package"
   done
+
+  print_success "Done."
 }
 
 #
 # Install macOS applications via the terminal.
 #
-# Usage: install_apps
-#
 install_apps() {
-  # Ensure cask is available
-  brew tap caskroom/cask
-  brew tap caskroom/versions
-  brew tap caskroom/fonts
+  typeset -a taps
+  taps=(
+    "caskroom/cask"
+    "caskroom/versions"
+    "caskroom/fonts"
+  )
 
-  # Install macOS applications via CASK
-  typeset -a casks
-  casks=(
+  typeset -a apps
+  apps=(
     "1password"
     "alfred"
     "bartender"
@@ -545,40 +481,8 @@ install_apps() {
     "adobe-photoshop-lightroom441"
   )
 
-  for name in "${casks[@]}"; do
-    brew cask install --appdir="~/Applications" "$name"
-  done
-
-  # Improve quicklook
-  typeset -a extensions
-  extensions=(
-    "qlcolorcode"
-    "qlmarkdown"
-    "qlstepen"
-  )
-
-  for name in "${extensions[@]}"; do
-    brew cask install "$name"
-  done
-
-  # Install some additional system fonts
-  typeset -a fonts
-  fonts=(
-    "open-sans"
-    "camingocode"
-    "source-code-pro"
-  )
-
-  for name in "${fonts[@]}"; do
-    brew cask install "font-$name"
-  done
-
-  # Launch Skyfonts to sync fonts via the service
-  find /usr/local/Caskroom/skyfonts -type d -name SkyFonts.app -exec open {} \;
-
-  # Reminder about applications that are licensed via the AppStore
-  typeset -a apps
-  apps=(
+  typeset -a appstore
+  appstore=(
     "Affinity Designer"
     "Pixelmatator"
     "iA Writer"
@@ -592,126 +496,190 @@ install_apps() {
     "Magnet"
   )
 
+  typeset -a quicklook
+  quicklook=(
+    "qlcolorcode"
+    "qlmarkdown"
+    "qlstepen"
+  )
+
+  typeset -a fonts
+  fonts=(
+    "open-sans"
+    "camingocode"
+    "source-code-pro"
+  )
+
+  print_status "Installing macOS applications..."
+
+  # Ensure cask is available
+  for tap in "${taps[@]}"; do
+    brew tap "$tap"
+  done
+
+  # Install macOS applications via CASK
+  for app in "${apps[@]}"; do
+    brew cask install --appdir="~/Applications" "$app"
+  done
+
+  # Improve quicklook
+  for ql in "${quicklook[@]}"; do
+    brew cask install "$ql"
+  done
+
+  # Install some additional system fonts
+  for font in "${fonts[@]}"; do
+    brew cask install "font-$font"
+  done
+
+  # Launch Skyfonts to sync fonts via the service
+  find /usr/local/Caskroom/skyfonts -type d -name SkyFonts.app -exec open {} \;
+
+  # Cleanup downloaded packages
+  brew cask cleanup
+  print_success "Done."
+
+  # Reminder about applications that are licensed via the AppStore
   print_status "You have licensed some of your applications via the AppStore:"
-  for name in "${apps[@]}"; do
-    printf "\t-%s" "$name"
+  for app in "${appstore[@]}"; do
+    printf "\t-%s" "$app"
   done
 
   seek_confirmation "Do you want to launch the AppStore now?"
   if is_confirmed; then
     open -a "App Store"
   fi
+}
 
-  # Cleanup downloaded packages
-  brew cask cleanup
+#
+# Install additional php coding standards for PHP CodeSniffer.
+#
+install_coding_standards() {
+  local prefix
+  local path
 
+  prefix="/usr/local/share/php-code-sniffer/Standards"
+  path="$(/usr/local/bin/phpcs --config-show installed_paths | tr -d '\n')"
+  path="$path,$prefix/PHPCompatibility"
+  path="$path,$prefix/Drupal-Coder/coder_sniffer"
+  path="$path,$prefix/WordPress-Coding-Standards"
+  path="${path#,}"
+
+  if mkdir -p "$prefix"; then
+    print_status "Installing PHP coding standards ..."
+    git clone https://github.com/wimg/PHPCompatibility.git "$prefix/PHPCompatibility"
+    git clone --branch 7.x-2.x https://git.drupal.org/project/coder.git "$prefix/Drupal-Coder"
+    git clone --branch master https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git "$prefix/WordPress-Coding-Standards"
+
+    /usr/local/bin/phpcs --config-set installed_paths "$path"
+    print_success "Done."
+  fi
+}
+
+#
+# Create a symbolic link to a file in the dotfiles repository.
+#
+# $1 = Relative path to the file in the dotfiles repository.
+# $2 = Relative path from the home directory.
+#
+symlink() {
+  if [ -r "$DOTFILES/$1" ]; then
+    ln -fs "$DOTFILES/$1" "$HOME/$2"
+    return $?
+  else
+    print_error "Can not create a symbolic link to $1"
+    return 1
+  fi
 }
 
 #
 # Create symbolic links between configuration files of the dotfiles repository
 # and files in the home directory.
 #
-# Usage: create_symlinks
-#
 create_symlinks() {
   # Copy `.gitconfig` if it does not exist
   [[ ! -f "$HOME/.gitconfig" ]] && cp "$DOTFILES/git/gitconfig" "$HOME/.gitconfig"
 
   # Create the necessary symbolic links between the `dotfiles` and `HOME`
-  link "vim"                 ".vim"
-  link "shell/profile"       ".profile"
-  link "shell/inputrc"       ".inputrc"
-  link "shell/dircolors"     ".dircolors"
-  link "shell/bashrc"        ".bashrc"
-  link "shell/bash_profile"  ".bash_profile"
-  link "shell/bash_prompt"   ".bash_prompt"
-  link "zsh"                 ".zsh"
-  link "zsh/zshrc"           ".zshrc"
-  link "zsh/zprofile"        ".zprofile"
-  link "tmux"                ".tmux"
-  link "tmux/tmux.conf"      ".tmux.conf"
-  link "git/gitattributes"   ".gitattributes"
-  link "git/gitignore"       ".gitignore"
-  link "misc/gemrc"          ".gemrc"
-  link "misc/ctags"          ".ctags"
-  link "misc/agignore"       ".agignore"
-  link "misc/backup_ignore"  ".backup_ignore"
+  print_status "Creating symbolic links ...."
+  symlink "vim"                 ".vim"
+  symlink "shell/profile"       ".profile"
+  symlink "shell/inputrc"       ".inputrc"
+  symlink "shell/dircolors"     ".dircolors"
+  symlink "shell/bashrc"        ".bashrc"
+  symlink "shell/bash_profile"  ".bash_profile"
+  symlink "shell/bash_prompt"   ".bash_prompt"
+  symlink "zsh"                 ".zsh"
+  symlink "zsh/zshrc"           ".zshrc"
+  symlink "zsh/zprofile"        ".zprofile"
+  symlink "tmux"                ".tmux"
+  symlink "tmux/tmux.conf"      ".tmux.conf"
+  symlink "git/gitattributes"   ".gitattributes"
+  symlink "git/gitignore"       ".gitignore"
+  symlink "misc/gemrc"          ".gemrc"
+  symlink "misc/ctags"          ".ctags"
+  symlink "misc/agignore"       ".agignore"
+  symlink "misc/backup_ignore"  ".backup_ignore"
+  print_success "Done."
+}
+
+#
+# Install commands and applications for macOS.
+#
+setup_mac() {
+  if ! is_executable "npm"; then
+    INSTALL_NODE_MODULES=0
+  fi
+
+  if ! is_xcode_installed; then
+    if ! install_xcode; then
+      print_error "Could not install XCode Command Line Tools. Please install the Command Line Tools manually: https://developer.apple.com/downloads"
+      return 1
+    fi
+  fi
+
+  if [ "$INSTALL_FORMULAE" -eq 1 ]; then
+    install_formulae
+  fi
+
+  if [ "$INSTALL_NODE_MODULES" -eq 1 ]; then
+    install_node_modules
+  fi
+
+  if [ "$INSTALL_APPS" -eq 1 ]; then
+    install_apps
+  fi
+
+  if [ "$UPDATE_OSX_SETTINGS" -eq 1 ]; then
+    seek_confirmation "Do you want to customize the OSX settings?"
+
+    if is_confirmed; then
+      process_started "Setting OSX defaults ..."
+      sh "$DOTFILES/bin/osxdefaults"
+      print_sucess "Done."
+    else
+      print_warning "Aborted."
+    fi
+  fi
 }
 
 #
 # Script entry point
 #
 main() {
-  # Handle script options
   parse_options "$@"
 
-  # Download and install the repository if not already done
-  if ! install_dotfiles "$DOTFILES_REMOTE" "$DOTFILES"; then
+  if ! install_dotfiles "${DOTFILES_REMOTE}" "${DOTFILES}"; then
     print_error "Could not install dotfiles."
-    return 1
+  fi
+
+  if [ "$CREATE_SYMLINKS" -eq 1 ]; then
+    create_symlinks
   fi
 
   if is_mac; then
-    # Install XCode on macOS
-    if ! is_xcode_installed; then
-      print_warning "The XCode Command Line Tools must be installed first."
-      process_started "install_xcode" "Installing XCode Command Line Tools..."
-      if ! install_xcode; then
-        print_error "Could not install XCode Command Line Tools. Please install the Command Line Tools manually: https://developer.apple.com/downloads"
-        exit 1
-      fi
-      process_done "insall_xcode"
-    fi
-
-    # Install frequently used homebrew formulae
-    if [ "$INSTALL_FORMULAE" -eq 1 ]; then
-      process_started "install_homebrew_formulae" "Installing hombrew formulae..."
-      if ! install_homebrew_formulae; then
-        print_error "Could not install homebrew formulae."
-        return 1
-      fi
-      process_done "install_homebrew_formulae"
-    fi
-
-    # Install macOS applications
-    if [ "$INSTALL_APPS" -eq 1 ]; then
-      process_started "install_apps" "Installing macOS applications..."
-      install_apps
-      process_done "install_apps"
-    fi
-
-    # Run osxdefaults by Mathias Bynens
-    if [ "$UPDATE_OSX_SETTINGS" -eq 1 ]; then
-      seek_confirmation "Do you want to customize the OSX settings?"
-
-      if is_confirmed; then
-        process_started "osxdefaults" "Setting OSX defaults..."
-        sh "$DOTFILES/bin/osxdefaults"
-        process_done "osxdefaults"
-      else
-        process_aborted "osxdefaults"
-      fi
-    fi
+    setup_mac
   fi
-
-  # Install frequently used npm packages
-  if is_executable "npm" && [ "$INSTALL_NPM_PACKAGES" -eq 1 ]; then
-    process_started "install_npm_packages" "Installing npm packages..."
-    if ! install_npm_packages; then
-      print_error "Could not install npm packages."
-      return 1
-    fi
-    process_done "install_npm_packages"
-  fi
-
-  # Create symbolic links if desired
-  if [ "$CREATE_SYMLINKS" -eq 1 ]; then
-    process_started "create_symlinks" "Creating symbolic links..."
-    create_symlinks
-    process_done "create_symlinks"
-  fi
-
-  return 0
 }
 
 main "$@"
