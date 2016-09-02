@@ -418,12 +418,6 @@ nnoremap <C-y> 3<C-y>
 " Select previously changed or yanked text
 nnoremap <Leader>v '[v']
 
-" Movement in insert mode
-inoremap <C-h> <C-o>h
-inoremap <C-l> <C-o>a
-inoremap <C-j> <C-o>j
-inoremap <C-k> <C-o>k
-
 
 " d) Window/Buffer Management --------- {{{2
 
