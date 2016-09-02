@@ -341,7 +341,7 @@ snippet @i "JSDoc: inheritdoc"
 endsnippet
 
 snippet @a "JSDoc: author"
-@author ${1:`!v g:snippets_author`}
+@author ${1:`git config --global user.name` <`git config --global user.email`>}
 endsnippet
 
 snippet @s "JSDoc: since"
