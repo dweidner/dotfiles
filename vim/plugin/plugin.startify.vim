@@ -1,4 +1,4 @@
-" config/plugin.startify.vim
+" plugin/plugin.startify.vim
 
 " Customize the default options of startify
 let g:startify_change_to_dir      = 0

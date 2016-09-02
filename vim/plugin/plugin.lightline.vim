@@ -1,4 +1,4 @@
-" config/plugin.lightline.vim
+" plugin/plugin.lightline.vim
 
 " -------------------------------------
 " Table of Contents

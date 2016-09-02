@@ -1,4 +1,4 @@
-" config/plugin.netrw.vim
+" plugin/plugin.netrw.vim
 
 let g:netrw_home = g:vim_home . '/tmp'
 

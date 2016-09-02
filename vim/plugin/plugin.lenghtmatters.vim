@@ -1,4 +1,4 @@
-" config/plugin.lengthmatters.vim
+" plugin/plugin.lengthmatters.vim
 
 " Avoid highlight long lines by default
 let g:lengthmatters_on_by_default = 0

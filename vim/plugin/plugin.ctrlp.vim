@@ -1,4 +1,4 @@
-" config/plugin.ctrlp.vim
+" plugin/plugin.ctrlp.vim
 
 " Customize the path of the cache files
 let g:ctrlp_cache_dir = g:vim_home . '/tmp/ctrlp'
