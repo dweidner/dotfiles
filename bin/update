@@ -74,7 +74,7 @@ update_osx() {
 # Usage: update_homebrew
 #
 update_homebrew() {
-  brew update && brew upgrade --all && brew cleanup
+  brew update && brew upgrade && brew cleanup
 }
 
 #
