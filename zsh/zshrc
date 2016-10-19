@@ -65,7 +65,7 @@ setopt HIST_EXPIRE_DUPS_FIRST  # Remove duplicate entries from history before
 
 autoload -U colors && colors
 
-if [[ -f "$HOME/.dircolors" && (( $+commands[dircolors] )) ]]; then
+if [ -f "$HOME/.dircolors" ] && (( $+commands[dircolors] )); then
   eval "$(dircolors --sh "$HOME/.dircolors")"
 elif (( $+commands[dircolors] )); then
   eval "$(dircolors --sh "$DOTFILES/shell/dircolors")"
