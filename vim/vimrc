@@ -72,6 +72,7 @@ call plug#begin()
   " ⁴  Align text elements
   " ⁵  Toggle comments
   " ⁶  Write html markup easily
+  " ⁷  Auto-generate jsdoc tags
   " -----------------------------------
   Plug 'scrooloose/syntastic'
   Plug 'tpope/vim-surround'
@@ -81,6 +82,7 @@ call plug#begin()
   Plug 'ciaranm/detectindent',    { 'on': 'DetectIndent' }
   Plug 'tpope/vim-commentary',    { 'on': '<Plug>Commentary' }
   Plug 'mattn/emmet-vim',         { 'for': ['html', 'html5', 'html.twig', 'php', 'css', 'scss', 'sass'] }
+  Plug 'heavenshell/vim-jsdoc'    { 'for': 'javascript' }
 
   " d) Completion --------------------- {{{2
   " ¹  HTML5 & SVG omnicomplete
@@ -136,15 +138,13 @@ call plug#begin()
     \| Plug 'svermeulen/vim-easyclip'
 
   " g) Try out ------------------------ {{{2
-  " ¹  Auto-generate jsdoc tags
-  " ²  Paramter completion for js
-  " ³  Syntax completion for js
-  " ⁴  Better increament via Ctrl-A/X
-  " ⁵  Load tab settings from config
-  " ⁶  Replacement for CtrlP
-  " ⁷  Substitute preview
+  " ¹  Paramter completion for js
+  " ²  Syntax completion for js
+  " ³  Better increament via Ctrl-A/X
+  " ⁴  Load tab settings from config
+  " ⁵  Replacement for CtrlP
+  " ⁶  Substitute preview
   " -----------------------------------
-  " Plug 'heavenshell/vim-jsdoc'
   " Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
   " Plug '1995eaton/vim-better-javascript-completion'
   " Plug 'nishigori/increment-activator'
@@ -162,8 +162,6 @@ call plug#end()
 augroup lazyload
   autocmd!
   autocmd InsertEnter * call plug#load('ultisnips', 'YouCompleteMe')
-        \| call UltiSnips#FileTypeChanged()
-        \| call youcompleteme#Enable()
         \| autocmd! lazyload
 augroup END
 
