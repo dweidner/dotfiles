@@ -47,7 +47,7 @@ UPDATE_OSX_SETTINGS=0
 brew() {
   "${BREW:-/usr/local/bin/brew}" "$@"
 }
-serivce() {
+service() {
   sudo "${BREW:-/usr/local/bin/brew}" services "$@"
 }
 rbenv() {
@@ -327,9 +327,12 @@ install_homebrew() {
 install_formulae() {
   typeset -a taps
   taps=(
-    "homebrew/php"
     "homebrew/dupes"
+    "homebrew/versions"
+    "homebrew/apache"
+    "homebrew/php"
     "homebrew/fuse"
+    "universal-ctags/universal-ctags"
   )
 
   typeset -a formulae
@@ -346,7 +349,6 @@ install_formulae() {
     "grep"
     "curl"
     "wget"
-    "tree"
     "openssh"
     "encfs"
     "adminer"
@@ -354,7 +356,6 @@ install_formulae() {
     "drush"
     "drupalconsole"
     "wp-cli"
-    "universal-ctags"
     "the_silver_searcher"
     "imagemagick"
   )
@@ -379,6 +380,11 @@ install_formulae() {
     brew tap "$tap"
   done
 
+  # Install additional formulae
+  for formula in "${formulae[@]}"; do
+    brew install "$formula"
+  done
+
   # Install version manager for node and ruby
   brew install rbenv
   rbenv install 2.3.1
@@ -389,32 +395,35 @@ install_formulae() {
 
   # Install, setup and run DNSmasq
   brew install dnsmasq
-  serivce start dnsmasq
-  sudo mkdir -p /etc/resolver
-  echo "nameserver 127.0.0.1" > /etc/resolver/dev
+  service start dnsmasq
+
+  if [ ! -f "/etc/resolver/dev" ]; then
+    sudo mkdir -p /etc/resolver
+    echo "nameserver 127.0.0.1" > /etc/resolver/dev
+  fi
+
+  # Install latest version of apache
+  brew install httpd24 --with-privileged-ports
+  sudo brew services start homebrew/apache/httpd24
 
   # Install PHP in version 5.6 with additional modules
-  brew install php56 --with-homebrew-curl --without-apache
+  brew install php56 --with-apache --with-homebrew-curl
   brew install php56-xdebug
   brew install php56-mcrypt
 
   # Install the latest version of mysql
   brew install mysql
   /usr/local/bin/mysql_secure_installation
-  serivce restart mysql
+  service restart mysql
 
-  # Install prefered editor
-  brew install macvim --override-system-vim
+  # Install preferred editor
+  brew install macvim --with-override-system-vim
+  brew install --HEAD universal-ctags
 
   # Install php code sniffer and additional coding standards
   if brew install php-code-sniffer; then
     install_coding_standards
   fi
-
-  # Install additional formulae
-  for formula in "${formulae[@]}"; do
-    brew install "$formula"
-  done
 
   # Remove old downloads and finish process
   brew cleanup
@@ -427,12 +436,11 @@ install_formulae() {
 install_node_modules() {
   typeset -a packages
   packages=(
-    "npm-check-updates"
     "yo"
     "jshint"
     "eslint"
     "grunt-cli"
-    "gulpt-cli"
+    "gulp-cli"
     "autoprefixer"
     "node-sass"
   )
