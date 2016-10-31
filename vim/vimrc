@@ -82,7 +82,7 @@ call plug#begin()
   Plug 'ciaranm/detectindent',    { 'on': 'DetectIndent' }
   Plug 'tpope/vim-commentary',    { 'on': '<Plug>Commentary' }
   Plug 'mattn/emmet-vim',         { 'for': ['html', 'html5', 'html.twig', 'php', 'css', 'scss', 'sass'] }
-  Plug 'heavenshell/vim-jsdoc'    { 'for': 'javascript' }
+  Plug 'heavenshell/vim-jsdoc',   { 'for': 'javascript' }
 
   " d) Completion --------------------- {{{2
   " ¹  HTML5 & SVG omnicomplete
