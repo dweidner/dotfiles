@@ -125,8 +125,9 @@ call plug#begin()
   " ⁴  Create parent directories
   " ⁵  Remember cursor position
   " ⁶  Fix cursor/focus events in tmux
-  " ⁷  Repeat plugin commands
-  " ⁸  Simplified cut & paste
+  " ⁷  Load options from .editorconfig
+  " ⁸  Repeat plugin commands
+  " ⁹  Simplified cut & paste
   " -----------------------------------
   Plug 'ludovicchabant/vim-gutentags'
   Plug 'airblade/vim-rooter'
@@ -134,6 +135,7 @@ call plug#begin()
   Plug 'duggiefresh/vim-easydir'
   Plug 'dietsche/vim-lastplace'
   Plug 'sjl/vitality.vim'
+  Plug 'editorconfig/editorconfig-vim'
   Plug 'tpope/vim-repeat'
     \| Plug 'svermeulen/vim-easyclip'
 
@@ -141,14 +143,12 @@ call plug#begin()
   " ¹  Paramter completion for js
   " ²  Syntax completion for js
   " ³  Better increament via Ctrl-A/X
-  " ⁴  Load tab settings from config
-  " ⁵  Replacement for CtrlP
-  " ⁶  Substitute preview
+  " ⁴  Replacement for CtrlP
+  " ⁵  Substitute preview
   " -----------------------------------
   " Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
   " Plug '1995eaton/vim-better-javascript-completion'
   " Plug 'nishigori/increment-activator'
-  " Plug 'sgur/vim-editorconfig'
   " Plug 'Shougo/unite.vim'
   "      \| Plug 'Shougo/vimfiler.vim'
   "      \| Plug 'Shougo/unite-outline'
