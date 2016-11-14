@@ -628,6 +628,7 @@ create_symlinks() {
   symlink "misc/ctags"          ".ctags"
   symlink "misc/agignore"       ".agignore"
   symlink "misc/backup_ignore"  ".backup_ignore"
+  symlink "misc/tern-project"   ".tern-project"
   print_success "Done."
 }
 

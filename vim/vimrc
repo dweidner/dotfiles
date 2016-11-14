@@ -72,7 +72,8 @@ call plug#begin()
   " ⁴  Align text elements
   " ⁵  Toggle comments
   " ⁶  Write html markup easily
-  " ⁷  Auto-generate jsdoc tags
+  " ⁷  Auto-generate JSDoc blocks
+  " ⁸  Auto-generate PHPdoc blocks
   " -----------------------------------
   Plug 'scrooloose/syntastic'
   Plug 'tpope/vim-surround'
@@ -83,6 +84,8 @@ call plug#begin()
   Plug 'tpope/vim-commentary',    { 'on': '<Plug>Commentary' }
   Plug 'mattn/emmet-vim',         { 'for': ['html', 'html5', 'html.twig', 'php', 'css', 'scss', 'sass'] }
   Plug 'heavenshell/vim-jsdoc',   { 'for': 'javascript' }
+  Plug 'tobyS/vmustache',         { 'for': 'php' }
+    \| Plug 'tobyS/pdv',          { 'for': 'php' }
 
   " d) Completion --------------------- {{{2
   " ¹  HTML5 & SVG omnicomplete

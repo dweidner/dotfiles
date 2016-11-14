@@ -59,6 +59,3 @@ let g:jsdoc_custom_args_hook = {
   \     'type': '{String[]}'
   \   },
   \ }
-
-" Custom keybinding to add documentation
-nmap <Leader>pd <Plug>(jsdoc)
