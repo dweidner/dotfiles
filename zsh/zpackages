@@ -1,9 +1,9 @@
 # zsh/zpackages
 
-zplug "sindresorhus/pure"                           # Minimal and fast prompt
-zplug "Tarrasch/zsh-bd"                             # Jump back to a directory
-zplug "zsh-users/zsh-completions", nice:-10         # Completion definitions
-zplug "zsh-users/zsh-history-substring-search"      # History search feature
-zplug "zsh-users/zsh-syntax-highlighting", nice:10  # Syntax highlighting
+zplug "sindresorhus/pure"                            # Minimal and fast prompt
+zplug "Tarrasch/zsh-bd"                              # Jump back to a directory
+zplug "zsh-users/zsh-completions"                    # Completion definitions
+zplug "zsh-users/zsh-history-substring-search"       # History search feature
+zplug "zsh-users/zsh-syntax-highlighting", defer:3   # Syntax highlighting
 
 # vim:syntax=zsh
