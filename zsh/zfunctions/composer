@@ -3,36 +3,36 @@
 #
 # Disable xdebug extension and run composer.
 #
+# Usage:
+# composer command [options] [arguments]
+#
 function composer() {
-  local composer
-  local status
+  local s
+
   local version
-  local src
-  local target
-
   version=$(php -v | grep -E "PHP [57]" | sed 's/.*PHP \([^-]*\).*/\1/' | cut -c 1-6)
-  source="/usr/local/etc/php/${version%.*}/conf.d"
-  target="/usr/local/etc/php/${version%.*}/conf.disabled"
 
-  composer="$(which composer)"
+  local src=/usr/local/etc/php/${version%.*}/conf.d
+  local target=/usr/local/etc/php/${version%.*}/conf.disabled
 
-  if [ $? -gt 0 ]; then
+  if (( $+commands[composer] == 0 )); then
     echo "Could not find composer in path" >&2
     return 1
   fi
 
-  if [ ! -f "$src/ext-xdebug.ini" ]; then
+  if [[ ! -f "$src/ext-xdebug.ini" ]]; then
+    command composer "$@"
     return 0
   fi
 
   mv "$src/ext-xdebug.ini" "$target"
 
-  $composer "$@"
-  status=$?
+  command composer "$@"
+  s=$?
 
   mv "$target/ext-xdebug.ini" "$src"
 
-  return $status
+  return $s
 }
 
 # vim:syntax=zsh
