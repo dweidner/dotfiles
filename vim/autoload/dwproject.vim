@@ -68,3 +68,16 @@ function! dwproject#IsDrupalProject()
   return 1
 endfunction
 
+"
+" A helper function used to test whether the current project
+" seems to be a Laravel installation.
+"
+function! dwproject#IsLaravelProject()
+  if !exists("g:plugs['vim-rooter']")
+    return 0
+  endif
+
+  " Ensure that the laravel framework is present in the vendor folder
+  let dir = FindRootDirectory()
+  return !empty(dir) && isdirectory(dir . '/vendor/laravel/framework')
+endfunction

@@ -22,10 +22,13 @@ nnoremap <silent> <buffer> <Leader>pd :call <sid>GeneratePHPDocBlock()<CR>
 if executable('phpcs') && exists("g:plugs['syntastic']")
   if dwproject#IsDrupalProject()
     let g:syntastic_php_checkers = ['php', 'phpcs']
-    let g:syntastic_php_phpcs_args = '--report=csv --standard Drupal --extensions=php,module,inc.install,test,profile,theme'
+    let g:syntastic_php_phpcs_args = '--report=csv --standard=Drupal --extensions=php,module,inc.install,test,profile,theme'
   elseif dwproject#IsWordPressProject()
     let g:syntastic_php_checkers = ['php', 'phpcs']
-    let g:syntastic_php_phpcs_args = '--report=csv --standard WordPress'
+    let g:syntastic_php_phpcs_args = '--report=csv --standard=WordPress'
+  elseif dwproject#IsLaravelProject()
+    let g:syntastic_php_checkers = ['php', 'phpcs']
+    let g:syntastic_php_phpcs_args = '--report=csv --standard=PSR2 --warning-severity=0'
   else
     let g:syntastic_php_checkers = ['php']
   endif
