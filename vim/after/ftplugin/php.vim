@@ -3,6 +3,9 @@
 " Use syntax completion in insert mode
 setlocal omnifunc=phpcomplete#CompletePHP
 
+" Adjust the comment string
+setlocal commentstring=//\ %s
+
 " Syntax highlighting in phpdoc blocks
 hi! def link phpDocTags  phpDefine
 hi! def link phpDocParam phpType
