@@ -104,22 +104,28 @@ call plug#begin()
   " ³  Highlighting & quote concealing
   " ⁴  Add Liquid & Jekyll support
   " ⁵  Improve higlighting for SASS
-  " ⁶  Improve support for CSS3
-  " ⁷  Support PHP 5.6 features
-  " ⁸  Improve hilighting for Twig
-  " ⁹  Add ES6 support
-  " ¹⁰ Improve js indentation
+  " ⁶  Add support for html5 tags
+  " ⁷  Improve highlighting for Twig
+  " ⁸  Add highlighting for blade tpl
+  " ⁹  Add highlighting for mustache
+  " ¹⁰ Improve support for CSS3
+  " ¹¹ Support PHP 5.6+ features
+  " ¹² Add ES6 support
+  " ¹³ Improve js indentation
   " -----------------------------------
   Plug 'tpope/vim-git'
   Plug 'tpope/vim-markdown'
   Plug 'elzr/vim-json'
   Plug 'tpope/vim-liquid'
   Plug 'cakebaker/scss-syntax.vim'
-  Plug 'hail2u/vim-css3-syntax',    { 'for': ['css', 'scss'] }
-  Plug 'StanAngeloff/php.vim',      { 'for': 'php' }
-  Plug 'evidens/vim-twig',          { 'for': 'html.twig' }
-  Plug 'othree/yajs.vim',           { 'for': 'javascript' }
-  Plug 'gavocanov/vim-js-indent',   { 'for': 'javascript' }
+  Plug 'othree/html5.vim'
+  Plug 'lumiliet/vim-twig'
+  Plug 'jwalton512/vim-blade'
+  Plug 'mustache/vim-mustache-handlebars'
+  Plug 'hail2u/vim-css3-syntax',  { 'for': ['css', 'scss'] }
+  Plug 'StanAngeloff/php.vim',    { 'for': 'php' }
+  Plug 'othree/yajs.vim',         { 'for': 'javascript' }
+  Plug 'gavocanov/vim-js-indent', { 'for': 'javascript' }
 
   " f) Misc/Utility ------------------- {{{2
   " ¹  Auto-generate ctags
