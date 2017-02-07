@@ -12,7 +12,6 @@
 --exclude=dist/*
 --exclude=docs/*
 --exclude=log/*
---exclude=*/vendor/*
 --exclude=*/tmp/*
 --exclude=wp/*
 --exclude=*-min.*

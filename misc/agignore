@@ -5,7 +5,6 @@ tmp/
 img/
 images/
 tests/
-vendor/
 node_modules/
 sites/*/files/
 sites/*/private/
