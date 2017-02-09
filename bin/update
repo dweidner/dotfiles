@@ -92,7 +92,7 @@ update_node_packages() {
 # Usage: update_ruby_gems
 #
 update_ruby_gems() {
-  gem update
+  gem update && gem cleanup
 }
 
 #
