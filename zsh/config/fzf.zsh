@@ -71,37 +71,6 @@ fe() {
   fi
 }
 
-# Search a file containing the given keyword and open it in the default editor.
-fs() {
-  local result
-  local file
-  local line
-  result="$(ag --nogroup --column --color "$1" | fzf-tmux --ansi --delimiter=':' --with-nth 1,4.. --bind ctrl-a:select-all,ctrl-d:deselect-all --exit-0)"
-  file="$(echo "$result" | cut -d':' -f1)"
-  line="$(echo "$result" | cut -d':' -f2)"
-
-  if [ -r "$file" ]; then
-    if [[ "$EDITOR" == "vim" ]] && [ "$line" -gt 0 ]; then
-      ${EDITOR:-vim} +$line -- "$file"
-    else
-      ${EDITOR:-vim} -- "$file"
-    fi
-  fi
-}
-
-# Search and browse the git history of the current git repository.
-fh() {
-  is_git_repository &&
-    git log --graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
-    fzf --ansi --no-sort --reverse --tiebreak=index \
-      --bind=ctrl-s:toggle-sort \
-      --bind "ctrl-m:execute:
-                (grep -o '[a-f0-9]\{7\}' | head -1 |
-                xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
-                {}
-FZF-EOF"
-}
-
 # Search directories
 __fzf_select_dir() {
   find -L . \( -path '*/\.*' -o -fstype dev -o -fstype proc \) \
