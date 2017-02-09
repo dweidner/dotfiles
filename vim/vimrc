@@ -486,6 +486,10 @@ nmap <special> <C-j> ]e
 vmap <special> <C-k> [egv
 vmap <special> <C-j> ]egv
 
+" Search for word using ack
+nnoremap <Leader>a :Ack!<Space>
+nnoremap <Leader>A :Ack!<CR>
+
 " Start EasAlign in interacitve mode
 nmap ga <Plug>(EasyAlign)
 xmap ga <Plug>(EasyAlign)
