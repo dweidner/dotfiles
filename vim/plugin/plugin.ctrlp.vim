@@ -4,10 +4,13 @@
 let g:ctrlp_cache_dir = g:vim_home . '/tmp/ctrlp'
 
 " Allow to prefix <C-p> with a count to start in a specific mode
-let g:ctrlp_cmd = 'exe "CtrlP" . get(["", "Buffer", "Modified", "MRU"], v:count)'
+let g:ctrlp_cmd = 'exe get(["CtrlPMixed", "CtrlPBuffer", "CtrlPModified", "CtrlPMRU"], v:count)'
 
 " Avoid adding a prefix to each entry in the list
 let g:ctrlp_line_prefix = ''
+
+" Open all selected files as hidden buffers
+let g:ctrlp_open_multiple_files = 'ijr'
 
 " Use `The Silver Searcher` if available
 if executable('ag')
