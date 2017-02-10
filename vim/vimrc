@@ -92,6 +92,7 @@ call plug#begin()
   " ²  Snippet manager
   " ³  Tab or Auto-Complete
   " ⁴  PHP omnicomplete
+  " ⁵  Improved JavaScript completion
   " -----------------------------------
   Plug 'othree/html5.vim'
   Plug 'SirVer/ultisnips',           { 'on': [] }
