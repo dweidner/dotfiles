@@ -1,6 +1,6 @@
 {
   "libs": [
     "browser",
-    "emacscript",
-  ],
+    "emacscript"
+  ]
 }

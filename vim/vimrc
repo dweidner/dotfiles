@@ -98,6 +98,10 @@ call plug#begin()
   Plug 'Valloric/YouCompleteMe',     { 'on': [], 'do': function('dw#BuildYCM') }
   Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
 
+  if executable('npm')
+    Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
+  endif
+
   " e) Syntax/File Type Additions ----- {{{2
   " ¹  Update syntax and indentation
   " ²  Load *.md files as markdown
@@ -150,14 +154,12 @@ call plug#begin()
     \| Plug 'svermeulen/vim-easyclip'
 
   " g) Try out ------------------------ {{{2
-  " ¹  Paramter completion for js
-  " ²  Syntax completion for js
-  " ³  Better increament via Ctrl-A/X
-  " ⁴  Replacement for CtrlP
-  " ⁵  Substitute preview
-  " ⁶  Display signature in cmd line
+  " ¹  Syntax completion for js
+  " ²  Better increament via Ctrl-A/X
+  " ³  Replacement for CtrlP
+  " ⁴  Substitute preview
+  " ⁵  Display signature in cmd line
   " -----------------------------------
-  " Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
   " Plug '1995eaton/vim-better-javascript-completion'
   " Plug 'nishigori/increment-activator'
   " Plug 'Shougo/unite.vim'
