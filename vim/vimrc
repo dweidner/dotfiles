@@ -145,6 +145,7 @@ call plug#begin()
   Plug 'dietsche/vim-lastplace'
   Plug 'sjl/vitality.vim'
   Plug 'editorconfig/editorconfig-vim'
+  Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
   Plug 'tpope/vim-repeat'
     \| Plug 'svermeulen/vim-easyclip'
 
@@ -154,6 +155,7 @@ call plug#begin()
   " ³  Better increament via Ctrl-A/X
   " ⁴  Replacement for CtrlP
   " ⁵  Substitute preview
+  " ⁶  Display signature in cmd line
   " -----------------------------------
   " Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
   " Plug '1995eaton/vim-better-javascript-completion'
@@ -163,6 +165,7 @@ call plug#begin()
   "      \| Plug 'Shougo/unite-outline'
   "      \| Plug 'tsukkee/unite-tag'
   " Plug 'osyo-manga/vim-over'
+  " Plug 'Shougo/echodoc.vim'
 
   " }}}
 
@@ -443,10 +446,10 @@ else
 endif
 
 " Close the current or all windows
-nnoremap <Leader>q :quit<CR>
+nnoremap <Leader>q :Sayonara!<CR>
 nnoremap <Leader>Q :quitall!<CR>
-nnoremap <C-q> :quit<CR>
-inoremap <C-q> <Esc>:quit<CR>
+nnoremap <C-q> :Sayonara!<CR>
+inoremap <C-q> <Esc>:Sayonara!<CR>
 
 " Circular window navigation
 nnoremap <Tab> <C-w>w
