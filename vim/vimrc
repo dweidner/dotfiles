@@ -210,10 +210,10 @@ exe 'set backupdir=' . g:vim_home . '/tmp/backup//'
 
 if has('gui_running')
 
-  "set guifont=Menlo\ Regular:h15      " Select font to use
-  "set linespace=2                     " Increase spacing between lines
+  set guifont=Fira\ Code:h16           " Select font to use
+  set linespace=2                      " Increase spacing between lines
+  set macligatures                     " Enable programming ligatures
 
-  set guifont=CamingoCode\ Regular:h16 " Prefer CamingoCode if available
   set guioptions-=m                    " Hide menubar
   set guioptions-=T                    " Hide toolbar
 
