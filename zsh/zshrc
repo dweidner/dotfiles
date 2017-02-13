@@ -129,6 +129,8 @@ unset file
 
 # 8. Misc ----------------------------- {{{1
 
+source "$DOTFILES/zsh/zaliases"
+
 if [ -s "$HOME/.zlocal" ]; then
   source "$HOME/.zlocal"
 fi

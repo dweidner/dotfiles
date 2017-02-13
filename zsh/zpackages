@@ -1,6 +1,7 @@
 # zsh/zpackages
 
 zplug "sindresorhus/pure"                            # Minimal and fast prompt
+zplug "supercrabtree/k"                              # `ls` with git features
 zplug "Tarrasch/zsh-bd"                              # Jump back to a directory
 zplug "zsh-users/zsh-completions"                    # Completion definitions
 zplug "zsh-users/zsh-history-substring-search"       # History search feature

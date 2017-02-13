@@ -1,0 +1,14 @@
+# zsh/zaliases
+
+# Autoload the run-help function for zsh builtin commands
+unalias run-help
+autoload -Uz run-help
+alias help="run-help"
+
+# Create an alias for `k` a command to list directory
+# contents including git features
+if (( $+functions[k] )); then
+  alias lg="k --human"
+fi
+
+# vim:syntax=zsh
