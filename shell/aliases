@@ -49,7 +49,7 @@ typeset -a ls_options
 
 # Distinguish between BSD and GNU ls and add the appropriate option
 if ls_supports --color=auto; then
-  ls_options+=( --color=auto )
+  ls_options+=( --color=auto --group-directories-first )
 elif ls_supports -G; then
   ls_options+=( -G )
 fi
