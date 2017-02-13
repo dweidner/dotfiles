@@ -387,11 +387,11 @@ install_formulae() {
 
   # Install version manager for node and ruby
   brew install rbenv
-  rbenv install 2.3.1
-  rbenv global 2.3.1
+  rbenv install 2.4.0
+  rbenv global 2.4.0
   brew install nodenv
-  nodenv install 5.12.0
-  nodenv global 5.12.0
+  nodenv install 7.5.0
+  nodenv global 7.5.0
 
   # Install, setup and run DNSmasq
   brew install dnsmasq
@@ -514,7 +514,7 @@ install_apps() {
   typeset -a fonts
   fonts=(
     "open-sans"
-    "camingocode"
+    "fira-code"
     "source-code-pro"
   )
 
@@ -624,6 +624,7 @@ create_symlinks() {
   symlink "tmux/tmux.conf"      ".tmux.conf"
   symlink "git/gitattributes"   ".gitattributes"
   symlink "git/gitignore"       ".gitignore"
+  symlink "misc/ackrc"          ".ackrc"
   symlink "misc/gemrc"          ".gemrc"
   symlink "misc/ctags"          ".ctags"
   symlink "misc/agignore"       ".agignore"
