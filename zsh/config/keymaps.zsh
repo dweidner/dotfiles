@@ -36,6 +36,28 @@ for k in "${(k)key[@]}"; do
   [[ -z "$key[$k]" ]] && key[$k]='�'
 done
 
+# Enable numpad key for Apple keyboards
+# @see <https://git.io/vDaZ7>
+if [[ ${OSTYPE} == darwin* ]]; then
+  bindkey -s "${key[Escape]}Oj" "*"
+  bindkey -s "${key[Escape]}Ok" "+"
+  bindkey -s "${key[Escape]}Om" "-"
+  bindkey -s "${key[Escape]}OM" "^M"
+  bindkey -s "${key[Escape]}On" ","
+  bindkey -s "${key[Escape]}Oo" "/"
+  bindkey -s "${key[Escape]}Op" "0"
+  bindkey -s "${key[Escape]}Oq" "1"
+  bindkey -s "${key[Escape]}Or" "2"
+  bindkey -s "${key[Escape]}Os" "3"
+  bindkey -s "${key[Escape]}Ot" "4"
+  bindkey -s "${key[Escape]}Ou" "5"
+  bindkey -s "${key[Escape]}Ov" "6"
+  bindkey -s "${key[Escape]}Ow" "7"
+  bindkey -s "${key[Escape]}Ox" "8"
+  bindkey -s "${key[Escape]}OX" "="
+  bindkey -s "${key[Escape]}Oy" "9"
+fi
+
 # Bind the key sequences to Zsh Line Editor (ZLE) commands
 bindkey "${key[Space]}"   magic-space
 bindkey "${key[Home]}"    beginning-of-line
