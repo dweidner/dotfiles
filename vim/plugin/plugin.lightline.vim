@@ -61,34 +61,21 @@ function! LightLineFileEncoding()
   return fenc !=? 'utf-8' ? fenc : ''
 endfunction
 
-" Change the lightline colorscheme on the fly
-" @see |:help lightline-problem-13|
-function! s:LightLineColorSchemeUpdate()
-  if !exists('g:loaded_lightline')
-    return
-  endif
-  try
-    if g:colors_name =~# 'wombat\|solarized\|landscape\|jellybeans\|seoul256\|Tomorrow'
-      let g:lightline.colorscheme =
-            \ substitute(substitute(g:colors_name, '-', '_', 'g'), '256.*', '', '') .
-            \ (g:colors_name ==# 'solarized' ? '_' . &background : '')
-      call lightline#init()
-      call lightline#colorscheme()
-      call lightline#update()
-    endif
-  catch
-  endtry
-endfunction
-
-" Refresh lightline colors when the colorscheme changes
-au vimrc ColorScheme * call s:LightLineColorSchemeUpdate()
-
 
 " 2. Git/Fugitive --------------------- {{{1
 
 " Display the current git branch
 function! LightLineFugitive()
-  return exists('*fugitive#head') ? fugitive#head() : ''
+  try
+    if exists('*fugitive#head')
+      let mark = ''
+      let branch = fugitive::head()
+      return branch !=# '' ? mark.branch : ''
+    endif
+  catch
+  endtry
+
+  return ''
 endfunction
 
 
@@ -102,12 +89,12 @@ let g:ctrlp_status_func = {
 
 " Display currently active mode
 function! CtrlPMark()
-  if expand('%:t') =~ 'ControlP'
+  if expand('%:t') =~ 'ControlP' && has_key(g:lightline, 'ctrlp_item')
     call lightline#link('iR'[g:lightline.ctrlp_regex])
     return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item, g:lightline.ctrlp_next], 0)
-  else
-    return ''
   endif
+
+  return ''
 endfunction
 
 " Remember the currently active mode
