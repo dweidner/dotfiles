@@ -22,8 +22,9 @@ nmap gss <plug>SubstituteLine
 nmap gS <plug>G_SubstituteToEndOfLine
 xmap gs <plug>XEasyClipPaste
 
-" Easyclip shadows 'add mark' with the 'cut' operation. Offer a custom binding
+" Easyclip shadows 'add mark' with the 'cut' operation. Offer custom bindings.
 nnoremap gm m
+nnoremap gM `
 
 " Automatically turn on 'paste' mode for the duration of the paste operation
 imap <c-v> <plug>EasyClipInsertModePaste
