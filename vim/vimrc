@@ -58,11 +58,12 @@ call plug#begin()
   Plug 'tpope/vim-eunuch'
   Plug 'tpope/vim-fugitive'
 
+  if s:use_fzf_plugin
+    Plug '/usr/local/opt/fzf',          { 'on': 'FZF' }
+  endif
   if s:use_mac_plugins
     Plug 'keith/investigate.vim'
-  endif
-  if s:use_fzf_plugin
-    Plug '/usr/local/opt/fzf'
+    Plug 'henrik/vim-reveal-in-finder', { 'on': 'Reveal' }
   endif
 
   " c) Text Editing ------------------- {{{2
@@ -156,18 +157,9 @@ call plug#begin()
 
   " g) Try out ------------------------ {{{2
   " ¹  Syntax completion for js
-  " ²  Better increament via Ctrl-A/X
-  " ³  Replacement for CtrlP
-  " ⁴  Substitute preview
-  " ⁵  Display signature in cmd line
+  " ²  Display signature in cmd line
   " -----------------------------------
   " Plug '1995eaton/vim-better-javascript-completion'
-  " Plug 'nishigori/increment-activator'
-  " Plug 'Shougo/unite.vim'
-  "      \| Plug 'Shougo/vimfiler.vim'
-  "      \| Plug 'Shougo/unite-outline'
-  "      \| Plug 'tsukkee/unite-tag'
-  " Plug 'osyo-manga/vim-over'
   " Plug 'Shougo/echodoc.vim'
 
   " }}}
@@ -447,6 +439,11 @@ if exists("g:plugs['fzf']")
   nnoremap <Leader>t :FZF<CR>
 else
   nnoremap <Leader>t :CtrlP<CR>
+endif
+
+" Reveal file in Finder
+if exists("g:plugs['vim-reveal-in-finder']")
+  nnoremap <Leader>o :Reveal<CR>
 endif
 
 " Close the current or all windows
