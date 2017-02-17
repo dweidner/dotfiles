@@ -45,15 +45,14 @@ call plug#begin()
 
   " b) System Integration ------------- {{{2
   " ¹  Navigate files/buffers
-  " ²  Open locally modified files
-  " ³  Search file contents
-  " ⁴  Unix utilities in vim
-  " ⁵  Git integration
+  " ²  Search file contents
+  " ³  Unix utilities in vim
+  " ⁴  Git integration
+  " ⁵  Integrate fuzzy file finder
   " ⁶  Look up documentation
-  " ⁷  Integrate fuzzy file finder
+  " ⁷  Reveal file in Finder.app
   " -----------------------------------
   Plug 'ctrlpvim/ctrlp.vim'
-  Plug 'jasoncodes/ctrlp-modified.vim'
   Plug 'mileszs/ack.vim'
   Plug 'tpope/vim-eunuch'
   Plug 'tpope/vim-fugitive'
