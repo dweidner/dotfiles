@@ -24,7 +24,6 @@ xmap gs <plug>XEasyClipPaste
 
 " Easyclip shadows 'add mark' with the 'cut' operation. Offer custom bindings.
 nnoremap gm m
-nnoremap gM `
 
 " Automatically turn on 'paste' mode for the duration of the paste operation
 imap <c-v> <plug>EasyClipInsertModePaste

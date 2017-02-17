@@ -399,13 +399,16 @@ map ++ ]]
 map ü+ []
 map +ü ][
 
-" Access the shadowed star operator
-noremap ö *
-noremap Ö #
+" Search forward/backward
+noremap ' *
+
+" Repeat latest f, t, F or T
+noremap ö ;
+noremap Ö :
 
 " Single/double quotes
 noremap ä '
-noremap Ä "
+noremap Ä @
 
 " Search forward/backward
 noremap - /
@@ -443,9 +446,9 @@ inoremap <C-s> <C-o>:update<CR>
 
 " Open file in new buffer
 if exists("g:plugs['fzf']")
-  nnoremap <Leader>o :FZF<CR>
+  nnoremap <Leader>t :FZF<CR>
 else
-  nnoremap <Leader>o :CtrlP<CR>
+  nnoremap <Leader>t :CtrlP<CR>
 endif
 
 " Close the current or all windows
@@ -507,10 +510,6 @@ nmap gcc <Plug>CommentaryLine
 " qq to record, Q to replay a macro
 nmap Q @q
 
-" Insert the current time/date
-" @see <https://https://github.com/mhinz/dotfiles>
-inoremap <silent> <c-g><c-t> <c-r>=repeat(complete(col('.'), map(["%H:%M:%S", "%H:%M"],'strftime(v:val)')+[localtime()]), 0)<cr>
-inoremap <silent> <c-g><c-d> <c-r>=repeat(complete(col('.'), map(["%A, %d %B %Y", "%d %B %Y", "%d.%m.%Y", "%Y%m%d"],'strftime(v:val)')+[localtime()]), 0)<cr>
 
 "}}}2
 
