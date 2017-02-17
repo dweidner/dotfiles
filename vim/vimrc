@@ -387,32 +387,30 @@ xnoremap > >gv
 " a ASCII/US layout. That helps at
 " least in vim’s normal mode.
 
-" Square/curly bracket commands
+" Jump forward/backward
 map ü [
 map + ]
 noremap Ü {
 noremap * }
-
-" Section forward/backward
 map üü [[
 map ++ ]]
 map ü+ []
 map +ü ][
 
 " Search forward/backward
+noremap - /
+noremap _ ?
+
+" Search word under cursor forward/backward
 noremap ' *
 
 " Repeat latest f, t, F or T
 noremap ö ;
 noremap Ö :
 
-" Single/double quotes
+" Jump to mark/Execute contents of register
 noremap ä '
 noremap Ä @
-
-" Search forward/backward
-noremap - /
-noremap _ ?
 
 " Jump to the definition of the keyword
 nnoremap <Leader>+ <C-]>
