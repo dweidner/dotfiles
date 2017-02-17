@@ -4,7 +4,7 @@
 let g:ctrlp_cache_dir = g:vim_home . '/tmp/ctrlp'
 
 " Allow to prefix <C-p> with a count to start in a specific mode
-let g:ctrlp_cmd = 'exe get(["CtrlPMixed", "CtrlPBuffer", "CtrlPModified", "CtrlPMRU"], v:count)'
+let g:ctrlp_cmd = 'exe get(["CtrlP", "CtrlPBuffer", "CtrlPMRU"], v:count)'
 
 " Avoid adding a prefix to each entry in the list
 let g:ctrlp_line_prefix = ''
