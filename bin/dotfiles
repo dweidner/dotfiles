@@ -44,16 +44,13 @@ UPDATE_OSX_SETTINGS=0
 # Command aliases
 #
 
-brew() {
+_brew() {
   "${BREW:-/usr/local/bin/brew}" "$@"
 }
-service() {
-  sudo "${BREW:-/usr/local/bin/brew}" services "$@"
-}
-rbenv() {
+_rbenv() {
   "${RBENV:-/usr/local/bin/rbenv}" "$@"
 }
-nodenv() {
+_nodenv() {
   "${NODENV:-/usr/local/bin/nodenv}" "$@"
 }
 
@@ -369,33 +366,33 @@ install_formulae() {
   fi
 
   # Update homebrew formulae
-  brew update
-  brew doctor
+  _brew update
+  _brew doctor
 
   # Start installation process
   print_status "Installing homebrew formulae ..."
 
   # Add additional repositories
   for tap in "${taps[@]}"; do
-    brew tap "$tap"
+    _brew tap "$tap"
   done
 
   # Install additional formulae
   for formula in "${formulae[@]}"; do
-    brew install "$formula"
+    _brew install "$formula"
   done
 
   # Install version manager for node and ruby
-  brew install rbenv
-  rbenv install 2.4.0
-  rbenv global 2.4.0
-  brew install nodenv
-  nodenv install 7.5.0
-  nodenv global 7.5.0
+  _brew install rbenv
+  _rbenv install 2.4.0
+  _rbenv global 2.4.0
+  _brew install nodenv
+  _nodenv install 7.5.0
+  _nodenv global 7.5.0
 
   # Install, setup and run DNSmasq
-  brew install dnsmasq
-  service start dnsmasq
+  _brew install dnsmasq
+  _brew service start dnsmasq
 
   if [ ! -f "/etc/resolver/dev" ]; then
     sudo mkdir -p /etc/resolver
@@ -403,30 +400,35 @@ install_formulae() {
   fi
 
   # Install latest version of apache
-  brew install httpd24 --with-privileged-ports
-  sudo brew services start homebrew/apache/httpd24
+  _brew install httpd24 --with-privileged-ports --with-http2
+  sudo /usr/local/bin/brew services start homebrew/apache/httpd24
 
   # Install PHP in version 5.6 with additional modules
-  brew install php56 --with-apache --with-homebrew-curl
-  brew install php56-xdebug
-  brew install php56-mcrypt
+  _brew install php56 --with-httpd24 --with-homebrew-curl
+  _brew install php56-mcrypt
+  _brew install php56-xdebug
+  _brew unlink php56
+
+  # Install PHP in version 7.1
+  _brew install php71 --with-httpd24 --with-homebrew-curl
+  _brew install php71-xdebug
 
   # Install the latest version of mysql
-  brew install mysql
+  _brew install mysql
   /usr/local/bin/mysql_secure_installation
-  service restart mysql
+  _brew service restart mysql
 
   # Install preferred editor
-  brew install macvim --with-override-system-vim
-  brew install --HEAD universal-ctags
+  _brew install macvim --with-override-system-vim
+  _brew install --HEAD universal-ctags
 
   # Install php code sniffer and additional coding standards
-  if brew install php-code-sniffer; then
+  if _brew install php-code-sniffer; then
     install_coding_standards
   fi
 
   # Remove old downloads and finish process
-  brew cleanup
+  _brew cleanup
   print_success "Done."
 }
 
@@ -522,29 +524,29 @@ install_apps() {
 
   # Ensure cask is available
   for tap in "${taps[@]}"; do
-    brew tap "$tap"
+    _brew tap "$tap"
   done
 
   # Install macOS applications via CASK
   for app in "${apps[@]}"; do
-    brew cask install --appdir="~/Applications" "$app"
+    _brew cask install --appdir="~/Applications" "$app"
   done
 
   # Improve quicklook
   for ql in "${quicklook[@]}"; do
-    brew cask install "$ql"
+    _brew cask install "$ql"
   done
 
   # Install some additional system fonts
   for font in "${fonts[@]}"; do
-    brew cask install "font-$font"
+    _brew cask install "font-$font"
   done
 
   # Launch Skyfonts to sync fonts via the service
   find /usr/local/Caskroom/skyfonts -type d -name SkyFonts.app -exec open {} \;
 
   # Cleanup downloaded packages
-  brew cask cleanup
+  _brew cask cleanup
   print_success "Done."
 
   # Reminder about applications that are licensed via the AppStore
