@@ -18,7 +18,6 @@
 [[ $- = *i* ]] || return           # Guard for non-interactive shells
 
 export DOTFILES="$HOME/.dotfiles"  # Expose the dotfiles directory
-source "$DOTFILES/shell/helpers"   # Load frequently used utility functions
 source "$DOTFILES/shell/aliases"   # Load shell aliases
 source "$DOTFILES/shell/functions" # Load shell functions
 
@@ -45,11 +44,9 @@ HISTTIMEFORMAT='%F %T%t'  # Distinguish history lines by date/time
 # 4. DIR Colors -------------------------------------- {{{1
 
 # Customize colorized output of the `list directory contents` command
-if [[ -f "$HOME/.dircolors" ]] && is_executable "dircolors"; then
+if [[ -f "$HOME/.dircolors" ]] && command -v dircolors >/dev/null 2>&1; then
   eval "$(dircolors --sh "$HOME/.dircolors")"
-elif is_executable "dircolors"; then
-  eval "$(dircolors --sh "$DOTFILES/shell/dircolors")"
-elif is_mac; then
+elif [[ "$OSTYPE" == darwin* ]]; then
   export CLICOLOR=1
   export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD
 fi
@@ -68,7 +65,7 @@ fi
 # 6. Bash Prompt ------------------------------------- {{{1
 
 # Load configuration file that customizes the bash prompt
-if [ -s "$HOME/.bash_prompt" ]; then
+if [[ -s "$HOME/.bash_prompt" ]]; then
   source "$HOME/.bash_prompt"
 fi
 
@@ -76,7 +73,7 @@ fi
 # 7. Misc -------------------------------------------- {{{1
 
 # Load user configuration file
-if [ -s "$HOME/.bash_local" ]; then
+if [[ -s "$HOME/.bash_local" ]]; then
   source "$HOME/.bash_local"
 fi
 

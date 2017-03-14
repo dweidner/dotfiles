@@ -1,4 +1,4 @@
-# zsh/config/completion.zsh
+# zsh/zcompletion
 
 # -------------------------------------
 # Table of Contents
@@ -84,4 +84,4 @@ else
 fi
 
 
-# vim:foldmethod=marker:foldlevel=2
+# vim:syntax=zsh:foldmethod=marker:foldlevel=2

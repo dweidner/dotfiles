@@ -1,4 +1,4 @@
-# zsh/config/keymaps.zsh
+# zsh/zkeymaps
 
 # -------------------------------------
 # Table of Contents
@@ -86,10 +86,6 @@ bindkey -M menuselect "${key[Ctrl]}o" accept-and-infer-next-history
 # Insert the currently selected menu item, but keep the menu open
 bindkey -M menuselect "+" accept-and-menu-complete
 
-# Expand abbreviations
-bindkey "${key[Ctrl]}x." dotfiles-magic-abbr-expand
-bindkey "${key[Ctrl]}xa" dotfiles-help-magic-abbr
-
 # Insert directory path from menu
 bindkey "${key[Ctrl]}xd" dotfiles-insert-directory
 
@@ -98,9 +94,6 @@ bindkey "${key[Ctrl]}xf" dotfiles-insert-files
 
 # Search and insert path from the most recently used file
 bindkey "${key[Ctrl]}xr" dotfiles-select-mru
-
-# Search and insert path from files with changes compaired to the HEAD commit
-bindkey "${key[Ctrl]}xm" dotfiles-select-modified
 
 # Jump to the end of the first word (to add additional options)
 bindkey "${key[Ctrl]}x1" dotfiles-jump-to-end-of-first-word
@@ -172,16 +165,6 @@ function dotfiles-insert-directory() {
 }
 zle -N dotfiles-insert-directory
 
-# Select files that have differences between the index file and the current
-# HEAD commit via fzf fuzzy finder
-function dotfiles-select-modified() {
-  if (( $+functions[__fzf_select_modified] )); then
-    LBUFFER+="$(__fzf_select_modified)"
-    zle redisplay
-  fi
-}
-zle -N dotfiles-select-modified
-
 # Jump to the end of the first word (e.g. in order to add addition options)
 function dotfiles-jump-to-end-of-first-word() {
   local words
@@ -196,4 +179,4 @@ function dotfiles-jump-to-end-of-first-word() {
 zle -N dotfiles-jump-to-end-of-first-word
 
 
-# vim:foldmethod=marker:foldlevel=2
+# vim:syntax=zsh:foldmethod=marker:foldlevel=2

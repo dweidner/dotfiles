@@ -1,4 +1,4 @@
-# zsh/config/fzf.zsh
+# zsh/zplugin/plugin.fzf.zsh
 
 # -------------------------------------
 # Table of Contents
@@ -80,15 +80,6 @@ __fzf_select_dir() {
     -o -type l -print 2>/dev/null \
     | sed 1d \
     | fzf-tmux --multi
-}
-
-# Search files that have differences between the index file and the current
-# HEAD commit.
-__fzf_select_modified() {
-  is_git_repository &&
-    git status --short |
-    fzf-tmux -d 40% --multi --ansi --nth 2..,.. |
-    awk '{print $2}'
 }
 
 

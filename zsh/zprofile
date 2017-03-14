@@ -48,8 +48,6 @@ fi
 # Setup zpure a zsh plugin manager
 if [ -s "/usr/local/opt/zplug/init.zsh" ]; then
   export ZPLUG_HOME="${ZPLUG_HOME:-/usr/local/opt/zplug}"
-  export ZPLUG_REPOS="$HOME/.zsh/plugins"
-  export ZPLUG_LOADFILE="$HOME/.zpackages"
   export ZPLUG_CACHE_DIR="$HOME/.cache/zplug"
 fi
 
