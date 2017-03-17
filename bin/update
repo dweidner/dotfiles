@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
-source "$DOTFILES/shell/helpers"
 
 #
 # Options/Flags
@@ -24,7 +23,7 @@ process_start() {
   local process="$1"
   local message="${2:-Processing...}"
   LAST_PROCESS_STARTED="$process"
-  print_status "$message"
+  printf "\n● %s\n" "$message"
 }
 
 #
@@ -39,7 +38,7 @@ process_done() {
   # shellcheck disable=SC2034
   local process="${1:-$LAST_PROCESS_STARTED}"
   local message="${2:-Done.}"
-  print_success "$message"
+  printf "%b✓ %s%b\n" "\e[1;32m" "$message" "\e[0m"
   LAST_PROCESS_STARTED=""
 }
 
@@ -55,7 +54,7 @@ process_failed() {
   # shellcheck disable=SC2034
   local process="${1:-$LAST_PROCESS_STARTED}"
   local message="${2:-Failed.}"
-  print_error "$message"
+  printf "%b⨯ ERROR: %b%s\n" "\e[1;32m" "\e[0m" "$message"
   LAST_PROCESS_STARTED=""
 }
 
@@ -128,38 +127,40 @@ update_tmux_plugins() {
 main() {
   local tmux_plugin_base="${TMUX_PLUGIN_MANAGER_PATH:-$HOME/.tmux/plugins}"
 
+  process_start "update" "Updating system utilities …"
+
   if [[ "$OSTYPE" == darwin* ]]; then
-    process_start "update_osx" "Updating OSX applications. Requires admin privileges…"
+    process_start "update_osx" "Updating OSX applications. Requires admin privileges …"
     sudo -v
     update_osx && process_done || process_failed
   fi
 
   if type brew >/dev/null 2>&1; then
-    process_start "update_homebrew" "Updating brew formulae…"
+    process_start "update_homebrew" "Updating brew formulae …"
     update_homebrew && process_done || process_failed
   fi
 
   if type npm >/dev/null 2>&1; then
-    process_start "update_node_packages" "Updating global node packages…"
+    process_start "update_node_packages" "Updating global node packages …"
     update_node_packages && process_done || process_failed
   fi
 
   if type gem >/dev/null 2>&1; then
-    process_start "update_ruby_gems" "Updating ruby gems…"
+    process_start "update_ruby_gems" "Updating ruby gems …"
     update_ruby_gems && process_done || process_failed
   fi
 
   if type zplug >/dev/null 2>&1; then
-    process_start "update_zsh_plugins" "Updating zsh plugins…"
+    process_start "update_zsh_plugins" "Updating zsh plugins …"
     update_zsh_plugins && process_done || process_failed
   fi
 
   if [ -d "$tmux_plugin_base/tpm" ]; then
-    process_start "update_tmux_plugins" "Updating tmux plugins…"
+    process_start "update_tmux_plugins" "Updating tmux plugins …"
     update_tmux_plugins "$tmux_plugin_base/tpm" && process_done || process_failed
   fi
 
-  print_success "Done. Updated all system components."
+  process_done "update" "Done. Updated all system components."
 }
 
 main "$@"
