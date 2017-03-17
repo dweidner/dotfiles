@@ -1,123 +1,112 @@
 [color]
-  ui = auto
-  interactive = auto
+	ui = auto
+	interactive = auto
 
 [core]
-  excludesfile = ~/.gitignore
-  attributesfile = ~/.gitattributes
+	excludesfile = ~/.gitignore
+	attributesfile = ~/.gitattributes
 
 [pretty]
-  nice = "format:%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn]%Creset %Cblue%G?%Creset"
+	nice = "format:%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn]%Creset %Cblue%G?%Creset"
+
+[commit]
+	template = ~/.dotfiles/git/gitcommitmsg
 
 [push]
-  default = simple
+	default = simple
 
 [alias]
-  # Git Aliases
-  # @see <https://github.com/GitAlias/gitalias>
-  a = add
-  b = branch
-  c = commit
-  d = diff
-  f = fetch
-  g = grep
-  l = log
-  m = merge
-  o = checkout
-  p = pull
-  r = remote
-  s = status
-  w = whatchanged
+	# Git Aliases
+	# @see <https://github.com/GitAlias/gitalias>
+	a = add
+	b = branch
+	c = commit
+	d = diff
+	f = fetch
+	g = grep
+	l = log
+	m = merge
+	o = checkout
+	p = pull
+	r = remote
+	s = status
+	w = whatchanged
 
-  # git add
-  aa = add --all
-  au = add --update
+	# git add
+	aa = add --all
+	au = add --update
 
-  # git branch
-  branches = branch -a
+	# git branch
+	branches = branch -a
 
-  # git checkout
-  co = checkou
-  ours = !"f() { git checkout --ours $@ && git add $@; }; f"
-  theirs = !"f() { git checkout --theirs $@ && git add $@; }; f"
+	# git checkout
+	co = checkout
+	ours = !"f() { git checkout --ours $@ && git add $@; }; f"
+	theirs = !"f() { git checkout --theirs $@ && git add $@; }; f"
 
-  # git config
-  aliases = "!git config --get-regexp '^alias\\.' | colrm 1 6 | sed 's/ / = /'"
+	# git config
+	aliases = "!git config --get-regexp '^alias\\.' | colrm 1 6 | sed 's/ / = /'"
 
-  # git commit
-  ca = commit --amend
-  ci = commit --interactive
-  cm = commit --message
-  put = !git commit --all --message="$1" && git push
+	# git commit
+	ca = commit --amend
+	ci = commit --interactive
+	cm = commit --message
 
-  # git diff[tool]
-  dc = diff --cached
-  ds = diff --staged
-  dt = !"for name in $(git diff --name-only $1); do git difftool $1 $name & done"
-  dw = diff --word-diff
+	# git diff[tool]
+	dc = diff --cached
+	ds = diff --staged
+	dt = !"for name in $(git diff --name-only $1); do git difftool $1 $name & done"
 
-  # git grep
-  gg = grep --break --heading --line-number
+	# git grep
+	gg = grep --break --heading --line-number
 
-  # git log
-  lg = log --graph
-  lk = log --graph --topo-order --abbrev-commit --date=short --decorate --all --boundary --pretty=nice
-  ll = log -n 10 --graph --topo-order --abbrev-commit --date=short --decorate --all --boundary --pretty=nice
-  lm = !git log --author $(git config user.email)
-  lo = log --oneline
-  lp = log --patch
-  search = !"f() { query=\"$1\"; shift; git log -S\"$query\" \"$@\"; }; f \"$@\""
-  incoming = !git remote update --prune; git log ..@{upstream}
-  outgoing = log @{upstream}..
-  contributors = shortlog --summary --numbered --no-merges
+	# git log
+	lg = log --graph
+	lk = log --graph --topo-order --abbrev-commit --date=short --decorate --all --boundary --pretty=nice
+	ll = log -n 15 --graph --topo-order --abbrev-commit --date=short --decorate --all --boundary --pretty=nice
+	lm = !git log --author $(git config user.email)
+	lo = log --oneline
+	lp = log --patch
+	search = !"f() { query=\"$1\"; shift; git log -S\"$query\" \"$@\"; }; f \"$@\""
+	incoming = !git remote update --prune; git log ..@{upstream}
+	outgoing = log @{upstream}..
+	contributors = shortlog --summary --numbered --no-merges
 
-  # git ls-files
-  ls = ls-files
-  ignored = !"f() { a=\"$(git ls-files -v | grep ^h | cut -c 3-)\"; b=\"$(git ls-files --others -i --exclude-standard)\"; [ -n \"$a\" ] && printf \"ASSUMED UNCHANGED:\\n%s\\n\" \"$a\"; [ -n \"$b\" ] && printf \"IGNORED FILES:\\n%s\\n\" \"$b\"; }; f"
+	# git push
+	publish = !"git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)"
+	unpublish = !"git push origin :$(git rev-parse --abbrev-ref HEAD)"
 
-  # git pull
-  pr = pull --rebase
-  get = !git pull --rebase && git submodule update --init --recursive
+	# git remote
+	remotes = remote -v
 
-  # git push
-  publish = !"git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)"
-  unpublish = !"git push origin :$(git rev-parse --abbrev-ref HEAD)"
+	# git reset
+	undo = reset --soft HEAD~1
 
-  # git remote
-  remotes = remote -v
+	# git stash
+	save = stash save
+	pop = stash pop
+	snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
 
-  # git reset
-  undo = reset --soft HEAD~1
+	# git status
+	ss = status --short
 
-  # git stash
-  save = stash save
-  pop = stash pop
-  snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
+	# git submodule
+	sm = submodule
 
-  # git status
-  ss = status --short
+	# git tag
+	tags = tag -n1 --list
 
-  # git submodule
-  sm = submodule
-
-  # git tag
-  tags = tag -n1 --list
-
-  # git update-index
-  ignore-changes = update-index --asume-unchanged
-  include-changes = update-index --no-assume-unchanged
-
-  # misc
-  gitignore = "!f() { curl -L -s https://www.gitignore.io/api/$@; }; f"
+	# misc
+	gitignore = "!f() { curl -L -s https://www.gitignore.io/api/$@; }; f"
 
 [grep]
-  extendregexp = true
+	extendregexp = true
 
 [diff]
-  tool = opendiff
+	tool = opendiff
 
 [difftool]
-  prompt = false
+	prompt = false
 
 [merge]
-  tool = opendiff
+	tool = opendiff

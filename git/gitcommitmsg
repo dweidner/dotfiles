@@ -1,0 +1,31 @@
+<type>: Summarize changes in around 50 characters
+
+More detailed explanatory text, if necessary. Explain what and why.
+
+Resolves: #123
+See also: #456, #789
+
+# .............................................. ↑ .................... ↑
+#
+# The seven rules of a great Git commit message
+# https://chris.beams.io/posts/git-commit/
+#
+#  1. Separate subject from body with a blank line
+#  2. Limit the subject line to 50 characters
+#  3. Capitalize the subject line
+#  4. Do not end the subject line with a period
+#  5. Use the imperative mood in the subject line
+#  6. Wrap the body at 72 characters
+#  7. Use the body to explain what and why vs. how
+#
+# Optional commit types:
+#
+#  - feat:     A new user feature
+#  - fix:      A bug fix for a user feature
+#  - docs:     Changes to the documentation
+#  - style:    Formatting, missing semi colons, …
+#  - refactor: Refactoring production code
+#  - test:     Adding tests, refactoring tests, …
+#  - chore:    Updating build tools, …
+#
+# .............................................. ↓ .................... ↓
