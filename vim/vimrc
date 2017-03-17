@@ -225,6 +225,7 @@ set nowrap                            " No line wrapping by default
 set shortmess=aIT                     " Use abbreviation in messages
 set showtabline=0                     " Never show tabs
 set laststatus=2                      " Always display the status line
+set previewheight=16                  " Increase height of the preview window
 set pumheight=10                      " Limit visible entries of the popup menu
 
 set scrolloff=8                       " Min. lines to keep above/below
@@ -404,7 +405,10 @@ noremap ä '
 noremap Ä @
 
 " Jump to the definition of the keyword
-nnoremap <Leader>+ <C-]>
+nnoremap <Leader>+ g<C-]>
+vnoremap <Leader>+ g<C-]>
+nnoremap <Leader>* <C-w>g}
+vnoremap <Leader>* <C-w>g}
 
 
 " c) Movement ------------------------- {{{2
@@ -464,6 +468,9 @@ nnoremap <Leader>w1 <C-w>o
 nnoremap <Leader>w2 <C-w>s<C-w>k
 nnoremap <Leader>w3 <C-w>s<C-w>j<C-w>v<C-w>k
 nnoremap <Leader>w4 <C-w>s<C-w>v<C-w>k<C-w>v<C-w>h
+
+" Close the preview window
+nnoremap <Leader>wz <C-w>z
 
 
 " e) Search/Replace ------------------- {{{2
