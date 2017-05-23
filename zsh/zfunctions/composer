@@ -25,7 +25,11 @@ function composer() {
     return 0
   fi
 
-  mv "$src/ext-xdebug.ini" "$target"
+  if [[ ! -d "$target" ]]; then
+    mkdir "$target"
+  fi
+
+  mv "$src/ext-xdebug.ini" "$target/"
 
   command composer "$@"
   s=$?
