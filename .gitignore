@@ -5,3 +5,7 @@ vim/tmp/gutentags
 vim/tmp/.easyclip
 vim/tmp/.netrwhist
 vim/tmp/.netrwbook
+
+# todo-txt
+todo/*.txt
+todo/*.tmp

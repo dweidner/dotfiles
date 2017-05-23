@@ -135,6 +135,7 @@ case "$OSTYPE" in
 
   # Mac OSX --------------------------- {{{2
   darwin*)
+    alias t="todo.sh"
     alias cdf='cd "$(pfd)"'
     alias pushdf='pushd "$(pfd)"'
 

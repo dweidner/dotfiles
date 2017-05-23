@@ -1,0 +1,54 @@
+# Todo.txt configuration          [http://todotxt.com]
+
+# ----------------------------------------------------
+# Table of Contents
+# ----------------------------------------------------
+# 1. File Locations
+# 2. Command Behavior
+# 3. Color Output
+# ----------------------------------------------------
+
+
+# 1. File Locations ---------------------------------- {{{1
+
+# Allow users to customize the path to the dropbox folder
+if [ -z "$DROPBOX_DIR" ]; then
+  export DROPBOX_DIR="$HOME/Dropbox"
+fi
+
+# Synchronize the todo files with Dropbox if available
+if [ -d "$DROPBOX_DIR/Aufgaben" ]; then
+  export TODO_DIR="$DROPBOX_DIR/Aufgaben"
+  export TODO_FILE="$TODO_DIR/Todo.txt"
+  export DONE_FILE="$TODO_DIR/Archiv.txt"
+else
+  export TODO_DIR="$HOME/.todo"
+  export TODO_FILE="$TODO_DIR/todo.txt"
+  export DONE_FILE="$TODO_DIR/archive.txt"
+fi
+
+# Hide temporary files in the dotfiles directory
+export REPORT_FILE="$HOME/.todo/report.txt"
+export TMP_FILE="$HOME/.todo/todo.tmp"
+
+
+# 2. Command Behavior -------------------------------- {{{1
+
+# List tasks if running the cli command without arguments
+export TODOTXT_DEFAULT_ACTION="list"
+
+# Hide confirmation messages if not requested via the cli
+export TODOTXT_VERBOSE=0
+
+# Add the creation date when adding new tasks
+export TODOTXT_DATE_ON_ADD=1
+
+
+# 3. Color Output ------------------------------------ {{{1
+
+export COLOR_PROJECT="$YELLOW"   # Project assignment
+export COLOR_CONTEXT="$BLUE"     # Context assignment
+export COLOR_DONE="$LIGHT_CYAN"  # Finished tasks
+
+
+# vim:syntax=sh:foldmethod=marker:foldlevel=2
