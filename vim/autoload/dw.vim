@@ -22,6 +22,28 @@ function! dw#Jump(motion) range
 endfunction
 
 "
+" Remove starting and trailing whitespace from a string
+" @see <http://blog.pixelastic.com/2015/10/05/use-local-eslint-in-syntastic/>
+"
+function! dw#Trim(str)
+  return substitute(a:str, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
+endfunction
+
+"
+" Run a shell command and strip any whitespace from the
+" return value.
+"
+function! dw#RunShellCommand(cmd)
+  silent let output = system(a:cmd)
+
+  if v:shell_error
+    return
+  endif
+
+  return dw#Trim(output)
+endfunction
+
+"
 " A helper function that installs bundle dependencies for the
 " YouCompleteMe plugin.
 "

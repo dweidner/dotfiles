@@ -9,8 +9,9 @@ nnoremap <silent> <buffer> [[ :call dw#Jump('?function')<CR>
 nnoremap <silent> <buffer> <Leader>pd :JsDoc<CR>
 
 " Lint javascript files using eslint and syntastic
-let s:eslint_path = dwproject#GetNodeModulePath('eslint')
-if !empty(s:eslint_path)
+let s:eslint_exec = dwproject#GetNodeModulePath('eslint')
+
+if executable(s:eslint_exec)
   let b:syntastic_checkers = ["eslint"]
-  let b:syntastic_javascript_eslint_exec = s:eslint_path
+  let b:syntastic_javascript_eslint_exec = s:eslint_exec
 endif

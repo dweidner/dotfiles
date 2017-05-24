@@ -10,6 +10,15 @@ setlocal commentstring=//\ %s
 hi! def link phpDocTags  phpDefine
 hi! def link phpDocParam phpType
 
+" Check if PHPUnit is available in the current project
+let s:phpunit_exec = dwproject#GetComposerBinaryPath('phpunit')
+
+if executable(s:phpunit_exec)
+  exe 'setlocal makeprg=' . s:phpunit_exec . '\ $*'
+  setlocal errorformat=%E%n)\ %.%#,%Z%f:%l,%C%m,%C,%-G%.%#
+  nnoremap <silent> <buffer> <Leader>u :Make<CR>
+endif
+
 " Generate PHPDoc Block and ensure UltiSnips is already loaded
 function! s:GeneratePHPDocBlock()
   if !exists('b:did_autoload_ultisnips')
