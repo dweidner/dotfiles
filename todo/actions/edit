@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# -----------------------------------------------------
+#
+# Todo.txt Add-On
+#
+# Plugin for the Todo.txt cli that allows users to edit
+# the $TODO_FILE or any of the files in the $TODO_DIR
+# in the default $EDITOR.
+#
+# Usage:
+# todo.sh edit
+# todo.sh edit done
+#
+# -----------------------------------------------------
+
+action="$1"
+file="$2"
+
+usage() {
+    cat <<-EndUsage
+		    $(basename "$0") [FILE_NAME]
+		      Open \$TODO_DIR/[FILE_NAME].txt in your default \$EDITOR. If no file name
+		      is given \$TODO_FILE will be opened.
+		EndUsage
+
+    exit 1
+}
+
+die() {
+  echo "$*"
+  exit 1
+}
+
+edit() {
+  for name in "$@"; do
+    file="$TODO_DIR/$name.txt"
+    if [ -r "$file" ]; then
+      $EDITOR "$file"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+if [ "$action" = "usage" ]; then
+  usage
+fi
+
+if [ -z "$EDITOR" ]; then
+  die "Error: The EDITOR environment variable is not set"
+fi
+
+if [ -z "$file" ]; then
+  $EDITOR "$TODO_FILE"
+elif [ -r "$TODO_DIR/$file.txt" ]; then
+  $EDITOR "$TODO_DIR/$file.txt"
+else
+  die "Error: $TODO_DIR/$file.txt does not exist"
+fi
