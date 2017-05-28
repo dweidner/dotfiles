@@ -42,7 +42,7 @@ has_bsd_sed() {
 # Filter completion and creation date from the list output.
 # You can use the -x flag to disable the filter.
 if has_bsd_sed; then
-  export TODOTXT_FINAL_FILTER="sed -E 's/[[:space:]][0-9]{4}-[0-9]{2}-[0-9]{2}//g'"
+  export TODOTXT_FINAL_FILTER="sed -E 's/([[:space:]][0-9]{4}-[0-9]{2}-[0-9]{2}){1,2}//g'"
 fi
 
 # List tasks if running the cli command without arguments
