@@ -54,6 +54,8 @@ export TODOTXT_VERBOSE=0
 # Add the creation date when adding new tasks
 export TODOTXT_DATE_ON_ADD=1
 
+# Sort tasks by priority label and by number
+export TODOTXT_SORT_COMMAND="env LC_COLLATE=C sort -f -k2,2 -k1,1n"
 
 # 3. Color Output ------------------------------------ {{{1
 
