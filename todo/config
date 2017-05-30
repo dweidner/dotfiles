@@ -19,13 +19,13 @@ fi
 # Synchronize the todo files with Dropbox if available
 if [ -d "$DROPBOX_DIR/Aufgaben" ]; then
   export TODO_DIR="$DROPBOX_DIR/Aufgaben"
-  export TODO_FILE="$TODO_DIR/Todo.txt"
-  export DONE_FILE="$TODO_DIR/Archiv.txt"
 else
   export TODO_DIR="$HOME/.todo"
-  export TODO_FILE="$TODO_DIR/todo.txt"
-  export DONE_FILE="$TODO_DIR/archive.txt"
 fi
+
+# Set custom names for the todo files
+export TODO_FILE="$TODO_DIR/todo.txt"
+export DONE_FILE="$TODO_DIR/archive.txt"
 
 # Hide temporary files in the dotfiles directory
 export REPORT_FILE="$HOME/.todo/report.txt"
