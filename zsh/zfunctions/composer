@@ -20,6 +20,13 @@ function composer() {
     return 1
   fi
 
+  for arg in "$@"; do
+    if [[ "$arg" == *coverage ]]; then
+      command composer "$@"
+      return 0
+    fi
+  done
+
   if [[ ! -f "$src/ext-xdebug.ini" ]]; then
     command composer "$@"
     return 0
