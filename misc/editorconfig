@@ -1,0 +1,27 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = LF
+indent_size = 2
+intend_style = space
+
+[.gitconfig]
+indent_style = tab
+
+[*.{css,less,sass,scss}]
+insert_final_newline = true
+
+[*.{js,json,jsx,ts,tsx}]
+insert_final_newline = true
+
+[*.{blade,php}]
+indent_size = 4
+insert_final_newline = true
+tab_width = 4
+
+[*.{bash,sh,zsh}]
+max_line_length = 78
+
+[*.vim]
+tab_width = 2

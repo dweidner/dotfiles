@@ -44,15 +44,9 @@ UPDATE_OSX_SETTINGS=0
 # Command aliases
 #
 
-_brew() {
-  "${BREW:-/usr/local/bin/brew}" "$@"
-}
-_rbenv() {
-  "${RBENV:-/usr/local/bin/rbenv}" "$@"
-}
-_nodenv() {
-  "${NODENV:-/usr/local/bin/nodenv}" "$@"
-}
+BREW_BINARY="${BREW_BINARY:-/usr/local/bin/brew}"
+RBENV_BINARY="${RBENV_BINARY:-/usr/local/bin/rbenv}"
+NODENV_BINARY="${NODENV_BINARY:-/usr/local/bin/nodenv}"
 
 #
 # Tells users how to use the script.
@@ -367,33 +361,33 @@ install_formulae() {
   fi
 
   # Update homebrew formulae
-  _brew update
-  _brew doctor
+  $BREW_BINARY update
+  $BREW_BINARY doctor
 
   # Start installation process
   print_status "Installing homebrew formulae ..."
 
   # Add additional repositories
   for tap in "${taps[@]}"; do
-    _brew tap "$tap"
+    $BREW_BINARY tap "$tap"
   done
 
   # Install additional formulae
   for formula in "${formulae[@]}"; do
-    _brew install "$formula"
+    $BREW_BINARY install "$formula"
   done
 
   # Install version manager for node and ruby
-  _brew install rbenv
-  _rbenv install 2.4.0
-  _rbenv global 2.4.0
-  _brew install nodenv
-  _nodenv install 7.5.0
-  _nodenv global 7.5.0
+  $BREW_BINARY install rbenv
+  $RBENV_BINARY install 2.4.0
+  $RBENV_BINARY global 2.4.0
+  $BREW_BINARY install nodenv
+  $NODENV_BINARY install 7.5.0
+  $NODENV_BINARY global 7.5.0
 
   # Install, setup and run DNSmasq
-  _brew install dnsmasq
-  _brew service start dnsmasq
+  $BREW_BINARY install dnsmasq
+  $BREW_BINARY service start dnsmasq
 
   if [ ! -f "/etc/resolver/dev" ]; then
     sudo mkdir -p /etc/resolver
@@ -401,35 +395,38 @@ install_formulae() {
   fi
 
   # Install latest version of apache
-  _brew install httpd24 --with-privileged-ports --with-http2
-  sudo /usr/local/bin/brew services start homebrew/apache/httpd24
+  $BREW_BINARY install httpd24 --with-privileged-ports --with-http2
+  sudo $BREW_BINARY services start homebrew/apache/httpd24
 
   # Install PHP in version 5.6 with additional modules
-  _brew install php56 --with-httpd24 --with-homebrew-curl
-  _brew install php56-mcrypt
-  _brew install php56-xdebug
-  _brew unlink php56
+  $BREW_BINARY install php56 --with-httpd24 --with-homebrew-curl
+  $BREW_BINARY install php56-mcrypt
+  $BREW_BINARY install php56-xdebug
+  $BREW_BINARY unlink php56
 
   # Install PHP in version 7.1
-  _brew install php71 --with-httpd24 --with-homebrew-curl
-  _brew install php71-xdebug
+  $BREW_BINARY install php71 --with-httpd24 --with-homebrew-curl
+  $BREW_BINARY install php71-xdebug
 
   # Install the latest version of mysql
-  _brew install mysql
+  $BREW_BINARY install mysql
   /usr/local/bin/mysql_secure_installation
-  _brew service restart mysql
+  $BREW_BINARY service restart mysql
 
   # Install preferred editor
-  _brew install macvim --with-override-system-vim
-  _brew install --HEAD universal-ctags
+  $BREW_BINARY install macvim --with-override-system-vim
+  $BREW_BINARY install --HEAD universal-ctags
 
   # Install php code sniffer and additional coding standards
-  if _brew install php-code-sniffer; then
+  if $BREW_BINARY install php-code-sniffer; then
     install_coding_standards
   fi
 
+  # Install psysh an interactive php shell
+  $BREW_BINARY install pshsh
+
   # Remove old downloads and finish process
-  _brew cleanup
+  $BREW_BINARY cleanup
   print_success "Done."
 }
 
@@ -525,29 +522,29 @@ install_apps() {
 
   # Ensure cask is available
   for tap in "${taps[@]}"; do
-    _brew tap "$tap"
+    $BREW_BINARY tap "$tap"
   done
 
   # Install macOS applications via CASK
   for app in "${apps[@]}"; do
-    _brew cask install --appdir="~/Applications" "$app"
+    $BREW_BINARY cask install --appdir="~/Applications" "$app"
   done
 
   # Improve quicklook
   for ql in "${quicklook[@]}"; do
-    _brew cask install "$ql"
+    $BREW_BINARY cask install "$ql"
   done
 
   # Install some additional system fonts
   for font in "${fonts[@]}"; do
-    _brew cask install "font-$font"
+    $BREW_BINARY cask install "font-$font"
   done
 
   # Launch Skyfonts to sync fonts via the service
   find /usr/local/Caskroom/skyfonts -type d -name SkyFonts.app -exec open {} \;
 
   # Cleanup downloaded packages
-  _brew cask cleanup
+  $BREW_BINARY cask cleanup
   print_success "Done."
 
   # Reminder about applications that are licensed via the AppStore
@@ -629,10 +626,11 @@ create_symlinks() {
   symlink "git/gitignore"       ".gitignore"
   symlink "todo"                ".todo"
   symlink "misc/ackrc"          ".ackrc"
-  symlink "misc/gemrc"          ".gemrc"
-  symlink "misc/ctags"          ".ctags"
   symlink "misc/agignore"       ".agignore"
   symlink "misc/backup_ignore"  ".backup_ignore"
+  symlink "misc/ctags"          ".ctags"
+  symlink "misc/editorconfig"   ".editorconfig"
+  symlink "misc/gemrc"          ".gemrc"
   symlink "misc/tern-project"   ".tern-project"
   print_success "Done."
 }
@@ -641,15 +639,15 @@ create_symlinks() {
 # Install commands and applications for macOS.
 #
 setup_mac() {
-  if ! is_executable "npm"; then
-    INSTALL_NODE_MODULES=0
-  fi
-
   if ! is_xcode_installed; then
     if ! install_xcode; then
       print_error "Could not install XCode Command Line Tools. Please install the Command Line Tools manually: https://developer.apple.com/downloads"
       return 1
     fi
+  fi
+
+  if ! is_executable "npm"; then
+    INSTALL_NODE_MODULES=0
   fi
 
   if [ "$INSTALL_FORMULAE" -eq 1 ]; then
