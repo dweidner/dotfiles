@@ -160,6 +160,7 @@ call plug#begin()
   " -----------------------------------
   " Plug '1995eaton/vim-better-javascript-completion'
   " Plug 'Shougo/echodoc.vim'
+  " Plug 'chrisbra/csv.vim'
 
   " }}}
 
