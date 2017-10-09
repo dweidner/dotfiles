@@ -25,11 +25,15 @@ source "$DOTFILES/shell/functions" # Load shell functions
 # 2. Sensible Defaults ------------------------------- {{{1
 
 stty -ixon                # Disable start/stop output control
+
 shopt -s cdspell          # Autocorrect typos in path names
 shopt -s checkwinsize     # Ensure LINES and COLUMNS match the window size
 shopt -s extglob          # Enable extended pattern matching for path expansion
-shopt -s globstar         # Allow the use of ** to match subdirectories
 shopt -s nocaseglob       # Enable case-insensitive globbing
+
+if ((BASH_VERSINFO[0] >= 4)); then
+  shopt -s globstar       # Allow the use of ** to match subdirectories
+fi
 
 
 # 3. Command History --------------------------------- {{{1
