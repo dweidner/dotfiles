@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# @file Install latest ruby version and default gems.
+# @file Install default gems.
 
 set -e
 
@@ -9,13 +9,6 @@ __install() {
     echo -e "\033[0;31m==> Cannot find rvm command\033[0;m" >&2
     exit 1
   fi
-
-  # (1) Ruby ----------------------------------------------------------- {{{1
-
-  rvm install ruby
-  rvm use ruby
-
-  # (2) Default Gems --------------------------------------------------- {{{1
 
   if [[ -n "${DOTFILES}" ]]; then
     while read -r name; do

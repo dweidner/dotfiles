@@ -5,7 +5,10 @@
 set -e
 
 __install() {
-  curl -sSL https://get.rvm.io | bash -s -- --ignore-dotfiles --ruby
+  local path="${1:-$HOME/.config/rvm}"
+
+  curl -sSL https://get.rvm.io \
+    | bash -s -- --path "$path" --ignore-dotfiles --ruby
 }
 
-__install
+__install "$@"
