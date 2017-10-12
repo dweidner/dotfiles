@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+# @file Create symlinks to dotfiles.
+
+__symlinks() {
+  local profile="${1:-full}"
+}
+
+__symlinks "$@"
+
+# vim:foldmethod=marker:foldlevel=2

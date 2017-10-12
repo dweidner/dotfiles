@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# @file Install latest node version and default packages.
+
+set -e
+
+__install() {
+  if ! command -v nvm >/dev/null 2>&1; then
+    echo -e "\033[0;31m==> Cannot find nvm command\033[0;m" >&2
+    exit 1
+  fi
+
+  # (1) Node ------------------------------------------------------------- {{{1
+
+  nvm install node
+  nvm use node
+  nvm alias default node
+
+  # (2) Package Manager -------------------------------------------------- {{{1
+
+  npm install --global --production npm@latest
+
+  # (3) Default Packages ------------------------------------------------- {{{1
+
+  npm install --global --production yo
+  npm install --global --production eslint
+
+  if [[ -n "$DOTFILES" ]]; then
+    while read -r package; do
+      if [[ "$package" != "yo" ]] && [[ "$package" != "eslint" ]]; then
+        nvm install --global --production "$package"
+      fi
+    done < "${DOTFILES}/misc/default-packages"
+  fi
+}
+
+__install
+
+# vim:foldmethod=marker:foldlevel=2

@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+#
+# @file Install macOS applications using homebrew.
+
+set -e
+
+__install() {
+  if ! command -v brew >/dev/null 2>&1; then
+    echo -e "\033[0;31m==> Cannot find homebrew command\033[0;m" >&2
+    exit 1
+  fi
+  
+  # (1) System Utilities ------------------------------------------------ {{{1
+  
+  brew cask install alfred
+  brew cask install bartender
+  brew cask install 1password
+  brew cask install the-unarchiver
+  
+  brew cask install qlcolorcode
+  brew cask install qlmarkdown
+  brew cask install qlstephen
+  
+  # (2) File Management ------------------------------------------------- {{{1
+  
+  brew cask install dropbox
+  brew cask install daisydisk
+  
+  # (3) Web Browsers ---------------------------------------------------- {{{1
+  
+  brew cask install brave
+  brew cask install firefox
+  brew cask install google-chrome
+  
+  # (4) Messaging ------------------------------------------------------- {{{1
+  
+  brew cask install slack
+  
+  # (5) Multimedia ------------------------------------------------------ {{{1
+  
+  brew cask install jadengeller-helium
+  brew cask install spotify
+  brew cask install vlc
+  
+  # (6) Development ----------------------------------------------------- {{{1
+  
+  brew cask install fira-code
+  brew cask install imagealpha
+  brew cask install imageoptim
+  brew cask install virtualbox virtualbox-extension-pack
+}
+
+__install
+
+# vim:foldmethod=marker:foldlevel=2

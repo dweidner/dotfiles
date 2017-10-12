@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+#
+# @file Install brew formulae.
+
+set -e
+
+__install() {
+
+  if ! command -v brew >/dev/null 2>&1; then
+    echo -e "\033[0;31m==> Cannot find homwbrew command\033[0;m" >&2
+    exit 1
+  fi
+  
+  # (1) Third Party Repositories (Taps) --------------------------------- {{{1
+  
+  brew tap homebrew/services
+  brew tap homebrew/php
+  
+  # (2) Homebrew Extensions --------------------------------------------- {{{1
+  
+  brew install brew-cask-completion
+  
+  # (3) macOS ----------------------------------------------------------- {{{1
+  
+  brew install mas
+  brew install encfs
+  
+  # (4) Shells ---------------------------------------------------------- {{{1
+  
+  brew install bash bash-completion@2
+  brew install tmux
+  
+  # (5) Command Line Utilities ------------------------------------------ {{{1
+  
+  brew install coreutils
+  brew install curl
+  brew install grep
+  brew install rsync
+  brew install wget
+  brew install htop --with-ncurses
+  
+  # (6) Filesystem Utilities -------------------------------------------- {{{1
+  
+  brew install ack
+  brew install ripgrep
+  brew install tree
+  
+  # (7) Development ----------------------------------------------------- {{{1
+  
+  # a) Text Editor ------------------------------------------------------ {{{2
+  
+  brew install neovim
+  
+  # b) Git Version Control ---------------------------------------------- {{{2
+  
+  brew install git
+  brew install git-extras
+  
+  # c) Code Analysis ---------------------------------------------------- {{{2
+  
+  brew install --HEAD universal-ctags/universal-ctags/universal-ctags
+  
+  # d) Web Development -------------------------------------------------- {{{2
+  
+  brew install httpd
+  brew install yarn --without-node
+  brew install tidy-html5
+  
+  # e) PHP Development -------------------------------------------------- {{{2
+  
+  brew install php56 --with-httpd --with-homebrew-curl
+  brew install php56-xdebug
+  brew unlink php56 --with-httpd --with-homebrew-curl
+  brew install php71
+  brew install php71-xdebug
+  brew install composer
+  brew install adminer
+  
+  # f) Scripting -------------------------------------------------------- {{{2
+  
+  brew install shellcheck
+}
+
+__install
+
+# vim:foldmethod=marker:foldlevel=2

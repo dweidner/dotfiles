@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#
+# @file Install Node Version Manager.
+
+set -e
+
+__install() {
+  local version="${1:-v0.33.5}"
+  curl -o- "https://raw.githubusercontent.com/creationix/nvm/${version}/install.sh" | bash
+}
+
+__install "$@"

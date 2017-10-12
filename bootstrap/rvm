@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+# @file Install Ruby Version Manager.
+
+set -e
+
+__install() {
+  curl -sSL https://get.rvm.io | bash -s -- --ignore-dotfiles --ruby
+}
+
+__install
