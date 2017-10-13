@@ -4,10 +4,12 @@
 
 set -e
 
+readonly BASEDIR="$(dirname "$0")"
+source "${BASEDIR}/../shell/utilities.sh"
+
 __install() {
   if ! command -v rvm >/dev/null 2>&1; then
-    echo -e "\033[0;31m==> Cannot find rvm command\033[0;m" >&2
-    exit 1
+    dot::exit "Cannot find rvm command"
   fi
 
   if [[ -n "${DOTFILES}" ]]; then

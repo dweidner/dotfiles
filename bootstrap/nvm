@@ -4,13 +4,15 @@
 
 set -e
 
+readonly BASEDIR="$(dirname "$0")"
+source "${BASEDIR}/../shell/utilities.sh"
+
 __install() {
-  local path="${1:-$HOME/.config/nvm}"
+  local path="${1:-$HOME/.local/share/nvm}"
   local version="${2:-latest}"
 
   git clone "https://github.com/creationix/nvm.git" "$path" || {
-    echo -e "\033[0;31m==> Cannot checkout nvm repository\033[0;m" >&2
-    exit 1
+    dot::exit "Cannot checkout nvm repository"
   }
 
   cd "$path"

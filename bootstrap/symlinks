@@ -2,6 +2,11 @@
 #
 # @file Create symlinks to dotfiles.
 
+set -e
+
+readonly BASEDIR="$(dirname "$0")"
+source "${BASEDIR}/../shell/utilities.sh"
+
 __symlinks() {
   local profile="${1:-full}"
 }

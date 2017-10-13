@@ -1,14 +1,28 @@
 #!/usr/bin/env bash
 #
 # @file Install brew formulae.
+#
+# -----------------------------------------------------------------------
+# Table of Contents
+# -----------------------------------------------------------------------
+# 1. Third Party Repositories (Taps)
+# 2. Homebrew Extensions
+# 3. macOS
+# 4. Shells
+# 5. Command Line Utilities
+# 6. Filesystem Utilities
+# 7. Development
+# -----------------------------------------------------------------------
+
 
 set -e
 
-__install() {
+readonly BASEDIR="$(dirname "$0")"
+source "${BASEDIR}/../shell/utilities.sh"
 
+__install() {
   if ! command -v brew >/dev/null 2>&1; then
-    echo -e "\033[0;31m==> Cannot find homwbrew command\033[0;m" >&2
-    exit 1
+    dot::exit "Cannot find homwbrew command"
   fi
   
   # (1) Third Party Repositories (Taps) --------------------------------- {{{1

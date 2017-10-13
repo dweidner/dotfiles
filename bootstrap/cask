@@ -1,13 +1,27 @@
 #!/usr/bin/env bash
 #
 # @file Install macOS applications using homebrew.
+#
+# -----------------------------------------------------------------------
+# Table of Contents
+# -----------------------------------------------------------------------
+# 1. System Utilities
+# 2. File Management
+# 3. Web Browsers
+# 4. Messaging
+# 5. Multimedia
+# 6. Development
+# -----------------------------------------------------------------------
 
+  
 set -e
+    
+readonly BASEDIR="$(dirname "$0")"
+source "${BASEDIR}/../shell/utilities.sh"
 
 __install() {
   if ! command -v brew >/dev/null 2>&1; then
-    echo -e "\033[0;31m==> Cannot find homebrew command\033[0;m" >&2
-    exit 1
+    dot::exit "Cannot find homebrew command"
   fi
   
   # (1) System Utilities ------------------------------------------------ {{{1
@@ -40,7 +54,6 @@ __install() {
   
   brew cask install jadengeller-helium
   brew cask install spotify
-  brew cask install vlc
   
   # (6) Development ----------------------------------------------------- {{{1
   

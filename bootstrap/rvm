@@ -5,7 +5,7 @@
 set -e
 
 __install() {
-  local path="${1:-$HOME/.config/rvm}"
+  local path="${1:-$HOME/.local/share/rvm}"
 
   curl -sSL https://get.rvm.io \
     | bash -s -- --path "$path" --ignore-dotfiles --ruby

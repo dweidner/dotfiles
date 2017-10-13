@@ -4,7 +4,14 @@
 
 set -e
 
+readonly BASEDIR="$(dirname "$0")"
+source "${BASEDIR}/../shell/utilities.sh"
+
 __install() {
+  if ! command -v npm >/dev/null 2>&1; then
+    dot::exit "Cannot find npm command"
+  fi
+
   npm install --global --production npm@latest
 
   npm install --global --production yo
@@ -13,7 +20,7 @@ __install() {
   if [[ -n "$DOTFILES" ]]; then
     while read -r package; do
       if [[ "$package" != "yo" ]] && [[ "$package" != "eslint" ]]; then
-        nvm install --global --production "$package"
+        npm install --global --production "$package"
       fi
     done < "${DOTFILES}/misc/default-packages"
   fi
