@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+#
+# Print the absolute path of the active directory in the frontmost window of
+# the Finder.app.
+#
+# usage: pfd
+#
+main() {
+  osascript 2>/dev/null <<EOF
+    tell application "Finder"
+      return POSIX path of (insertion location as alias)
+    end tell
+EOF
+}
+
+main "$@"

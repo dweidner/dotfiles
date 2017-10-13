@@ -3,28 +3,48 @@
 #
 # How to use the script.
 #
-# Usage usage
+# usage: usage
 #
 usage() {
-  echo "usage: mount_encfs source target"
+  echo "usage: mount_encfs <source> <target>" >&2
+  exit 1
 }
 
 #
 # Test if rsync is available in the users $PATH.
 #
-# Usage: is_encfs_available
+# usage: is_encfs_available
 #
 is_encfs_available() {
-  type "encfs" >/dev/null 2>&1
+  command -v encfs >/dev/null 2>&1
 }
 
 #
 # Test if a drive is already mounted.
 #
-# Usage: is_encfs_mounted
+# usage: is_encfs_mounted
 #
 is_encfs_mounted() {
   mount | grep encfs >/dev/null 2>&1
+}
+
+#
+# Write an error message.
+#
+# usage: error <message>
+#
+error() {
+  echo "\033[0;31m==> $*\033[0;m" >&2
+}
+
+#
+# Write an error message and stop script execution.
+#
+# usage: die <message>
+#
+die() {
+  error "$*"
+  exit 1
 }
 
 #
@@ -39,22 +59,18 @@ main() {
 
   if [[ -z "$source" || -z "$target" ]]; then
     usage
-    return 1
   fi
 
   if ! is_encfs_available; then
-    echo "mount_encfs: encfs not found"
-    return 1
+    die "mount_encfs: encfs not found"
   fi
 
   if is_encfs_mounted; then
-    echo "mount_encfs: Another drive is already mounted"
-    return 1
+    die "mount_encfs: Another drive is already mounted"
   fi
 
   if [ ! -d "$source" ]; then
-    echo "mount_encfs: Source directory not found: $source"
-    return 1
+    die "mount_encfs: Source directory not found: $source"
   fi
 
   if [ ! -d "$target" ]; then
@@ -75,7 +91,7 @@ main() {
   /usr/local/bin/encfs -S "$source" "$target" --extpass="/usr/bin/security find-generic-password -gl encfs 2>&1 >/dev/null|grep password|/usr/bin/cut -d'\"' -f 2" -o volname="$volume_name"
 
   if [ $? -ne 0 ]; then
-    echo "mount_encfs: An error occured while mounting the volume: $volume_name."
+    die "mount_encfs: An error occured while mounting the volume: $volume_name."
   fi
 
   return 0
