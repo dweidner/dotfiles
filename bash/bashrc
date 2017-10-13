@@ -1,0 +1,45 @@
+# bash/bashrc
+#
+# @file Configuration file sourced on interactive shells
+#
+# -----------------------------------------------------------------------
+# Table of Contents
+# -----------------------------------------------------------------------
+# 1. Global functions and aliases
+# 2. Environment specific variables
+# 3. Bash settings
+# 4. Local configuration
+# -----------------------------------------------------------------------
+
+
+[[ $- = *i* ]] || return
+
+# (1) Global functions and aliases -------------------------------------- {{{1
+
+source "${DOTFILES}/shell/utilities.sh"
+source "${DOTFILES}/shell/functions.sh"
+source "${DOTFILES}/shell/aliases.sh"
+
+
+# (2) Environment specific variables ------------------------------------ {{{1
+
+source "${DOTFILES}/shell/node.sh"
+source "${DOTFILES}/shell/php.sh"
+source "${DOTFILES}/shell/ruby.sh"
+
+
+# (3) Bash settings ----------------------------------------------------- {{{1
+
+source "${DOTFILES}/bash/options.sh"
+source "${DOTFILES}/bash/completion.sh"
+source "${DOTFILES}/bash/prompt.sh"
+
+
+# (4) Local configuration ----------------------------------------------- {{{1
+
+if [[ -r "${HOME}/.local/bashrc" ]]; then
+  source "${HOME}/.local/bashrc"
+fi
+
+
+# vim:filetype=sh:foldmethod=marker:foldlevel=2
