@@ -51,7 +51,8 @@ install_web_formulae() {
   brew install yarn --without-node
   brew install tidy-html5
 
-  brew install php71 php71-xdebug
+  brew install php71 --with-httpd --with-homebrew-curl
+  brew install php71-xdebug
   brew install composer
   brew install adminer
 
