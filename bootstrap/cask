@@ -1,17 +1,6 @@
 #!/usr/bin/env bash
 #
 # @file Install macOS applications using homebrew.
-#
-# -----------------------------------------------------------------------
-# Table of Contents
-# -----------------------------------------------------------------------
-# 1. System Utilities
-# 2. File Management
-# 3. Web Browsers
-# 4. Messaging
-# 5. Multimedia
-# 6. Development
-# -----------------------------------------------------------------------
 
   
 set -e
@@ -19,50 +8,78 @@ set -e
 readonly BASEDIR="$(dirname "$0")"
 source "${BASEDIR}/../shell/utilities.sh"
 
-__install() {
-  if ! command -v brew >/dev/null 2>&1; then
-    dot::exit "Cannot find homebrew command"
-  fi
-  
-  # (1) System Utilities ------------------------------------------------ {{{1
-  
+#
+# Install frequently used system tools.
+#
+# usage: install_system_tools
+#
+install_system_tools() {
   brew cask install alfred
   brew cask install bartender
   brew cask install 1password
+  brew cask install daisydisk
   brew cask install the-unarchiver
   
   brew cask install qlcolorcode
   brew cask install qlmarkdown
   brew cask install qlstephen
-  
-  # (2) File Management ------------------------------------------------- {{{1
-  
-  brew cask install dropbox
-  brew cask install daisydisk
-  
-  # (3) Web Browsers ---------------------------------------------------- {{{1
-  
+}
+
+#
+# Install frequently used development tools.
+#
+# usage: install_development_tools
+#
+install_development_tools() {
+  brew cask install imagealpha
+  brew cask install imageoptim
+
+  brew cask install virtualbox virtualbox-extension-pack
+
+  brew cask install slack
+
+  brew cask install fira-code
+  brew cask install source-code-pro
+}
+
+#
+# Install frequently used web applications.
+#
+# usage: install_web_tools
+#
+install_web_tools() {
   brew cask install brave
   brew cask install firefox
   brew cask install google-chrome
-  
-  # (4) Messaging ------------------------------------------------------- {{{1
-  
-  brew cask install slack
-  
-  # (5) Multimedia ------------------------------------------------------ {{{1
-  
-  brew cask install jadengeller-helium
+
+  brew cask install dropbox
   brew cask install spotify
-  
-  # (6) Development ----------------------------------------------------- {{{1
-  
-  brew cask install fira-code
-  brew cask install imagealpha
-  brew cask install imageoptim
-  brew cask install virtualbox virtualbox-extension-pack
+
+  brew cask install jadengeller-helium
 }
 
-__install
+#
+# Install macOS applications from the command line using Homebrew Cask.
+#
+# usage: install [<profile>]
+#
+install() {
+  if ! command -v brew >/dev/null 2>&1; then
+    dot::exit "Cannot find homebrew command"
+  fi
+  
+  local profile="${1:-full}"
 
-# vim:foldmethod=marker:foldlevel=2
+  case "${profile}" in
+    full)
+      install_system_tools
+      install_development_tools
+      install_web_tools
+      ;;
+    *)
+      install_system_tools
+      ;;
+  esac
+}
+
+install "$@"

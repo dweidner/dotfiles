@@ -7,7 +7,12 @@ set -e
 readonly BASEDIR="$(dirname "$0")"
 source "${BASEDIR}/../shell/utilities.sh"
 
-__install() {
+#
+# Install global packages using the Node Package Manager
+#
+# usage: install
+#
+install() {
   if ! command -v npm >/dev/null 2>&1; then
     dot::exit "Cannot find npm command"
   fi
@@ -26,6 +31,4 @@ __install() {
   fi
 }
 
-__install
-
-# vim:foldmethod=marker:foldlevel=2
+install "$@"

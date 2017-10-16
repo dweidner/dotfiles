@@ -1,100 +1,85 @@
 #!/usr/bin/env bash
 #
 # @file Install brew formulae.
-#
-# -----------------------------------------------------------------------
-# Table of Contents
-# -----------------------------------------------------------------------
-# 1. Third Party Repositories (Taps)
-# 2. Homebrew Extensions
-# 3. macOS
-# 4. Shells
-# 5. Command Line Utilities
-# 6. Filesystem Utilities
-# 7. Development
-# -----------------------------------------------------------------------
-
 
 set -e
 
 readonly BASEDIR="$(dirname "$0")"
 source "${BASEDIR}/../shell/utilities.sh"
 
-__install() {
-  if ! command -v brew >/dev/null 2>&1; then
-    dot::exit "Cannot find homwbrew command"
-  fi
-  
-  # (1) Third Party Repositories (Taps) --------------------------------- {{{1
-  
-  brew tap homebrew/services
-  brew tap homebrew/php
-  
-  # (2) Homebrew Extensions --------------------------------------------- {{{1
-  
-  brew install brew-cask-completion
-  
-  # (3) macOS ----------------------------------------------------------- {{{1
-  
+#
+# Install forumulae used for system administration on a Mac system.
+#
+# usage: install_core_formulae
+#
+install_core_formulae() {
+  brew tap homebrew/services 
+
   brew install mas
   brew install encfs
-  
-  # (4) Shells ---------------------------------------------------------- {{{1
-  
+
   brew install bash bash-completion@2
   brew install tmux
-  
-  # (5) Command Line Utilities ------------------------------------------ {{{1
-  
+
   brew install coreutils
   brew install curl
   brew install grep
   brew install rsync
   brew install wget
   brew install htop --with-ncurses
-  
-  # (6) Filesystem Utilities -------------------------------------------- {{{1
-  
+
   brew install ack
   brew install ripgrep
   brew install tree
-  
-  # (7) Development ----------------------------------------------------- {{{1
-  
-  # a) Text Editor ------------------------------------------------------ {{{2
-  
+}
+
+#
+# Install formulae of choise used during Web Development.
+#
+# usage: install_web_formulae
+#
+install_web_formulae() {
+  brew tap homebrew/php
+
   brew install neovim
-  
-  # b) Git Version Control ---------------------------------------------- {{{2
-  
+
   brew install git
   brew install git-extras
-  
-  # c) Code Analysis ---------------------------------------------------- {{{2
-  
+
   brew install --HEAD universal-ctags/universal-ctags/universal-ctags
-  
-  # d) Web Development -------------------------------------------------- {{{2
-  
+
   brew install httpd
   brew install yarn --without-node
   brew install tidy-html5
-  
-  # e) PHP Development -------------------------------------------------- {{{2
-  
-  brew install php56 --with-httpd --with-homebrew-curl
-  brew install php56-xdebug
-  brew unlink php56 --with-httpd --with-homebrew-curl
-  brew install php71
-  brew install php71-xdebug
+
+  brew install php71 php71-xdebug
   brew install composer
   brew install adminer
-  
-  # f) Scripting -------------------------------------------------------- {{{2
-  
+
   brew install shellcheck
 }
 
-__install
+#
+# Install shell utilities using Homebrew the missing package manager for macOS.
+#
+# usage: install [<profile>]
+#
+install() {
+  if ! command -v brew >/dev/null 2>&1; then
+    dot::exit "Cannot find homwbrew command"
+  fi
 
-# vim:foldmethod=marker:foldlevel=2
+  local profile="${1:-full}"
+  
+  case "${profile}" in
+    full)
+      install_core_formulae
+      install_web_formulae
+      ;;
+    *)
+      install_core_formulae
+      ;;
+  esac 
+}
+
+install "$@"

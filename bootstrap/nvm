@@ -7,7 +7,13 @@ set -e
 readonly BASEDIR="$(dirname "$0")"
 source "${BASEDIR}/../shell/utilities.sh"
 
-__install() {
+#
+# Download and install the Node Version Manager and load the latest
+# or the given version of node.js
+#
+# usage: install [<path>] [<version>]
+#
+install() {
   local path="${1:-$HOME/.local/share/nvm}"
   local version="${2:-latest}"
 
@@ -29,4 +35,4 @@ __install() {
   nvm alias default node
 }
 
-__install "$@"
+install "$@"

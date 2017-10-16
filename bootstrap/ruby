@@ -7,7 +7,12 @@ set -e
 readonly BASEDIR="$(dirname "$0")"
 source "${BASEDIR}/../shell/utilities.sh"
 
-__install() {
+#
+# Downlaod and install global ruby gems.
+#
+# usage: install
+# 
+install() {
   if ! command -v rvm >/dev/null 2>&1; then
     dot::exit "Cannot find rvm command"
   fi
@@ -19,6 +24,4 @@ __install() {
   fi
 }
 
-__install
-
-# vim:foldmethod=marker:foldlevel=2
+install "$@"
