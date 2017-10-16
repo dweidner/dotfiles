@@ -44,7 +44,6 @@ install_web_formulae() {
   brew install neovim
 
   brew install git
-  brew install git-extras
 
   brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
