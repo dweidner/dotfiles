@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+#
+# @file Create symlinks to dotfiles.
+
+readonly BASEDIR="$(dirname "$0")"
+source "${BASEDIR}/../shell/utilities.sh"
+
+#
+# Create the directory structure for the given path.
+#
+# usage: create_dir <path>
+#
+create_path() {
+  local path="$1"
+  local dir
+  dir="$(dirname "$path")"
+
+  if [[ ! -d "$dir" ]]; then
+    mkdir -p "$dir"
+    return $?
+  fi
+
+  return 0
+}
+
+#
+# Copy a file from the dotfiles repository to the home directory of the
+# current user.
+#
+# usage: copy <source> <target>
+#
+copy() {
+  local source="$1"
+  local target="$2"
+
+  if [[ -e "${HOME}/${target}" ]]; then
+    if ! dot::confirm "overwrite ${target}?"; then
+      dot::warning "skipping ${target} …"
+      return 1
+    fi
+  fi
+
+  if ! create_path "${HOME}/$target"; then
+    dot::error "could not create parent directory"
+    return 1
+  fi
+
+  cp -f "${DOTFILES}/$source" "${HOME}/$target"
+}
+
+#
+# Create a symlink from a file in the dotfiles repository to a file in the
+# home directory.
+#
+# usage: symlink <source> <target>
+#
+symlink() {
+  local source="$1"
+  local target="$2"
+
+  if [[ -e "${HOME}/${target}" ]]; then
+    if ! dot::confirm "overwrite ${target}?"; then
+      dot::warning "skipping ${target} …"
+      return 1
+    fi
+  fi
+
+  if ! create_path "${HOME}/$target"; then
+    dot::error "could not create parent directory"
+    return 1
+  fi
+
+  ln -fns "${DOTFILES}/${source}" "${HOME}/${target}"
+}
+
+#
+# Create symlinks to the configuration files shiping with the
+# dotfiles-repository.
+#
+# usage: symlink [<profile>]
+#
+main() {
+  local profile="${1:-full}"
+
+  dot::info "Creating folders …"
+
+  mkdir -p "${HOME}/.cache"
+  mkdir -p "${HOME}/.config"
+  mkdir -p "${HOME}/.local/bin"
+  mkdir -p "${HOME}/.local/share"
+
+  dot::info "Creating symlinks …"
+
+  symlink "shell/inputrc"     ".inputrc"
+  symlink "bash/bash_profile" ".bash_profile"
+  symlink "bash/bashrc"       ".bashrc" 
+
+  symlink "git/ignore"    ".config/git/ignore"
+  symlink "git/commitmsg" ".config/git/commitmsg"
+  copy    "git/config"    ".config/git/config"
+
+  case "$profile" in
+    full)
+      ;;
+    *)
+      ;;
+  esac
+}
+
+main "$@"
