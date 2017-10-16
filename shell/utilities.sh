@@ -48,3 +48,22 @@ dot::exit() {
   dot::error "$@"
   exit 1
 }
+
+#
+# Confirm a question with the user.
+#
+# usage: dot::confirm <question>
+#
+dot::confirm() {
+  read -r -p $'\e[0;32m'"==> $* (y/n [n]) "$'\e[0;m'
+  dot::is_confirmed || return 1
+}
+
+#
+# Determine whether the user has confirmed a previously asked question.
+#
+# usage: dot::is_confirmed
+#
+dot::is_confirmed() {
+  [[ "$REPLY" =~ ^[YyJj]$ ]]
+}
