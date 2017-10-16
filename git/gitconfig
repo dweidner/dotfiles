@@ -2,10 +2,6 @@
 	ui = auto
 	interactive = auto
 
-[core]
-	excludesfile = ~/.gitignore
-	attributesfile = ~/.gitattributes
-
 [pretty]
 	nice = "format:%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn]%Creset %Cblue%G?%Creset"
 
@@ -41,8 +37,6 @@
 
 	# git checkout
 	co = checkout
-	ours = !"f() { git checkout --ours $@ && git add $@; }; f"
-	theirs = !"f() { git checkout --theirs $@ && git add $@; }; f"
 
 	# git config
 	aliases = "!git config --get-regexp '^alias\\.' | colrm 1 6 | sed 's/ / = /'"
@@ -68,8 +62,6 @@
 	lo = log --oneline
 	lp = log --patch
 	search = !"f() { query=\"$1\"; shift; git log -S\"$query\" \"$@\"; }; f \"$@\""
-	incoming = !git remote update --prune; git log ..@{upstream}
-	outgoing = log @{upstream}..
 	contributors = shortlog --summary --numbered --no-merges
 
 	# git push
@@ -99,14 +91,10 @@
 	# misc
 	gitignore = "!f() { curl -L -s https://www.gitignore.io/api/$@; }; f"
 
-[grep]
-	extendregexp = true
+[credetial]
+	helper = osxkeychain
 
-[diff]
-	tool = opendiff
+[github]
+	token = !security find-generic-password -gs \"Github API Token\" >/dev/null 2>&1 | awk '/password/ {print $2}' | tr -d \\\"
 
-[difftool]
-	prompt = false
-
-[merge]
-	tool = opendiff
+# vim:filetype=gitconfig
