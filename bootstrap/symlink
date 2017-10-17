@@ -98,6 +98,7 @@ main() {
 
   symlink "bash/bash_profile" "${HOME}/.bash_profile"
   symlink "bash/bashrc"       "${HOME}/.bashrc" 
+  symlink "misc/editorconfig" "${HOME}/.editorconfig"
 
   symlink "shell/inputrc" "${config_home}/readline/inputrc"
   symlink "misc/gemrc"    "${config_home}/gem/config"
