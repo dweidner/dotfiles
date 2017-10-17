@@ -44,6 +44,15 @@ fs() {
 }
 
 #
+# Find files whose name matches a given pattern.
+#
+# usage: ff <pattern>
+#
+ff() {
+  find . -type f -iname '*'"$*"'*' -exec ls "${ls_options[@]}" -- {} \;
+}
+
+#
 # Start an http server at the given port and serve the current directory.
 #
 # usage: serve [<port>]
