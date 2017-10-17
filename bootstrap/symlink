@@ -30,22 +30,23 @@ create_path() {
 # usage: copy <source> <target>
 #
 copy() {
-  local source="$1"
+  local source="${DOTFILES}/$1"
   local target="$2"
 
-  if [[ -e "${HOME}/${target}" ]]; then
+  if [[ -e "${target}" ]]; then
     if ! dot::confirm "overwrite ${target}?"; then
       dot::warning "skipping ${target} …"
       return 1
     fi
   fi
 
-  if ! create_path "${HOME}/$target"; then
+  if ! create_path "${target}"; then
     dot::error "could not create parent directory"
     return 1
   fi
 
-  cp -f "${DOTFILES}/$source" "${HOME}/$target"
+  cp -f "${source}" "${target}" \
+    && dot::ok "copied file to ${target/#${HOME}/\~}"
 }
 
 #
@@ -55,56 +56,53 @@ copy() {
 # usage: symlink <source> <target>
 #
 symlink() {
-  local source="$1"
+  local source="${DOTFILES}/$1"
   local target="$2"
 
-  if [[ -e "${HOME}/${target}" ]]; then
+  if [[ -e "${target}" ]]; then
     if ! dot::confirm "overwrite ${target}?"; then
       dot::warning "skipping ${target} …"
       return 1
     fi
   fi
 
-  if ! create_path "${HOME}/$target"; then
+  if ! create_path "${target}"; then
     dot::error "could not create parent directory"
     return 1
   fi
 
-  ln -fns "${DOTFILES}/${source}" "${HOME}/${target}"
+  ln -fns "${source}" "${target}" \
+    && dot::ok "created symlink to ${target/#${HOME}/\~}"
 }
 
 #
 # Create symlinks to the configuration files shiping with the
 # dotfiles-repository.
 #
-# usage: symlink [<profile>]
+# usage: symlink
 #
 main() {
-  local profile="${1:-full}"
+  local cache_home="${XDG_CACHE_HOME:-$HOME/.cache}"
+  local config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
+  local data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
 
-  dot::info "Creating folders …"
+  mkdir -p "${cache_home}"
+  mkdir -p "${config_home}"
+  mkdir -p "${data_home}"
 
-  mkdir -p "${HOME}/.cache"
-  mkdir -p "${HOME}/.config"
-  mkdir -p "${HOME}/.local/bin"
-  mkdir -p "${HOME}/.local/share"
+  for dir in "bash" "less" "zsh"; do
+    mkdir -p "${data_home}/${dir}"
+  done
 
   dot::info "Creating symlinks …"
 
-  symlink "shell/inputrc"     ".inputrc"
-  symlink "bash/bash_profile" ".bash_profile"
-  symlink "bash/bashrc"       ".bashrc" 
+  symlink "bash/bash_profile" "${HOME}/.bash_profile"
+  symlink "bash/bashrc"       "${HOME}/.bashrc" 
 
-  symlink "git/ignore"    ".config/git/ignore"
-  symlink "git/commitmsg" ".config/git/commitmsg"
-  copy    "git/config"    ".config/git/config"
-
-  case "$profile" in
-    full)
-      ;;
-    *)
-      ;;
-  esac
+  symlink "shell/inputrc" "${config_home}/readline/inputrc"
+  symlink "git/ignore"    "${config_home}/git/ignore"
+  symlink "git/commitmsg" "${config_home}/git/commitmsg"
+  copy    "git/config"    "${config_home}/git/config"
 }
 
 main "$@"

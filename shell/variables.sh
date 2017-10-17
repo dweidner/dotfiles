@@ -71,7 +71,7 @@ export VISUAL="$EDITOR"
 # -R = raw control chars
 # -X = don’t clear screen on exit
 export LESS="-imwFRX"
-export LESSHISTFILE=/dev/null
+export LESSHISTFILE="${XDG_DATA_HOME}/less/history"
 
 export PAGER="less -X"
 export MANPAGER="$PAGER"
@@ -79,8 +79,19 @@ export MANPAGER="$PAGER"
 
 # (5) Misc ------------------------------------------------------------- {{{1
 
+export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
+
 export COMPOSER_HOME="${XDG_CONFIG_HOME}/composer"
 export COMPOSER_CACHE_DIR="${XDG_CACHE_HOME}/composer"
+
+case "$SHELL" in
+  */bash)
+    export HISTFILE="${XDG_DATA_HOME}/bash/history"
+    ;;
+  */zsh)
+    export HISTFILE="${XDG_DATA_HOME}/zsh/history"
+    ;;
+esac
 
 
 # vim:foldmethod=marker:foldlevel=2
