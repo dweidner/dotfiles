@@ -90,6 +90,10 @@ main() {
   mkdir -p "${config_home}"
   mkdir -p "${data_home}"
 
+  for dir in "composer" "npm"; do
+    mkdir -p "${cache_home}/${dir}"
+  done
+
   for dir in "bash" "less" "zsh"; do
     mkdir -p "${data_home}/${dir}"
   done
