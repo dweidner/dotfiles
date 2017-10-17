@@ -16,7 +16,7 @@ shopt -s cmdhist 	  # Join multi-line commands into one
 shopt -s dotglob          # Expand filenames starting with a dot
 shopt -s extglob          # Enable extended pattern matching for path expansion
 shopt -s histappend 	  # Append to history when the shell exits
-shopt -s hostcomplete   # Perform host completion for words containing @
+shopt -s hostcomplete     # Perform host completion for words containing @
 shopt -s nocaseglob       # Enable case-insensitive globbing
 
 
