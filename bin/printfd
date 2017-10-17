@@ -4,7 +4,7 @@
 # Print the absolute path of the active directory in the frontmost window of
 # the Finder.app.
 #
-# usage: pfd
+# usage: printfd
 #
 main() {
   osascript 2>/dev/null <<EOF

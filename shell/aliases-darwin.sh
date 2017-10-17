@@ -2,8 +2,8 @@
 #
 # @file Mac specific shell aliases.
 
-alias cdf='cd "$(pfd)"'        # Switch to directory selected in finder
-alias puf='pushd "$(pfd)"'     # Push finder directory to the stack
+alias cdf='cd "$(printfd)"'    # Switch to directory selected in finder
+alias puf='pushd "$(printfd)"' # Push finder directory to the stack
 
 alias hide="chflags hidden"    # Hide a file in Finder
 alias show="chflags nohidden"  # Show a file in Finder
