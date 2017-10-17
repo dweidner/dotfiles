@@ -55,7 +55,7 @@ alias tl="tmux list-sessions"
 
 # Test whether the ls command supports a given option
 ls_supports() {
-  command "${LS_BINARY:-ls}" "$@" >/dev/null 2>&1
+  command ls "$@" >/dev/null 2>&1
 }
 
 declare -a ls_options
@@ -66,7 +66,7 @@ elif ls_supports -G; then
   ls_options+=( -G )
 fi
 
-alias ls="command ${LS_BINARY:-ls} ${ls_options[*]}"
+alias ls="command ls ${ls_options[*]}"
 
 alias ll="ls -lhF"  # Long list, human readable sizes
 alias la="ll -A"    # Long list including hidden files

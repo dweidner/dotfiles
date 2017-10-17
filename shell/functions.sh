@@ -9,7 +9,7 @@
 # Usage: cdl [<path>]
 #
 cdl() {
-  builtin cd -- "$1" && command "${LS_BINARY:-ls}" -lhF "${ls_options[@]}"
+  builtin cd -- "$1" && command ls -lhF "${ls_options[@]}"
 }
 
 #
