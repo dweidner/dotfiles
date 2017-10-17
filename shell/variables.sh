@@ -84,6 +84,8 @@ export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
 export COMPOSER_HOME="${XDG_CONFIG_HOME}/composer"
 export COMPOSER_CACHE_DIR="${XDG_CACHE_HOME}/composer"
 
+export GEMRC="${XDG_CONFIG_HOME}/gem/gemrc"
+
 case "$SHELL" in
   */bash)
     export HISTFILE="${XDG_DATA_HOME}/bash/history"

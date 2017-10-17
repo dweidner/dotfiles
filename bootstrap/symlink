@@ -100,6 +100,7 @@ main() {
   symlink "bash/bashrc"       "${HOME}/.bashrc" 
 
   symlink "shell/inputrc" "${config_home}/readline/inputrc"
+  symlink "misc/gemrc"    "${config_home}/gem/config"
   symlink "git/ignore"    "${config_home}/git/ignore"
   symlink "git/commitmsg" "${config_home}/git/commitmsg"
   copy    "git/config"    "${config_home}/git/config"
