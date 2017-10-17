@@ -34,7 +34,7 @@ copy() {
   local target="$2"
 
   if [[ -e "${target}" ]]; then
-    if ! dot::confirm "overwrite ${target}?"; then
+    if ! dot::confirm "overwrite ${target/#${HOME}/\~}?"; then
       dot::warning "skipping ${target} …"
       return 1
     fi
@@ -60,7 +60,7 @@ symlink() {
   local target="$2"
 
   if [[ -e "${target}" ]]; then
-    if ! dot::confirm "overwrite ${target}?"; then
+    if ! dot::confirm "overwrite ${target/#${HOME}/\~}?"; then
       dot::warning "skipping ${target} …"
       return 1
     fi
