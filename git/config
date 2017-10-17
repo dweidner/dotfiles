@@ -1,3 +1,5 @@
+# git/config
+
 [color]
 	ui = auto
 	interactive = auto
