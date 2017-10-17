@@ -7,9 +7,11 @@
 # -----------------------------------------------------------------------
 # 1. Command abbreviations
 # 2. Switch directories
-# 3. List directory contents
-# 4. File pattern searching
-# 5. System specific aliases
+# 3. Error prevention
+# 4. Session management
+# 5. List directory contents
+# 6. File pattern searching
+# 7. System specific aliases
 # -----------------------------------------------------------------------
 
 
@@ -31,7 +33,25 @@ alias pu="pushd"               # Push a directory to the stack
 alias po="popd"                # Remove the last directory from the stack
 
 
-# (3) List directory contents ------------------------------------------- {{{1
+# (3) Error prevention -------------------------------------------------- {{{1
+
+alias cp="cp -i"
+alias mv="mv -i"
+alias rm="rm -i"
+
+
+# (4) Session managment ------------------------------------------------- {{{1
+
+if [[ -r "${XDG_CONFIG_HOME}/tmux/tmux.conf" ]]; then
+  alias tmux='tmux -f "${XDG_CONFIG_HOME}/tmux/tmux.conf"'
+fi
+
+alias ta="tmux attach -t"
+alias ts="tmux new-session -s"
+alias tl="tmux list-sessions"
+
+
+# (5) List directory contents ------------------------------------------- {{{1
 
 # Test whether the ls command supports a given option
 ls_supports() {
@@ -54,7 +74,7 @@ alias lt="ll -t"    # By date, most recent first
 alias lz="ll -S"    # By size, largest first
 
 
-# (4) File pattern searching -------------------------------------------- {{{1
+# (6) File pattern searching -------------------------------------------- {{{1
 
 # Test whether grep supports a given option
 grep_supports() {
@@ -80,7 +100,7 @@ elif command -v ag >/dev/null 2>&1; then
 fi
 
 
-# (5) System specific aliases ------------------------------------------- {{{1
+# (7) System specific aliases ------------------------------------------- {{{1
 
 case "$OSTYPE" in
   darwin*) source "${DOTFILES}/shell/aliases-darwin.sh" ;;
