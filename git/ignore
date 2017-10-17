@@ -1,41 +1,66 @@
-# Compiled Python files
-*.pyc
+# git/ignore
+#
+# @see <https://gitignore.io>
+#
+# -----------------------------------------------------------------------
+# Table of Contents
+# -----------------------------------------------------------------------
+# 1. macOS
+# 2. Cache & log files
+# 3. Tags
+# 4. Version control
+# -----------------------------------------------------------------------
 
-# Folder configuration files
-.DS_Store
-Desktop.ini
 
-# Thumbnail cache files
+# (1) macOS ------------------------------------------------------------- {{{1
+
 ._*
-Thumbs.db
-
-# Files on external disks
+.AppleDB
+.AppleDesktop
+.AppleDouble
+.DocumentRevisions-V100
+.DS_Store
+.fseventsd
+.LSOverride
 .Spotlight-V100
+.TemporaryItems
 .Trashes
+.VolumeIcon.icns
 
-# Temporary files
-*.diff
+
+# (2) Cache & log files ------------------------------------------------- {{{1
+
+*~
 *.err
 *.log
 *.orig
-*.sass-cache
+*.swp
+.sass-cache/
 
-# Sublime Text
-*.sublime-workspace
 
-# The Silver Searcher
-.agignore
+# (3) Tags -------------------------------------------------------------- {{{1
 
-# Ignore tags created by ctags and cscope
 TAGS
 .TAGS
 !TAGS/
 tags
 .tags
-.tags.lock
-.tags.temp
 !tags/
+gtags.files
+GTAGS
+GRTAGS
+GPATH
+GSYMS
 cscope.files
 cscope.out
 cscope.in.out
 cscope.po.out
+
+
+# (4) Version control --------------------------------------------------- {{{1
+
+.git/
+.hg/
+.svn/
+*.diff
+*.patch
