@@ -1,5 +1,0 @@
---smart-case
---sort-files
---ignore-directory=is:node_modules
---ignore-directory=is:bower_components
---type-set=markdown:ext:md,markdown
