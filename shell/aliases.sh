@@ -19,8 +19,8 @@
 
 alias e="${EDITOR:-vi}"        # Open file in default editor
 alias o="${BROWSER:-open}"     # Open file in default file browser
-alias f="find" 		       # Easily access the find command
-alias g="git" 		       # Easily access the git command
+alias f="find"                 # Easily access the find command
+alias g="git"                  # Easily access the git command
 
 
 # (2) Switch directories ------------------------------------------------ {{{1
