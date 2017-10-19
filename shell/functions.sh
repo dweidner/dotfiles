@@ -70,6 +70,16 @@ serve() {
 }
 
 #
+# Supress output if a given command and run it in the background. Does not
+# supress error messages.
+#
+# usage: silent <command>
+#
+silent() {
+  $* >/dev/null &
+}
+
+#
 # Display the weather for a given city.
 # 
 # Usage: weather [<city>]
