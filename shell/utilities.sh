@@ -4,6 +4,30 @@
 
 
 #
+# Determine whether a command with the given name exists in the current
+# environment.
+#
+# usage: dot::command_exists <name>
+#
+dot::command_exists() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+#
+# Determine whether a function with the given name exists.
+#
+# Tries to declare the function which will return with an exit code > 0 if
+# a function with the given name already exists (supposed to be faster than
+# executing type -f).
+#
+# usage: dot::function_exists <name>
+#
+dot::function_exists() {
+  declare -fF "$1"
+  return $?
+}
+
+#
 # Print a status message.
 #
 # usage: dot::info <message>
@@ -40,6 +64,20 @@ dot::error() {
 }
 
 #
+# Confirm a question with the user.
+#
+# usage: dot::confirm <question>
+#
+dot::confirm() {
+  read -r -p $'\e[0;32m'"==> $* (y/n [n]) "$'\e[0;m' answer
+
+  case "$answer" in
+    y|Y) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+#
 # Print an error message and stop script execution.
 #
 # usage: dot::exit <message>
@@ -47,23 +85,4 @@ dot::error() {
 dot::exit() {
   dot::error "$@"
   exit 1
-}
-
-#
-# Confirm a question with the user.
-#
-# usage: dot::confirm <question>
-#
-dot::confirm() {
-  read -r -p $'\e[0;32m'"==> $* (y/n [n]) "$'\e[0;m'
-  dot::is_confirmed || return 1
-}
-
-#
-# Determine whether the user has confirmed a previously asked question.
-#
-# usage: dot::is_confirmed
-#
-dot::is_confirmed() {
-  [[ "$REPLY" =~ ^[YyJj]$ ]]
 }
