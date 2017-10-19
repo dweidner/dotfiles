@@ -1,0 +1,336 @@
+" vimrc                                                                   ><>°
+"
+" -----------------------------------------------------------------------
+" Table of Contents
+" -----------------------------------------------------------------------
+"  1. Path Configuration
+"  2. Plugins
+"  3. General settings
+"  4. Look & Feel
+"  5. Indentation & Tabs
+"  6. Search & Replace
+"  7. Completion System
+"  8. Auto Formatting
+"  9. Code Folding
+" 10. Key Mappings
+" 11. Auto Commands
+" -----------------------------------------------------------------------
+
+
+" (1) Path Configuration ------------------------------------------------ {{{1
+
+if empty($XDG_CACHE_HOME)  | let $XDG_CACHE_HOME  = '~/.cache'       | endif
+if empty($XDG_CONFIG_HOME) | let $XDG_CONFIG_HOME = '~/.config'      | endif
+if empty($XDG_DATA_HOME)   | let $XDG_DATA_HOME   = '~/.local/share' | endif
+
+let s:editor      = has('nvim') ? 'nvim' : 'vim'
+let s:editor_root = resolve($XDG_DATA_HOME . '/' . s:editor)
+let g:vim_home    = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
+let g:plug_home   = s:editor_root . '/site/bundle'
+
+
+" (2) Plugins ----------------------------------------------------------- {{{1
+
+" Conditionally load a plugin (@see https://git.io/vd71n)
+function! PlugIf(condition, ...) abort
+  let l:options = a:condition ? {} : { 'on': [], 'for': [] }
+  return a:0 ? extend(l:options, a:000[0]) : l:options
+endfunction
+
+call plug#begin()
+
+  " a) Essentials ------------------------------------------------------- {{{2
+  " |- editorconfig: Load options from config file
+  " |- lastplace: Reopen file at last edit position
+  " |- signify: Show file changes in gutter
+  " |- ack: Search file contents for patterns
+  " |- easyclip: Simplify clipboard functonality
+  " |- commentary: Toggle comments
+  " |- eunuch: Execute unix shell commands from vim
+  " |- fugitive: Execute git commands from vim
+  " |- repeat: Enable repeating supported plugin maps
+  " |- surround: Wrap text objects
+  " |- unimpaired: Handy bracket key mappings
+
+  Plug 'editorconfig/editorconfig-vim'
+  Plug 'farmergreg/vim-lastplace'
+  Plug 'mhinz/vim-signify'
+  Plug 'mileszs/ack.vim'
+  Plug 'svermeulen/vim-easyclip', PlugIf(has('nvim'))
+  Plug 'tpope/vim-commentary'
+  Plug 'tpope/vim-eunuch'
+  Plug 'tpope/vim-fugitive'
+  Plug 'tpope/vim-repeat'
+  Plug 'tpope/vim-surround'
+  Plug 'tpope/vim-unimpaired'
+
+call plug#end()
+
+
+" (3) General settings -------------------------------------------------- {{{1
+
+augroup vimrc
+  autocmd!
+augroup END
+
+set lazyredraw                       " No redraw for macros and commands
+set synmaxcol=512                    " Reduce number of columns to highlight
+set history=1000                     " Increase number of commands saved
+set tabpagemax=50                    " Increase number of tabs
+set switchbuf+=useopen               " Reuse open buffers
+set fileformats=unix,dos,mac         " Enable automatic fileformat detection
+
+set autoread                         " Reload file if modified outside vim
+set undofile                         " Save undo history to file
+set undolevels=1000                  " Number of changes saved
+
+if !has('nvim')
+  set viminfo+=n$XDG_CACHE_HOME/vim/viminfo
+  set directory=$XDG_DATA_HOME/vim/swap//
+  set undodir=$XDG_DATA_HOME/vim/undo//
+  set backupdir=$XDG_DATA_HOME/vim/backup//
+endif
+
+
+" (4) Look & Feel ------------------------------------------------------- {{{1
+
+if has('gui_running')
+
+  set guifont=Fira\ Code:h16         " Select font to use
+  set linespace=2                    " Increase spacing between lines
+  set macligatures                   " Enable programming ligatures
+
+  set guioptions-=m                  " Hide menubar
+  set guioptions-=T                  " Hide toolbar
+
+  set columns=180 lines=50           " Provide enough space for two panes
+
+endif
+
+colorscheme one-half-light           " Select color theme to use
+
+set title                            " Use filename as window title
+set number                           " Show line numbers
+set cursorline                       " Highlight current line
+set ruler                            " Display cursor position
+set showcmd                          " Show currently running command
+
+set mouse=a                          " Enable mouse support. Shame on me...
+set clipboard^=unnamed               " Use system clipboard register
+set scrolloff=8                      " Min. lines to keep above/below
+set sidescrolloff=16                 " Min. cols to keep left/right
+
+set laststatus=2                     " Always display the status line
+set previewheight=16                 " Increase height of the preview window
+set pumheight=10                     " Limit visible entries in popups
+set shortmess-=f                     " Stop hiding the file label
+set shortmess+=ilmnrotwxIOW          " Abbreviate message output
+
+set nowrap                           " No line wrapping by default
+set hidden                           " Hide abandoned buffers 
+set nostartofline                    " Do not reset cursor on buffer switch
+set nojoinspaces                     " Disable extra spaces
+set splitright                       " Split to the right
+set splitbelow                       " Split to the bottom
+
+set list                             " Show invisible characters
+set listchars=tab:→\                 " Show tab stops
+set listchars+=trail:·               " Show trailing spaces
+set listchars+=nbsp:⣿                " Show non breaking spaces
+set listchars+=extends:»             " Line continues off-screen
+set listchars+=precedes:«            " Line precedes off-screen
+"set listchars+=eol:¬                " Show end of line markers 
+
+set showbreak=↪\                     " Show line breaks
+set fillchars=vert:│                 " Vertical seperator for splits
+set fillchars+=diff:⣿                " Fill character for blank lines 
+
+set diffopt+=vertical                " Start diff mode with vertical splits
+set diffopt+=filler                  " Keep sides aligned
+set diffopt+=iwhite                  " Ignore whitespace changes
+
+
+" (5) Indentation & Tabs ------------------------------------------------ {{{1
+
+set autoindent                       " Start indentation at same position
+set nosmartindent                    " Prefer syntax indentexpr
+set nopreserveindent                 " Keep block comments properly aligned
+set smarttab                         " Insert blanks according to shiftwidth
+set expandtab                        " Expand <Tab>s with spaces
+set tabstop=2                        " Properly align files with tabs
+set shiftwidth=2                     " Spaces for each tabstop of (auto)indent
+set softtabstop=2                    " Set virtual tab stop
+set noshiftround                     " Helps with block comment indentation
+
+set backspace=indent,eol,start       " Delete everything with bs
+
+
+" (6) Search & Replace -------------------------------------------------- {{{1
+
+set showmatch                         " Highlight matching parenthesis
+set incsearch                         " Highlight dynamically while typing
+set hlsearch                          " Highlight matches of previous search
+set ignorecase                        " Ignore case when searching
+set smartcase                         " Be case-sensitive when using capitals
+
+if executable('rg')
+  set grepprg=rg\ --vimgrep
+  set grepformat^=%f:%l:%c:%m
+elseif executable('ag')
+  set grepprg=ag\ --nogroup\ --nocolor\ --column
+  set grepformat^=%f:%l:%c:%m
+endif
+
+
+" (7) Completion System ------------------------------------------------- {{{1
+
+set complete-=i                      " Don't scan included files
+set complete-=t                      " Avoid tag completion
+set completeopt+=menu                " Show possible completions in a popup
+set completeopt+=menuone             " Show the popup even for single match
+
+
+" (8) Auto Formatting --------------------------------------------------- {{{1
+
+set formatoptions-=o                  " Don't insert comment leader after o/O
+set formatoptions-=l                  " Don't break long lines
+set formatoptions+=n                  " Recognize numbered lists in comments
+set formatoptions+=j                  " Remove comment leader when joining
+
+set nrformats-=octal                  " Don't use octals when incrementing
+
+
+" (9) Code folding ------------------------------------------------------ {{{1
+
+set nofoldenable                      " Open all folds by default
+set foldlevelstart=99
+
+
+" (10) File globbing ---------------------------------------------------- {{{1
+
+set wildmenu                          " Enhanced command line completion
+set wildmode=list:longest,full        " Set wildmenu to list choice 
+
+set wildignore+=*.o,*.obj,*.exe,*.dll,*.jar,*.pyc,*.rbc,*.class
+set wildignore+=*.jpg,*.jpeg,*.png,*.gif,*.tiff,*.webp,*.ai,*.psd
+set wildignore+=*.avi,*.m4a,*.mp3,*.oga,*.ogg,*.wav,*.webm
+set wildignore+=*.pdf,*.doc,*.docx,*.xls,*.xlsx,*.ppt,*.pptx
+set wildignore+=*.zip,*.tar,*.tar.gz,*.dmg
+set wildignore+=*.*~,*~,._*,*.swp,.lock,.DS_Store,tags.lock
+set wildignore+=.sass-cache
+set wildignore+=*.min.*,*-min.*
+
+
+" (11) Key Mappings ----------------------------------------------------- {{{1
+
+" a) General ------------------------------------------------------------ {{{2
+
+" Using space as leader makes sense, as it is easy to reach and does not have
+" a special meaning (in vim’s normal mode). Unfortunatly with space as leader
+" nothing is displayed, when using showmode. As a workaround we simply map
+" space to the default leader key.
+map <Space> <Leader>
+
+" Avoid the escape key
+inoremap jk <Esc>
+xnoremap jk <Esc>
+cnoremap jk <C-c>
+
+" Ensure that InsertLeave is fired, when quiting insert mode with Ctrl-c
+inoremap <C-c> <Esc>
+
+" Expand %% to the same directory of the current file
+cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
+
+" Reselect visual blocks
+xnoremap < <gv
+xnoremap > >gv
+
+" b) Localization ------------------------------------------------------- {{{2
+
+" Some key mappings are hard to reach on a german keyboard. As a workaround I
+" remap the Umlaut keys on a german keyboard to the corresponding keys in an
+" ASCII/US layout. That helps at least in vim’s normal mode.
+
+" Jump forward/backward
+map ü [
+map + ]
+noremap Ü {
+noremap * }
+map üü [[
+map ++ ]]
+map ü+ []
+map +ü ][
+
+" Search forward/backward
+noremap - /
+noremap _ ?
+
+" Search word under cursor forward/backward
+noremap ' *
+
+" Repeat latest f, t, F or T
+noremap ö ;
+noremap Ö :
+
+" Jump to mark/Execute contents of register
+noremap ä '
+noremap Ä @
+
+" Jump to the definition of the keyword
+nnoremap <Leader>+ g<C-]>
+vnoremap <Leader>+ g<C-]>
+nnoremap <Leader>* <C-w>g}
+vnoremap <Leader>* <C-w>g}
+
+" c) Window/Buffer Management ------------------------------------------- {{{2
+
+" Switch to alternate buffer
+nnoremap <Leader><Space> <C-^>
+
+" Circular window navigation
+nnoremap <Tab> <C-w>w
+nnoremap <S-Tab> <C-w>W
+
+" d) Search/Replace ----------------------------------------------------- {{{2
+
+" Hide matches from previous search
+noremap <silent> <Leader>/ :nohlsearch<CR>
+noremap <silent> <Leader>- :nohlsearch<CR>
+
+" Shortcuts for vim's :substitute (using @ allows searching for paths)
+nnoremap <Leader>s :%s@@@gc<Left><Left><Left><Left>
+nnoremap <Leader>S :%s@@@g<Left><Left><Left>
+
+" e) Misc --------------------------------------------------------------- {{{2
+
+" Swap lines using vim-unimpaired
+nmap <special> <C-k> [e
+nmap <special> <C-j> ]e
+vmap <special> <C-k> [egv
+vmap <special> <C-j> ]egv
+
+" qq to record, Q to replay a macro
+nmap Q @q
+
+
+" (12) Auto Commands ---------------------------------------------------- {{{1
+
+augroup vimrc
+
+  " Dynamically hide the cursorline
+  autocmd WinEnter    * set cursorline
+  autocmd WinLeave    * set nocursorline
+  autocmd InsertEnter * set nocursorline
+  autocmd InsertLeave * set cursorline
+
+augroup END
+
+
+" }}}1
+
+
+set secure
+
+
+" vim:foldmethod=marker:foldlevel=2

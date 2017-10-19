@@ -6,11 +6,36 @@ readonly BASEDIR="$(dirname "$0")"
 source "${BASEDIR}/../shell/utilities.sh"
 
 #
-# Create the directory structure for the given path.
+# Create a directory at the given path.
 #
-# usage: create_dir <path>
+# usage: create_directory <path>
 #
-create_path() {
+create_directory() {
+  local directory="$1"
+
+  if [[ ! -d "$directory" ]]; then
+    mkdir -p "$directory" \
+      && dot::ok "created ${directory}"
+  fi
+}
+
+#
+# Create a list of directories.
+#
+# usage: create_directories <directory> [<directory>...]
+#
+create_directories() {
+  for directory in "$@"; do
+    create_directory "$directory"
+  done
+}
+
+#
+# Create the directory structure for a given file path.
+#
+# usage: prepare_file_directory <path>
+#
+prepare_file_directory() {
   local path="$1"
   local dir
   dir="$(dirname "$path")"
@@ -30,23 +55,23 @@ create_path() {
 # usage: copy <source> <target>
 #
 copy() {
-  local source="${DOTFILES}/$1"
+  local source="$DOTFILES/$1"
   local target="$2"
 
   if [[ -e "${target}" ]]; then
-    if ! dot::confirm "overwrite ${target/#${HOME}/\~}?"; then
+    if ! dot::confirm "overwrite ${target}?"; then
       dot::warning "skipping ${target} …"
       return 1
     fi
   fi
 
-  if ! create_path "${target}"; then
+  if ! prepare_file_directory "${target}"; then
     dot::error "could not create parent directory"
     return 1
   fi
 
   cp -f "${source}" "${target}" \
-    && dot::ok "copied file to ${target/#${HOME}/\~}"
+    && dot::ok "copied file to ${target}"
 }
 
 #
@@ -56,23 +81,23 @@ copy() {
 # usage: symlink <source> <target>
 #
 symlink() {
-  local source="${DOTFILES}/$1"
+  local source="$DOTFILES/$1"
   local target="$2"
 
   if [[ -e "${target}" ]]; then
-    if ! dot::confirm "overwrite ${target/#${HOME}/\~}?"; then
+    if ! dot::confirm "overwrite ${target}?"; then
       dot::warning "skipping ${target} …"
       return 1
     fi
   fi
 
-  if ! create_path "${target}"; then
+  if ! prepare_file_directory "${target}"; then
     dot::error "could not create parent directory"
     return 1
   fi
 
   ln -fns "${source}" "${target}" \
-    && dot::ok "created symlink to ${target/#${HOME}/\~}"
+    && dot::ok "created symlink to ${target}"
 }
 
 #
@@ -86,29 +111,51 @@ main() {
   local config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
   local data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
 
-  mkdir -p "${cache_home}"
-  mkdir -p "${config_home}"
-  mkdir -p "${data_home}"
+  local cache_directories=(
+    "${cache_home}"
+    "${cache_home}/composer"
+    "${cache_home}/npm"
+    "${cache_home}/nvim"
+    "${cache_home}/vim"
+  )
 
-  for dir in "composer" "npm"; do
-    mkdir -p "${cache_home}/${dir}"
-  done
+  local data_directories=(
+    "${data_home}"
+    "${data_home}/bash"
+    "${data_home}/less"
+    "${data_home}/nvim"
+    "${data_home}/vim"
+    "${data_home}/vim/backup"
+    "${data_home}/vim/swap"
+    "${data_home}/vim/undo"
+  )
 
-  for dir in "bash" "less" "zsh"; do
-    mkdir -p "${data_home}/${dir}"
-  done
+  dot::info "Creating directories …"
+
+  create_directory "${config_home}"
+  create_directories "${cache_directories[@]}"
+  create_directories "${data_directories[@]}"
 
   dot::info "Creating symlinks …"
 
   symlink "bash/bash_profile" "${HOME}/.bash_profile"
-  symlink "bash/bashrc"       "${HOME}/.bashrc" 
+  symlink "bash/bashrc" "${HOME}/.bashrc" 
+
+  symlink "git/ignore" "${config_home}/git/ignore"
+  symlink "git/commitmsg" "${config_home}/git/commitmsg"
+  copy "git/config" "${config_home}/git/config"
+
   symlink "misc/editorconfig" "${HOME}/.editorconfig"
+  symlink "misc/gemrc" "${config_home}/gem/config"
 
   symlink "shell/inputrc" "${config_home}/readline/inputrc"
-  symlink "misc/gemrc"    "${config_home}/gem/config"
-  symlink "git/ignore"    "${config_home}/git/ignore"
-  symlink "git/commitmsg" "${config_home}/git/commitmsg"
-  copy    "git/config"    "${config_home}/git/config"
+
+  symlink "vim/" "${HOME}/.vim"
+  symlink "vim/nvimrc" "${config_home}/nvim/init.vim"
+  symlink "vim/after" "${config_home}/nvim/after"
+  symlink "vim/plugin" "${config_home}/nvim/plugin"
+  symlink "vim/autoload" "${data_home}/nvim/site/autoload"
+  symlink "vim/colors" "${data_home}/nvim/site/colors"
 }
 
 main "$@"
