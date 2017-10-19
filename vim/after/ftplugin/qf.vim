@@ -1,4 +1,7 @@
 " after/ftplugin/qf.vim
+"
+" @file Configuration applied in quicklook windows
+
 
 " Ignore the quickfix buffer when cycling
 setlocal nobuflisted

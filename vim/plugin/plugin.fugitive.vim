@@ -1,4 +1,7 @@
 " plugin/plugin.fugitive.vim
+"
+" @file Configuration of the Fugitive plugin
+
 
 " Custome keybindings for the Git wrapper
 nnoremap <Leader>ga :Gwrite<CR>

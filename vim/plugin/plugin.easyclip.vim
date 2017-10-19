@@ -1,4 +1,7 @@
 " plugin/plugin.easyclip.vim
+"
+" @file Configuration of the Easyclip Plugin
+
 
 " Use custom prefix to change text and paste from register (default: s)
 let g:EasyClipUseSubstituteDefaults = 0
