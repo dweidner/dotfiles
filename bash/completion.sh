@@ -26,4 +26,5 @@ if dot::function_exists "__git_complete"; then
   __git_complete g __git_main
 fi
 
+
 # vim:foldmethod=marker:foldlevel=2
