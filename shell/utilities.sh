@@ -23,7 +23,7 @@ dot::command_exists() {
 # usage: dot::function_exists <name>
 #
 dot::function_exists() {
-  declare -fF "$1"
+  declare -fF "$1" >/dev/null
   return $?
 }
 
