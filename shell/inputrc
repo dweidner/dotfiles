@@ -30,20 +30,20 @@ set skip-completed-text on
 
 # 2. Keybindings -------------------------------------------------------- {{{1
 
-# \t   <=> [tab]
-# \e[z <=> [shift] + [tab]
-# \e[A <=> [arrow up]
-# \e[B <=> [arrow down]
-# \e[b <=> [alt] + [arrow left]
-# \e[f <=> [alt] + [arrow right]
+# \e[3;3~ <=> [alt] + [backspace]
+# \e[f    <=> [alt] + [arrow right]
+# \e[b    <=> [alt] + [arrow left]
+# \e[A    <=> [arrow up]
+# \e[B    <=> [arrow down]
+# \e[Z    <=> [shift] + [tab]
 
 "\t": menu-complete
-"\e[Z": menu-complete-backward
-"\e[A": history-search-backward
-"\e[B": history-search-forward
+"\e[3;3~": kill-word
 "\e[b": backward-word
 "\e[f": forward-word
-"\e[3;3~": kill-word
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+"\e[Z": menu-complete-backward
 
 
 # vim:syntax=readline:foldmethod=marker:foldlevel=2
