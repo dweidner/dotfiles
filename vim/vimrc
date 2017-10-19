@@ -94,19 +94,6 @@ endif
 
 " (4) Look & Feel ------------------------------------------------------- {{{1
 
-if has('gui_running')
-
-  set guifont=Fira\ Code:h16         " Select font to use
-  set linespace=2                    " Increase spacing between lines
-  set macligatures                   " Enable programming ligatures
-
-  set guioptions-=m                  " Hide menubar
-  set guioptions-=T                  " Hide toolbar
-
-  set columns=180 lines=50           " Provide enough space for two panes
-
-endif
-
 colorscheme one-half-light           " Select color theme to use
 
 set title                            " Use filename as window title
