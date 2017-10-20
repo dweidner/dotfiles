@@ -17,20 +17,22 @@
 
 # (1) Command abbreviations --------------------------------------------- {{{1
 
-alias e="${EDITOR:-vi}"        # Open file in default editor
-alias o="${BROWSER:-open}"     # Open file in default file browser
-alias f="find"                 # Easily access the find command
-alias g="git"                  # Easily access the git command
+alias e="${EDITOR:-vi}"          # Open file in default editor
+alias o="${BROWSER:-open}"       # Open file in default file browser
+alias f="find"                   # Easily access the find command
+alias g="git"                    # Easily access the git command
 
 
 # (2) Switch directories ------------------------------------------------ {{{1
 
-alias ..="cd .."               # Switch to the parent directory
-alias cd..="cd .."             # Correct missing space
-alias cdd='cd "${DOTFILES}"'   # Switch to the dotfiles directory
+alias -- ..="cd .."                # Switch to the parent directory
+alias -- --="cd - >/dev/null 2>&1" # Switch to the previous directory
 
-alias pu="pushd"               # Push a directory to the stack
-alias po="popd"                # Remove the last directory from the stack
+alias cdd='cd "${DOTFILES}"'       # Switch to the dotfiles directory
+alias cdv='cd "${DOTFILES}/vim"'   # Switch to the vim directory
+
+alias pu="pushd"                   # Push a directory to the stack
+alias po="popd"                    # Remove the last directory from the stack
 
 
 # (3) Error prevention -------------------------------------------------- {{{1
