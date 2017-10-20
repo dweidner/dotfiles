@@ -39,7 +39,7 @@ export DOTFILES="${HOME}/.dotfiles"
 [[ -z "$XDG_DOWNLOAD_DIR" ]]    && export XDG_DOWNLOAD_DIR="${HOME}/Downloads"
 
 
-# (3) Command History -------------------------------------------------- {{{1
+# (3) Command History --------------------------------------------------- {{{1
 
 export HISTSIZE=1000             # Number of lines saved in memory
 export HISTFILESIZE=$HISTSIZE    # Number of lines saved in file
@@ -49,7 +49,7 @@ export HISTIGNORE="ls:cd:cd -"   # Ignore simple directory commands
 export SAVEHIST=$SAVEHIST        # Enable/disable the command history
 
 
-# (4) Text Editor ------------------------------------------------------ {{{1
+# (4) Text Editor ------------------------------------------------------- {{{1
 
 for cmd in "nvim" "vim" "vi"; do
   if command -v "$cmd" >/dev/null 2>&1; then
@@ -61,7 +61,7 @@ done
 export VISUAL="$EDITOR"
 
 
-# (5) Pagers ----------------------------------------------------------- {{{1
+# (5) Pagers ------------------------------------------------------------ {{{1
 
 # Configure less as default pager
 # -i = ignore case
@@ -77,7 +77,7 @@ export PAGER="less -X"
 export MANPAGER="$PAGER"
 
 
-# (5) Misc ------------------------------------------------------------- {{{1
+# (5) Misc -------------------------------------------------------------- {{{1
 
 export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
 
