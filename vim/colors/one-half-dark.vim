@@ -171,6 +171,10 @@ call s:h("GitGutterChangeDelete", s:red, s:gutter_bg, "")
 " Fugitive
 call s:h("diffAdded", s:green, "", "")
 call s:h("diffRemoved", s:red, "", "")
+" Neomake
+call s:h("NeomakeInfoSign", s:fg, "", "")
+call s:h("NeomakeErrorSign", s:red, "", "")
+call s:h("NeomakeWarningSign", s:yellow, "", "")
 " }
 
 

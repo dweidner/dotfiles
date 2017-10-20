@@ -64,6 +64,13 @@ call plug#begin()
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-unimpaired'
 
+  " b) Development ------------------------------------------------------ {{{1
+  " |- neomake: Asynchronous file linting
+
+  if $DOTFILES_PROFILE == 'development'
+    Plug 'neomake/neomake'
+  endif
+
 call plug#end()
 
 
