@@ -5,7 +5,6 @@
 DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 
 source "${DOTFILES}/shell/variables.sh"
-source "${DOTFILES}/shell/system.sh"
 source "${DOTFILES}/shell/path.sh"
 
 [[ -r "${HOME}/.bashrc" ]] && source "${HOME}/.bashrc"

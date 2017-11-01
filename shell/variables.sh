@@ -6,11 +6,13 @@
 # Table of Contents
 # -----------------------------------------------------------------------
 # 1. Locale
-# 2. Directories
+# 2. Path variables
 # 3. Command History
 # 4. Text Editor
 # 5. Pager
-# 6. Misc
+# 6. Package Managers
+# 7. Shell-specific
+# 8. OS-specific
 # -----------------------------------------------------------------------
 
 
@@ -26,9 +28,7 @@ export LC_MEASUREMENT="de_DE.UTF-8"
 [[ -L /etc/localtime ]] && export TZ=:/etc/localtime
 
 
-# (2) System directories ------------------------------------------------ {{{1
-
-export DOTFILES="${HOME}/.dotfiles"
+# (2) Path variables ---------------------------------------------------- {{{1
 
 [[ -z "$XDG_CONFIG_HOME" ]]     && export XDG_CONFIG_HOME="${HOME}/.config"
 [[ -z "$XDG_CACHE_HOME" ]]      && export XDG_CACHE_HOME="${HOME}/.cache"
@@ -37,6 +37,9 @@ export DOTFILES="${HOME}/.dotfiles"
 [[ -z "$XDG_DOCUMENTS_DIR" ]]   && export XDG_DOCUMENTS_DIR="${HOME}/Documents"
 [[ -z "$XDG_DROPBOX_DIR" ]]     && export XDG_DROPBOX_DIR="${HOME}/Dropbox"
 [[ -z "$XDG_DOWNLOAD_DIR" ]]    && export XDG_DOWNLOAD_DIR="${HOME}/Downloads"
+
+export DOTFILES="${HOME}/.dotfiles"
+export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
 
 
 # (3) Command History --------------------------------------------------- {{{1
@@ -77,22 +80,28 @@ export PAGER="less -X"
 export MANPAGER="$PAGER"
 
 
-# (5) Misc -------------------------------------------------------------- {{{1
-
-export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
+# (6) Package Managers -------------------------------------------------- {{{1
 
 export COMPOSER_HOME="${XDG_CONFIG_HOME}/composer"
 export COMPOSER_CACHE_DIR="${XDG_CACHE_HOME}/composer"
 
 export GEMRC="${XDG_CONFIG_HOME}/gem/gemrc"
 
+
+# (7) Shell-specific ---------------------------------------------------- {{{1
+
 case "$SHELL" in
-  */bash)
-    export HISTFILE="${XDG_DATA_HOME}/bash/history"
-    ;;
-  */zsh)
-    export HISTFILE="${XDG_DATA_HOME}/zsh/history"
-    ;;
+  */bash) export HISTFILE="${XDG_DATA_HOME}/bash/history" ;;
+  */zsh)  export HISTFILE="${XDG_DATA_HOME}/zsh/history" ;;
+esac
+
+
+# (8) OS-specific ------------------------------------------------------- {{{1
+
+case "$OSTYPE" in
+  darwin*) source "${DOTFILES}/shell/variables-darwin.sh" ;;
+  linux*)  source "${DOTFILES}/shell/variables-linux.sh" ;;
+  bsd*)    source "${DOTFILES}/shell/variables-bsd.sh" ;;
 esac
 
 
