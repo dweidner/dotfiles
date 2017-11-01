@@ -6,13 +6,14 @@
 # Table of Contents
 # -----------------------------------------------------------------------
 # 1. Locale
-# 2. Path variables
-# 3. Command History
-# 4. Text Editor
-# 5. Pager
-# 6. Package Managers
-# 7. Shell-specific
-# 8. OS-specific
+# 2. User directories
+# 3. User configuration
+# 4. Command History
+# 5. Text Editors
+# 6. Pagers
+# 7. Package Managers
+# 8. Shell-specific
+# 9. OS-specific
 # -----------------------------------------------------------------------
 
 
@@ -28,7 +29,9 @@ export LC_MEASUREMENT="de_DE.UTF-8"
 [[ -L /etc/localtime ]] && export TZ=:/etc/localtime
 
 
-# (2) Path variables ---------------------------------------------------- {{{1
+# (2) User directories -------------------------------------------------- {{{1
+
+export DOTFILES="${HOME}/.dotfiles"
 
 [[ -z "$XDG_CONFIG_HOME" ]]     && export XDG_CONFIG_HOME="${HOME}/.config"
 [[ -z "$XDG_CACHE_HOME" ]]      && export XDG_CACHE_HOME="${HOME}/.cache"
@@ -38,11 +41,13 @@ export LC_MEASUREMENT="de_DE.UTF-8"
 [[ -z "$XDG_DROPBOX_DIR" ]]     && export XDG_DROPBOX_DIR="${HOME}/Dropbox"
 [[ -z "$XDG_DOWNLOAD_DIR" ]]    && export XDG_DOWNLOAD_DIR="${HOME}/Downloads"
 
-export DOTFILES="${HOME}/.dotfiles"
+
+# (3) User configuration ------------------------------------------------ {{{1
+
 export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
 
 
-# (3) Command History --------------------------------------------------- {{{1
+# (4) Command History --------------------------------------------------- {{{1
 
 export HISTSIZE=1000             # Number of lines saved in memory
 export HISTFILESIZE=$HISTSIZE    # Number of lines saved in file
@@ -50,18 +55,6 @@ export HISTTIMEFORMAT="%F %T%t"  # Distinguish history lines by date/time
 export HISTCONTROL=ignoredups    # Ignore duplicates
 export HISTIGNORE="ls:cd:cd -"   # Ignore simple directory commands
 export SAVEHIST=$SAVEHIST        # Enable/disable the command history
-
-
-# (4) Text Editor ------------------------------------------------------- {{{1
-
-for cmd in "nvim" "vim" "vi"; do
-  if command -v "$cmd" >/dev/null 2>&1; then
-    export EDITOR="$cmd"
-    break
-  fi
-done
-
-export VISUAL="$EDITOR"
 
 
 # (5) Pagers ------------------------------------------------------------ {{{1
@@ -80,7 +73,19 @@ export PAGER="less -X"
 export MANPAGER="$PAGER"
 
 
-# (6) Package Managers -------------------------------------------------- {{{1
+# (6) Text Editors ------------------------------------------------------ {{{1
+
+for cmd in "nvim" "vim" "vi"; do
+  if command -v "$cmd" >/dev/null 2>&1; then
+    export EDITOR="$cmd"
+    break
+  fi
+done
+
+export VISUAL="$EDITOR"
+
+
+# (7) Package Managers -------------------------------------------------- {{{1
 
 export COMPOSER_HOME="${XDG_CONFIG_HOME}/composer"
 export COMPOSER_CACHE_DIR="${XDG_CACHE_HOME}/composer"
@@ -88,7 +93,7 @@ export COMPOSER_CACHE_DIR="${XDG_CACHE_HOME}/composer"
 export GEMRC="${XDG_CONFIG_HOME}/gem/gemrc"
 
 
-# (7) Shell-specific ---------------------------------------------------- {{{1
+# (8) Shell-specific ---------------------------------------------------- {{{1
 
 case "$SHELL" in
   */bash) export HISTFILE="${XDG_DATA_HOME}/bash/history" ;;
@@ -96,7 +101,7 @@ case "$SHELL" in
 esac
 
 
-# (8) OS-specific ------------------------------------------------------- {{{1
+# (9) OS-specific ------------------------------------------------------- {{{1
 
 case "$OSTYPE" in
   darwin*) source "${DOTFILES}/shell/variables-darwin.sh" ;;
