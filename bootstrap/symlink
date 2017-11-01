@@ -148,7 +148,7 @@ main() {
   symlink "misc/editorconfig" "${HOME}/.editorconfig"
   symlink "misc/gemrc" "${config_home}/gem/config"
 
-  symlink "shell/inputrc" "${config_home}/readline/inputrc"
+  symlink "readline/inputrc" "${config_home}/readline/inputrc"
 
   symlink "vim/" "${HOME}/.vim"
   symlink "vim/nvimrc" "${config_home}/nvim/init.vim"
