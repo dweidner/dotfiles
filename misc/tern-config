@@ -1,0 +1,15 @@
+{
+  "libs": [
+    "browsers",
+    "ecmascript",
+    "jquery"
+  ],
+  "plugins": {
+    "doc_comment": true,
+    "node": true
+  },
+  "exclude": [
+    ".git/**",
+    "*.min.js"
+  ]
+}

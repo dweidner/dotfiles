@@ -147,6 +147,7 @@ main() {
 
   symlink "misc/editorconfig" "${HOME}/.editorconfig"
   symlink "misc/gemrc" "${config_home}/gem/config"
+  symlink "misc/tern-config" "${HOME}/.tern-config"
 
   symlink "readline/inputrc" "${config_home}/readline/inputrc"
 
