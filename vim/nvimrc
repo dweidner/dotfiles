@@ -3,11 +3,39 @@
 " -----------------------------------------------------------------------
 " Table of Contents
 " -----------------------------------------------------------------------
-" 1. Vim Configuration
+" 1. Path expansion
+" 2. Python Setup
+" 3. Vim Configuration
 " -----------------------------------------------------------------------
 
 
-" (1) Vim Configuration ------------------------------------------------- {{{1
+" (1) Path expansion ---------------------------------------------------- {{{1
 
 let g:vim_home = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
+
+
+" (1) Python Setup  ----------------------------------------------------- {{{1
+
+let s:python2_exec = '/usr/local/opt/python/bin/python'
+
+if executable(s:python2_exec)
+  let g:python_host_prog = s:python2_exec
+else
+  let g:loaded_python_provider = 1
+endif
+
+let s:python3_exec = '/usr/local/opt/python3/bin/python3'
+
+if executable(s:python3_exec)
+  let g:python3_host_prog = s:python3_exec
+else
+  let g:loaded_python3_provider = 1
+endif
+
+
+" (2) Vim Configuration ------------------------------------------------- {{{1
+
 execute 'source ' . g:vim_home . '/vimrc'
+
+
+" vim:foldmethod=marker:foldlevel=2

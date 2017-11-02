@@ -3,7 +3,7 @@
 " @file Configuration of the Neomake linting plugin
 
 
-if !dw#IsPluginLoaded('neomake') | finish | endif
+if !dw#IsLoaded('neomake') | finish | endif
 
 augroup dwneomake
   autocmd!
