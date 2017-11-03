@@ -28,6 +28,7 @@ function! dw#IsInstalled(plugin) abort
   return has_key(g:plugs, a:plugin) && isdirectory(g:plugs[a:plugin].dir)
 endfunction
 
+
 "
 " Determine whether a plugin has been loaded via vim-plug.
 "
@@ -38,4 +39,34 @@ endfunction
 "
 function! dw#IsLoaded(plugin) abort
   return has_key(g:plugs, a:plugin) && stridx(&rtp, g:plugs[a:plugin].dir) >= 0
+endfunction
+
+
+"
+" Remove starting and trailing whitespace from a string.
+"
+" @see {@link http://blog.pixelastic.com/2015/10/05/use-local-eslint-in-syntastic/|Use Local Eslint in Syntastic}
+"
+" @param {String}
+" @return {Boolean}
+"
+function! dw#Trim(str) abort
+  return substitute(a:str, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
+endfunction
+
+
+"
+" Run a shell command and strip trailing whitespace from the return value.
+"
+" @param {String}
+" @return {String}
+"
+function! dw#RunShellCommand(cmd) abort
+  silent let l:output = system(a:cmd)
+
+  if v:shell_error
+    return
+  endif
+
+  return dw#Trim(l:output)
 endfunction
