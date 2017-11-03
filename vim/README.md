@@ -35,13 +35,15 @@ Overview of default and custom key bindings in **VIM**.
 
 `{` - move to previous *paragraph*/*function*/*block*  
 `}` - move to next *paragraph*/*function*/*block*  
-`Ö` - move to previous *paragraph*/*function*/*block*[¹](#custom)  
-`Ä` - move to next *paragraph*/*function*/*block*[¹](#custom)  
+`Ü` - move to previous *paragraph*/*function*/*block*[¹](#custom)  
+`*` - move to next *paragraph*/*function*/*block*[¹](#custom)  
 
 `f{char}` - move cursor to next occurrence of *char*   
 `F{char}` - move cursor to previous occurrence of *char*  
 `t{char}` - move cursor before next occurrence of *char*  
 `T{char}` - move cursor after next occurrence of *char*  
+
+`ö` - repat the last f/F movement  
 
 ### Operators & Text objects
 
