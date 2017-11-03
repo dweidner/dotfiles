@@ -1,0 +1,222 @@
+# snippets/javascript.snip
+#
+# @file JavaScript snippets
+#
+# -----------------------------------------------------------------------
+# Table of Contents
+# -----------------------------------------------------------------------
+# 1. Control Structures
+# 2. Loops
+# 3. Variables & Constants
+# 4. Class declaration/instantiation
+# 5. Functions & Methods
+# 6. Debugging
+# 7. JSDoc
+# 8. Misc
+# -----------------------------------------------------------------------
+
+
+# (1) Control Structures ------------------------------------------------ {{{1
+
+snippet if
+options head
+  if (${1:true}) {
+    ${0:TARGET}
+  }
+
+snippet ifelse
+options head
+  if (${1:#:condition}) {
+    ${2:TARGET}
+  } else {
+    ${3}
+  }
+
+snippet switch
+options head
+  switch (${1:#:variable}) {
+    case ${2:#:value}:
+      ${0:TARGET}
+      break;
+    default:
+      break;
+  }
+
+snippet try
+alias catch
+options head
+  try {
+    ${1:TARGET}
+  } catch (${2:e}) {
+    ${3}
+  }
+
+
+# (2) Loops ------------------------------------------------------------- {{{1
+
+snippet for
+options head
+  for (let ${1:i} = 0, l = ${2:#:items}.length; i < l; $1++) {
+    ${0:TARGET}
+  }
+
+snippet forin
+options head
+  for (const ${1:key} in ${2:obj}) {
+    ${0:TARGET}
+  }
+
+snippet forof
+options head
+  for (const ${1:item} of ${2:items}) {
+    ${0:TARGET}
+  }
+
+snippet while
+options head
+  while (${1:true}) {
+    ${0:TARGET}
+  }
+
+
+# (3) Variables and Constants ------------------------------------------- {{{1
+
+snippet var
+options head
+  var ${1:foo} = ${2:null};
+
+snippet let
+options head
+  let ${1:foo} = ${2:null};
+
+snippet const
+options head
+  const ${1:foo} = ${2:null};
+
+
+# (4) Class declaration/instantiation ----------------------------------- {{{1
+
+snippet class
+options head
+  class ${1:Foo} {
+    constructor(${2:#:arguments}) {
+      ${0:TARGET}
+    }
+  }
+
+snippet new
+options head
+  const ${1:foo} = new ${2:Foo}(${3:#:arguments});
+
+
+# (5) Functions & Methods ----------------------------------------------- {{{1
+
+snippet function
+alias func
+options word
+  function ${1:#:name}(${2:#:arguments}) {
+    ${0:TARGET}
+  }
+
+snippet static
+options head
+  static ${1:name}(${2:#:arguments}) {
+
+  }
+
+snippet getter
+alias get
+options head
+  get ${1:property}() {
+    ${0:TARGET}
+  }
+
+options setter
+alias set
+options head
+  set ${1:property}(${2:#:arguments}) {
+    ${0:TARGET}
+  }
+
+
+# (6) Debugging --------------------------------------------------------- {{{1
+
+snippet dump
+options head
+  console.debug(${0:TARGET});
+
+snippet log
+options head
+  console.log(${0:TARGET});
+
+
+# (7) JSDoc ------------------------------------------------------------- {{{1
+
+snippet /*
+alias doc jsdoc
+  /**
+   * ${0}
+   */
+
+snippet @author
+alias @a
+  @author ${1:`substitute(system('git config --global user.name'), '\n$', '', '')` <`substitute(system('git config --global user.email'), '\n$', '', '')`>}
+
+snippet @const
+alias @c
+  @const {${1:Object}}
+
+snippet @enum
+alias @e
+  @enum {${1:Number}}
+
+snippet @file
+alias @f
+  @file ${1:description}
+
+snippet @license
+alias @l
+  @license ${1:MIT}
+
+snippet @param
+alias @p
+  @param {${1:*}} ${2:param} ${3:#:description}
+
+snippet @return
+alias @r
+  @return {${1:void}} ${2:#:description}
+
+snippet @see
+alias @s
+  @see {@link ${1:url}|${2:link text}}
+
+snippet @throws
+  @throws {${1:InvalidArgumentException}} ${2:#:description}
+
+snippet @type
+alias @t
+  @type {${1:Object}}
+
+
+# (8) Misc -------------------------------------------------------------- {{{1
+
+snippet import
+options head
+  import ${1:foo} from '${0:TARGET}';
+
+snippet throw
+options head
+  throw new Error('${0:TARGET}');
+
+snippet iife
+options head
+  ((${1}) => {
+
+    'use strict';
+
+    ${0:TARGET}
+
+  })(${2})
+
+
+# vim:foldmethod=marker:foldlevel=2
