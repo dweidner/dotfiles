@@ -326,6 +326,7 @@ call plug#begin()
   " a) Essentials ------------------------------------------------------- {{{2
   " |- lastplace: Reopen file at last edit position
   " |- ack: Search file contents for patterns
+  " |- bbye: Close buffers and don’t mess up window layout
   " |- easyclip: Simplify clipboard functonality
   " |- commentary: Toggle comments
   " |- endwise: Wisely end language structures
@@ -337,6 +338,7 @@ call plug#begin()
 
   Plug 'farmergreg/vim-lastplace'
   Plug 'mileszs/ack.vim'
+  Plug 'moll/vim-bbye'
   Plug 'svermeulen/vim-easyclip', PlugIf(IsSupported('clipboard'))
   Plug 'tpope/vim-commentary'
   Plug 'tpope/vim-endwise'
