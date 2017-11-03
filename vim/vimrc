@@ -35,6 +35,7 @@ let g:plug_home = fnamemodify(resolve(s:data_home . '/site/bundle'), ':p:h')
 let g:vim_features = {
       \  'clipboard': has('unnamed') || has('nvim'),
       \  'completion': has('nvim') && has('python3'),
+      \  'conceal': has('conceal'),
       \}
 
 let g:vim_bundles = dw#GetBundles([
@@ -365,6 +366,7 @@ call plug#begin()
   " |- javascript: Improved Javascript indentation and syntax support
   " |- vue: Syntax highlighting for Vue components
   " |- neosnippet: Enable snippet manager
+  " |- indentLine: Show vertical lines for indentation
 
   if index(g:vim_bundles, 'development') >= 0
 
@@ -374,6 +376,7 @@ call plug#begin()
     Plug 'pangloss/vim-javascript'
     Plug 'posva/vim-vue'
     Plug 'Shougo/neosnippet'
+    Plug 'Yggdroot/indentLine', PlugIf(IsSupported('conceal'))
 
   endif
 
