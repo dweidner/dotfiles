@@ -172,9 +172,13 @@ call s:h("GitGutterChangeDelete", s:red, s:gutter_bg, "")
 call s:h("diffAdded", s:green, "", "")
 call s:h("diffRemoved", s:red, "", "")
 " Neomake
-call s:h("NeomakeInfoSign", s:fg, "", "")
-call s:h("NeomakeErrorSign", s:red, "", "")
-call s:h("NeomakeWarningSign", s:yellow, "", "")
+call s:h("NeomakeInfo", s:fg, "", "underline")
+call s:h("NeomakeMessage", s:fg, "", "underline")
+call s:h("NeomakeError", s:red, "", "underline")
+call s:h("NeomakeWarning", s:yellow, "", "underline")
+call s:h("NeomakeInfoSign", s:fg, s:gutter_bg, "")
+call s:h("NeomakeErrorSign", s:red, s:gutter_bg, "")
+call s:h("NeomakeWarningSign", s:yellow, s:gutter_bg, "")
 " }
 
 

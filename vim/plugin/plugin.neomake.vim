@@ -1,4 +1,4 @@
-" plugin/neomake.vim
+" plugin/plugin.neomake.vim
 "
 " @file Configuration of the Neomake linting plugin
 
