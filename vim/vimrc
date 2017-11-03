@@ -328,6 +328,7 @@ endfunction
 call plug#begin()
 
   " a) Essentials ------------------------------------------------------- {{{2
+  " |- cylce: Cycle text within predefined candidates
   " |- lastplace: Reopen file at last edit position
   " |- ack: Search file contents for patterns
   " |- bbye: Close buffers and don’t mess up window layout
@@ -342,6 +343,7 @@ call plug#begin()
 
   if index(g:vim_bundles, 'essentials') >= 0
 
+    Plug 'bootleq/vim-cycle', { 'on': [ '<Plug>Cycle' ] }
     Plug 'farmergreg/vim-lastplace'
     Plug 'mileszs/ack.vim'
     Plug 'moll/vim-bbye'
