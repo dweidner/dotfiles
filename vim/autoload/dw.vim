@@ -47,7 +47,7 @@ endfunction
 "
 " @see {@link http://blog.pixelastic.com/2015/10/05/use-local-eslint-in-syntastic/|Use Local Eslint in Syntastic}
 "
-" @param {String}
+" @param {String} str
 " @return {Boolean}
 "
 function! dw#Trim(str) abort
@@ -69,4 +69,20 @@ function! dw#RunShellCommand(cmd) abort
   endif
 
   return dw#Trim(l:output)
+endfunction
+
+"
+" Determine the bundle groups to include within the current environment.
+"
+" @param {List} list
+" @return {List}
+"
+function! dw#GetBundles(list) abort
+  let l:profile = !empty($DOTFILES_PROFILE) ? $DOTFILES_PROFILE : 0
+
+  if l:profile =~? '^dev'
+    call add(a:list, 'development')
+  endif
+
+  return a:list
 endfunction

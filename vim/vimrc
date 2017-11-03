@@ -3,7 +3,7 @@
 " -----------------------------------------------------------------------
 " Table of Contents
 " -----------------------------------------------------------------------
-"  1. Path Configuration
+"  1. Environment
 "  2. General settings
 "  3. Look & Feel
 "  4. Indentation & Tabs
@@ -18,7 +18,7 @@
 " -----------------------------------------------------------------------
 
 
-" (1) Path Configuration ------------------------------------------------ {{{1
+" (1) Environment ------------------------------------------------------- {{{1
 
 if empty($XDG_CACHE_HOME)  | let $XDG_CACHE_HOME  = '~/.cache'       | endif
 if empty($XDG_CONFIG_HOME) | let $XDG_CONFIG_HOME = '~/.config'      | endif
@@ -31,6 +31,16 @@ let s:data_home   = expand('$XDG_DATA_HOME/' . s:editor)
 
 let g:vim_home  = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
 let g:plug_home = fnamemodify(resolve(s:data_home . '/site/bundle'), ':p:h')
+
+let g:vim_features = {
+      \  'clipboard': has('unnamed') || has('nvim'),
+      \  'completion': has('nvim') && has('python3'),
+      \}
+
+let g:vim_bundles = dw#GetBundles([
+      \  'essentials',
+      \  'writing',
+      \])
 
 
 " (2) General settings -------------------------------------------------- {{{1
@@ -283,12 +293,6 @@ nmap Q @q
 
 " (11) Plugins ---------------------------------------------------------- {{{1
 
-" Determine whether certain features are available in the current system
-let g:vim_features = {
-      \ 'clipboard': has('unnamed') || has('nvim'),
-      \ 'completion': has('nvim') && has('python3'),
-      \}
-
 " Check whether a given feature is supported
 function! IsSupported(...) abort
   for feature in a:000
@@ -336,17 +340,21 @@ call plug#begin()
   " |- surround: Wrap text objects
   " |- unimpaired: Handy bracket key mappings
 
-  Plug 'farmergreg/vim-lastplace'
-  Plug 'mileszs/ack.vim'
-  Plug 'moll/vim-bbye'
-  Plug 'svermeulen/vim-easyclip', PlugIf(IsSupported('clipboard'))
-  Plug 'tpope/vim-commentary'
-  Plug 'tpope/vim-endwise'
-  Plug 'tpope/vim-eunuch'
-  Plug 'tpope/vim-fugitive'
-  Plug 'tpope/vim-repeat'
-  Plug 'tpope/vim-surround'
-  Plug 'tpope/vim-unimpaired'
+  if index(g:vim_bundles, 'essentials') >= 0
+
+    Plug 'farmergreg/vim-lastplace'
+    Plug 'mileszs/ack.vim'
+    Plug 'moll/vim-bbye'
+    Plug 'svermeulen/vim-easyclip', PlugIf(IsSupported('clipboard'))
+    Plug 'tpope/vim-commentary'
+    Plug 'tpope/vim-endwise'
+    Plug 'tpope/vim-eunuch'
+    Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-unimpaired'
+
+  endif
 
   " b) Web Development -------------------------------------------------- {{{2
   " |- editorconfig: Load options from config file
@@ -356,12 +364,16 @@ call plug#begin()
   " |- vue: Syntax highlighting for Vue components
   " |- neosnippet: Enable snippet manager
 
-  Plug 'editorconfig/editorconfig-vim'
-  Plug 'mhinz/vim-signify'
-  Plug 'neomake/neomake'
-  Plug 'pangloss/vim-javascript'
-  Plug 'posva/vim-vue'
-  Plug 'Shougo/neosnippet'
+  if index(g:vim_bundles, 'development') >= 0
+
+    Plug 'editorconfig/editorconfig-vim'
+    Plug 'mhinz/vim-signify'
+    Plug 'neomake/neomake'
+    Plug 'pangloss/vim-javascript'
+    Plug 'posva/vim-vue'
+    Plug 'Shougo/neosnippet'
+
+  endif
 
   " c) Completion Manager ---------------------------------------------- {{{2
   " |- nvim-completion-manager: Fast and extensible completion framework
@@ -371,17 +383,21 @@ call plug#begin()
   " |- languageclient: Vim support for the Language Server Protocol
   " |- languageserver-php: PHP implementation of the LSP
 
-  Plug 'roxma/nvim-completion-manager', PlugIf(IsSupported('completion'), { 'on': [] })
-  Plug 'calebeby/ncm-css', PlugIf(IsSupported('completion'))
-  Plug 'Shougo/neco-vim', PlugIf(IsSupported('completion'))
+  if index(g:vim_bundles, 'development') >= 0
 
-  if executable('npm')
-    Plug 'roxma/nvim-cm-tern', PlugIf(IsSupported('completion'), { 'do': function('DoNpmInstall') })
-  endif
+    Plug 'roxma/nvim-completion-manager', PlugIf(IsSupported('completion'), { 'on': [] })
+    Plug 'calebeby/ncm-css', PlugIf(IsSupported('completion'))
+    Plug 'Shougo/neco-vim', PlugIf(IsSupported('completion'))
 
-  if executable('composer')
-    Plug 'autozimu/LanguageClient-neovim', PlugIf(IsSupported('completion'), { 'do': function('DoGenerateManifest') })
-    Plug 'roxma/LanguageServer-php-neovim', PlugIf(IsSupported('completion'), { 'do': function('DoComposerInstall') })
+    if executable('npm')
+      Plug 'roxma/nvim-cm-tern', PlugIf(IsSupported('completion'), { 'do': function('DoNpmInstall') })
+    endif
+
+    if executable('composer')
+      Plug 'autozimu/LanguageClient-neovim', PlugIf(IsSupported('completion'), { 'do': function('DoGenerateManifest') })
+      Plug 'roxma/LanguageServer-php-neovim', PlugIf(IsSupported('completion'), { 'do': function('DoComposerInstall') })
+    endif
+
   endif
 
 call plug#end()
