@@ -277,12 +277,6 @@ nnoremap <Leader>S :%s@@@g<Left><Left><Left>
 
 " f) Misc --------------------------------------------------------------- {{{2
 
-" Swap lines using vim-unimpaired
-nmap <special> <C-k> [e
-nmap <special> <C-j> ]e
-vmap <special> <C-k> [egv
-vmap <special> <C-j> ]egv
-
 " qq to record, Q to replay a macro
 nmap Q @q
 
@@ -308,6 +302,22 @@ endfunction
 function! PlugIf(condition, ...) abort
   let l:options = a:condition ? {} : { 'on': [], 'for': [] }
   return a:0 > 0 ? extend(l:options, a:1) : l:options
+endfunction
+
+" (Re-)generates the remote plugin manifest
+function! DoGenerateManifest(plug) abort
+  UpdateRemotePlugins
+endfunction
+
+" Use composer to install PHP package dependencies with a plugin
+function! DoComposerInstall(plug) abort
+  silent !composer install
+  silent !composer run-script parse-stubs
+endfunction
+
+" Use npm to install node package dependencies with a plugin
+function! DoNpmInstall(plug) abort
+  silent !npm install
 endfunction
 
 
@@ -340,34 +350,36 @@ call plug#begin()
   " |- editorconfig: Load options from config file
   " |- signify: Show file changes in gutter
   " |- neomake: Asynchronous file linting
-  " |- vim-javascript: Improved Javascript indentation and syntax support
-  " |- vim-vue: Syntax highlighting for Vue components
+  " |- javascript: Improved Javascript indentation and syntax support
+  " |- vue: Syntax highlighting for Vue components
+  " |- neosnippet: Enable snippet manager
 
   Plug 'editorconfig/editorconfig-vim'
   Plug 'mhinz/vim-signify'
   Plug 'neomake/neomake'
   Plug 'pangloss/vim-javascript'
   Plug 'posva/vim-vue'
+  Plug 'Shougo/neosnippet'
 
   " c) Completion Manager ---------------------------------------------- {{{2
   " |- nvim-completion-manager: Fast and extensible completion framework
   " |- ncm-css: CSS completion for CSS, SASS and LESS
   " |- neco-vim: Vim completion sources for deoplete/ncm
   " |- nvim-cm-tern: JavaScript completion using ternjs code analysis
-  " |- languageclent-neovim: Vim support for the Language Server Protocol
-  " |- languageserver-php-neovim: PHP implementation of the LSP
+  " |- languageclient: Vim support for the Language Server Protocol
+  " |- languageserver-php: PHP implementation of the LSP
 
   Plug 'roxma/nvim-completion-manager', PlugIf(IsSupported('completion'), { 'on': [] })
   Plug 'calebeby/ncm-css', PlugIf(IsSupported('completion'))
   Plug 'Shougo/neco-vim', PlugIf(IsSupported('completion'))
 
   if executable('npm')
-    Plug 'roxma/nvim-cm-tern', PlugIf(IsSupported('completion'), { 'do': 'npm install' })
+    Plug 'roxma/nvim-cm-tern', PlugIf(IsSupported('completion'), { 'do': function('DoNpmInstall') })
   endif
 
   if executable('composer')
-    Plug 'autozimu/LanguageClient-neovim', PlugIf(IsSupported('completion'), { 'do': ':UpdateRemotePlugins' })
-    Plug 'roxma/LanguageServer-php-neovim', PlugIf(IsSupported('completion'), { 'do': 'composer install && composer run-script parse-stubs' })
+    Plug 'autozimu/LanguageClient-neovim', PlugIf(IsSupported('completion'), { 'do': function('DoGenerateManifest') })
+    Plug 'roxma/LanguageServer-php-neovim', PlugIf(IsSupported('completion'), { 'do': function('DoComposerInstall') })
   endif
 
 call plug#end()
