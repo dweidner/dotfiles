@@ -1,4 +1,5 @@
 eslint
+eslint-plugin-compat
 jsonlint
 npm-check-updates
 tern
