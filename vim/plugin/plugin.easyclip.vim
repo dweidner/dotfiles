@@ -3,8 +3,12 @@
 " @file Configuration of the Easyclip Plugin
 
 
-" Enable motion to replace text with content from a register (key: s)
-let g:EasyClipUseSubstituteDefaults = 1
+" Use custom prefix to change text and paste from register (default: s)
+let g:EasyClipUseSubstituteDefaults = 0
+nmap <silent> gs <plug>SubstituteOverMotionMap
+nmap gss <plug>SubstituteLine
+nmap gS <plug>G_SubstituteToEndOfLine
+xmap gs <plug>XEasyClipPaste
 
 " Easyclip shadows 'add mark' with the 'cut' operation. Offer custom bindings.
 nnoremap gm m
