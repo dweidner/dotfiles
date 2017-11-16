@@ -19,9 +19,13 @@ let g:neosnippet#disable_runtime_snippets = { '_': 1 }
 let g:neosnippet#enable_conceal_markers = 0
 
 " Expand snippets using neosnippet
-imap <C-k> <Plug>(neosnippet_expand_or_jump)
-smap <C-k> <Plug>(neosnippet_expand_or_jump)
-xmap <C-k> <Plug>(neosnippet_expand_target)
+imap <C-l> <Plug>(neosnippet_expand)
+smap <C-l> <Plug>(neosnippet_expand)
+xmap <C-l> <Plug>(neosnippet_expand_target)
+
+" Jump to the next placeholder
+imap <C-k> <Plug>(neosnippet_jump)
+smap <C-k> <Plug>(neosnippet_jump)
 
 " Remove remaining markers when leaving insert mode
 autocmd dwneosnippet InsertLeave * NeoSnippetClearMarkers
