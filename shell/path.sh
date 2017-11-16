@@ -42,7 +42,7 @@ path_contains() {
 #
 path_add() {
   [[ -d "${1}" ]] || return
-  
+
   if ! path_contains "${1}"; then
     PATH="${1}:${PATH}"
   fi
