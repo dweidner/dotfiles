@@ -2,7 +2,7 @@
 #
 # @file Configuration file sourced on login shells
 
-DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+DOTFILES="${DOTFILES:-$HOME/.config/dotfiles}"
 
 source "${DOTFILES}/shell/variables.sh"
 source "${DOTFILES}/shell/path.sh"

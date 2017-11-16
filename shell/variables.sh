@@ -31,8 +31,6 @@ export LC_MEASUREMENT="de_DE.UTF-8"
 
 # (2) User directories -------------------------------------------------- {{{1
 
-export DOTFILES="${HOME}/.dotfiles"
-
 [[ -z "$XDG_CONFIG_HOME" ]]     && export XDG_CONFIG_HOME="${HOME}/.config"
 [[ -z "$XDG_CACHE_HOME" ]]      && export XDG_CACHE_HOME="${HOME}/.cache"
 [[ -z "$XDG_DATA_HOME" ]]       && export XDG_DATA_HOME="${HOME}/.local/share"
@@ -40,6 +38,8 @@ export DOTFILES="${HOME}/.dotfiles"
 [[ -z "$XDG_DOCUMENTS_DIR" ]]   && export XDG_DOCUMENTS_DIR="${HOME}/Documents"
 [[ -z "$XDG_DROPBOX_DIR" ]]     && export XDG_DROPBOX_DIR="${HOME}/Dropbox"
 [[ -z "$XDG_DOWNLOAD_DIR" ]]    && export XDG_DOWNLOAD_DIR="${HOME}/Downloads"
+
+export DOTFILES="${XDG_CONFIG_HOME}/dotfiles"
 
 
 # (3) User configuration ------------------------------------------------ {{{1
