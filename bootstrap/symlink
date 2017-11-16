@@ -124,6 +124,7 @@ main() {
     "${data_home}/bash"
     "${data_home}/less"
     "${data_home}/nvim"
+    "${data_home}/tmux"
     "${data_home}/vim"
     "${data_home}/vim/backup"
     "${data_home}/vim/swap"
@@ -150,6 +151,7 @@ main() {
   symlink "misc/tern-config" "${HOME}/.tern-config"
 
   symlink "readline/inputrc" "${config_home}/readline/inputrc"
+  symlink "tmux/tmux.conf" "${config_home}/tmux/tmux.conf"
 
   symlink "vim/" "${HOME}/.vim"
   symlink "vim/nvimrc" "${config_home}/nvim/init.vim"
