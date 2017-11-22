@@ -32,16 +32,17 @@ let s:data_home   = expand('$XDG_DATA_HOME/' . s:editor)
 let g:vim_home  = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
 let g:plug_home = fnamemodify(resolve(s:data_home . '/site/bundle'), ':p:h')
 
-let g:vim_features = {
+let g:dw_bundles = [
+      \  'essentials',
+      \  'writing',
+      \]
+
+let g:dw_features = {
       \  'clipboard': has('unnamed') || has('nvim'),
       \  'completion': has('nvim') && has('python3'),
       \  'conceal': has('conceal'),
+      \  'truecolors': has('termguicolors') && ($TERM_PROGRAM !=# 'Apple_Terminal')
       \}
-
-let g:vim_bundles = dw#GetBundles([
-      \  'essentials',
-      \  'writing',
-      \])
 
 
 " (2) General settings -------------------------------------------------- {{{1
@@ -70,8 +71,6 @@ endif
 
 
 " (3) Look & Feel ------------------------------------------------------- {{{1
-
-colorscheme one-half-light           " Select color theme to use
 
 set title                            " Use filename as window title
 set number                           " Show line numbers
@@ -296,11 +295,7 @@ nmap Q @q
 
 " Check whether a given feature is supported
 function! IsSupported(...) abort
-  for feature in a:000
-    if !get(g:vim_features, feature) | return 0 | endif
-  endfor
-
-  return 1
+  return call('dw#IsSupported', a:000)
 endfunction
 
 " Conditionally load a plugin (@see https://git.io/vd71n)
@@ -333,6 +328,7 @@ call plug#begin()
   " |- lastplace: Reopen file at last edit position
   " |- ack: Search file contents for patterns
   " |- bbye: Close buffers and don’t mess up window layout
+  " |- one: Atom one color scheme
   " |- easyclip: Simplify clipboard functonality
   " |- commentary: Toggle comments
   " |- endwise: Wisely end language structures
@@ -342,12 +338,13 @@ call plug#begin()
   " |- surround: Wrap text objects
   " |- unimpaired: Handy bracket key mappings
 
-  if index(g:vim_bundles, 'essentials') >= 0
+  if index(g:dw_bundles, 'essentials') >= 0
 
     Plug 'bootleq/vim-cycle', { 'on': [ '<Plug>Cycle' ] }
     Plug 'farmergreg/vim-lastplace'
     Plug 'mileszs/ack.vim'
     Plug 'moll/vim-bbye'
+    Plug 'rakr/vim-one'
     Plug 'svermeulen/vim-easyclip', PlugIf(IsSupported('clipboard'))
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-endwise'
@@ -369,7 +366,7 @@ call plug#begin()
   " |- vue: Syntax highlighting for Vue components
   " |- liquid: Liquid templates with jekyll additions
 
-  if index(g:vim_bundles, 'development') >= 0
+  if index(g:dw_bundles, 'development') >= 0
 
     Plug 'editorconfig/editorconfig-vim'
     Plug 'mhinz/vim-signify'
@@ -392,7 +389,7 @@ call plug#begin()
   " |- languageclient: Vim support for the Language Server Protocol
   " |- languageserver-php: PHP implementation of the LSP
 
-  if index(g:vim_bundles, 'development') >= 0
+  if index(g:dw_bundles, 'development') >= 0
 
     Plug 'roxma/nvim-completion-manager', PlugIf(IsSupported('completion'), { 'on': [] })
     Plug 'calebeby/ncm-css', PlugIf(IsSupported('completion'))

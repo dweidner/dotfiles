@@ -17,6 +17,20 @@ endfunction
 
 
 "
+" Determine whether a given feature is supported.
+"
+" @param {String} feature...
+" @return {Boolean}
+"
+function! dw#IsSupported(...) abort
+  for feature in a:000
+    if !get(g:dw_features, feature) | return 0 | endif
+  endfor
+
+  return 1
+endfunction
+
+"
 " Determine whether a plugin has been installed via vim-plug.
 "
 " @see {@link https://git.io/vddp4|API for testing if plugin is installed?}
@@ -69,20 +83,4 @@ function! dw#RunShellCommand(cmd) abort
   endif
 
   return dw#Trim(l:output)
-endfunction
-
-"
-" Determine the bundle groups to include within the current environment.
-"
-" @param {List} list
-" @return {List}
-"
-function! dw#GetBundles(list) abort
-  let l:profile = !empty($DOTFILES_PROFILE) ? $DOTFILES_PROFILE : 0
-
-  if l:profile =~? '^dev'
-    call add(a:list, 'development')
-  endif
-
-  return a:list
 endfunction
