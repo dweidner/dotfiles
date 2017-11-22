@@ -363,20 +363,24 @@ call plug#begin()
   " |- editorconfig: Load options from config file
   " |- signify: Show file changes in gutter
   " |- neomake: Asynchronous file linting
-  " |- javascript: Improved Javascript indentation and syntax support
-  " |- vue: Syntax highlighting for Vue components
   " |- neosnippet: Enable snippet manager
   " |- indentLine: Show vertical lines for indentation
+  " |- javascript: Improved Javascript indentation and syntax support
+  " |- vue: Syntax highlighting for Vue components
+  " |- liquid: Liquid templates with jekyll additions
 
   if index(g:vim_bundles, 'development') >= 0
 
     Plug 'editorconfig/editorconfig-vim'
     Plug 'mhinz/vim-signify'
     Plug 'neomake/neomake'
-    Plug 'pangloss/vim-javascript'
-    Plug 'posva/vim-vue'
     Plug 'Shougo/neosnippet'
     Plug 'Yggdroot/indentLine', PlugIf(IsSupported('conceal'))
+
+    Plug 'pangloss/vim-javascript'
+    Plug 'posva/vim-vue'
+    Plug 'tpope/vim-liquid'
+
 
   endif
 
