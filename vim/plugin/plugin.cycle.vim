@@ -9,9 +9,7 @@ if !dw#IsInstalled('vim-cycle') | finish | endif
 let g:cycle_no_mappings = 1
 
 nmap <silent> <Leader>a <Plug>CycleNext
-nmap <silent> <Leader>x <Plug>CyclePrev
 vmap <silent> <Leader>a <Plug>CycleNext
-vmap <silent> <Leader>x <Plug>CyclePrev
 
 " Fallback to the Vim default bindings if no matches are found
 noremap <silent> <Plug>CycleFallbackNext <C-A>
