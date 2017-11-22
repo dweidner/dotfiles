@@ -4,22 +4,47 @@
 
 
 #
+# Switch to the given directory of the dotfiles repository.
+#
+# usage: cdd [<path>]
+#
+cdd() {
+  builtin cd -- "$DOTFILES/$1"
+}
+
+#
 # Switch to the given directory and list the directory contents.
 #
-# Usage: cdl [<path>]
+# usage: cdl [<path>]
 #
 cdl() {
   builtin cd -- "$1" && command ls -lhF "${ls_options[@]}"
 }
 
 #
-# Switch to the root directory of the current git repository.
+# Switch to the given directory starting from the root the current git
+# repository.
 #
-# Usage: cdr
+# usage: cdr [<path>]
 #
 cdr() {
-  git rev-parse || return 1
-  builtin cd "$(git rev-parse --show-cdup)" || return 1
+  local root=""
+  root="$(git rev-parse --show-toplevel)"
+
+  if [[ $? -ne 0 ]]; then
+    return 1
+  fi
+
+  builtin cd -- "$root/$1"
+}
+
+#
+# Find files whose name matches a given pattern.
+#
+# usage: ff <pattern>
+#
+ff() {
+  find . -type f -iname '*'"$*"'*' -exec ls "${ls_options[@]}" -- {} \;
 }
 
 #
@@ -29,7 +54,6 @@ cdr() {
 #
 fs() {
   local -a options
-
   options+=( -sh )
 
   if du -b /dev/null >/dev/null 2>&1; then
@@ -41,15 +65,6 @@ fs() {
   else
     du "${options[*]}" .[^.]* ./*
   fi
-}
-
-#
-# Find files whose name matches a given pattern.
-#
-# usage: ff <pattern>
-#
-ff() {
-  find . -type f -iname '*'"$*"'*' -exec ls "${ls_options[@]}" -- {} \;
 }
 
 #
@@ -76,13 +91,13 @@ serve() {
 # usage: silent <command>
 #
 silent() {
-  $* >/dev/null &
+  "$@" >/dev/null &
 }
 
 #
 # Display the weather for a given city.
-# 
-# Usage: weather [<city>]
+#
+# usage: weather [<city>]
 #
 weather() {
   curl "wttr.in/~${1:-Bremen}"

@@ -28,9 +28,6 @@ alias g="git"                    # Easily access the git command
 alias -- ..="cd .."                # Switch to the parent directory
 alias -- --="cd - >/dev/null 2>&1" # Switch to the previous directory
 
-alias cdd='cd "${DOTFILES}"'       # Switch to the dotfiles directory
-alias cdv='cd "${DOTFILES}/vim"'   # Switch to the vim directory
-
 alias pu="pushd"                   # Push a directory to the stack
 alias po="popd"                    # Remove the last directory from the stack
 
