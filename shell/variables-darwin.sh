@@ -5,6 +5,8 @@
 
 export DOTFILES_OS="Darwin"
 
+export CLICOLORS=1
+
 export HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-/usr/local}"
 export HOMEBREW_CASK_OPTS="--appdir=${XDG_APPLICATION_DIR}"
 
