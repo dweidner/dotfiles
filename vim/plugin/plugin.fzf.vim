@@ -9,9 +9,9 @@ if !dw#IsLoaded('fzf.vim') | finish | endif
 let g:fzf_command_prefix = 'FZF'
 
 " Custom keybindings for some of the FZF commands
-nnoremap <silent> <C-t> :FZF<CR>
-nnoremap <silent> <Leader>t :<C-U>execute 'FZF' . get(['', 'History', 'Buffer', 'BTags'], v:count, '')<CR>
-nnoremap <silent> <Leader>b :FZFBuffer<CR>
+nnoremap <silent> <C-t> :<C-U>execute 'FZF' . get(['', 'History', 'Buffer', 'BTags'], v:count, '')<CR>
+nmap <silent> <Leader>t <C-t>
+nmap <silent> <Leader>b 2<C-t>
 
 " Custom abbreviations for some of the FZF commands
 cnoreabbrev F FZFFiles
