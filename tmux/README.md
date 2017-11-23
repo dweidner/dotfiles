@@ -2,7 +2,10 @@
 Overview of default and custom key bindings in **TMUX**.
 
 `Ctrl` + `Space` - Custom Prefix  
-`Ctrl` + `A` - Custom Prefix2
+
+`Prefix` + `[` - Enter *copy mode*  
+`Prefix` + `:` - Enter *command mode*  
+`Prefix` + `r` - Reload tmux configuration  
 
 ## Sessions Management
 
@@ -27,9 +30,9 @@ Overview of default and custom key bindings in **TMUX**.
 
 `Prefix` + `;` - Switch to last active *pane*  
 `Prefix` + `%` - Split *pane* vertically  
-`Prefix` + `v` - Split *pane* vertically[¹](#custom)  
 `Prefix` + `"` - Split *pane* horizontally  
-`Prefix` + `s` - Split *pane* horizontally[¹](#custom)  
+`Prefix` + `Ctrl` + `v` - Split *pane* vertically[¹](#custom)  
+`Prefix` + `Ctrl` + `s` - Split *pane* horizontally[¹](#custom)  
 `Prefix` + `{` - Move current *pane* left  
 `Prefix` + `}` - Move current *pane* right  
 `Prefix` + `z` - Zoom current *pane*  
@@ -71,11 +74,6 @@ Overview of default and custom key bindings in **TMUX**.
 `y` - Copy *selection* to system clipboard[³](#yank)  
 `Y` - Copy *selection* and paste it to the command line[³](#yank)  
 
-## Misc
-
-`Prefix` + `[` - Enter *copy mode*  
-`Prefix` + `:` - Enter *command mode*  
-`Prefix` + `r` - Reload tmux configuration  
 
 <a name="custom">¹</a>: Via custom key binding  
 <a name="open">²</a>: Via [tmux-open](https://github.com/tmux-plugins/tmux-open)  
