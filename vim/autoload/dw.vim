@@ -24,7 +24,7 @@ endfunction
 "
 function! dw#IsSupported(...) abort
   for feature in a:000
-    if !get(g:dw_features, feature) | return 0 | endif
+    if !get(g:vimrc_features, feature) | return 0 | endif
   endfor
 
   return 1

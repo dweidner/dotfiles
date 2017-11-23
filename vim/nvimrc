@@ -11,7 +11,7 @@
 
 " (1) Path expansion ---------------------------------------------------- {{{1
 
-let g:vim_home = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
+let g:vimrc_home = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
 
 
 " (1) Python Setup  ----------------------------------------------------- {{{1
@@ -35,7 +35,7 @@ endif
 
 " (2) Vim Configuration ------------------------------------------------- {{{1
 
-execute 'source ' . g:vim_home . '/vimrc'
+execute 'source ' . g:vimrc_home . '/vimrc'
 
 
 " vim:foldmethod=marker:foldlevel=2

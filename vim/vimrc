@@ -13,8 +13,9 @@
 "  8. Code Folding
 "  9. File Globbing
 " 10. Key Mappings
-" 11. Plugins
-" 12. Auto Commands
+" 11. Local configuration
+" 12. Plugins
+" 13. Auto Commands
 " -----------------------------------------------------------------------
 
 
@@ -24,24 +25,28 @@ if empty($XDG_CACHE_HOME)  | let $XDG_CACHE_HOME  = '~/.cache'       | endif
 if empty($XDG_CONFIG_HOME) | let $XDG_CONFIG_HOME = '~/.config'      | endif
 if empty($XDG_DATA_HOME)   | let $XDG_DATA_HOME   = '~/.local/share' | endif
 
-let s:editor      = has('nvim') ? 'nvim' : 'vim'
-let s:cache_home  = expand('$XDG_CACHE_HOME/' . s:editor)
-let s:config_home = expand('$XDG_CONFIG_HOME/' . s:editor)
-let s:data_home   = expand('$XDG_DATA_HOME/' . s:editor)
+let s:editor       = has('nvim') ? 'nvim' : 'vim'
+let s:cache_home   = expand('$XDG_CACHE_HOME/' . s:editor)
+let s:config_home  = expand('$XDG_CONFIG_HOME/' . s:editor)
+let s:data_home    = expand('$XDG_DATA_HOME/' . s:editor)
 
-let g:vim_home  = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
-let g:plug_home = fnamemodify(resolve(s:data_home . '/site/bundle'), ':p:h')
+let s:terminal_app = $TERM_PROGRAM ==# 'Apple_Terminal'
+let s:iterm        = $TERM_PROGRAM ==# 'iTerm.app'
 
-let g:dw_bundles = [
-      \  'essentials',
-      \  'writing',
+let g:vimrc_home   = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
+let g:plug_home    = fnamemodify(resolve(s:data_home . '/site/bundle'), ':p:h')
+let g:fzf_home     = fnamemodify(resolve(expand('$FZF_DIR')), ':p:h')
+
+let g:vimrc_bundles  = [
+      \ 'essentials',
+      \ 'development',
       \]
 
-let g:dw_features = {
-      \  'clipboard': has('unnamed') || has('nvim'),
+let g:vimrc_features = {
+      \  'clipboard':  has('unnamed') || has('nvim'),
       \  'completion': has('nvim') && has('python3'),
-      \  'conceal': has('conceal'),
-      \  'truecolors': has('termguicolors') && ($TERM_PROGRAM !=# 'Apple_Terminal')
+      \  'conceal':    has('conceal'),
+      \  'truecolors': has('termguicolors') && !s:terminal_app
       \}
 
 
@@ -76,7 +81,9 @@ set title                            " Use filename as window title
 set number                           " Show line numbers
 set cursorline                       " Highlight current line
 set ruler                            " Display cursor position
+set showmode                         " Display the current vim mode
 set showcmd                          " Show currently running command
+set signcolumn="yes"                 " Always display the sign column
 
 set mouse=a                          " Enable mouse support. Shame on me...
 set clipboard^=unnamed               " Use system clipboard register
@@ -256,8 +263,7 @@ inoremap <Right> <Nop>
 inoremap <Down> <Nop>
 inoremap <Left> <Nop>
 
-" Move to the beginning/end of the line
-" instead of the top/bottom window
+" Move to the beginning/end of the line instead of the top/bottom window
 " @see <https://bitbucket.org/sjl/dotfiles>
 nnoremap H ^
 nnoremap L $
@@ -291,17 +297,24 @@ nnoremap <Leader>S :%s@@@g<Left><Left><Left>
 nmap Q @q
 
 
-" (11) Plugins ---------------------------------------------------------- {{{1
+" (11) Local configuration ---------------------------------------------- {{{1
 
-" Check whether a given feature is supported
-function! IsSupported(...) abort
-  return call('dw#IsSupported', a:000)
-endfunction
+" Load a local configuration file. Allows users to customize the bundles to
+" load and to add custom keybindings.
+if filereadable('~/.local/vimrc') | source '~/.local/vimrc' | endif
+
+
+" (12) Plugins ---------------------------------------------------------- {{{1
 
 " Conditionally load a plugin (@see https://git.io/vd71n)
 function! PlugIf(condition, ...) abort
   let l:options = a:condition ? {} : { 'on': [], 'for': [] }
   return a:0 > 0 ? extend(l:options, a:1) : l:options
+endfunction
+
+" Determine whether a given feature is supported
+function! IsSupported(...) abort
+  return call('dw#IsSupported', a:000)
 endfunction
 
 " (Re-)generates the remote plugin manifest
@@ -337,8 +350,9 @@ call plug#begin()
   " |- repeat: Enable repeating supported plugin maps
   " |- surround: Wrap text objects
   " |- unimpaired: Handy bracket key mappings
+  " |- fzf: A fuzzy finder
 
-  if index(g:dw_bundles, 'essentials') >= 0
+  if index(g:vimrc_bundles, 'essentials') >= 0
 
     Plug 'bootleq/vim-cycle', { 'on': [ '<Plug>Cycle' ] }
     Plug 'farmergreg/vim-lastplace'
@@ -354,6 +368,11 @@ call plug#begin()
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
 
+    if isdirectory(g:fzf_home)
+      Plug g:fzf_home, { 'as': 'fzf' }
+      Plug 'junegunn/fzf.vim'
+    endif
+
   endif
 
   " b) Web Development -------------------------------------------------- {{{2
@@ -366,7 +385,7 @@ call plug#begin()
   " |- vue: Syntax highlighting for Vue components
   " |- liquid: Liquid templates with jekyll additions
 
-  if index(g:dw_bundles, 'development') >= 0
+  if index(g:vimrc_bundles, 'development') >= 0
 
     Plug 'editorconfig/editorconfig-vim'
     Plug 'mhinz/vim-signify'
@@ -389,7 +408,7 @@ call plug#begin()
   " |- languageclient: Vim support for the Language Server Protocol
   " |- languageserver-php: PHP implementation of the LSP
 
-  if index(g:dw_bundles, 'development') >= 0
+  if index(g:vimrc_bundles, 'development') >= 0
 
     Plug 'roxma/nvim-completion-manager', PlugIf(IsSupported('completion'), { 'on': [] })
     Plug 'calebeby/ncm-css', PlugIf(IsSupported('completion'))
@@ -409,7 +428,7 @@ call plug#begin()
 call plug#end()
 
 
-" (12) Auto Commands ---------------------------------------------------- {{{1
+" (13) Auto Commands ---------------------------------------------------- {{{1
 
 augroup vimrc
 

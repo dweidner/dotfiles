@@ -10,7 +10,7 @@ augroup dwneosnippet
 augroup END
 
 " Customize the path to the user directory containing snippet definitions
-let g:neosnippet#snippets_directory = g:vim_home . '/snippets'
+let g:neosnippet#snippets_directory = g:vimrc_home . '/snippets'
 
 " Disable default snippets and only use our custom ones
 let g:neosnippet#disable_runtime_snippets = { '_': 1 }
