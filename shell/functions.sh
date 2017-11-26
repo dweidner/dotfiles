@@ -76,7 +76,7 @@ serve() {
   local port="${1:-3000}"
 
   if command -v python >/dev/null 2>&1; then
-    python -m SimpleHttpServer "$port"
+    python -m SimpleHTTPServer "$port"
   elif command -v http-server >/dev/null 2>&1; then
     http-server -p "$port"
   else
