@@ -1,0 +1,26 @@
+# bash/completions/ta
+#
+# @file Enable completion for the tmux attach alias
+
+#
+# Retrieve a list of currently running tmux sessions and provide the session
+# names as completion suggestions.
+#
+_tmux_sessions() {
+  local cur
+  _get_comp_words_by_ref cur
+
+  local sessions
+
+  if tmux info >/dev/null 2>&1; then
+    sessions="$(tmux ls |& cut -d : -f 1)"
+  else
+    sessions=()
+  fi
+
+  COMPREPLY=( $(compgen -W "${sessions[@]}" -- "$cur") )
+}
+
+complete -F _tmux_sessions ta
+
+# vim:filetype=sh

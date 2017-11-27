@@ -1,0 +1,23 @@
+# bash/completions/cdd
+#
+# @file Enable completion for the change to dotfiles directory command
+
+#
+# Retrieve the list of directories in the dotfiles repository and provide them
+# as completion suggestions.
+#
+_dotfiles_cd() {
+  local cur
+  _get_comp_words_by_ref cur
+
+  local root="${DOTFILES:-$HOME/.config/dotfiles}"
+  local i="${#COMPREPLY[@]}"
+
+  for dir in $(compgen -d -- "$root/$cur"); do
+    COMPREPLY[i++]="${dir##*/}/"
+  done
+}
+
+complete -F _dotfiles_cd -o nospace cdd
+
+# vim:filetype=sh

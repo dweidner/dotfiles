@@ -143,6 +143,7 @@ main() {
   # Bash¹
   symlink "bash/bash_profile" "${HOME}/.bash_profile"
   symlink "bash/bashrc" "${HOME}/.bashrc" 
+  symlink "bash/completions" "${data_home}/bash-completion/completions"
 
   # Readline²
   symlink "readline/inputrc" "${config_home}/readline/inputrc"

@@ -21,10 +21,5 @@ if (( BASH_VERSINFO[0] >= 4 )); then
     && source "${HOMEBREW_PREFIX}/share/bash-completion/bash_completion"
 fi
 
-# Enable completion for the custom git alias
-if dot::function_exists "__git_complete"; then
-  __git_complete g __git_main
-fi
-
 
 # vim:foldmethod=marker:foldlevel=2
