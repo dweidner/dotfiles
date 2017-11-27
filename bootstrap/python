@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+#
+# @file Install latest pip version and default packages.
+
+set -e
+
+readonly BASEDIR="$(dirname "$0")"
+source "${BASEDIR}/../shell/utilities.sh"
+
+#
+# Install packages using the Python Package Manager
+#
+# usage: install
+#
+install() {
+  if ! command -v pip3 >/dev/null 2>&1; then
+    dot::exit "Cannot find pip3 command"
+  fi
+
+  dot::info "Updating pip …"
+  pip3 install --upgrade pip
+
+  dot::info "Installing python packages …"
+
+  if [[ -n "$DOTFILES" ]]; then
+    while read -r package; do
+      pip3 install "$package"
+    done < "${DOTFILES}/misc/default-python-packages"
+  fi
+}
+
+install "$@"
