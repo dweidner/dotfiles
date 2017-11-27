@@ -157,8 +157,7 @@ main() {
   symlink "vim/nvimrc" "${config_home}/nvim/init.vim"
   symlink "vim/after" "${config_home}/nvim/after"
   symlink "vim/plugin" "${config_home}/nvim/plugin"
-  symlink "vim/autoload" "${data_home}/nvim/site/autoload"
-  symlink "vim/colors" "${data_home}/nvim/site/colors"
+  symlink "vim/autoload" "${config_home}/nvim/autoload"
 }
 
 main "$@"
