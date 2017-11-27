@@ -1,6 +1,7 @@
 eslint
 eslint-plugin-compat
 jsonlint
+neovim
 npm-check-updates
 svgo
 tern
