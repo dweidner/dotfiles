@@ -17,8 +17,10 @@ install() {
     dot::exit "Cannot find npm command"
   fi
 
+  dot::info "Updating npm …"
   npm install --global --production npm@latest
 
+  dot::info "Installing node packages …"
   npm install --global --production yo
   npm install --global --production eslint
 
@@ -27,7 +29,7 @@ install() {
       if [[ "$package" != "yo" ]] && [[ "$package" != "eslint" ]]; then
         npm install --global --production "$package"
       fi
-    done < "${DOTFILES}/misc/default-packages"
+    done < "${DOTFILES}/misc/default-node-packages"
   fi
 }
 

@@ -2,6 +2,7 @@ eslint
 eslint-plugin-compat
 jsonlint
 npm-check-updates
+svgo
 tern
 tern-browser-extension
 tern-fetch
