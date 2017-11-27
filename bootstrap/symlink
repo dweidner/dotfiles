@@ -97,7 +97,7 @@ symlink() {
   fi
 
   ln -fns "${source}" "${target}" \
-    && dot::ok "created symlink to ${target}"
+    && dot::ok "created symlink at ${target}"
 }
 
 #
@@ -133,31 +133,48 @@ main() {
 
   dot::info "Creating directories …"
 
+  # Create XDG directories
   create_directory "${config_home}"
   create_directories "${cache_directories[@]}"
   create_directories "${data_directories[@]}"
 
   dot::info "Creating symlinks …"
 
+  # Bash¹
   symlink "bash/bash_profile" "${HOME}/.bash_profile"
   symlink "bash/bashrc" "${HOME}/.bashrc" 
 
+  # Readline²
+  symlink "readline/inputrc" "${config_home}/readline/inputrc"
+
+  # Tmux²
+  symlink "tmux/tmux.conf" "${config_home}/tmux/tmux.conf"
+
+  # Editorconfig¹
+  symlink "misc/editorconfig" "${HOME}/.editorconfig"
+
+  # Git
   symlink "git/ignore" "${config_home}/git/ignore"
   symlink "git/commitmsg" "${config_home}/git/commitmsg"
   copy "git/config" "${config_home}/git/config"
 
-  symlink "misc/editorconfig" "${HOME}/.editorconfig"
-  symlink "misc/gemrc" "${config_home}/gem/config"
-  symlink "misc/tern-config" "${HOME}/.tern-config"
-
-  symlink "readline/inputrc" "${config_home}/readline/inputrc"
-  symlink "tmux/tmux.conf" "${config_home}/tmux/tmux.conf"
-
+  # Vim¹/Neovim
   symlink "vim/" "${HOME}/.vim"
   symlink "vim/nvimrc" "${config_home}/nvim/init.vim"
   symlink "vim/after" "${config_home}/nvim/after"
   symlink "vim/plugin" "${config_home}/nvim/plugin"
   symlink "vim/autoload" "${config_home}/nvim/autoload"
+
+  # NVM/Node/NPM²
+  symlink "misc/default-node-packages" "${config_home}/nvm/default-packages"
+  symlink "misc/tern-config" "${HOME}/.tern-config"
+
+  # RVM/Ruby²
+  symlink "misc/gemrc" "${config_home}/gem/config"
+
+  # ¹ No XDG directory support
+  # ² Partial XDG directory support
+  # @see {@link https://wiki.archlinux.org/index.php/XDG_Base_Directory_support|XDG Base Directory support}
 }
 
 main "$@"
