@@ -75,12 +75,14 @@ fs() {
 serve() {
   local port="${1:-3000}"
 
-  if command -v python >/dev/null 2>&1; then
-    python -m SimpleHTTPServer "$port"
+  if command -v php >/dev/null 2>&1; then
+    php -S "localhost:${port}"
   elif command -v http-server >/dev/null 2>&1; then
     http-server -p "$port"
+  elif command -v python >/dev/null 2>&1; then
+    python -m SimpleHTTPServer "$port"
   else
-    dot::error "Missing required commands used to start an http server"
+    dot::error "Cannot start an http server at the current directory"
   fi
 }
 
