@@ -3,9 +3,6 @@
 # @file Mac specific shell aliases.
 
 
-alias cdf='cd "$(printfd)"'            # Switch to current Finder directory
-alias puf='pushd "$(printfd)"'         # Push Finder directory to the stack
-
 alias ql="qlmanage -p >/dev/null 2>&1" # Open a file in quick look
 
 alias hide="chflags hidden"            # Hide a file in Finder

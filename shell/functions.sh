@@ -9,7 +9,20 @@
 # usage: cdd [<path>]
 #
 cdd() {
-  builtin cd -- "$DOTFILES/$1"
+  builtin cd -- "$DOTFILES/$*"
+}
+
+#
+# Switch to the given path relative to the currently selected finder
+# directory.
+#
+# usage: cdf [<path>]
+#
+cdf() {
+  local root
+  root="$(printfd)"
+
+  builtin cd -- "$root/$*"
 }
 
 #
@@ -18,7 +31,7 @@ cdd() {
 # usage: cdl [<path>]
 #
 cdl() {
-  builtin cd -- "$1" && command ls -lhF "${ls_options[@]}"
+  builtin cd -- "$*" && command ls -lhF "${ls_options[@]}"
 }
 
 #
@@ -28,14 +41,14 @@ cdl() {
 # usage: cdr [<path>]
 #
 cdr() {
-  local root=""
+  local root
   root="$(git rev-parse --show-toplevel)"
 
   if [[ $? -ne 0 ]]; then
     return 1
   fi
 
-  builtin cd -- "$root/$1"
+  builtin cd -- "$root/$*"
 }
 
 #
