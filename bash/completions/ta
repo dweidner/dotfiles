@@ -3,11 +3,11 @@
 # @file Enable session completion for the tmux alias
 
 _complete_tmux_sessions() {
-  local sessions=()
-
-  if tmux info >/dev/null 2>&1; then
-    sessions+=("$(tmux ls |& cut -d : -f 1)")
+  if ! tmux has-session >/dev/null 2>&1; then
+    return 1
   fi
+
+  local sessions=( "$(tmux ls |& cut -d : -f 1)" )
 
   local cur
   _get_comp_words_by_ref cur
