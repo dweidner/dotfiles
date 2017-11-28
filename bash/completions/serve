@@ -1,0 +1,14 @@
+# bash/completions/serve
+#
+# @file Enable port completion for the serve function
+
+_complete_ports() {
+  local cur
+  _get_comp_words_by_ref cur
+
+  COMPREPLY=( $(compgen -W "3000 3001 4000 4001 8080 8081" -- "$cur") )
+}
+
+complete -F _complete_ports serve
+
+# vim:filetype=sh

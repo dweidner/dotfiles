@@ -1,0 +1,11 @@
+# bash/completions/cdf
+#
+# @file Enable completion for the cdf function
+
+_complete_finder_directories() {
+  dot::complete_directories "$(printfd || echo "$HOME/Desktop")"
+}
+
+complete -F _complete_finder_directories -o nospace cdf
+
+# vim:filetype=sh
