@@ -3,6 +3,9 @@
 # @file Mac specific shell aliases.
 
 
+# Can’t remember the path to the iCloud directory? Me neither …
+alias icloud="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs"
+
 alias ql="qlmanage -p >/dev/null 2>&1" # Open a file in quick look
 
 alias hide="chflags hidden"            # Hide a file in Finder
