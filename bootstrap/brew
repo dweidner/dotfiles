@@ -15,9 +15,6 @@ source "${BASEDIR}/../shell/utilities.sh"
 install_core_formulae() {
   brew tap homebrew/services 
 
-  brew install mas
-  brew install encfs
-
   brew install bash bash-completion@2
   brew install tmux
 
@@ -46,16 +43,19 @@ install_web_formulae() {
 
   brew install git
 
-  brew install --HEAD universal-ctags/universal-ctags/universal-ctags
-
   brew install httpd
-  brew install yarn --without-node
-  brew install tidy-html5
 
   brew install php71 --with-httpd --with-homebrew-curl
   brew install php71-xdebug
+  brew install php-code-sniffer
+  brew install phpmd
   brew install composer
   brew install adminer
+
+  brew install --HEAD universal-ctags/universal-ctags/universal-ctags
+
+  brew install yarn --without-node
+  brew install tidy-html5
 
   brew install shellcheck
 }
@@ -70,7 +70,7 @@ install() {
     dot::exit "Cannot find homwbrew command"
   fi
 
-  local profile="${1:-full}"
+  local profile="${1:-minimal}"
   
   case "${profile}" in
     full)
