@@ -1,0 +1,313 @@
+# snippets/php.snip
+#
+# @file PHP snippets
+#
+# -----------------------------------------------------------------------
+# Table of Contents
+# -----------------------------------------------------------------------
+# 1. Control Structures
+# 2. Loops
+# 3. Class declaration/instantiation
+# 4. Functions & Methods
+# 5. Variables and Constants
+# 6. Debugging
+# 7. PHPDoc
+# 8. Templating
+# 9. Misc
+# -----------------------------------------------------------------------
+
+
+# (1) Control Structures ------------------------------------------------ {{{1
+
+snippet if
+options head
+  if (${1:true}) {
+      ${0:TARGET}
+  }
+
+snippet ifelse
+options head
+  if (${1:#:condition}) {
+      ${2:TARGET}
+  } else {
+      ${3}
+  }
+
+snippet switch
+options head
+  switch (\$${1:foo}) {
+      case ${2:0}:
+          ${0:TARGET}
+          break;
+      default:
+          break;
+  }
+
+snippet try
+alias catch
+options head
+  try {
+      ${1:TARGET}
+  } catch (${2:\$e}) {
+      ${3}
+  }
+
+
+# (2) Loops ------------------------------------------------------------- {{{1
+
+snippet for
+options head
+  for (\$${1:i} = 0, \$l = count(\$${2:items}); \$$1 < \$l; \$$1++) {
+      ${0:TARGET}
+  }
+
+snippet foreach
+options head
+  foreach (\$${1:items} as \$${2:key} => \$${2:value}) {
+      ${0:TARGET}
+  }
+
+snippet while
+options head
+  while (${1:true}) {
+      ${0:TARGET}
+  }
+
+
+# (3) Variables and Constants ------------------------------------------- {{{1
+
+snippet var
+alias $
+options head
+  \${1:foo} = ${2:null};
+
+snippet const
+options head
+  const ${1:FOO_BAR} = '${2:#:value}';
+
+snippet define
+alias def
+options head
+  define('${1:FOO_BAR}', '${2:#:value}');
+
+
+# (4) Class declaration/instantiation ----------------------------------- {{{1
+
+snippet class
+options head
+  class ${1:Foo}
+  {
+      public function __construct(${2:#:arguments})
+      {
+          ${0:TARGET}
+      }
+  }
+
+snippet implements
+alias imp
+  implements ${1:Foo}
+
+snippet extends
+alias ext
+  extends ${1:Foo}
+
+snippet new
+options head
+  \$${1:foo} = new ${2:Foo}(${3:#:arguments});
+
+snippet public
+alias pu
+options head
+  public ${0:TARGET}
+
+snippet protected
+alias pr
+options head
+  protected ${0:TARGET}
+
+
+# (5) Functions & Methods ----------------------------------------------- {{{1
+
+snippet function
+alias f func
+options head
+  function ${1:foo}(${2:#:arguments})
+  {
+      ${0:TARGET}
+  }
+
+snippet method
+alias m
+options head
+  public function ${1:foo}(${2:#:arguments})
+  {
+      ${0:TARGET}
+  }
+
+snippet abstract
+options head
+  abstract protected function ${1:foo}(${2:#:arguments})
+  {
+      ${0:TARGET}
+  }
+
+snippet final
+options head
+  final public function ${1:foo}(${2:#:arguments})
+  {
+    ${0:TARGET}
+  }
+
+snippet static
+options head
+  public static ${1:name}(${2:#:arguments})
+  {
+      ${0:TARGET}
+  }
+
+snippet getter
+alias get
+options head
+  public function get${1:Foo}()
+  {
+      return $this->${2:foo};
+  }
+
+snippet setter
+alias set
+options head
+  public function set${1:Foo}(\$${3:value})
+  {
+      $this->${2:foo} = \$$3;
+
+      return $this;
+  }
+
+
+# (6) Debugging --------------------------------------------------------- {{{1
+
+snippet dump
+options head
+  var_dump(${0:TARGET});
+
+snippet log
+options head
+  error_log(${0:TARGET});
+
+
+# (7) PHPDoc ------------------------------------------------------------- {{{1
+
+snippet /*
+alias doc phpdoc
+  /**
+   * ${0}
+   */
+
+snippet @author
+alias @a
+  @author ${1:`substitute(system('git config --global user.name'), '\n$', '', '')` <`substitute(system('git config --global user.email'), '\n$', '', '')`>}
+
+snippet @deprecated
+alias @d
+  @deprecated ${1:#:version} ${2:#:description}
+
+snippet @file
+alias @f
+  @file ${1:description}
+
+snippet @inheritdoc
+alias @i
+  @inheritdoc
+
+snippet @license
+alias @l
+  @license ${1:MIT}
+
+snippet @param
+alias @p
+  @param ${1:mixed} \$${2:param} ${3:#:description}
+
+snippet @return
+alias @r
+  @return ${1:void} ${2:#:description}
+
+snippet @see
+alias @s
+  @see {@link ${1:url} ${2:link text}}
+
+snippet @throws
+  @throws ${1:InvalidArgumentException} ${2:#:description}
+
+snippet @var
+alias @v
+  @var ${1:mixed} ${2:#:description}
+
+
+# (8) Templating -------------------------------------------------------- {{{1
+
+snippet <?
+options head
+  <?php
+
+  ${0:TARGET}
+
+snippet ?
+options head
+  <?php ${0:TARGET} ?>
+
+snippet ?e
+alias ?=
+options word
+  <?= ${0:TARGET} ?>
+
+snippet ?$
+options head
+  <?php \$${1:foo} = ${2:null}; ?>
+
+snippet ??
+options head
+  <?php \$${1:foo} = isset(\$${2:bar}) ? ${3:#:true} : ${4:#:false}; ?>
+
+snippet ?if
+options head
+  <?php if (${1:#:condition}): ?>
+
+snippet ?else
+options head
+  <?php else: ?>
+
+snippet ?endif
+options head
+  <?php endif; ?>
+
+snippet ?foreach
+options head
+  <?php foreach (\$${1:items} as \$${2:key} => \$${3:value}): ?>
+
+snippet ?endforeach
+alias ?endf
+options head
+  <?php endforeach; ?>
+
+snippet ?dump
+  <?php var_dump(\$${1:foo}); ?>
+
+
+# (9) Misc -------------------------------------------------------------- {{{1
+
+snippet namespace
+alias n
+options head
+  namespace ${1:Foo\Bar};
+
+snippet use
+alias u
+options head
+  use ${1:Foo\Bar};
+
+snippet throw
+options head
+  throw new ${1:InvalidArgumentException}(${0:TARGET});
+
+
+# vim:foldmethod=marker:foldlevel=2
