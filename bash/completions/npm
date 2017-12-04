@@ -1,0 +1,9 @@
+# bash/completions/npm
+#
+# @file Enable completion for the Node package manager
+
+if command -v "npm" >/dev/null 2>&1; then
+  source <(npm completion)
+fi
+
+# vim:filetype=sh
