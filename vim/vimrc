@@ -383,6 +383,7 @@ call plug#begin()
   " |- indentLine: Show vertical lines for indentation
   " |- javascript: Improved Javascript indentation and syntax support
   " |- vue: Syntax highlighting for Vue components
+  " |- php: Syntax highlighting for PHP 7.x
   " |- liquid: Liquid templates with jekyll additions
 
   if index(g:vimrc_bundles, 'development') >= 0
@@ -395,8 +396,8 @@ call plug#begin()
 
     Plug 'pangloss/vim-javascript'
     Plug 'posva/vim-vue'
+    Plug 'StanAngeloff/php.vim', { 'for': [ 'php' ] }
     Plug 'tpope/vim-liquid'
-
 
   endif
 
