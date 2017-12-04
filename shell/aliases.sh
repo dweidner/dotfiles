@@ -72,6 +72,9 @@ alias la="ll -A"    # Long list including hidden files
 alias lt="ll -t"    # By date, most recent first
 alias lz="ll -S"    # By size, largest first
 
+alias tree="tree -CF"
+alias t="tree -a --noreport --dirsfirst -I '.git|node_modules|.DS_Store'"
+
 
 # (6) File pattern searching -------------------------------------------- {{{1
 
