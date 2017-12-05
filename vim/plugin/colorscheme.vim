@@ -12,10 +12,12 @@ endif
 if dw#IsInstalled('vim-one')
   if $TERM_PROGRAM ==# 'Apple_Terminal'
     autocmd vimrc ColorScheme one
-          \ hi Normal guibg=NONE ctermbg=NONE |
-          \ hi SignifySignAdd guibg=#fafafa ctermbg=255 |
-          \ hi SignifySignChange guibg=#fafafa ctermbg=255 |
-          \ hi SignifySignDelete guibg=#fafafa ctermbg=255
+          \ hi Normal ctermbg=NONE |
+          \ hi link NeomakeError SpellBad |
+          \ hi link NeomakeWarning SpellCap |
+          \ hi SignifySignAdd ctermbg=255 guibg=#fafafa |
+          \ hi SignifySignChange ctermbg=255 guibg=#fafafa |
+          \ hi SignifySignDelete ctermbg=255 guibg=#fafafa
   endif
 
   colorscheme one
