@@ -14,4 +14,24 @@ map  <silent> <special> <F7> :<C-U>:Neomake<CR>
 map! <silent> <special> <F6> <Esc>:Neomake<CR>
 map! <silent> <special> <F7> <Esc>:Neomake!<CR>
 
+let g:neomake_info_sign = {
+      \  'text': 'ℹ︎',
+      \  'texthl': 'NeomakeInfoSign',
+      \}
+
+let g:neomake_message_sign = {
+      \  'text': '○',
+      \  'texthl': 'NeomakeMessageSign',
+      \}
+
+let g:neomake_warning_sign = {
+      \  'text': '△',
+      \  'texthl': 'NeomakeWarningSign',
+      \}
+
+let g:neomake_error_sign = {
+      \  'text': '✕',
+      \  'texthl': 'NeomakeErrorSign',
+      \}
+
 autocmd dwneomake BufWritePost * Neomake

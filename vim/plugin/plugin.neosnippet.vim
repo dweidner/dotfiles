@@ -27,5 +27,8 @@ xmap <C-l> <Plug>(neosnippet_expand_target)
 imap <C-k> <Plug>(neosnippet_jump)
 smap <C-k> <Plug>(neosnippet_jump)
 
+" Insert JSDoc/PHPDoc (fix indentation)
+nnoremap <silent><special> <Leader>pd O<Esc>a<C-r>=neosnippet#expand('doc')<CR><Esc>[/v]/=jA
+
 " Remove remaining markers when leaving insert mode
 autocmd dwneosnippet InsertLeave * NeoSnippetClearMarkers

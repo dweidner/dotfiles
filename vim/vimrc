@@ -91,6 +91,7 @@ set scrolloff=8                      " Min. lines to keep above/below
 set sidescrolloff=16                 " Min. cols to keep left/right
 
 set laststatus=2                     " Always display the status line
+set signcolumn=yes                   " Always display the sign column
 set previewheight=16                 " Increase height of the preview window
 set pumheight=10                     " Limit visible entries in popups
 set shortmess-=f                     " Stop hiding the file label
@@ -380,9 +381,9 @@ call plug#begin()
   " |- signify: Show file changes in gutter
   " |- neomake: Asynchronous file linting
   " |- neosnippet: Enable snippet manager
-  " |- indentLine: Show vertical lines for indentation
   " |- javascript: Improved Javascript indentation and syntax support
   " |- vue: Syntax highlighting for Vue components
+  " |- php-indent: Latest indentation rules for php
   " |- php: Syntax highlighting for PHP 7.x
   " |- liquid: Liquid templates with jekyll additions
 
@@ -392,10 +393,10 @@ call plug#begin()
     Plug 'mhinz/vim-signify'
     Plug 'neomake/neomake'
     Plug 'Shougo/neosnippet'
-    Plug 'Yggdroot/indentLine', PlugIf(IsSupported('conceal'))
 
     Plug 'pangloss/vim-javascript'
     Plug 'posva/vim-vue'
+    Plug '2072/PHP-Indenting-for-VIm'
     Plug 'StanAngeloff/php.vim', { 'for': [ 'php' ] }
     Plug 'tpope/vim-liquid'
 
