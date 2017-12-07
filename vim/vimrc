@@ -380,6 +380,9 @@ call plug#begin()
   " |- signify: Show file changes in gutter
   " |- neomake: Asynchronous file linting
   " |- neosnippet: Enable snippet manager
+  " |- textobj-user:  Create custom text objects
+  " |- textobj-url: Custom text object for urls (u)
+  " |- textobj-xmlattr: Custom text object for html attributes (x)
   " |- javascript: Improved Javascript indentation and syntax support
   " |- vue: Syntax highlighting for Vue components
   " |- php-indent: Latest indentation rules for php
@@ -393,6 +396,10 @@ call plug#begin()
     Plug 'mhinz/vim-signify'
     Plug 'neomake/neomake'
     Plug 'Shougo/neosnippet'
+
+    Plug 'kana/vim-textobj-user'
+    Plug 'mattn/vim-textobj-url', { 'on': [ '<Plug>(textobj-url' ] }
+    Plug 'whatyouhide/vim-textobj-xmlattr', { 'on': [ '<Plug>(textobj-xmlattr' ] }
 
     Plug 'pangloss/vim-javascript'
     Plug 'posva/vim-vue'
