@@ -335,17 +335,17 @@ endfunction
 call plug#begin()
 
   " a) Essentials ------------------------------------------------------- {{{2
-  " |- cylce: Cycle text within predefined candidates
-  " |- easydir: Create nonexisting directories when writing files
-  " |- lastplace: Reopen file at last edit position
   " |- ack: Search file contents for patterns
   " |- bbye: Close buffers and don’t mess up window layout
-  " |- one: Atom one color scheme
-  " |- easyclip: Simplify clipboard functonality
   " |- commentary: Toggle comments
+  " |- cylce: Cycle text within predefined candidates
+  " |- easyclip: Simplify clipboard functonality
+  " |- easydir: Create nonexisting directories when writing files
   " |- endwise: Wisely end language structures
   " |- eunuch: Execute unix shell commands from vim
   " |- fugitive: Execute git commands from vim
+  " |- lastplace: Reopen file at last edit position
+  " |- one: Atom one color scheme
   " |- repeat: Enable repeating supported plugin maps
   " |- surround: Wrap text objects
   " |- unimpaired: Handy bracket key mappings
@@ -353,17 +353,17 @@ call plug#begin()
 
   if index(g:vimrc_bundles, 'essentials') >= 0
 
-    Plug 'bootleq/vim-cycle', { 'on': [ '<Plug>Cycle' ] }
-    Plug 'duggiefresh/vim-easydir'
-    Plug 'farmergreg/vim-lastplace'
     Plug 'mileszs/ack.vim'
     Plug 'moll/vim-bbye'
-    Plug 'rakr/vim-one'
-    Plug 'svermeulen/vim-easyclip', PlugIf(IsSupported('clipboard'))
     Plug 'tpope/vim-commentary'
+    Plug 'bootleq/vim-cycle', { 'on': [ '<Plug>Cycle' ] }
+    Plug 'svermeulen/vim-easyclip', PlugIf(IsSupported('clipboard'))
+    Plug 'duggiefresh/vim-easydir'
     Plug 'tpope/vim-endwise'
     Plug 'tpope/vim-eunuch'
     Plug 'tpope/vim-fugitive'
+    Plug 'farmergreg/vim-lastplace'
+    Plug 'rakr/vim-one'
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
     Plug 'tpope/vim-unimpaired'
@@ -377,39 +377,66 @@ call plug#begin()
 
   " b) Web Development -------------------------------------------------- {{{2
   " |- editorconfig: Load options from config file
-  " |- signify: Show file changes in gutter
+  " |- investigate: Look up documentation (gK)
   " |- neomake: Asynchronous file linting
   " |- neosnippet: Enable snippet manager
+  " |- signify: Show file changes in gutter
   " |- textobj-user:  Create custom text objects
   " |- textobj-url: Custom text object for urls (u)
   " |- textobj-xmlattr: Custom text object for html attributes (x)
-  " |- javascript: Improved Javascript indentation and syntax support
-  " |- vue: Syntax highlighting for Vue components
-  " |- php-indent: Latest indentation rules for php
-  " |- php: Syntax highlighting for PHP 7.x
-  " |- liquid: Liquid templates with jekyll additions
 
   if index(g:vimrc_bundles, 'development') >= 0
 
     Plug 'editorconfig/editorconfig-vim'
     Plug 'keith/investigate.vim'
-    Plug 'mhinz/vim-signify'
     Plug 'neomake/neomake'
     Plug 'Shougo/neosnippet'
+    Plug 'mhinz/vim-signify'
 
     Plug 'kana/vim-textobj-user'
     Plug 'mattn/vim-textobj-url', { 'on': [ '<Plug>(textobj-url' ] }
     Plug 'whatyouhide/vim-textobj-xmlattr', { 'on': [ '<Plug>(textobj-xmlattr' ] }
 
+  endif
+
+  " c) Syntax Highlighting & Indentation Rules -------------------------- {{{2
+  " |- css3: Syntax highlighting for the latest CSS properties
+  " |- git: Filetypes and syntax for gitconfig, gitcommit, etc…
+  " |- html5: HTML5 syntax and omnicompletion
+  " |- javascript: Improved Javascript indentation and syntax support
+  " |- json: Improved JSON highlighting
+  " |- jsx: React JSX syntax highlighting and indenting
+  " |- less: Syntax for LESS (dynamic CSS)
+  " |- liquid: Liquid templates with jekyll additions
+  " |- php: Syntax highlighting for PHP 7.x
+  " |- php-indent: Latest indentation rules for php
+  " |- tmux: Syntax for tmux configuration
+  " |- twig: Syntax and indentation for twig templates
+  " |- scss: Syntax for SCSS (Sassy CSS)
+  " |- vue: Syntax highlighting for Vue components
+  " |- yaml: Improved and faster syntax highlighting for yaml
+
+  if index(g:vimrc_bundles, 'development') >= 0
+
+    Plug 'hail2u/vim-css3-syntax'
+    Plug 'tpope/vim-git'
+    Plug 'othree/html5.vim'
     Plug 'pangloss/vim-javascript'
-    Plug 'posva/vim-vue'
-    Plug '2072/PHP-Indenting-for-Vim'
-    Plug 'StanAngeloff/php.vim', { 'for': [ 'php' ] }
+    Plug 'elzr/vim-json'
+    Plug 'mxw/vim-jsx'
+    Plug 'groenewege/vim-less'
     Plug 'tpope/vim-liquid'
+    Plug 'StanAngeloff/php.vim', { 'for': [ 'php' ] }
+    Plug '2072/PHP-Indenting-for-Vim'
+    Plug 'cakebaker/scss-syntax.vim'
+    Plug 'tmux-plugins/vim-tmux'
+    Plug 'lumiliet/vim-twig'
+    Plug 'posva/vim-vue'
+    Plug 'stephpy/vim-yaml'
 
   endif
 
-  " c) Completion Manager ---------------------------------------------- {{{2
+  " d) Completion Manager ---------------------------------------------- {{{2
   " |- nvim-completion-manager: Fast and extensible completion framework
   " |- ncm-css: CSS completion for CSS, SASS and LESS
   " |- neco-vim: Vim completion sources for deoplete/ncm
