@@ -389,13 +389,14 @@ call plug#begin()
   if index(g:vimrc_bundles, 'development') >= 0
 
     Plug 'editorconfig/editorconfig-vim'
+    Plug 'keith/investigate.vim'
     Plug 'mhinz/vim-signify'
     Plug 'neomake/neomake'
     Plug 'Shougo/neosnippet'
 
     Plug 'pangloss/vim-javascript'
     Plug 'posva/vim-vue'
-    Plug '2072/PHP-Indenting-for-VIm'
+    Plug '2072/PHP-Indenting-for-Vim'
     Plug 'StanAngeloff/php.vim', { 'for': [ 'php' ] }
     Plug 'tpope/vim-liquid'
 
