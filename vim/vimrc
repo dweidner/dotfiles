@@ -13,9 +13,8 @@
 "  8. Code Folding
 "  9. File Globbing
 " 10. Key Mappings
-" 11. Local configuration
-" 12. Plugins
-" 13. Auto Commands
+" 11. Plugins
+" 12. Auto Commands
 " -----------------------------------------------------------------------
 
 
@@ -200,11 +199,6 @@ set wildignore+=*.min.*,*-min.*
 " space to the default leader key.
 map <Space> <Leader>
 
-" Avoid the escape key
-inoremap jk <Esc>
-xnoremap jk <Esc>
-cnoremap jk <C-c>
-
 " Ensure that InsertLeave is fired, when quiting insert mode with Ctrl-c
 inoremap <C-c> <Esc>
 
@@ -215,7 +209,54 @@ cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 xnoremap < <gv
 xnoremap > >gv
 
-" b) Localization ------------------------------------------------------- {{{2
+" qq to record, Q to replay a macro
+nmap Q @q
+
+" b) Movement ----------------------------------------------------------- {{{2
+
+" Disable arrow keys and take of the training wheels
+nnoremap <Up> <Nop>
+nnoremap <Right> <Nop>
+nnoremap <Down> <Nop>
+nnoremap <Left> <Nop>
+inoremap <Up> <Nop>
+inoremap <Right> <Nop>
+inoremap <Down> <Nop>
+inoremap <Left> <Nop>
+
+" Move to the beginning/end of the line instead of the top/bottom window
+" @see <https://bitbucket.org/sjl/dotfiles>
+nnoremap H ^
+nnoremap L $
+
+" Faster linewise scrolling
+nnoremap <C-e> 3<C-e>
+nnoremap <C-y> 3<C-y>
+
+" c) Window/Buffer Management ------------------------------------------- {{{2
+
+" Switch to alternate buffer
+nnoremap <Leader><Space> <C-^>
+
+" Circular window navigation
+nnoremap <Tab> <C-w>w
+nnoremap <S-Tab> <C-w>W
+
+" d) Search/Replace ----------------------------------------------------- {{{2
+
+" Hide matches from previous search
+noremap <silent> <Leader>/ :nohlsearch<CR>
+
+" Shortcuts for vim's :substitute (using @ allows searching for paths)
+nnoremap <Leader>s :%s@@@gc<Left><Left><Left><Left>
+nnoremap <Leader>S :%s@@@g<Left><Left><Left>
+
+" e) Formatting --------------------------------------------------------- {{{2
+
+" Auto format current buffer
+nnoremap <Leader>= ggVG=
+
+" f) Localization ------------------------------------------------------- {{{2
 
 " Some key mappings are hard to reach on a german keyboard. As a workaround I
 " remap the Umlaut keys on a german keyboard to the corresponding keys in an
@@ -252,60 +293,16 @@ vnoremap <Leader>+ g<C-]>
 nnoremap <Leader>* <C-w>g}
 vnoremap <Leader>* <C-w>g}
 
-" c) Movement ----------------------------------------------------------- {{{2
-
-" Disable arrow keys and take of the training wheels
-nnoremap <Up> <Nop>
-nnoremap <Right> <Nop>
-nnoremap <Down> <Nop>
-nnoremap <Left> <Nop>
-inoremap <Up> <Nop>
-inoremap <Right> <Nop>
-inoremap <Down> <Nop>
-inoremap <Left> <Nop>
-
-" Move to the beginning/end of the line instead of the top/bottom window
-" @see <https://bitbucket.org/sjl/dotfiles>
-nnoremap H ^
-nnoremap L $
-
-" Faster linewise scrolling
-nnoremap <C-e> 3<C-e>
-nnoremap <C-y> 3<C-y>
-
-" d) Window/Buffer Management ------------------------------------------- {{{2
-
-" Switch to alternate buffer
-nnoremap <Leader><Space> <C-^>
-
-" Circular window navigation
-nnoremap <Tab> <C-w>w
-nnoremap <S-Tab> <C-w>W
-
-" e) Search/Replace ----------------------------------------------------- {{{2
-
-" Hide matches from previous search
-noremap <silent> <Leader>/ :nohlsearch<CR>
-noremap <silent> <Leader>- :nohlsearch<CR>
-
-" Shortcuts for vim's :substitute (using @ allows searching for paths)
-nnoremap <Leader>s :%s@@@gc<Left><Left><Left><Left>
-nnoremap <Leader>S :%s@@@g<Left><Left><Left>
-
-" f) Misc --------------------------------------------------------------- {{{2
-
-" qq to record, Q to replay a macro
-nmap Q @q
+" Localization of custom bindings
+nmap <silent> <Leader>- <Leader>/
+nmap <silent> <Leader>´ <Leader>=
 
 
-" (11) Local configuration ---------------------------------------------- {{{1
+" (11) Plugins ---------------------------------------------------------- {{{1
 
-" Load a local configuration file. Allows users to customize the bundles to
-" load and to add custom keybindings.
+" Load a local configuration file. Allows users to customize the bundles
+" to load or to add custom keybindings.
 if filereadable('~/.local/vimrc') | source '~/.local/vimrc' | endif
-
-
-" (12) Plugins ---------------------------------------------------------- {{{1
 
 " Conditionally load a plugin (@see https://git.io/vd71n)
 function! PlugIf(condition, ...) abort
@@ -430,7 +427,7 @@ call plug#begin()
 call plug#end()
 
 
-" (13) Auto Commands ---------------------------------------------------- {{{1
+" (12) Auto Commands ---------------------------------------------------- {{{1
 
 augroup vimrc
 
