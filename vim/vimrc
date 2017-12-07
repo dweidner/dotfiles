@@ -336,6 +336,7 @@ call plug#begin()
 
   " a) Essentials ------------------------------------------------------- {{{2
   " |- cylce: Cycle text within predefined candidates
+  " |- easydir: Create nonexisting directories when writing files
   " |- lastplace: Reopen file at last edit position
   " |- ack: Search file contents for patterns
   " |- bbye: Close buffers and don’t mess up window layout
@@ -353,6 +354,7 @@ call plug#begin()
   if index(g:vimrc_bundles, 'essentials') >= 0
 
     Plug 'bootleq/vim-cycle', { 'on': [ '<Plug>Cycle' ] }
+    Plug 'duggiefresh/vim-easydir'
     Plug 'farmergreg/vim-lastplace'
     Plug 'mileszs/ack.vim'
     Plug 'moll/vim-bbye'
