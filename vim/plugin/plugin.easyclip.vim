@@ -7,7 +7,6 @@
 let g:EasyClipUseSubstituteDefaults = 0
 nmap <silent> gs <plug>SubstituteOverMotionMap
 nmap gss <plug>SubstituteLine
-nmap gS <plug>G_SubstituteToEndOfLine
 xmap gs <plug>XEasyClipPaste
 
 " Easyclip shadows 'add mark' with the 'cut' operation. Offer custom bindings.

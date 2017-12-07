@@ -381,6 +381,7 @@ call plug#begin()
   " |- neomake: Asynchronous file linting
   " |- neosnippet: Enable snippet manager
   " |- signify: Show file changes in gutter
+  " |- splitjoin: Transform singleline to multiline and vice versa (gS/gJ)
   " |- textobj-user:  Create custom text objects
   " |- textobj-url: Custom text object for urls (u)
   " |- textobj-xmlattr: Custom text object for html attributes (x)
@@ -392,6 +393,7 @@ call plug#begin()
     Plug 'neomake/neomake'
     Plug 'Shougo/neosnippet'
     Plug 'mhinz/vim-signify'
+    Plug 'AndrewRadev/splitjoin.vim'
 
     Plug 'kana/vim-textobj-user'
     Plug 'mattn/vim-textobj-url', { 'on': [ '<Plug>(textobj-url' ] }
