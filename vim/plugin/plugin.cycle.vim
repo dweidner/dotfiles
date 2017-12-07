@@ -44,6 +44,7 @@ let g:cycle_default_groups = [
       \   [['{:}', '[:]', '(:)'], 'sub_pairs'],
       \   [['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'], 'hard_case', {'name': 'Tage'}],
       \   [['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], 'hard_case', {'name': 'Days'}],
+      \   [['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']],
       \ ]
 
 let g:cycle_default_groups_for_html = [
