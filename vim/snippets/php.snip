@@ -271,23 +271,22 @@ options head
 
 snippet ?if
 options head
-  <?php if (${1:#:condition}): ?>
+  <?php if (${1:#:condition}) : ?>
+      ${0:TARGET}
+  <?php endif; ?>
 
 snippet ?else
 options head
   <?php else: ?>
 
-snippet ?endif
+snippet ?elseif
 options head
-  <?php endif; ?>
+  <?php elseif (${1:#:condition}) : ?>
 
 snippet ?foreach
 options head
-  <?php foreach (\$${1:items} as \$${2:key} => \$${3:value}): ?>
-
-snippet ?endforeach
-alias ?endf
-options head
+  <?php foreach (\$${1:items} as \$${2:key} => \$${3:value}) : ?>
+      ${0:TARGET}
   <?php endforeach; ?>
 
 snippet ?dump
