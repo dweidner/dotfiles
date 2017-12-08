@@ -199,7 +199,6 @@ options head
 
 snippet /*
 alias doc phpdoc
-options indent
 	/**
 	 * ${0}
 	 */
@@ -256,8 +255,7 @@ snippet ?
 options head
   <?php ${0:TARGET} ?>
 
-snippet ?e
-alias ?=
+snippet ?=
 options word
   <?= ${0:TARGET} ?>
 
@@ -268,6 +266,10 @@ options head
 snippet ??
 options head
   <?php \$${1:foo} = isset(\$${2:bar}) ? ${3:#:true} : ${4:#:false}; ?>
+
+snippet ?e
+options word
+  <?php echo ${0:TARGET}; ?>
 
 snippet ?if
 options head
@@ -284,6 +286,12 @@ options head
   <?php elseif (${1:#:condition}) : ?>
 
 snippet ?foreach
+options head
+  <?php foreach (\$${1:items} as \$${2:value}) : ?>
+      ${0:TARGET}
+  <?php endforeach; ?>
+
+snippet ?keyvalue
 options head
   <?php foreach (\$${1:items} as \$${2:key} => \$${3:value}) : ?>
       ${0:TARGET}
