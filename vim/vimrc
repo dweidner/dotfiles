@@ -89,6 +89,7 @@ set clipboard^=unnamed               " Use system clipboard register
 set scrolloff=8                      " Min. lines to keep above/below
 set sidescrolloff=16                 " Min. cols to keep left/right
 
+set showtabline=1                    " Show tabs if more than one is open
 set laststatus=2                     " Always display the status line
 set signcolumn=yes                   " Always display the sign column
 set previewheight=16                 " Increase height of the preview window
@@ -242,6 +243,9 @@ nnoremap <Leader><Space> <C-^>
 nnoremap <Tab> <C-w>w
 nnoremap <S-Tab> <C-w>W
 
+" Toggle the visibility of the tabline
+nmap <silent> =ot :set showtabline=<C-R>=&showtabline > 0 ? 0 : 2<CR><CR>
+
 " d) Search/Replace ----------------------------------------------------- {{{2
 
 " Hide matches from previous search
@@ -345,6 +349,7 @@ call plug#begin()
   " |- eunuch: Execute unix shell commands from vim
   " |- fugitive: Execute git commands from vim
   " |- lastplace: Reopen file at last edit position
+  " |- lightline: Configurable statusline
   " |- one: Atom one color scheme
   " |- repeat: Enable repeating supported plugin maps
   " |- surround: Wrap text objects
@@ -363,6 +368,7 @@ call plug#begin()
     Plug 'tpope/vim-eunuch'
     Plug 'tpope/vim-fugitive'
     Plug 'farmergreg/vim-lastplace'
+    Plug 'itchyny/lightline.vim'
     Plug 'rakr/vim-one'
     Plug 'tpope/vim-repeat'
     Plug 'tpope/vim-surround'
