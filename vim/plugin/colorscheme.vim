@@ -9,7 +9,7 @@ if dw#IsSupported('truecolors')
 endif
 
 " Use Atom One Light color scheme if installed via package manager
-if dw#IsInstalled('vim-one')
+if dw#IsLoaded('vim-one')
   if $TERM_PROGRAM ==# 'Apple_Terminal'
     autocmd vimrc ColorScheme one
           \ hi Normal ctermbg=NONE |
