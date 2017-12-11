@@ -15,6 +15,7 @@ if dw#IsLoaded('vim-one')
           \ hi Normal ctermbg=NONE |
           \ hi link NeomakeError SpellBad |
           \ hi link NeomakeWarning SpellCap |
+          \ hi link ExtraWhitespace SpellCap |
           \ hi SignifySignAdd ctermbg=255 guibg=#fafafa |
           \ hi SignifySignChange ctermbg=255 guibg=#fafafa |
           \ hi SignifySignDelete ctermbg=255 guibg=#fafafa
