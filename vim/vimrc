@@ -39,6 +39,8 @@ let g:fzf_home     = fnamemodify(resolve(expand('$FZF_DIR')), ':p:h')
 let g:vimrc_bundles  = [
       \ 'essentials',
       \ 'development',
+      \ 'syntax',
+      \ 'completion',
       \]
 
 let g:vimrc_features = {
@@ -210,10 +212,18 @@ cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 xnoremap < <gv
 xnoremap > >gv
 
+" Reload syntax highlighting
+nnoremap <silent> U :syntax sync fromstart<CR><C-L>
+
 " qq to record, Q to replay a macro
 nmap Q @q
 
-" b) Movement ----------------------------------------------------------- {{{2
+" b) UI ----------------------------------------------------------------- {{{2
+
+" Toggle the visibility of the tabline
+nmap <silent> =ot :set showtabline=<C-R>=&showtabline ? 0 : 2<CR><CR>
+
+" c) Movement ----------------------------------------------------------- {{{2
 
 " Disable arrow keys and take of the training wheels
 nnoremap <Up> <Nop>
@@ -230,11 +240,17 @@ inoremap <Left> <Nop>
 nnoremap H ^
 nnoremap L $
 
+" Jump to the beginning/end of line
+inoremap <C-a> <Esc>I
+inoremap <C-e> <Esc>A
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+
 " Faster linewise scrolling
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
 
-" c) Window/Buffer Management ------------------------------------------- {{{2
+" d) Window/Buffer Management ------------------------------------------- {{{2
 
 " Switch to alternate buffer
 nnoremap <Leader><Space> <C-^>
@@ -243,22 +259,33 @@ nnoremap <Leader><Space> <C-^>
 nnoremap <Tab> <C-w>w
 nnoremap <S-Tab> <C-w>W
 
-" Toggle the visibility of the tabline
-nmap <silent> =ot :set showtabline=<C-R>=&showtabline ? 0 : 2<CR><CR>
+" Open a new vertical/horizontal split
+nnoremap <silent> <Leader>v :<C-R>=winwidth(0)/3<CR>vnew<CR>
+nnoremap <silent> <Leader>s :<C-R>=winheight(0)/3<CR>new<CR>
 
-" d) Search/Replace ----------------------------------------------------- {{{2
+" Write the buffer to the current file
+nnoremap <C-s> :update<CR>
+
+" Close the location list and the delete the current buffer
+nnoremap <silent> <C-x> :lclose<CR>:bdelete<CR>
+nmap <Leader>x <C-x>
+
+" e) Search/Replace ----------------------------------------------------- {{{2
 
 " Hide matches from previous search
 noremap <silent> <Leader>/ :nohlsearch<CR>
 
-" Shortcuts for vim's :substitute (using @ allows searching for paths)
-nnoremap <Leader>s :%s@@@gc<Left><Left><Left><Left>
-nnoremap <Leader>S :%s@@@g<Left><Left><Left>
-
-" e) Formatting --------------------------------------------------------- {{{2
+" f) Formatting --------------------------------------------------------- {{{2
 
 " Auto format current buffer
 nnoremap <Leader>= ggVG=
+
+" Join lines without spaces
+nnoremap <Leader>j VjgJl
+
+" Convert a word to lowercase/uppercase
+nnoremap <Leader>l mQviwu`Q
+nnoremap <Leader>u mQviwU`Q
 
 
 " (11) Plugins ---------------------------------------------------------- {{{1
@@ -388,7 +415,7 @@ call plug#begin()
   " |- vue: Syntax highlighting for Vue components
   " |- yaml: Improved and faster syntax highlighting for yaml
 
-  if index(g:vimrc_bundles, 'development') >= 0
+  if index(g:vimrc_bundles, 'syntax') >= 0
 
     Plug 'hail2u/vim-css3-syntax'
     Plug 'tpope/vim-git'
@@ -416,7 +443,7 @@ call plug#begin()
   " |- languageclient: Vim support for the Language Server Protocol
   " |- languageserver-php: PHP implementation of the LSP
 
-  if index(g:vimrc_bundles, 'development') >= 0
+  if index(g:vimrc_bundles, 'completion') >= 0
 
     Plug 'roxma/nvim-completion-manager', PlugIf(IsSupported('completion'), { 'on': [] })
     Plug 'calebeby/ncm-css', PlugIf(IsSupported('completion'))
@@ -441,10 +468,12 @@ call plug#end()
 augroup vimrc
 
   " Dynamically hide the cursorline
-  autocmd WinEnter    * set cursorline
-  autocmd WinLeave    * set nocursorline
-  autocmd InsertEnter * set nocursorline
-  autocmd InsertLeave * set cursorline
+  autocmd WinEnter,InsertLeave * set cursorline
+  autocmd WinLeave,InsertEnter * set nocursorline
+
+  " Temporarily hide search results when entering insert mode
+  autocmd InsertEnter * setlocal nohlsearch
+  autocmd InsertLeave * setlocal hlsearch
 
 augroup END
 
