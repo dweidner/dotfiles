@@ -138,6 +138,11 @@ main() {
   create_directories "${cache_directories[@]}"
   create_directories "${data_directories[@]}"
 
+  # Create symlinks to included configuration files
+  # @see {@link https://wiki.archlinux.org/index.php/XDG_Base_Directory_support|XDG Base Directory support}
+  #
+  # ¹ No XDG directory support
+  # ² Partial XDG directory support
   dot::info "Creating symlinks …"
 
   # Bash¹
@@ -173,9 +178,8 @@ main() {
   # RVM/Ruby²
   symlink "misc/gemrc" "${config_home}/gem/config"
 
-  # ¹ No XDG directory support
-  # ² Partial XDG directory support
-  # @see {@link https://wiki.archlinux.org/index.php/XDG_Base_Directory_support|XDG Base Directory support}
+  # Ctags¹
+  symlink "misc/ctags" "${HOME}/.ctags"
 }
 
 main "$@"
