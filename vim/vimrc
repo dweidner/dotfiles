@@ -156,7 +156,7 @@ endif
 " (6) Completion System ------------------------------------------------- {{{1
 
 set complete-=i                      " Don't scan included files
-set complete-=t                      " Avoid tag completion
+set complete-=t                      " Avoid tag completion by default
 set completeopt+=menu                " Show possible completions in a popup
 set completeopt+=menuone             " Show the popup even for single match
 
@@ -389,8 +389,10 @@ call plug#begin()
   " |- signify: Show file changes in gutter
   " |- splitjoin: Transform singleline to multiline and vice versa (gS/gJ)
   " |- textobj-user:  Create custom text objects
-  " |- textobj-url: Custom text object for urls (u)
-  " |- textobj-xmlattr: Custom text object for html attributes (x)
+  " |- textobj-indent: Select current indent level (i)
+  " |- textobj-line: Select current line (l)
+  " |- textobj-url: Select urls (u)
+  " |- textobj-xmlattr: Select html attributes (x)
 
   if index(g:vimrc_bundles, 'development') >= 0
 
@@ -402,6 +404,8 @@ call plug#begin()
     Plug 'AndrewRadev/splitjoin.vim'
 
     Plug 'kana/vim-textobj-user'
+    Plug 'kana/vim-textobj-indent', { 'on': [ '<Plug>(textobj-indent' ] }
+    Plug 'kana/vim-textobj-line', { 'on': [ '<Plug>(textobj-line' ] }
     Plug 'mattn/vim-textobj-url', { 'on': [ '<Plug>(textobj-url' ] }
     Plug 'whatyouhide/vim-textobj-xmlattr', { 'on': [ '<Plug>(textobj-xmlattr' ] }
 
