@@ -89,7 +89,7 @@ set clipboard^=unnamed               " Use system clipboard register
 set scrolloff=8                      " Min. lines to keep above/below
 set sidescrolloff=16                 " Min. cols to keep left/right
 
-set showtabline=1                    " Show tabs if more than one is open
+set showtabline=0                    " Hide the tabline by default
 set laststatus=2                     " Always display the status line
 set signcolumn=yes                   " Always display the sign column
 set previewheight=16                 " Increase height of the preview window
@@ -244,7 +244,7 @@ nnoremap <Tab> <C-w>w
 nnoremap <S-Tab> <C-w>W
 
 " Toggle the visibility of the tabline
-nmap <silent> =ot :set showtabline=<C-R>=&showtabline > 0 ? 0 : 2<CR><CR>
+nmap <silent> =ot :set showtabline=<C-R>=&showtabline ? 0 : 2<CR><CR>
 
 " d) Search/Replace ----------------------------------------------------- {{{2
 
@@ -259,47 +259,6 @@ nnoremap <Leader>S :%s@@@g<Left><Left><Left>
 
 " Auto format current buffer
 nnoremap <Leader>= ggVG=
-
-" f) Localization ------------------------------------------------------- {{{2
-
-" Some key mappings are hard to reach on a german keyboard. As a workaround I
-" remap the Umlaut keys on a german keyboard to the corresponding keys in an
-" ASCII/US layout. That helps at least in vim’s normal mode.
-
-" Jump forward/backward
-map ü [
-map + ]
-noremap Ü {
-noremap * }
-map üü [[
-map ++ ]]
-map ü+ []
-map +ü ][
-
-" Search forward/backward
-noremap - /
-noremap _ ?
-
-" Search word under cursor forward/backward
-noremap ' *
-
-" Repeat latest f, t, F or T
-noremap ö ;
-noremap Ö :
-
-" Jump to mark/Execute contents of register
-noremap ä '
-noremap Ä @
-
-" Jump to the definition of the keyword
-nnoremap <Leader>+ g<C-]>
-vnoremap <Leader>+ g<C-]>
-nnoremap <Leader>* <C-w>g}
-vnoremap <Leader>* <C-w>g}
-
-" Localization of custom bindings
-nmap <silent> <Leader>- <Leader>/
-nmap <silent> <Leader>´ <Leader>=
 
 
 " (11) Plugins ---------------------------------------------------------- {{{1
@@ -396,6 +355,7 @@ call plug#begin()
 
   if index(g:vimrc_bundles, 'development') >= 0
 
+    Plug 'ntpeters/vim-better-whitespace', { 'on': [ 'ToggleWhitespace', 'StripWhitespace' ] }
     Plug 'editorconfig/editorconfig-vim'
     Plug 'keith/investigate.vim'
     Plug 'neomake/neomake'

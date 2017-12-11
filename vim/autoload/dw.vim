@@ -17,6 +17,25 @@ endfunction
 
 
 "
+" Retrieve a list of locales supported by the current system.
+"
+" @return {List}
+"
+function! dw#Languages() abort
+  redir => l:languages
+    silent! language
+  redir END
+
+  let l:languages = substitute(dw#Trim(l:languages), '^.*\"\(.*\)\"', '\1', '')
+  let l:languages = split(l:languages, '/')
+  let l:languages = filter(l:languages, 'len(v:val) >= 4')
+  let l:languages = uniq(sort(l:languages))
+  let l:languages = map(l:languages, 'split(v:val, "\\.")[0]')
+
+  return l:languages
+endfunction
+
+"
 " Determine whether a given feature is supported.
 "
 " @param {String} feature...
