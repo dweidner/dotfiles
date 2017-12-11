@@ -95,11 +95,11 @@ function! LightlineLinter() abort
   if exists('*neomake#statusline#get')
     return neomake#statusline#get(l:bufnr, {
           \   'format_running': s:GetSymbol('spinner'),
-          \   'format_loclist_ok': s:GetSymbol('ok'),
+          \   'format_loclist_ok': '',
           \   'format_loclist_unknown': '',
-          \   'format_loclist_type_E': s:GetSymbol('error') . ' {{count}} ',
-          \   'format_loclist_type_W': s:GetSymbol('warning') . ' {{count}} ',
-          \   'format_loclist_type_I': s:GetSymbol('info') . ' {{count}} ',
+          \   'format_loclist_type_E': ' ' . s:GetSymbol('error') . ' {{count}}',
+          \   'format_loclist_type_W': ' ' . s:GetSymbol('warning') . ' {{count}}',
+          \   'format_loclist_type_I': ' ' . s:GetSymbol('info') . ' {{count}}',
           \ })
   endif
 
