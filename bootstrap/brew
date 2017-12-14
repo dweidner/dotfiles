@@ -40,23 +40,20 @@ install_web_formulae() {
 
   brew install neovim
   brew install python3
+  brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
   brew install git
 
   brew install httpd
-
   brew install php71 --with-httpd --with-homebrew-curl
   brew install php71-xdebug
-  brew install php-code-sniffer
-  brew install phpmd
   brew install composer
+  brew install php-code-sniffer phpmd
   brew install adminer
-
-  brew install --HEAD universal-ctags/universal-ctags/universal-ctags
+  brew install mariadb
 
   brew install yarn --without-node
   brew install tidy-html5
-
   brew install shellcheck
 }
 
