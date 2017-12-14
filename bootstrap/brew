@@ -13,7 +13,7 @@ source "${BASEDIR}/../shell/utilities.sh"
 # usage: install_core_formulae
 #
 install_core_formulae() {
-  brew tap homebrew/services 
+  brew tap homebrew/services
 
   brew install bash bash-completion@2
   brew install tmux
@@ -71,7 +71,7 @@ install() {
   fi
 
   local profile="${1:-minimal}"
-  
+
   case "${profile}" in
     full)
       install_core_formulae
@@ -80,7 +80,7 @@ install() {
     *)
       install_core_formulae
       ;;
-  esac 
+  esac
 }
 
 install "$@"
