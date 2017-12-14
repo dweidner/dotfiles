@@ -1,0 +1,345 @@
+#!/usr/bin/env bash
+
+readonly BASEDIR="$(dirname "$0")"
+readonly DOTFILES="${DOTFILES:-$(dirname "$BASEDIR")}"
+
+source "${DOTFILES}/shell/utilities.sh"
+
+
+#
+# Notify the user that a given command is not defined.
+#
+# usage: command_not_found <command>
+#
+command_not_found() {
+  dot::error "Command [${1}] is not defined\\n"
+  usage
+}
+
+#
+# Notify the user about an invalid option.
+#
+# usage: unknown_option <name>
+#
+unknown_option() {
+  dot::error "Unknown option given [${1}]"
+}
+
+#
+# Notify the user about an unknown system component.
+#
+# usage: unknown_component <name>
+#
+unknown_component() {
+  dot::error "Unknown system component [${1}]"
+}
+
+#
+# Display usage information.
+#
+#
+usage() {
+  cat <<- EOF
+		Dotfiles v2.1.0
+
+		Usage:
+		  dotfiles <command> [options] [arguments]
+
+		Commands:
+		  cleanup		Cleanup caches of various system components
+		  help			Display help for a command
+		  list			List available commands
+		  update		Fetch the latest version of various system components
+	EOF
+}
+
+#
+# Display usage information for the cleanup command.
+#
+usage_cleanup_command() {
+  cat <<-EOF
+		Usage:
+		  cleanup [<component>]
+		
+		Arguments:
+		  component  	Name of the system component to cleanup
+		
+		Help:
+		  The cleanup command purges various caches on the current system and removes
+		  older versions of installed commands.
+		
+		    e.g. dotfiles cleanup homebrew
+		
+		  In order to cleanup all system components in one go leave out the component
+		  name.
+		
+		    e.g. dotfiles cleanup
+		
+	EOF
+}
+
+#
+# Display usage information for the help command.
+#
+usage_help_command() {
+  cat <<-EOF
+		Usage:
+		  help [<command>]
+		
+		Arguments:
+		  command  	Name of the command to display usage information for
+		
+		Help:
+		  The help command displays help for a given command:
+		
+		    e.g dotfiles help update
+		
+		  To display a list of available commands, please use the list command.
+		
+	EOF
+}
+
+#
+# Display usage information for the list command
+#
+usage_list_command() {
+  cat <<-EOF
+		Usage:
+		  list [options]
+		
+		Options:
+		  --raw  Display only the list of commands (no descriptions)
+		
+		Help:
+		  The list command lists all available commands:
+		
+		    e.g. dotfiles list
+		
+		  It is possible to retrieve a raw list of commands using the --raw option.
+		
+		    e.g. dotfiles list --raw
+		
+	EOF
+}
+
+#
+# Display usage information for the update command.
+#
+usage_update_command() {
+  cat <<-EOF
+		Usage:
+			update <component>
+		
+		Arguments:
+		  component  	Name of the system component to update
+		
+		Help:
+		  The update command can be used to fetch the latest version of various
+		  system components.
+		
+		    e.g. dotfiles update homebrew
+		
+	EOF
+}
+
+#
+# Display help for a command.
+#
+# usage: help [<command>]
+#
+help() {
+  local command="${1:-help}"
+
+  case "$command" in
+    cleanup) usage_cleanup_command ;;
+    help)    usage_help_command ;;
+    list)    usage_list_command ;;
+    update)  usage_update_command ;;
+    *)       command_not_found "$command" ;;
+  esac
+}
+
+#
+# Display a list of commands.
+#
+# usage: list [options]
+#
+list() {
+  local raw=0
+
+  while (( $# > 0 )); do
+    case "$1" in
+      --raw) raw=1 ;;
+      --*)   unknown_option "$1" ;;
+    esac
+    shift
+  done
+
+  if (( raw == 0 )); then
+    usage
+    return
+  fi
+
+  cat <<-EOF
+		cleanup
+		help
+		list
+		update
+	EOF
+}
+
+#
+# Update system components.
+#
+# usage: update [<component>]
+#
+update() {
+  # Udate all components if no argument is given
+  if (( $# == 0)); then
+    update_system
+    update_homebrew
+    return 0
+  fi
+
+  # Update only specific system components
+  case "$1" in
+    brew|homebrew) update_homebrew ;;
+    system) update_system ;;
+    *) unknown_component "$1" ;;
+  esac
+}
+
+#
+# Update homebrew the missing package manager for macOS
+#
+# usage: update_homebrew
+#
+update_homebrew() {
+  dot::command_exists "brew" || return 1
+
+  dot::info "Updating homebrew …"
+  brew update & wait
+
+  local outdated_formulae
+  outdated_formulae="$(brew outdated --quiet)"
+  wait
+
+  if [[ -z "$outdated_formulae" ]]; then
+    dot::ok "No updates available"
+    return 0
+  fi
+
+  dot::info "Updating outdated formulae …"
+  brew upgrade & wait
+
+  cleanup_homebrew
+}
+
+#
+# Update the operating system
+#
+# usage: update_system
+#
+update_system() {
+  case "$OSTYPE" in
+    darwin*) update_macos ;;
+  esac
+}
+
+#
+# Update macOS from the command line
+#
+# usage: update_macos
+#
+update_macos() {
+  dot::info "Updating macOS and installed software (requires root privileges) …"
+  sudo softwareupdate --install --all
+
+  cleanup_macos
+}
+
+#
+# Cleanup the current system.
+#
+# usage: cleanup [<component>]
+#
+cleanup() {
+
+  # Cleanup all components if no argument is given
+  if (( $# == 0)); then
+    cleanup_system
+    cleanup_homebrew
+    return 0
+  fi
+
+  # Cleanup a specific component only
+  case "$1" in
+    brew|homebrew) cleanup_homebrew ;;
+    system) cleanup_system ;;
+    *) unknown_component "$1" ;;
+  esac
+}
+
+#
+# Cleanup old versions of installed packages and prune dead symlinks.
+#
+# usage: cleanup_homebrew
+#
+cleanup_homebrew() {
+  dot::command_exists "brew" || return 1
+
+  dot::info "Removing old versions of installed formulae …"
+  brew cleanup
+  brew cask cleanup
+
+  dot::info "Removing dead symlinks …"
+  brew prune
+}
+
+#
+# Cleanup the current operating system.
+#
+# usage: cleanup_system
+#
+cleanup_system() {
+  case "$OSTYPE" in
+    darwin*) cleanup_macos ;;
+  esac
+}
+
+#
+# Cleanup temporary files on macOS.
+#
+# usage: cleanup_macos
+#
+cleanup_macos() {
+  true
+}
+
+#
+# Main entry point of the script.
+#
+# usage: dotfiles <command>
+#
+main() {
+
+  # Stop script execution, expect at least a command name
+  if (( $# == 0)); then
+    usage
+    return 1
+  fi
+
+  local command="$1"
+  shift
+
+  # Run the given command
+  case "$command" in
+    cleanup) cleanup "$@" ;;
+    help)    help "$@" ;;
+    list)    list "$@" ;;
+    update)  update "$@" ;;
+    *)       command_not_found "$command" ;;
+  esac
+}
+
+main "$@"

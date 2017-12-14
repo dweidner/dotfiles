@@ -33,7 +33,7 @@ dot::function_exists() {
 # usage: dot::info <message>
 #
 dot::info() {
-  echo -e "\033[0;34m==> $*\033[0;m"
+  echo -e "\033[0;34m$*\033[0;m"
 }
 
 #
@@ -42,7 +42,7 @@ dot::info() {
 # usage: dot::ok <message>
 #
 dot::ok() {
-  echo -e "\033[0;32m==> $*\033[0;m"
+  echo -e "\033[0;32m$*\033[0;m"
 }
 
 #
@@ -51,7 +51,7 @@ dot::ok() {
 # usage: dot::warning <message>
 #
 dot::warning() {
-  echo -e "\033[0;33m==> $*\033[0;m" >&2
+  echo -e "\033[0;33m$*\033[0;m" >&2
 }
 
 #
@@ -60,7 +60,7 @@ dot::warning() {
 # usage: dot::error <message>
 #
 dot::error() {
-  echo -e "\033[0;31m==> $*\033[0;m" >&2
+  echo -e "\033[0;31m$*\033[0;m" >&2
 }
 
 #
@@ -69,7 +69,7 @@ dot::error() {
 # usage: dot::confirm <question>
 #
 dot::confirm() {
-  read -r -p $'\e[0;32m'"==> $* (y/n [n]) "$'\e[0;m' answer
+  read -r -p $'\e[0;32m'"$* (y/n [n]) "$'\e[0;m' answer
 
   case "$answer" in
     y|Y) return 0 ;;
