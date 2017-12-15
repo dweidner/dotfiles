@@ -6,7 +6,7 @@
 #
 # usage: printfd
 #
-main() {
+printfd() {
   osascript 2>/dev/null <<EOF
     tell application "Finder"
       return POSIX path of (insertion location as alias)
@@ -14,4 +14,4 @@ main() {
 EOF
 }
 
-main "$@"
+printfd "$@"
