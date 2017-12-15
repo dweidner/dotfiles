@@ -3,6 +3,8 @@
 readonly BASEDIR="$(dirname "$0")"
 readonly DOTFILES="${DOTFILES:-$(dirname "$BASEDIR")}"
 
+readonly XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+
 source "${DOTFILES}/shell/utilities.sh"
 
 
@@ -196,43 +198,34 @@ list() {
 update() {
   # Udate all components if no argument is given
   if (( $# == 0)); then
-    update_system
-    update_homebrew
+    update_all
     return 0
   fi
 
   # Update only specific system components
   case "$1" in
     brew|homebrew) update_homebrew ;;
+    node) update_node ;;
+    nvm) update_nvm ;;
+    rvm) update_rvm ;;
     system) update_system ;;
+    tpm) update_tpm ;;
     *) unknown_component "$1" ;;
   esac
 }
 
 #
-# Update homebrew the missing package manager for macOS
+# Update all system components
 #
-# usage: update_homebrew
+# usage: update_all
 #
-update_homebrew() {
-  dot::command_exists "brew" || return 1
-
-  dot::info "Updating homebrew …"
-  brew update & wait
-
-  local outdated_formulae
-  outdated_formulae="$(brew outdated --quiet)"
-  wait
-
-  if [[ -z "$outdated_formulae" ]]; then
-    dot::ok "No updates available"
-    return 0
-  fi
-
-  dot::info "Updating outdated formulae …"
-  brew upgrade & wait
-
-  cleanup_homebrew
+update_all() {
+  update_system
+  update_homebrew
+  update_nvm
+  update_node
+  update_rvm
+  update_tpm
 }
 
 #
@@ -252,32 +245,185 @@ update_system() {
 # usage: update_macos
 #
 update_macos() {
-  dot::info "Updating macOS and installed software (requires root privileges) …"
-  sudo softwareupdate --install --all
-
-  cleanup_macos
+  dot::info "Updating macOS (requires root privileges) …"
+  sudo softwareupdate --install --all \
+    dot::ok "Updated macOS."
 }
 
 #
-# Cleanup the current system.
+# Update homebrew the missing package manager for macOS
+#
+# usage: update_homebrew
+#
+update_homebrew() {
+  dot::command_exists "brew" || return 1
+
+  dot::info "Updating homebrew …"
+  brew update --quiet & wait
+
+  dot::info "Updating homebrew formulae …"
+  local outdated_formulae
+  outdated_formulae="$(brew outdated --quiet)"
+  wait
+
+  if [[ -z "$outdated_formulae" ]]; then
+    dot::ok "Installed formulae are already up-to-date."
+    return 0
+  fi
+
+  dot::info "Upgrading outdated formulae …"
+  brew upgrade & wait
+  dot::ok "Upgraded outdated formulae."
+}
+
+#
+# Update the node version manager
+#
+# usage: update_nvm
+#
+update_nvm() {
+  cd -- "$NVM_DIR" || return 1
+
+  dot::function_exists "nvm" || source "$NVM_DIR/nvm.sh"
+  dot::info "Updating nvm …"
+
+  git checkout --quiet master
+  git pull --quiet --progress --tags
+
+  local version
+  version="$(nvm --version)"
+
+  local latest
+  latest="$(git describe --abbrev=0 --match "v[0-9]*" origin --tags)"
+
+  if [[ "$version" == "$latest" ]]; then
+    git checkout --quiet "${version}"
+    dot::ok "nvm is already up-to-date."
+    return 0
+  fi
+
+  git checkout --quiet --progress "${latest}" \
+    && dot::ok "Updated nvm to version ${latest}"
+
+  source "$NVM_DIR/nvm.sh"
+}
+
+#
+# Update the Node.js
+#
+# usage: update_node
+#
+update_node() {
+  cd -- "$NVM_DIR" || return 1
+
+  dot::function_exists "nvm" || source "$NVM_DIR/nvm.sh"
+  dot::info "Updating Node.js …"
+
+  local version
+  version="$(nvm current)"
+  local latest
+  latest="$(nvm version-remote --lts)"
+
+  wait
+
+  if [[ "$version" == "$latest" ]]; then
+    dot::ok "Node.js is already up-to-date."
+    return 0
+  fi
+
+  dot::info "Upgrading Node.js from version ${version} to ${latest} …"
+  nvm install "${latest}" & wait
+  nvm install-latest-npm & wait
+  dot::ok "Upgraded Node.js to version ${latest}."
+
+  if dot::confirm "Do you want to use version ${latest} of Node.js as your system default?"; then
+    nvm alias default "${latest}"
+    nvm use "${latest}"
+    dot::ok "Using version ${latest} of Node.js as your new system default."
+  fi
+}
+
+#
+# Update the ruby version manager
+#
+# usage: update_rvm
+#
+update_rvm() {
+  dot::command_exists "rvm" || return 1
+
+  dot::info "Updating ruby version manager to the latest version …"
+
+  rvm get head
+  rvm reload
+  rvm get stable
+
+  dot::ok "Updated ruby version manager to the latest version."
+}
+
+#
+# Update tmux plugin manager and installed plugins
+#
+# usage: update_tpm
+#
+update_tpm() {
+  local tpm_path="${TMUX_PLUGIN_MANAGER_PATH:-$XDG_DATA_HOME/tmux/plugins/tpm}"
+
+  [[ -d "$tpm_path" ]] || return 1
+
+  dot::info "Updating Tmux plugin manager …"
+  cd "$tpm_path" || return 1
+  git remote update >/dev/null
+
+  local current
+  current="$(git rev-parse "@")"
+
+  local remote
+  remote="$(git rev-parse "@{u}")"
+
+  if [[ "$current" != "$remote" ]]; then
+    git pull --quiet --progress && dot::ok "Updated Tmux plugin manager."
+  else
+    dot::ok "Tmux plugin manager is already up-to-date."
+  fi
+
+  dot::info "Updating tmux plugins …"
+
+  TMUX_PLUGIN_MANAGER_PATH="$tpm_path" "$tpm_path/bin/update_plugins" all >/dev/null \
+    && dot::ok "Updated tmux plugins."
+}
+
+#
+# Cleanup the current system
 #
 # usage: cleanup [<component>]
 #
 cleanup() {
-
   # Cleanup all components if no argument is given
   if (( $# == 0)); then
-    cleanup_system
-    cleanup_homebrew
+    cleanup_all
     return 0
   fi
 
   # Cleanup a specific component only
   case "$1" in
     brew|homebrew) cleanup_homebrew ;;
-    system) cleanup_system ;;
+    rvm) cleanup_rvm ;;
     *) unknown_component "$1" ;;
   esac
+}
+
+#
+# Cleanup all system components
+#
+# usage: cleanup_all
+#
+cleanup_all() {
+  if ! dot::confirm "Do you really want to clean up all system components?"; then
+    return 1
+  fi
+
+  cleanup_homebrew
+  cleanup_rvm
 }
 
 #
@@ -297,23 +443,16 @@ cleanup_homebrew() {
 }
 
 #
-# Cleanup the current operating system.
+# Reclaim all of the space used by rvm archives, repository clones, source
+# files and logs
 #
-# usage: cleanup_system
+# usgage: cleanup_rvm
 #
-cleanup_system() {
-  case "$OSTYPE" in
-    darwin*) cleanup_macos ;;
-  esac
-}
+cleanup_rvm() {
+  dot::command_exists "rvm" || return 1
 
-#
-# Cleanup temporary files on macOS.
-#
-# usage: cleanup_macos
-#
-cleanup_macos() {
-  true
+  dot::info "Cleaning up rvm resources …"
+  rvm cleanup all
 }
 
 #
@@ -322,7 +461,6 @@ cleanup_macos() {
 # usage: dotfiles <command>
 #
 main() {
-
   # Stop script execution, expect at least a command name
   if (( $# == 0)); then
     usage
