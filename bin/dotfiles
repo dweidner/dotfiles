@@ -262,8 +262,10 @@ update_homebrew() {
   brew update --quiet & wait
 
   dot::info "Updating homebrew formulae …"
+
   local outdated_formulae
   outdated_formulae="$(brew outdated --quiet)"
+
   wait
 
   if [[ -z "$outdated_formulae" ]]; then
@@ -321,6 +323,7 @@ update_node() {
 
   local version
   version="$(nvm current)"
+
   local latest
   latest="$(nvm version-remote --lts)"
 
@@ -351,13 +354,26 @@ update_node() {
 update_rvm() {
   dot::command_exists "rvm" || return 1
 
-  dot::info "Updating ruby version manager to the latest version …"
+  dot::info "Updating Ruby Version Manager …"
 
+  local version
+  version="$(rvm -v | cut -d ' ' -f 2)"
+
+  local latest
+  latest="$(curl -s --fail --location https://github.com/rvm/rvm/raw/master/VERSION)"
+
+  wait
+
+  if [[ "$version" == "$latest" ]]; then
+    dot::ok "Ruby Version Manager is already up-to-date."
+    return 0
+  fi
+
+  dot::info "Upgrading Ruby Version Manager from version ${version} to ${latest} …"
   rvm get head
   rvm reload
   rvm get stable
-
-  dot::ok "Updated ruby version manager to the latest version."
+  dot::ok "Upgraded Ruby Version Manager to version ${latest}."
 }
 
 #
