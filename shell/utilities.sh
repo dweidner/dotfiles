@@ -4,6 +4,15 @@
 
 
 #
+# Determine whether the current working directory is a git repository.
+#
+# usage: dot::in_git_repository
+#
+dot::in_git_repository() {
+  git rev-parse HEAD >/dev/null 2>&1
+}
+
+#
 # Determine whether a command with the given name exists in the current
 # environment.
 #

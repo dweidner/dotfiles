@@ -3,9 +3,8 @@
 # @file Enable completion for the cdr function
 
 _complete_git_directories() {
-  if [[ -d .git ]] || git rev-parse --is-inside-work-tree 2>/dev/null; then
-    dot::complete_directories "$(git rev-parse --show-toplevel)"
-  fi
+  dot::in_git_repository || return
+  dot::complete_directories "$(git rev-parse --show-toplevel)"
 }
 
 complete -F _complete_git_directories -o nospace cdr

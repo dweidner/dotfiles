@@ -11,11 +11,10 @@
 # Usage: __bash_prompt_branch
 #
 __bash_prompt_branch() {
+  dot::in_git_repository || return
+
   local branch
   local status
-
-  # Ensure the current directory is a git repository
-  git rev-parse --is-inside-work-tree &>/dev/null || return
 
   # Determine the name of the current branch:
   # 1. Use the short symbolic reference, if available
