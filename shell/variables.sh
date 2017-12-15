@@ -45,6 +45,7 @@ export DOTFILES="${XDG_CONFIG_HOME}/dotfiles"
 # (3) User configuration ------------------------------------------------ {{{1
 
 export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
+export GNUPGHOME="${XDG_CONFIG_HOME}/gnupg"
 
 
 # (4) Command History --------------------------------------------------- {{{1
@@ -91,6 +92,13 @@ export COMPOSER_HOME="${XDG_CONFIG_HOME}/composer"
 export COMPOSER_CACHE_DIR="${XDG_CACHE_HOME}/composer"
 
 export GEMRC="${XDG_CONFIG_HOME}/gem/gemrc"
+export GEM_HOME="${XDG_DATA_HOME}/gem"
+export GEM_SPEC_CACHE="${XDG_CACHE_HOME}/gem"
+
+export BUNDLE_USER_CONFIG="${XDG_CONFIG_HOME}/bundle"
+export BUNDLE_USER_HOME="${XDG_DATA_HOME}/bundle"
+export BUNDLE_USER_PLUGIN="${XDG_DATA_HOME}/bundle/plugin"
+export BUNDLE_USER_CACHE="${XDG_CACHE_HOME}/bundle"
 
 
 # (8) Shell-specific ---------------------------------------------------- {{{1

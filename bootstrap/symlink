@@ -113,7 +113,9 @@ main() {
 
   local cache_directories=(
     "${cache_home}"
+    "${cache_home}/bundle"
     "${cache_home}/composer"
+    "${cache_home}/gem"
     "${cache_home}/npm"
     "${cache_home}/nvim"
     "${cache_home}/vim"
@@ -122,6 +124,9 @@ main() {
   local data_directories=(
     "${data_home}"
     "${data_home}/bash"
+    "${data_home}/bundle"
+    "${data_home}/bundle/plugin"
+    "${data_home}/gem"
     "${data_home}/less"
     "${data_home}/nvim"
     "${data_home}/tmux"
