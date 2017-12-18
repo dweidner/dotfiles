@@ -247,7 +247,7 @@ update_system() {
 update_macos() {
   dot::info "Updating macOS (requires root privileges) …"
   sudo softwareupdate --install --all \
-    dot::ok "Updated macOS."
+    && dot::ok "Updated macOS."
 }
 
 #
@@ -284,7 +284,7 @@ update_homebrew() {
 # usage: update_nvm
 #
 update_nvm() {
-  cd -- "$NVM_DIR" || return 1
+  cd -- "$NVM_DIR" 2>/dev/null || return 1
 
   dot::function_exists "nvm" || source "$NVM_DIR/nvm.sh"
   dot::info "Updating nvm …"
@@ -316,7 +316,7 @@ update_nvm() {
 # usage: update_node
 #
 update_node() {
-  cd -- "$NVM_DIR" || return 1
+  cd -- "$NVM_DIR" 2>/dev/null || return 1
 
   dot::function_exists "nvm" || source "$NVM_DIR/nvm.sh"
   dot::info "Updating Node.js …"
