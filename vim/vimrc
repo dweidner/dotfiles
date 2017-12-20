@@ -264,11 +264,10 @@ nnoremap <silent> <Leader>v :<C-R>=winwidth(0)/3<CR>vnew<CR>
 nnoremap <silent> <Leader>s :<C-R>=winheight(0)/3<CR>new<CR>
 
 " Write the buffer to the current file
-nnoremap <C-s> :update<CR>
+nnoremap <Leader>w :update<CR>
 
 " Close the location list and the delete the current buffer
-nnoremap <silent> <C-x> :lclose<CR>:bdelete<CR>
-nmap <Leader>x <C-x>
+nnoremap <silent> <Leader>q :lclose<CR>:bdelete<CR>
 
 " e) Search/Replace ----------------------------------------------------- {{{2
 

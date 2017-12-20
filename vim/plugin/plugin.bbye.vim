@@ -5,5 +5,5 @@
 
 " Close the current buffer but preserve the window layout if possible
 if dw#IsLoaded('vim-bbye')
-  nnoremap <silent><special> <C-x> :Bdelete<CR>
+  nnoremap <silent><special> <Leader>q :Bdelete<CR>
 endif
