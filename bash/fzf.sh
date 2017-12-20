@@ -67,6 +67,8 @@ ft() {
   local selection
   selection="$(awk 'BEGIN { FS="\t" } !/^!/ {print toupper($4)"\t"$1"\t"$2}' "$git_dir/tags" | fzf --query="$1" --nth=2,3)"
 
+  [[ $? -eq 0 ]] || return
+
   local tag
   tag="$(cut -f2 <<< "$selection")"
 
@@ -85,7 +87,7 @@ export FZF_DEFAULT_OPTS="
   --reverse
   --inline-info
   --color light
-  --height 40%
+  --height 50%
   --prompt '${PROMPT_SYMBOL:-❯} '
   --preview-window hidden
   --bind '?:toggle-preview'
@@ -93,7 +95,7 @@ export FZF_DEFAULT_OPTS="
 "
 
 export FZF_CTRL_T_OPTS="
-  --preview '[[ \$(file --mime {}) =~ binary ]] && file -b {} || (highlight -O ansi -l {} || cat {}) 2>/dev/null | head -100 {}'
+  --preview '[[ \\\$(file --mime {}) =~ binary ]] && file -b {} || (highlight -O ansi -l {} || cat {}) 2>/dev/null | head -100 {}'
 "
 
 export FZF_ALT_C_OPTS="

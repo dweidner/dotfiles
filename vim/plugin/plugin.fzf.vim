@@ -8,37 +8,35 @@ if !dw#IsLoaded('fzf.vim') | finish | endif
 " Add a prefix to the default commands to avoid conflicts
 let g:fzf_command_prefix = 'FZF'
 
+" Customize the default layout
+let g:fzf_layout = { 'down': '~50%' }
+
+" Enable the preview window for the files command
+let s:fzf_files_preview = matchlist($FZF_CTRL_T_OPTS, '--preview [''"]\(.\{-}\)[''"]')
+let g:fzf_files_options = join([
+      \   '--preview-window "right:50%:hidden"',
+      \   '--preview "' . get(s:fzf_files_preview, 1) . '"',
+      \   '--bind "?:toggle-preview"',
+      \ ])
+
+" Select the command to use for the search operation
+if executable('rg')
+  let s:fzf_grep_command = 'rg --column --line-number --no-heading --color=always'
+elseif executable('ag')
+  let s:fzf_grep_command = 'ag --column --nogroup --color'
+else
+  let s:fzf_grep_command = 'grep -r --line-number --color=always'
+endif
+
 " Custom keybindings for some of the FZF commands
-nnoremap <silent> <C-t> :<C-U>execute 'FZF' . get(['', 'History', 'Buffer', 'BTags'], v:count, '')<CR>
-nmap <silent> <Leader>t <C-t>
-nmap <silent> <Leader>b 2<C-t>
+noremap <silent> <C-t> :FZFFiles<CR>
+noremap <silent> <Leader>b :FZFBuffer<CR>
+noremap <silent> <Leader>r :FZFBTags<CR>
+noremap <silent> <Leader>t :FZFiles<CR>
 
 " Custom abbreviations for some of the FZF commands
 cnoreabbrev F FZFFiles
 cnoreabbrev G FZFGrep
 
-" Select the command to use for the search operation
-if executable('rg')
-  let s:command = 'rg --column --line-number --no-heading --color=always'
-elseif executable('ag')
-  let s:command = 'ag --column --nogroup --color'
-else
-  let s:command = 'grep -r --line-number --color=always'
-endif
-
-" Cuszomize the display settings used to present the search results
-let s:preview_full = fzf#vim#with_preview('up:60%')
-let s:preview_hidden = fzf#vim#with_preview('right:50%:hidden', '?')
-
 " Create a custom command to search file contents by query string
-function! s:Grep(query, ...) abort
-  let l:query = empty(a:query) ? expand('<cword>') : a:query
-  let l:command = s:command . ' ' . fzf#shellescape(l:query)
-
-  let l:bang = (a:0 > 0) ? a:1 : 0
-  let l:options = l:bang ? s:preview_full : s:preview_hidden
-
-  return fzf#vim#grep(l:command, 1, l:options, l:bang)
-endfunction
-
-command! -bang -nargs=* FZFGrep call s:Grep(<q-args>, <bang>0)
+command! -bang -nargs=* FZFGrep call fzf#vim#grep(join([s:fzf_grep_command, fzf#shellescape(<q-args>)]), 1)
