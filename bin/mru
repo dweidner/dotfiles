@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+#
+# List all files in the given folder hierarchy ordered by their
+# time of last access.
+#
+# usage: mru [<path>]
+#
+mru() {
+  find "${1:-.}" \
+    \( \
+      -path "*/.git/*" \
+      -o -path "*/.hg/*" \
+      -o -path "*/.svg/*" \
+      -o -path "*/node_modules/*" \
+    \) \
+    -prune -o \
+    \( \
+      -name ".DS_Store" \
+      -o -name "*.min.*" \
+      -o -name "*.js.map" \
+      -o -name "*.css.map" \
+    \) \
+    -prune -o \
+    -type f \
+    -exec ls -u -- {} +
+}
+
+mru "$@"
