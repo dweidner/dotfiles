@@ -31,8 +31,10 @@ endif
 " Custom keybindings for some of the FZF commands
 noremap <silent> <C-t> :FZFFiles<CR>
 noremap <silent> <Leader>b :FZFBuffers<CR>
-noremap <silent> <Leader>r :FZFBTags<CR>
-noremap <silent> <Leader>t :FZFiles<CR>
+noremap <silent> <Leader>e :FZFFiles<CR>
+noremap <silent> <Leader>E :FZFHistory<CR>
+noremap <silent> <Leader>r :FZFTags<CR>
+noremap <silent> <Leader>R :FZFBTags<CR>
 
 " Custom abbreviations for some of the FZF commands
 cnoreabbrev F FZFFiles
