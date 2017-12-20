@@ -9,7 +9,11 @@
 # usage: cdd [<path>]
 #
 cdd() {
-  builtin cd -- "$DOTFILES/$*"
+  local base="${DOTFILES:-$HOME/.config/dotfiles}"
+
+  if [[ -d "$base" ]]; then
+    builtin cd -- "$base/$*"
+  fi
 }
 
 #
@@ -19,10 +23,12 @@ cdd() {
 # usage: cdf [<path>]
 #
 cdf() {
-  local root
-  root="$(printfd)"
+  local base
+  base="$(printfd)"
 
-  builtin cd -- "$root/$*"
+  if [[ -d "$base" ]]; then
+    builtin cd -- "$base/$*"
+  fi
 }
 
 #
@@ -41,14 +47,12 @@ cdl() {
 # usage: cdr [<path>]
 #
 cdr() {
-  local root
-  root="$(git rev-parse --show-toplevel)"
+  local base
+  base="$(git rev-parse --show-toplevel)"
 
-  if [[ $? -ne 0 ]]; then
-    return 1
+  if [[ -d "$base" ]]; then
+    builtin cd -- "$base/$*"
   fi
-
-  builtin cd -- "$root/$*"
 }
 
 #
@@ -63,9 +67,9 @@ ff() {
 #
 # Determine the size of file or directory.
 #
-# usage: fs [<path>]
+# usage: fsize [<path>]
 #
-fs() {
+fsize() {
   local -a options
   options+=( -sh )
 
