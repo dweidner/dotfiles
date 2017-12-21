@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 #
-# List all files in the given folder hierarchy ordered by their
-# time of last access.
+# List all files in the given folder hierarchy ordered by
+# time last modified.
 #
 # usage: mru [<path>]
 #
@@ -23,7 +23,7 @@ mru() {
     \) \
     -prune -o \
     -type f \
-    -exec ls -u -- {} +
+    -exec ls -t -- {} +
 }
 
 mru "$@"
