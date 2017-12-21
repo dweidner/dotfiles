@@ -382,12 +382,12 @@ update_rvm() {
 # usage: update_tpm
 #
 update_tpm() {
-  local tpm_path="${TMUX_PLUGIN_MANAGER_PATH:-$XDG_DATA_HOME/tmux/plugins/tpm}"
+  local tpm_path="${TMUX_PLUGIN_MANAGER_PATH:-$XDG_DATA_HOME/tmux/plugins}"
 
-  [[ -d "$tpm_path" ]] || return 1
+  [[ -d "$tpm_path/tpm" ]] || return 1
 
   dot::info "Updating Tmux plugin manager …"
-  cd "$tpm_path" || return 1
+  cd "$tpm_path/tpm" || return 1
   git remote update >/dev/null
 
   local current
@@ -404,7 +404,7 @@ update_tpm() {
 
   dot::info "Updating tmux plugins …"
 
-  TMUX_PLUGIN_MANAGER_PATH="$tpm_path" "$tpm_path/bin/update_plugins" all >/dev/null \
+  TMUX_PLUGIN_MANAGER_PATH="$tpm_path" "$tpm_path/tpm/bin/update_plugins" all >/dev/null \
     && dot::ok "Updated tmux plugins."
 }
 
