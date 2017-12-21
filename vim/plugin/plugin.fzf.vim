@@ -12,10 +12,10 @@ let g:fzf_command_prefix = 'FZF'
 let g:fzf_layout = { 'down': '~50%' }
 
 " Enable the preview window for the files command
-let s:fzf_files_preview = matchlist($FZF_CTRL_T_OPTS, '--preview [''"]\(.\{-}\)[''"]')
+let s:fzf_files_preview = substitute($FZF_CTRL_T_OPTS, '--preview [''"]\(.\{-}\)[''"]', '\1', '')
 let g:fzf_files_options = join([
       \   '--preview-window "right:50%:hidden"',
-      \   '--preview "' . get(s:fzf_files_preview, 1) . '"',
+      \   '--preview "' . substitute(s:fzf_files_preview, '\$', '\\\$', 'g') . '"',
       \   '--bind "?:toggle-preview"',
       \ ])
 
