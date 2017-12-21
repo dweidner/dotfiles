@@ -51,5 +51,8 @@ set mark-symlinked-directories on
 "\e[B": history-search-forward
 "\e[Z": menu-complete-backward
 
+"\C-xt": " | fzf\n"
+"\C-xl": " | less\n"
+
 
 # vim:syntax=readline:foldmethod=marker:foldlevel=2
