@@ -205,6 +205,9 @@ map <Space> <Leader>
 " Ensure that InsertLeave is fired, when quiting insert mode with Ctrl-c
 inoremap <C-c> <Esc>
 
+" Avoid the escape key. i to enter insert mode, ii to leave it
+inoremap ii <Esc>
+
 " Expand %% to the same directory of the current file
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 
@@ -285,6 +288,19 @@ nnoremap <Leader>j VjgJl
 " Convert a word to lowercase/uppercase
 nnoremap <Leader>l mQviwu`Q
 nnoremap <Leader>u mQviwU`Q
+
+" g) Spell checking ----------------------------------------------------- {{{2
+
+" Toggle spell checking
+nnoremap <Leader>ss :setlocal spell!<CR>
+
+" Navigate between spelling errors
+nnoremap <Leader>sn ]s
+nnoremap <Leader>sp [s
+
+" Get spelling suggestions/Mark a word as correct
+nnoremap <Leader>s? z=
+nnoremap <Leader>sa zg
 
 
 " (11) Plugins ---------------------------------------------------------- {{{1
