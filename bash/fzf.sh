@@ -88,14 +88,16 @@ export FZF_DEFAULT_OPTS="
   --inline-info
   --color light
   --height 50%
-  --prompt '${PROMPT_SYMBOL:-❯} '
   --preview-window hidden
   --bind '?:toggle-preview'
   --bind 'ctrl-g:jump-accept'
+  --prompt '${PROMPT_SYMBOL:-❯} '
+  --color fg:23,hl:94,fg+:23,bg+:254,hl+:94
+  --color info:145,prompt:33,spinner:127,pointer:33,marker:23
 "
 
 export FZF_CTRL_T_OPTS="
-  --preview '[[ \\\$(file --mime {}) =~ binary ]] && file -b {} || (highlight -O ansi -l {} || cat {}) 2>/dev/null | head -100 {}'
+  --preview '[[ \$(file --mime {}) =~ binary ]] && file -b {} || (highlight -O ansi -l {} || cat {}) 2>/dev/null | head -100 {}'
 "
 
 export FZF_ALT_C_OPTS="
