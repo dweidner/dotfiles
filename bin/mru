@@ -7,6 +7,16 @@
 # usage: mru [<path>]
 #
 mru() {
+  local depth=25
+
+  while true; do
+    case "$1" in
+      -d | --depth ) depth=$2; shift 2 ;;
+      -- )           shift; break ;;
+      * )            break ;;
+    esac
+  done
+
   find "${1:-.}" \
     \( \
       -path "*/.git/*" \
@@ -23,6 +33,7 @@ mru() {
     \) \
     -prune -o \
     -type f \
+    -maxdepth "$depth" \
     -exec ls -t -- {} +
 }
 
