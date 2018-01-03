@@ -4,6 +4,34 @@
 
 
 #
+# Add a new directory to the bookmark list. Displays a list of bookmarks if no
+# arguments are given.
+#
+# usage: bookmark [<name>]
+#
+bookmark() {
+  local store="${XDG_DATA_HOME}/dotfiles/bookmarks"
+  local tmp
+
+  if [[ ! -f "$store" ]]; then
+    touch "$store"
+  fi
+
+  if [[ $# -eq 0 ]]; then
+    grep -vE "(^\\s*#|^\\s*$)" "$store"
+    return $?
+  fi
+
+  tmp="$(mktemp "${TMPDIR:-/tmp/}bookmarks.XXXXXXXXXXXX")"
+
+  sed "/^$*=/d" "$store" > "$tmp"
+  mv "$tmp" "$store"
+  echo "$*=\"$(pwd)\"" >> "$store"
+
+  source "$store"
+}
+
+#
 # Switch to the given directory of the dotfiles repository.
 #
 # usage: cdd [<path>]

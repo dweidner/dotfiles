@@ -43,5 +43,9 @@ if [[ -r "${HOME}/.local/bashrc" ]]; then
   source "${HOME}/.local/bashrc"
 fi
 
+if [[ -r "${XDG_DATA_HOME}/dotfiles/bookmarks" ]]; then
+  source "${XDG_DATA_HOME}/dotfiles/bookmarks"
+fi
+
 
 # vim:filetype=sh:foldmethod=marker:foldlevel=2

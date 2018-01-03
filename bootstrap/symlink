@@ -9,8 +9,7 @@ source "${BASEDIR}/../shell/utilities.sh"
 # Create a directory at the given path.
 #
 # usage: create_directory <path>
-#
-create_directory() {
+# create_directory() {
   local directory="$1"
 
   if [[ ! -d "$directory" ]]; then
@@ -126,6 +125,7 @@ main() {
     "${data_home}/bash"
     "${data_home}/bundle"
     "${data_home}/bundle/plugin"
+    "${data_home}/dotfiles"
     "${data_home}/gem"
     "${data_home}/less"
     "${data_home}/nvim"
