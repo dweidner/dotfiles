@@ -97,16 +97,16 @@ alias egrep="egrep ${grep_options[*]}"
 
 alias rg="rg --hidden --smart-case"
 
-if command -v rg >/dev/null 2>&1; then
+if dot::command_exists "rg"; then
   alias ag="rg"
-elif command -v ag >/dev/null 2>&1; then
+elif dot::command_exists "ag"; then
   alias ag="ag --hidden --smart-case"
 fi
 
 
 # (7) File comparison --------------------------------------------------- {{{1
 
-if command -v icdiff >/dev/null 2>&1; then
+if dot::command_exists "icdiff"; then
   alias d="icdiff --tabsize=4 --numlines=8"
 else
   alias d="diff --side-by-side --width=\$(( COLUMNS - 2 ))"

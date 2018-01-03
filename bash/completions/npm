@@ -2,7 +2,7 @@
 #
 # @file Enable completion for the Node package manager
 
-if command -v "npm" >/dev/null 2>&1; then
+if dot::command_exists "npm"; then
   source <(npm completion)
 fi
 

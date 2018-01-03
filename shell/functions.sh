@@ -120,11 +120,11 @@ fsize() {
 serve() {
   local port="${1:-3000}"
 
-  if command -v php >/dev/null 2>&1; then
+  if dot::command_exists "php"; then
     php -S "localhost:${port}"
-  elif command -v http-server >/dev/null 2>&1; then
+  elif dot::command_exists "http-server"; then
     http-server -p "$port"
-  elif command -v python >/dev/null 2>&1; then
+  elif dot::command_exists "python"; then
     python -m SimpleHTTPServer "$port"
   else
     dot::error "Cannot start an http server at the current directory"
