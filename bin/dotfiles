@@ -42,7 +42,7 @@ unknown_component() {
 #
 usage() {
   cat <<- EOF
-		Dotfiles v2.1.0
+		Dotfiles v2.1.1
 
 		Usage:
 		  dotfiles <command> [options] [arguments]
