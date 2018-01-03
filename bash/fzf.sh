@@ -43,16 +43,29 @@ fe() {
   fi
 }
 
-# Browse the git history using fzf
-fh() {
+# Browse the git commit log
+fl() {
   dot::in_git_repository || return
 
-  local hash="[a-f0-9]\\{7,\\}"
-  local preview="grep -o \"${hash}\" <<< {} | xargs git show --color | head -200"
+  local shell="${SHELL:-/bin/sh}"
+  local needle="[a-f0-9]\\{7,\\}"
 
-  git log --date=short --graph --color=always --pretty=nice |
-    fzf --query="$1" --ansi --no-sort --multi --preview "${preview}" |
-    grep -o "${hash}"
+  local git_show="git show --color --date=short --pretty=nice"
+
+  if dot::command_exists "diff-so-fancy"; then
+    git_show="${git_show} | diff-so-fancy"
+  fi
+
+  local sha1
+  sha1=$(
+    git log --color=always --graph --date=short --pretty=nice \
+      | fzf --ansi --no-sort --preview "grep -o \"${needle}\" <<< {} | xargs ${git_show}" \
+      | grep -o "$needle"
+  )
+
+  if [[ -n "$sha1" ]]; then
+    xargs "$shell" -c "$git_show | less --tabs=4 -FRX" <<< "$sha1"
+  fi
 }
 
 # Search ctags and open the selected file with the default editor

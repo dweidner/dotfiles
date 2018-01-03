@@ -43,6 +43,7 @@ install_web_formulae() {
   brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
   brew install git
+  brew install icdiff diff-so-fancy
 
   brew install httpd
   brew install php71 --with-httpd --with-homebrew-curl

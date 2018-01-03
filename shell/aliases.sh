@@ -11,7 +11,8 @@
 # 4. Session management
 # 5. List directory contents
 # 6. File pattern searching
-# 7. System specific aliases
+# 7. File comparison
+# 8. System specific aliases
 # -----------------------------------------------------------------------
 
 
@@ -21,6 +22,7 @@ alias e="${EDITOR:-vi}"          # Open file in default editor
 alias o="${BROWSER:-open}"       # Open file in default file browser
 alias f="find"                   # Easily access the find command
 alias g="git"                    # Easily access the git command
+alias h="history"                # Easily access the command history
 
 
 # (2) Switch directories ------------------------------------------------ {{{1
@@ -102,7 +104,21 @@ elif command -v ag >/dev/null 2>&1; then
 fi
 
 
-# (7) System specific aliases ------------------------------------------- {{{1
+# (7) File comparison --------------------------------------------------- {{{1
+
+if command -v icdiff >/dev/null 2>&1; then
+  alias d="icdiff --tabsize=4 --numlines=8"
+else
+  alias d="diff --side-by-side --width=\$(( COLUMNS - 2 ))"
+fi
+
+case "$EDITOR" in
+  *nvim) alias vd="nvim -dR" ;;
+  *vim)  alias vd="vimdiff" ;;
+esac
+
+
+# (8) System specific aliases ------------------------------------------- {{{1
 
 case "$OSTYPE" in
   darwin*) source "${DOTFILES}/shell/aliases-darwin.sh" ;;
