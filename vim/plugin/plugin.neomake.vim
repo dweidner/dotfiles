@@ -9,10 +9,9 @@ augroup dwneomake
   autocmd!
 augroup END
 
-map  <silent> <special> <F6> :<C-U>:Neomake<CR>
-map  <silent> <special> <F7> :<C-U>:Neomake<CR>
-map! <silent> <special> <F6> <Esc>:Neomake<CR>
-map! <silent> <special> <F7> <Esc>:Neomake!<CR>
+noremap <silent> <special> <F6> :<C-U>:Neomake<CR>
+noremap <silent> <special> <F7> :<C-U>:Neomake<CR>
+noremap <silent> <special> =oN  :NeomakeToggleTab<CR>
 
 let g:neomake_info_sign = {
       \  'text': 'ℹ︎',
