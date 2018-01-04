@@ -106,6 +106,12 @@ fi
 
 # (7) File comparison --------------------------------------------------- {{{1
 
+if dot::command_exists "pygmentize"; then
+  alias c="pygmentize -g"
+else
+  alias c="cat"
+fi
+
 if dot::command_exists "icdiff"; then
   alias d="icdiff --tabsize=4 --numlines=8"
 else

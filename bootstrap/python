@@ -24,7 +24,7 @@ install() {
 
   if [[ -n "$DOTFILES" ]]; then
     while read -r package; do
-      pip3 install "$package"
+      pip3 install --upgrade "$package"
     done < "${DOTFILES}/misc/default-python-packages"
   fi
 }
