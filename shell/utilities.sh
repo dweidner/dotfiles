@@ -9,7 +9,7 @@
 # usage: dot::in_git_repository
 #
 dot::in_git_repository() {
-  git rev-parse HEAD >/dev/null 2>&1
+  git rev-parse --is-inside-work-tree >/dev/null 2>&1
 }
 
 #
