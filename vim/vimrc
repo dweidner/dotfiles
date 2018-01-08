@@ -194,6 +194,8 @@ set wildignore+=.sass-cache
 set wildignore+=*.min.*,*-min.*
 
 
+" (10) Key Mappings ----------------------------------------------------- {{{1
+
 " a) General ------------------------------------------------------------ {{{2
 
 " Using space as leader makes sense, as it is easy to reach and does not have
@@ -476,6 +478,9 @@ augroup vimrc
   " Temporarily hide search results when entering insert mode
   autocmd InsertEnter * setlocal nohlsearch
   autocmd InsertLeave * setlocal hlsearch
+
+  " Check if any buffers were changed outside of vim
+  autocmd FocusGained * if &autoread | silent checktime | endif
 
 augroup END
 
