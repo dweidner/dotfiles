@@ -4,33 +4,32 @@
 
 set -e
 
-readonly BASEDIR="$(dirname "$0")"
-source "${BASEDIR}/../shell/utilities.sh"
+readonly SCRIPT_DIR="$(dirname "$0")"
+readonly DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
 
-#
-# Download and install the Node Version Manager and load the latest
-# version of node.js
-#
-# usage: install [<path>] [<version>]
-#
-install() {
-  local path="${1:-$HOME/.local/share/nvm}"
-  local version="${2:-latest}"
+source "${DOTFILES}/shell/utilities.sh"
 
-  git clone "https://github.com/creationix/nvm.git" "$path" || {
-    dot::exit "Cannot checkout nvm repository"
-  }
 
-  cd "$path"
+NVM_DIR="${1:-$HOME/.local/share/nvm}"
+NVM_VERSION="${2:-latest}"
 
-  if [[ "$version" = "latest" ]]; then
-    version=$(git describe --abbrev=0 --tags --match "v[0-9]*" origin)
-  fi
+dot::info "Installing nvm …"
 
-  git checkout "$version"
-  source "$path/nvm.sh"
-
-  nvm install --lts
+git clone "https://github.com/creationix/nvm.git" "$NVM_DIR" || {
+  dot::exit "Cannot checkout nvm repository"
 }
 
-install "$@"
+cd "$NVM_DIR"
+
+if [[ "$NVM_VERSION" = "latest" ]]; then
+  NVM_VERSION=$(git describe --abbrev=0 --tags --match "v[0-9]*" origin)
+fi
+
+git checkout "$NVM_VERSION" || {
+  dot::exit "Cannot switch to NVM version [$NVM_VERSION]"
+}
+
+dot::info "Installing latest node version …"
+
+source "$NVM_DIR/nvm.sh"
+nvm install --lts

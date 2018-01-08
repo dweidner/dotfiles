@@ -4,16 +4,14 @@
 
 set -e
 
-#
-# Download and install the Ruby Version Manager.
-#
-# usage: install [<path>]
-#
-install() {
-  local path="${1:-$HOME/.local/share/rvm}"
+readonly SCRIPT_DIR="$(dirname "$0")"
+readonly DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
 
-  curl -sSL https://get.rvm.io \
-    | bash -s -- --path "$path" --ignore-dotfiles --ruby
-}
+source "${DOTFILES}/shell/utilities.sh"
 
-install "$@"
+readonly RVM_DIR"${1:-$HOME/.local/share/rvm}"
+
+dot::info "Installing rvm …"
+
+curl -sSL "https://get.rvm.io" \
+  | bash -s -- --path "$RVM_DIR" --ignore-dotfiles --ruby

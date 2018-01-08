@@ -2,11 +2,13 @@
 #
 # @file Install macOS applications using homebrew.
 
-  
 set -e
-    
-readonly BASEDIR="$(dirname "$0")"
-source "${BASEDIR}/../shell/utilities.sh"
+
+readonly SCRIPT_DIR="$(dirname "$0")"
+readonly DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
+
+source "${DOTFILES}/shell/utilities.sh"
+
 
 #
 # Install frequently used system tools.
@@ -14,6 +16,8 @@ source "${BASEDIR}/../shell/utilities.sh"
 # usage: install_system_tools
 #
 install_system_tools() {
+  dot::info "Installing system tools …"
+
   brew cask install alfred
   brew cask install bartender
   brew cask install 1password
@@ -31,6 +35,8 @@ install_system_tools() {
 # usage: install_development_tools
 #
 install_development_tools() {
+  dot::info "Installing development tools …"
+
   brew cask install imagealpha
   brew cask install imageoptim
 
@@ -48,6 +54,8 @@ install_development_tools() {
 # usage: install_web_tools
 #
 install_web_tools() {
+  dot::info "Installing web tools …"
+
   brew cask install brave
   brew cask install firefox
   brew cask install google-chrome
@@ -61,10 +69,8 @@ install_web_tools() {
 #
 # Install macOS applications from the command line using Homebrew Cask.
 #
-# usage: install [<profile>]
-#
-install() {
-  if ! command -v brew >/dev/null 2>&1; then
+main() {
+  if ! dot::command_exists "brew"; then
     dot::exit "Cannot find homebrew command"
   fi
   
@@ -82,4 +88,4 @@ install() {
   esac
 }
 
-install "$@"
+main "$@"

@@ -4,24 +4,17 @@
 
 set -e
 
-readonly BASEDIR="$(dirname "$0")"
-source "${BASEDIR}/../shell/utilities.sh"
+readonly SCRIPT_DIR="$(dirname "$0")"
+readonly DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
 
-#
-# Downlaod and install global ruby gems.
-#
-# usage: install
-# 
-install() {
-  if ! command -v rvm >/dev/null 2>&1; then
-    dot::exit "Cannot find rvm command"
-  fi
+source "${DOTFILES}/shell/utilities.sh"
 
-  if [[ -n "${DOTFILES}" ]]; then
-    while read -r name; do
-      rvm @global do gem install "$name"
-    done < "${DOTFILES}/misc/default-gems"
-  fi
-}
+if ! dot::command_exists "rvm"; then
+  dot::exit "Cannot find rvm command"
+fi
 
-install "$@"
+dot::info "Installing global gems …"
+
+while read -r name; do
+  rvm @global do gem install "$name"
+done < "${DOTFILES}/misc/default-gems"

@@ -4,8 +4,11 @@
 
 set -e
 
-readonly BASEDIR="$(dirname "$0")"
-source "${BASEDIR}/../shell/utilities.sh"
+readonly SCRIPT_DIR="$(dirname "$0")"
+readonly DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
+
+source "${DOTFILES}/shell/utilities.sh"
+
 
 #
 # Install forumulae used for system administration on a Mac system.
@@ -13,6 +16,8 @@ source "${BASEDIR}/../shell/utilities.sh"
 # usage: install_core_formulae
 #
 install_core_formulae() {
+  dot::info "Installing essential formulae …"
+
   brew tap homebrew/services
 
   brew install bash bash-completion@2
@@ -23,7 +28,6 @@ install_core_formulae() {
   brew install grep
   brew install rsync
   brew install wget
-  brew install htop --with-ncurses
 
   brew install ack
   brew install ripgrep
@@ -36,6 +40,8 @@ install_core_formulae() {
 # usage: install_web_formulae
 #
 install_web_formulae() {
+  dot::info "Installing web formulae …"
+
   brew tap homebrew/php
 
   brew install neovim
@@ -61,10 +67,8 @@ install_web_formulae() {
 #
 # Install shell utilities using Homebrew the missing package manager for macOS.
 #
-# usage: install [<profile>]
-#
-install() {
-  if ! command -v brew >/dev/null 2>&1; then
+main() {
+  if ! dot::command_exists "brew"; then
     dot::exit "Cannot find homwbrew command"
   fi
 
@@ -81,4 +85,4 @@ install() {
   esac
 }
 
-install "$@"
+main "$@"

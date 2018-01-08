@@ -4,33 +4,25 @@
 
 set -e
 
-readonly BASEDIR="$(dirname "$0")"
-source "${BASEDIR}/../shell/utilities.sh"
+readonly SCRIPT_DIR="$(dirname "$0")"
+readonly DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
 
-#
-# Install global packages using the Node Package Manager
-#
-# usage: install
-#
-install() {
-  if ! command -v npm >/dev/null 2>&1; then
-    dot::exit "Cannot find npm command"
+source "${DOTFILES}/shell/utilities.sh"
+
+
+if ! dot::command_exists "npm"; then
+  dot::exit "Cannot find npm command"
+fi
+
+dot::info "Installing latest npm version …"
+npm install --global --production npm@latest
+
+dot::info "Installing global node packages …"
+npm install --global --production yo
+npm install --global --production eslint
+
+while read -r package; do
+  if [[ "$package" != "yo" ]] && [[ "$package" != "eslint" ]]; then
+    npm install --global --production "$package"
   fi
-
-  dot::info "Updating npm …"
-  npm install --global --production npm@latest
-
-  dot::info "Installing node packages …"
-  npm install --global --production yo
-  npm install --global --production eslint
-
-  if [[ -n "$DOTFILES" ]]; then
-    while read -r package; do
-      if [[ "$package" != "yo" ]] && [[ "$package" != "eslint" ]]; then
-        npm install --global --production "$package"
-      fi
-    done < "${DOTFILES}/misc/default-node-packages"
-  fi
-}
-
-install "$@"
+done < "${DOTFILES}/misc/default-node-packages"

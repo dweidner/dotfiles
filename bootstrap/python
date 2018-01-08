@@ -4,29 +4,21 @@
 
 set -e
 
-readonly BASEDIR="$(dirname "$0")"
-source "${BASEDIR}/../shell/utilities.sh"
+readonly SCRIPT_DIR="$(dirname "$0")"
+readonly DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
 
-#
-# Install packages using the Python Package Manager
-#
-# usage: install
-#
-install() {
-  if ! command -v pip3 >/dev/null 2>&1; then
-    dot::exit "Cannot find pip3 command"
-  fi
+source "${DOTFILES}/shell/utilities.sh"
 
-  dot::info "Updating pip …"
-  pip3 install --upgrade pip
 
-  dot::info "Installing python packages …"
+if ! dot::command_exists "pip3"; then
+  dot::exit "Cannot find pip3 command"
+fi
 
-  if [[ -n "$DOTFILES" ]]; then
-    while read -r package; do
-      pip3 install --upgrade "$package"
-    done < "${DOTFILES}/misc/default-python-packages"
-  fi
-}
+dot::info "Updating pip …"
+pip3 install --upgrade pip
 
-install "$@"
+dot::info "Installing python packages …"
+
+while read -r package; do
+  pip3 install --upgrade "$package"
+done < "${DOTFILES}/misc/default-python-packages"

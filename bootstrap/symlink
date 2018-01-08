@@ -2,19 +2,23 @@
 #
 # @file Create symlinks to dotfiles.
 
-readonly BASEDIR="$(dirname "$0")"
-source "${BASEDIR}/../shell/utilities.sh"
+set -e
+
+readonly SCRIPT_DIR="$(dirname "$0")"
+readonly DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
+
+source "${DOTFILES}/shell/utilities.sh"
+
 
 #
 # Create a directory at the given path.
 #
 # usage: create_directory <path>
-# create_directory() {
+create_directory() {
   local directory="$1"
 
   if [[ ! -d "$directory" ]]; then
-    mkdir -p "$directory" \
-      && dot::ok "created ${directory}"
+    mkdir -p "$directory" && dot::ok "created ${directory}"
   fi
 }
 
@@ -32,19 +36,18 @@ create_directories() {
 #
 # Create the directory structure for a given file path.
 #
-# usage: prepare_file_directory <path>
+# usage: prepare_path <path>
 #
-prepare_file_directory() {
+prepare_path() {
   local path="$1"
   local dir
   dir="$(dirname "$path")"
 
-  if [[ ! -d "$dir" ]]; then
-    mkdir -p "$dir"
-    return $?
+  if [[ -d "$dir" ]]; then
+    return 0
   fi
 
-  return 0
+  mkdir -p "$dir"
 }
 
 #
@@ -64,7 +67,7 @@ copy() {
     fi
   fi
 
-  if ! prepare_file_directory "${target}"; then
+  if ! prepare_path "${target}"; then
     dot::error "could not create parent directory"
     return 1
   fi
@@ -90,20 +93,17 @@ symlink() {
     fi
   fi
 
-  if ! prepare_file_directory "${target}"; then
+  if ! prepare_path "${target}"; then
     dot::error "could not create parent directory"
     return 1
   fi
 
-  ln -fns "${source}" "${target}" \
-    && dot::ok "created symlink at ${target}"
+  ln -fns "${source}" "${target}" && dot::ok "created symlink at ${target}"
 }
 
 #
 # Create symlinks to the configuration files shiping with the
 # dotfiles-repository.
-#
-# usage: symlink
 #
 main() {
   local cache_home="${XDG_CACHE_HOME:-$HOME/.cache}"
