@@ -28,6 +28,7 @@ source "${DOTFILES}/bash/fzf.sh"
 source "${DOTFILES}/shell/node.sh"
 source "${DOTFILES}/shell/php.sh"
 source "${DOTFILES}/shell/ruby.sh"
+source "${DOTFILES}/shell/python.sh"
 
 
 # (3) Bash settings ----------------------------------------------------- {{{1
