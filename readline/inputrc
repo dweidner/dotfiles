@@ -51,11 +51,20 @@ set mark-symlinked-directories on
 "\e[B": history-search-forward
 "\e[Z": menu-complete-backward
 
-"\C-xf": " | fzf\n"
-"\C-xl": " | less\n"
+"\C-xl": shell-expand-line
+"\C-x1": "\e1\e."
+"\C-x2": "\e2\e."
+"\C-x3": "\e3\e."
+"\C-x4": "\e4\e."
+"\C-x5": "\e5\e."
+"\C-x6": "\e6\e."
+"\C-x7": "\e7\e."
+"\C-x8": "\e8\e."
+"\C-x9": "\e9\e."
+"\C-x0": "\e0\e."
 
-"\C-xd": "git df\n"
-"\C-xs": "git status --short\n"
+"\C-x\C-l": shell-expand-line
+"\C-x\C-g": glob-expand-word
 
 
 # vim:syntax=readline:foldmethod=marker:foldlevel=2
