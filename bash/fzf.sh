@@ -43,6 +43,32 @@ fe() {
   fi
 }
 
+# Searching file contents with ripgrep and open selection with editor
+fg() {
+  local -a grep_cmd=()
+
+  if dot::command_exists "rg"; then
+    grep_cmd+=( rg --line-number --no-heading . )
+  elif dot::command_exists "ag"; then
+    grep_cmd+=( ag --line-number --nogroup . )
+  else
+    grep_cmd+=( grep -r "" --line-number --line-buffered ./* )
+  fi
+
+  local selection
+  selection="$("${grep_cmd[@]}" | fzf --query="$1" --delimiter=: --with-nth=1,3.. --preview="cut -d: -f1 <<< {} | xargs cat 2>/dev/null")"
+
+  local file
+  file="$(cut -d: -f1 <<< "$selection")"
+
+  local line
+  line="$(cut -d: -f2 <<< "$selection")"
+
+  if [[ -r "$file" ]]; then
+    ${EDITOR:-vim} +"$line" "$file"
+  fi
+}
+
 # Browse the git commit log
 fl() {
   dot::in_git_repository || return
@@ -110,7 +136,7 @@ export FZF_DEFAULT_OPTS="
 "
 
 export FZF_CTRL_T_OPTS="
-  --preview '[[ \$(file --mime {}) =~ binary ]] && file -b {} || (highlight -O ansi -l {} || cat {}) 2>/dev/null | head -100 {}'
+  --preview '[[ \$(file --mime {}) =~ binary ]] && file -b {} || cat {} 2>/dev/null'
 "
 
 export FZF_ALT_C_OPTS="
