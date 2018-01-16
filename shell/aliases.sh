@@ -108,6 +108,8 @@ fi
 
 if dot::command_exists "pygmentize"; then
   alias c="pygmentize -g"
+elif dot::command_exists "highlight"; then
+  alias c="highlight -O ansi"
 else
   alias c="cat"
 fi
