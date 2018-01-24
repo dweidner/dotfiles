@@ -5,6 +5,26 @@
 if exists('g:loaded_dw') | finish | endif
 let g:loaded_dw = 1
 
+" A list of project root markers
+let s:markers = [
+      \   'composer.json',
+      \   'Gemfile',
+      \   'package.json',
+      \ ]
+
+
+"
+" Remove starting and trailing whitespace from a string.
+"
+" @see {@link http://blog.pixelastic.com/2015/10/05/use-local-eslint-in-syntastic/|Use Local Eslint in Syntastic}
+"
+" @param {String} str
+" @return {Boolean}
+"
+function! dw#Trim(str) abort
+  return substitute(a:str, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
+endfunction
+
 
 "
 " Print each path in the &runtimepath to the current buffer.
@@ -35,6 +55,7 @@ function! dw#Languages() abort
   return l:languages
 endfunction
 
+
 "
 " Determine whether a given feature is supported.
 "
@@ -48,6 +69,7 @@ function! dw#IsSupported(...) abort
 
   return 1
 endfunction
+
 
 "
 " Determine whether a plugin has been installed via vim-plug.
@@ -76,30 +98,50 @@ endfunction
 
 
 "
-" Remove starting and trailing whitespace from a string.
+" Find the to path to the root directory of the current project.
 "
-" @see {@link http://blog.pixelastic.com/2015/10/05/use-local-eslint-in-syntastic/|Use Local Eslint in Syntastic}
+" @param {Number} bufnr
+" @return {String}
 "
-" @param {String} str
-" @return {Boolean}
-"
-function! dw#Trim(str) abort
-  return substitute(a:str, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
+function! dw#ProjectRoot(...) abort
+  let l:bufnr = a:0 > 0 && type(a:1) == v:t_number ? a:1 : '%'
+
+  let l:project_dir = getbufvar(l:bufnr, 'project_root')
+  if !empty(l:project_dir)
+    return l:project_dir
+  endif
+
+  let l:project_dir = dw#FindMarker(s:markers)
+  if !empty(l:project_dir)
+    let b:project_root = l:project_dir
+    return b:project_root
+  endif
+
+  let l:git_dir = getbufvar(l:bufnr, 'git_dir')
+  if !empty(l:git_dir)
+    let b:project_root = fnamemodify(l:git_dir, ':p:h:h')
+    return b:project_root
+  endif
+
+  let b:project_root = ''
+  return b:project_root
 endfunction
 
 
 "
-" Run a shell command and strip trailing whitespace from the return value.
+" Find one of the given project markers by traversing the project tree.
 "
-" @param {String}
+" @param {List} markers
 " @return {String}
 "
-function! dw#RunShellCommand(cmd) abort
-  silent let l:output = system(a:cmd)
+function! dw#FindMarker(markers) abort
+  for l:marker in a:markers
+    let l:path = findfile(l:marker, '.;')
 
-  if v:shell_error
-    return
-  endif
+    if !empty(l:path)
+      return fnamemodify(resolve(expand(l:path)), ':p:h')
+    endif
+  endfor
 
-  return dw#Trim(l:output)
+  return ''
 endfunction
