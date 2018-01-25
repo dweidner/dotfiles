@@ -200,12 +200,7 @@ nnoremap <silent> U :syntax sync fromstart<CR><C-L>
 " qq to record, Q to replay a macro
 nmap Q @q
 
-" b) UI ----------------------------------------------------------------- {{{2
-
-" Toggle the visibility of the tabline
-nmap <silent> =ot :set showtabline=<C-R>=&showtabline ? 0 : 2<CR><CR>
-
-" c) Movement ----------------------------------------------------------- {{{2
+" b) Movement ----------------------------------------------------------- {{{2
 
 " Disable arrow keys and take of the training wheels
 nnoremap <Up> <Nop>
@@ -232,7 +227,7 @@ cnoremap <C-e> <End>
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
 
-" d) Window/Buffer Management ------------------------------------------- {{{2
+" c) Window/Buffer Management ------------------------------------------- {{{2
 
 " Switch to alternate buffer
 nnoremap <Leader><Space> <C-^>
@@ -251,12 +246,12 @@ nnoremap <Leader>w :update<CR>
 " Close the location list and the delete the current buffer
 nnoremap <silent> <Leader>q :lclose<CR>:bdelete<CR>
 
-" e) Search/Replace ----------------------------------------------------- {{{2
+" d) Search/Replace ----------------------------------------------------- {{{2
 
 " Hide matches from previous search
 noremap <silent> <Leader>/ :nohlsearch<CR>
 
-" f) Formatting --------------------------------------------------------- {{{2
+" e) Formatting --------------------------------------------------------- {{{2
 
 " Auto format current buffer
 nnoremap <Leader>= ggVG=
