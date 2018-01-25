@@ -18,7 +18,7 @@ function! s:ToggleWhitespace() abort
 endfunction
 
 " Remove trailing whitespace
-nnoremap <silent> <Leader>ws :StripWhitespace<CR>
+nnoremap <silent> <Leader>$ :StripWhitespace<CR>
 
 " Toggle the highlighting of trailing whitespace
 nnoremap <silent> =oW :call <SID>ToggleWhitespace()<CR>
