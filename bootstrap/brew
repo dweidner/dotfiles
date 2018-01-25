@@ -56,12 +56,28 @@ install_web_formulae() {
   brew install php71-xdebug
   brew install composer
   brew install php-code-sniffer phpmd
+  brew install psysh
   brew install adminer
   brew install mariadb
 
   brew install yarn --without-node
   brew install tidy-html5
   brew install shellcheck
+}
+
+#
+# Install additional php packages.
+#
+# usage: install_php_packages
+#
+install_php_packages() {
+  dot::info "Installing php packages …"
+
+  brew tap homebrew/php
+
+  brew install drush
+  brew install drupalconsole
+  brew install wp-cli
 }
 
 #
@@ -78,6 +94,7 @@ main() {
     full)
       install_core_formulae
       install_web_formulae
+      install_php_packages
       ;;
     *)
       install_core_formulae
