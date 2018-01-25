@@ -29,33 +29,12 @@ let s:cache_home   = expand('$XDG_CACHE_HOME/' . s:editor)
 let s:config_home  = expand('$XDG_CONFIG_HOME/' . s:editor)
 let s:data_home    = expand('$XDG_DATA_HOME/' . s:editor)
 
-let s:terminal_app = $TERM_PROGRAM ==# 'Apple_Terminal'
-let s:iterm        = $TERM_PROGRAM ==# 'iTerm.app'
-
 let g:vimrc_home   = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
 let g:plug_home    = fnamemodify(resolve(s:data_home . '/site/bundle'), ':p:h')
 let g:fzf_home     = fnamemodify(resolve(expand('$FZF_DIR')), ':p:h')
 
-let g:vimrc_bundles  = [
-      \ 'essentials',
-      \ 'development',
-      \ 'syntax',
-      \ 'completion',
-      \]
-
-let g:vimrc_features = {
-      \  'clipboard':  has('unnamed') || has('nvim'),
-      \  'completion': has('nvim') && has('python3'),
-      \  'conceal':    has('conceal'),
-      \  'truecolors': has('termguicolors') && !s:terminal_app
-      \}
-
 
 " (2) General settings -------------------------------------------------- {{{1
-
-augroup vimrc
-  autocmd!
-augroup END
 
 set lazyredraw                       " No redraw for macros and commands
 set synmaxcol=512                    " Reduce number of columns to highlight
@@ -468,6 +447,8 @@ call plug#end()
 " (12) Auto Commands ---------------------------------------------------- {{{1
 
 augroup vimrc
+
+  autocmd!
 
   " Dynamically hide the cursorline
   autocmd WinEnter,InsertLeave * set cursorline

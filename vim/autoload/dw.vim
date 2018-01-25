@@ -1,9 +1,36 @@
 " autoload/dw.vim
 "
-" @file Utility functions.
+" @file Utility functions
+"
+" -----------------------------------------------------------------------
+" Table of Contents
+" -----------------------------------------------------------------------
+"  1. Script variables
+"  2. Environment
+"  3. Plugins
+"  4. Editor
+"  5. Support
+" -----------------------------------------------------------------------
 
+
+" (1) Script variables -------------------------------------------------- {{{1
+
+" Loading guard
 if exists('g:loaded_dw') | finish | endif
 let g:loaded_dw = 1
+
+
+" Determine the currently running terminal emulator
+let s:terminal_app  = $TERM_PROGRAM ==# 'Apple_Terminal'
+let s:iterm         = $TERM_PROGRAM ==# 'iTerm.app'
+
+" A map of supported editor features
+let s:features = {
+      \   'clipboard':  has('unnamed') || has('nvim'),
+      \   'completion': has('nvim') && has('python3'),
+      \   'conceal':    has('conceal'),
+      \   'truecolors': has('termguicolors') && !s:terminal_app
+      \ }
 
 " A list of project root markers
 let s:markers = [
@@ -13,18 +40,7 @@ let s:markers = [
       \ ]
 
 
-"
-" Remove starting and trailing whitespace from a string.
-"
-" @see {@link http://blog.pixelastic.com/2015/10/05/use-local-eslint-in-syntastic/|Use Local Eslint in Syntastic}
-"
-" @param {String} str
-" @return {Boolean}
-"
-function! dw#Trim(str) abort
-  return substitute(a:str, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
-endfunction
-
+" (2) Environment ------------------------------------------------------- {{{1
 
 "
 " Print each path in the &runtimepath to the current buffer.
@@ -35,6 +51,19 @@ function! dw#Runtimepath() abort
   put! =split(&runtimepath, ',', 0)
 endfunction
 
+"
+" Determine whether a given feature is supported.
+"
+" @param {String} feature...
+" @return {Boolean}
+"
+function! dw#IsSupported(...) abort
+  for feature in a:000
+    if !get(s:features, feature) | return 0 | endif
+  endfor
+
+  return 1
+endfunction
 
 "
 " Retrieve a list of locales supported by the current system.
@@ -56,20 +85,7 @@ function! dw#Languages() abort
 endfunction
 
 
-"
-" Determine whether a given feature is supported.
-"
-" @param {String} feature...
-" @return {Boolean}
-"
-function! dw#IsSupported(...) abort
-  for feature in a:000
-    if !get(g:vimrc_features, feature) | return 0 | endif
-  endfor
-
-  return 1
-endfunction
-
+" (3) Plugins ----------------------------------------------------------- {{{1
 
 "
 " Determine whether a plugin has been installed via vim-plug.
@@ -83,7 +99,6 @@ function! dw#IsInstalled(plugin) abort
   return has_key(g:plugs, a:plugin) && isdirectory(g:plugs[a:plugin].dir)
 endfunction
 
-
 "
 " Determine whether a plugin has been loaded via vim-plug.
 "
@@ -96,6 +111,22 @@ function! dw#IsLoaded(plugin) abort
   return has_key(g:plugs, a:plugin) && stridx(&rtp, g:plugs[a:plugin].dir) >= 0
 endfunction
 
+
+" (4) Editor ------------------------------------------------------------ {{{1
+
+"
+" Switch easily between indentation styles.
+"
+" @param {String} style
+" @return {void}
+"
+function! dw#IndentStyle(style, ...) abort
+  if a:style == 'spaces'
+    setlocal expandtab shiftwidth=2 softtabstop=2
+  elseif a:style == 'tabs'
+    setlocal noexpandtab shiftwidth=2 softtabstop=0
+  endif
+endfunction
 
 "
 " Find the to path to the root directory of the current project.
@@ -127,7 +158,6 @@ function! dw#ProjectRoot(...) abort
   return b:project_root
 endfunction
 
-
 "
 " Find one of the given project markers by traversing the project tree.
 "
@@ -145,3 +175,21 @@ function! dw#FindMarker(markers) abort
 
   return ''
 endfunction
+
+
+" (5) Support ----------------------------------------------------------- {{{1
+
+"
+" Remove starting and trailing whitespace from a string.
+"
+" @see {@link http://blog.pixelastic.com/2015/10/05/use-local-eslint-in-syntastic/|Use Local Eslint in Syntastic}
+"
+" @param {String} str
+" @return {Boolean}
+"
+function! dw#Trim(str) abort
+  return substitute(a:str, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
+endfunction
+
+
+" vim:foldmethod=marker:foldlevel=2
