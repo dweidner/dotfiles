@@ -130,9 +130,7 @@ set nosmartindent                    " Prefer syntax indentexpr
 set nopreserveindent                 " Keep block comments properly aligned
 set smarttab                         " Insert blanks according to shiftwidth
 set expandtab                        " Expand <Tab>s with spaces
-set tabstop=2                        " Properly align files with tabs
-set shiftwidth=2                     " Spaces for each tabstop of (auto)indent
-set softtabstop=2                    " Set virtual tab stop
+set shiftwidth=2                     " Default to two spaces for indentation
 set noshiftround                     " Helps with block comment indentation
 
 set backspace=indent,eol,start       " Delete everything with bs
