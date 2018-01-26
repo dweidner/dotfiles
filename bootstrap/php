@@ -28,7 +28,6 @@ get_phpcs_config() {
 #
 configure_phpcs() {
   phpcs --config-set default_standard PSR2
-  phpcs --config-set show_progress 1
   phpcs --config-set colors 1
   phpcs --config-set report_width auto
 }
