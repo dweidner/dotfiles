@@ -7,14 +7,22 @@
 setlocal commentstring=//\ %s
 
 " A list of default makers to use for php files
-let b:neomake_enabled_makers = ['php', 'phpmd']
+let b:neomake_enabled_makers = ['php']
 
 " Use the PHP Code Sniffer only if the current project has a local
 " ruleset defined
-let s:ruleset = dw#FindProjectFile('phpcs.xml.dist')
+let s:phpcs_ruleset = dw#project#FindFile(['phpcs.xml', 'phpcs.xml.dist'])
 
-if filereadable(s:ruleset)
+if filereadable(s:phpcs_ruleset)
   let b:neomake_enabled_makers += ['phpcs']
+endif
+
+" Use the PHP Mess Detector only if the current project has a local
+" ruleset defined
+let s:phpmd_ruleset = dw#project#FindFile(['phpmd.xml', 'phpmd.xml.dist'])
+
+if filereadable(s:phpmd_ruleset)
+  let b:neomake_enabled_makers += ['phpmd']
 endif
 
 " Auto format the current php file using the PHP code sniffer with its
