@@ -1,0 +1,129 @@
+# snippets/sh.snip
+#
+# @file Shell script snippets
+#
+# -----------------------------------------------------------------------
+# Table of Contents
+# -----------------------------------------------------------------------
+# 1. Control Structures
+# 2. Loops
+# 3. Functions & Methods
+# 4. Variables and Constants
+# 5. Input & Output
+# 6. Misc
+# -----------------------------------------------------------------------
+
+
+# (1) Control Structures ------------------------------------------------ {{{1
+
+snippet if
+options head
+	if [[ ${1} ]]; then
+		${0:TARGET}
+	fi
+
+snippet ifelse
+options head
+	if [[ ${1} ]]; then
+		${2:TARGET}
+	else
+		${3}
+	fi
+
+snippet elif
+alias elseif
+options head
+	elif [[ ${1} ]]; then
+		${0:TARGET}
+
+snippet case
+alias switch
+options head
+	case ${1:\$FOO}) in
+		${2:*}) ${3} ;;${0:TARGET}
+	esac
+
+
+# (2) Loops ------------------------------------------------------------- {{{1
+
+snippet for
+options head
+	for ${1:i} in ${2:#:words}; do
+		${0:TARGET}
+	done
+
+snippet while
+options head
+	while ${1:#:condition}; do
+		${0:TARGET}
+	done
+
+snippet until
+options head
+	until ${1:#:condition}; do
+		${0:TARGET}
+	done
+
+
+# (3) Variables and Constants ------------------------------------------- {{{1
+
+snippet var
+alias v
+options head
+	${1:FOO}="${2:null}"
+
+snippet readonly
+alias ro
+options head
+	readonly ${1:FOO}="${2}"
+
+snippet local
+alias l
+options head
+	local ${1:foo}="${1:\$1}"
+
+
+# (4) Functions & Methods ----------------------------------------------- {{{1
+
+snippet function
+alias f func
+options head
+	${1:foo}(${2:#:arguments}) {
+		${0:TARGET}
+	}
+
+
+# (5) Input & Output ---------------------------------------------------- {{{1
+
+snippet echo
+alias e
+options head
+	echo "${0:TARGET}"
+
+snippet error
+alias warn
+options head
+	echo "${0:TARGET}" 1>&2
+
+snippet abort
+alias die
+options head
+	echo "${0:TARGET}" 1>&2
+	exit 1
+
+snippet heredoc
+alias <<
+options word
+regexp '^[a-zA-Z]\+='
+	<<-${1:EOF}
+		${0:#:TARGET}
+	$1
+
+
+# (6) Misc -------------------------------------------------------------- {{{1
+
+snippet #!
+abbr #!/usr/bin/env bash
+options head
+	#!/usr/bin/env ${1:bash}
+	${0}
