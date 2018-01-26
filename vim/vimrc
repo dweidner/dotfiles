@@ -246,6 +246,9 @@ nnoremap <Leader>w :update<CR>
 " Close the location list and the delete the current buffer
 nnoremap <silent> <Leader>q :lclose<CR>:bdelete<CR>
 
+" Toggle the visibility of the window showing the location list
+nnoremap <silent><special> =oL :silent call dw#ToggleLocList()<CR>
+
 " d) Search/Replace ----------------------------------------------------- {{{2
 
 " Hide matches from previous search
