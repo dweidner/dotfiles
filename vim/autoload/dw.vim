@@ -122,6 +122,32 @@ function! dw#IndentStyle(style) abort
 endfunction
 
 "
+" Fill the current line with a given character.
+"
+" @see {@link https://stackoverflow.com/a/3400528|How to fill a line…}
+"
+" @param {String} char
+" @return {void}
+"
+function! dw#FillLine(char) abort
+  let l:tw = getbufvar('%', '&textwidth', 78)
+  let l:tw = l:tw ? l:tw : 78
+  let l:cursor = getcurpos()
+
+  .s/[[:space:]]*$//
+
+  let l:col = col('$')
+  let l:len = len(a:char)
+  let l:count = float2nr(floor((l:tw - l:col) / l:len))
+
+  if l:count > 0
+    .s/$/\=(' ' . repeat(a:char, l:count))/
+  endif
+
+  call setpos('.', l:cursor)
+endfunction
+
+"
 " Toggle the visibility of the location window.
 "
 " @return {void}

@@ -247,7 +247,7 @@ nnoremap <Leader>w :update<CR>
 nnoremap <silent> <Leader>q :lclose<CR>:bdelete<CR>
 
 " Toggle the visibility of the window showing the location list
-nnoremap <silent><special> =oL :silent call dw#ToggleLocList()<CR>
+nnoremap <silent> =oL :silent call dw#ToggleLocList()<CR>
 
 " d) Search/Replace ----------------------------------------------------- {{{2
 
@@ -265,6 +265,12 @@ nnoremap <Leader>j VjgJl
 " Convert a word to lowercase/uppercase
 nnoremap <Leader>l mQviwu`Q
 nnoremap <Leader>u mQviwU`Q
+
+" Fill the current line with a given character
+nnoremap <silent> <Leader>f- :call dw#FillLine('-')<CR>
+nnoremap <silent> <Leader>f. :call dw#FillLine('.')<CR>
+inoremap <silent> <C-f>- <C-o>:<C-u>call dw#FillLine('-')<CR><Esc>A
+inoremap <silent> <C-f>. <C-o>:<C-u>call dw#FillLine('.')<CR><Esc>A
 
 
 " (11) Plugins ---------------------------------------------------------- {{{1
@@ -429,7 +435,7 @@ augroup vimrc
 
   autocmd!
 
-  " Dynamically hide the cursorline
+  " Dynamically hide the cursorline 
   autocmd WinEnter,InsertLeave * set cursorline
   autocmd WinLeave,InsertEnter * set nocursorline
 
