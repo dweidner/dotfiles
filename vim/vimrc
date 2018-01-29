@@ -280,9 +280,10 @@ function! IsSupported(...) abort
   return call('dw#IsSupported', a:000)
 endfunction
 
-" (Re-)generates the remote plugin manifest
-function! DoGenerateManifest(plug) abort
-  UpdateRemotePlugins
+" Run the install script in the given plugin directory
+function! DoRunInstall(plug) abort
+  silent !bash install.sh
+  silent UpdateRemotePlugins
 endfunction
 
 " Use composer to install PHP package dependencies with a plugin
@@ -415,7 +416,7 @@ call plug#begin()
   endif
 
   if executable('composer')
-    Plug 'autozimu/LanguageClient-neovim', PlugIf(IsSupported('completion'), { 'do': function('DoGenerateManifest') })
+    Plug 'autozimu/LanguageClient-neovim', PlugIf(IsSupported('completion'), { 'branch': 'next', 'do': function('DoRunInstall') })
     Plug 'roxma/LanguageServer-php-neovim', PlugIf(IsSupported('completion'), { 'do': function('DoComposerInstall') })
   endif
 

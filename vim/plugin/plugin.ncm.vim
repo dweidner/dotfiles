@@ -11,6 +11,7 @@ augroup END
 
 " Lazy load NeoVim Completion Manager (@see https://git.io/vF33S)
 function! s:LoadNCM() abort
+  silent! doautocmd User CmBefore
   call plug#load('nvim-completion-manager')
   autocmd! dwncm InsertEnter
 endfunction
