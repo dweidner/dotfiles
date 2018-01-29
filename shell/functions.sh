@@ -114,6 +114,23 @@ silent() {
 }
 
 #
+# Generate an index file of names found in source and header files using the
+# (exuberant) ctags command.
+#
+# usage: tags
+#
+tags() {
+  if ! dot::in_git_repository; then
+    ctags --recurse "$@"
+    return $?
+  fi
+
+  local base
+  base="$(git rev-parse --git-dir)"
+  ctags --recurse -f "${base}/tags" "$@"
+}
+
+#
 # Display the weather for a given city.
 #
 # usage: weather [<city>]
