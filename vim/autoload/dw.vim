@@ -130,18 +130,26 @@ endfunction
 " @return {void}
 "
 function! dw#FillLine(char) abort
+  let l:cursor = getcurpos()
+  let l:suffix = getbufvar('%', 'current_line_suffix', '')
+
   let l:tw = getbufvar('%', '&textwidth', 78)
   let l:tw = l:tw ? l:tw : 78
-  let l:cursor = getcurpos()
+
+  let l:fdm = getbufvar('%', '&foldmethod')
+
+  if l:fdm == 'marker'
+    let l:fdl = max([1, foldlevel('.')])
+    let l:suffix = ' {{{' . l:fdl
+  endif
 
   .s/[[:space:]]*$//
 
-  let l:col = col('$')
-  let l:len = len(a:char)
-  let l:count = float2nr(floor((l:tw - l:col) / l:len))
+  let l:offset = col('$') + len(l:suffix)
+  let l:count = float2nr(floor((l:tw - l:offset) / len(a:char)))
 
   if l:count > 0
-    .s/$/\=(' ' . repeat(a:char, l:count))/
+    .s/$/\=(' ' . repeat(a:char, l:count) . l:suffix)/
   endif
 
   call setpos('.', l:cursor)
