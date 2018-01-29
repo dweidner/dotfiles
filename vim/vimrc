@@ -269,8 +269,8 @@ nnoremap <Leader>u mQviwU`Q
 " Fill the current line with a given character
 nnoremap <silent> <Leader>f- :call dw#FillLine('-')<CR>
 nnoremap <silent> <Leader>f. :call dw#FillLine('.')<CR>
-inoremap <silent> <C-f>- <C-o>:<C-u>call dw#FillLine('-')<CR><Esc>A
-inoremap <silent> <C-f>. <C-o>:<C-u>call dw#FillLine('.')<CR><Esc>A
+inoremap <silent> <C-g>- <C-o>:<C-u>call dw#FillLine('-')<CR><Esc>A
+inoremap <silent> <C-g>. <C-o>:<C-u>call dw#FillLine('.')<CR><Esc>A
 
 
 " (11) Plugins ---------------------------------------------------------- {{{1
