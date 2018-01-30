@@ -65,26 +65,6 @@ ff() {
 }
 
 #
-# Determine the size of file or directory.
-#
-# usage: fsize [<path>]
-#
-fsize() {
-  local -a options
-  options+=( -sh )
-
-  if du -b /dev/null >/dev/null 2>&1; then
-    options+=( -b )
-  fi
-
-  if [[ -n "$*" ]]; then
-    du "${options[*]}" -- "$@"
-  else
-    du "${options[*]}" .[^.]* ./*
-  fi
-}
-
-#
 # Supress output if a given command and run it in the background. Does not
 # supress error messages.
 #
