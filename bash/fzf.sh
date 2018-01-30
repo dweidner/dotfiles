@@ -140,7 +140,7 @@ ft() {
   [[ -r "${git_dir}/tags" ]] || return
 
   local selection
-  selection="$(awk 'BEGIN { FS="\t" } !/^!/ { sub("^../","",$2); print toupper($4) "\t" $1 "\t" $2; }' "${git_dir}/tags" | fzf --query="$1" --nth=2,3)"
+  selection="$(awk 'BEGIN { FS="\t" } !/^!/ { sub("^../","",$2); print toupper($4) "\t" $1 "\t" $2; }' "${git_dir}/tags" | fzf --query="$1" --nth=2)"
 
   [[ $? -eq 0 ]] || return
 
