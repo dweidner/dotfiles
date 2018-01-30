@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+readonly BASEDIR="$(dirname "$0")"
+readonly DOTFILES="${DOTFILES:-$(dirname "$BASEDIR")}"
+
+source "${DOTFILES}/shell/utilities.sh"
+
+
+#
+# Generate an index file of names found in source and header files using the
+# (exuberant) ctags command.
+#
+# usage: mktags [<path>]
+#
+mktags() {
+  if ! dot::in_git_repository; then
+    ctags --recurse "$@"
+    return $?
+  fi
+
+  local base
+  base="$(git rev-parse --git-dir)"
+
+  ctags --recurse -f "${base}/tags" "$@"
+}
+
+mktags "$@"

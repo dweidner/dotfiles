@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+readonly BASEDIR="$(dirname "$0")"
+readonly DOTFILES="${DOTFILES:-$(dirname "$BASEDIR")}"
+
+source "${DOTFILES}/shell/utilities.sh"
+
+
+#
+# Start an http server at the given port and serve the current directory.
+#
+# usage: serve [<port>]
+#
+serve() {
+  local port="${1:-3000}"
+
+  if dot::command_exists "php"; then
+    php -S "localhost:${port}"
+  elif dot::command_exists "http-server"; then
+    http-server -p "$port"
+  elif dot::command_exists "python"; then
+    python -m SimpleHTTPServer "$port"
+  else
+    dot::error "Cannot start an http server at the current directory"
+  fi
+}
+
+serve "$@"

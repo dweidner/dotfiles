@@ -85,25 +85,6 @@ fsize() {
 }
 
 #
-# Start an http server at the given port and serve the current directory.
-#
-# usage: serve [<port>]
-#
-serve() {
-  local port="${1:-3000}"
-
-  if dot::command_exists "php"; then
-    php -S "localhost:${port}"
-  elif dot::command_exists "http-server"; then
-    http-server -p "$port"
-  elif dot::command_exists "python"; then
-    python -m SimpleHTTPServer "$port"
-  else
-    dot::error "Cannot start an http server at the current directory"
-  fi
-}
-
-#
 # Supress output if a given command and run it in the background. Does not
 # supress error messages.
 #
@@ -111,23 +92,6 @@ serve() {
 #
 silent() {
   "$@" >/dev/null &
-}
-
-#
-# Generate an index file of names found in source and header files using the
-# (exuberant) ctags command.
-#
-# usage: tags
-#
-tags() {
-  if ! dot::in_git_repository; then
-    ctags --recurse "$@"
-    return $?
-  fi
-
-  local base
-  base="$(git rev-parse --git-dir)"
-  ctags --recurse -f "${base}/tags" "$@"
 }
 
 #
