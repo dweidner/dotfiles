@@ -28,7 +28,41 @@ if [[ -s "${FZF_DIR}/shell/key-bindings.bash" ]]; then
 fi
 
 
-# (4) Fzf functions ...-------------------------------------------------- {{{1
+# (4) Configuration ----------------------------------------------------- {{{1
+
+if dot::command_exists "rg"; then
+  export FZF_DEFAULT_COMMAND='rg --files --glob ""'
+elif dot::command_exists "ag"; then
+  export FZF_DEFAULT_COMMAND='ag -g ""'
+else
+  export FZF_DEFAULT_COMMAND='find . -path "*/\.*" -prune -o -type f -print -o -type l -print | sed s/^..//'
+fi
+
+export FZF_DEFAULT_OPTS="
+  --reverse
+  --inline-info
+  --color light
+  --height 50%
+  --preview-window hidden
+  --bind '?:toggle-preview'
+  --bind 'ctrl-g:jump-accept'
+  --prompt '${PROMPT_SYMBOL:-❯} '
+  --color fg:23,hl:94,fg+:23,bg+:254,hl+:94
+  --color info:145,prompt:33,spinner:127,pointer:33,marker:23
+"
+
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+export FZF_CTRL_T_OPTS="
+  --preview '[[ \$(file --mime {}) =~ binary ]] && file -b {} || cat {} 2>/dev/null'
+"
+
+export FZF_ALT_C_OPTS="
+  --preview 'tree --noreport --dirsfirst -C {} | head -100'
+"
+
+
+# (5) FZF functions ----------------------------------------------------- {{{1
 
 # Open selected files with the default editor
 fe() {
@@ -39,7 +73,8 @@ fe() {
   done < <(fzf --query="$1" --multi --select-1 --exit-0)
 
   if (( "${#files}" > 0 )); then
-    ${EDITOR:-vim} "${files[@]}"
+    ${EDITOR:-vim} -- "${files[@]}"
+    printf "./%s\\n" "${files[@]}"
   fi
 }
 
@@ -56,7 +91,7 @@ fg() {
   fi
 
   local selection
-  selection="$("${grep_cmd[@]}" | fzf --query="$1" --delimiter=: --with-nth=1,3.. --preview="cut -d: -f1 <<< {} | xargs cat 2>/dev/null")"
+  selection="$("${grep_cmd[@]}" | fzf --query="$1" --delimiter=: --nth=2.. --with-nth=1,3.. --preview="cut -d: -f1 <<< {} | xargs cat 2>/dev/null")"
 
   local file
   file="$(cut -d: -f1 <<< "$selection")"
@@ -66,6 +101,7 @@ fg() {
 
   if [[ -r "$file" ]]; then
     ${EDITOR:-vim} +"$line" "$file"
+    printf "./%s\\n" "${file}"
   fi
 }
 
@@ -99,12 +135,12 @@ ft() {
   dot::in_git_repository || return
 
   local git_dir
-  git_dir="$(git rev-parse --show-toplevel)/.git"
+  git_dir="$(git rev-parse --git-dir)"
 
-  [[ -r "$git_dir/tags" ]] || return
+  [[ -r "${git_dir}/tags" ]] || return
 
   local selection
-  selection="$(awk 'BEGIN { FS="\t" } !/^!/ {print toupper($4)"\t"$1"\t"$2}' "$git_dir/tags" | fzf --query="$1" --nth=2,3)"
+  selection="$(awk 'BEGIN { FS="\t" } !/^!/ { sub("^../","",$2); print toupper($4) "\t" $1 "\t" $2; }' "${git_dir}/tags" | fzf --query="$1" --nth=2,3)"
 
   [[ $? -eq 0 ]] || return
 
@@ -113,35 +149,13 @@ ft() {
 
   local file
   file="$(cut -f3 <<< "$selection")"
+  file="$(realpath --quiet --relative-to="${PWD}" "${git_dir}/../${file}")"
 
-  if [[ -r "$git_dir/$file" ]]; then
-    ${EDITOR:-vim} "$git_dir/$file" -c "set cscopetag" -c "silent tag ${tag}"
+  if [[ -r "${file}" ]]; then
+    ${EDITOR:-vim} "${file}" -c "silent 1tag ${tag}"
+    printf "./%s\\n" "${file}"
   fi
 }
-
-
-# (5) Configuration ----------------------------------------------------- {{{1
-
-export FZF_DEFAULT_OPTS="
-  --reverse
-  --inline-info
-  --color light
-  --height 50%
-  --preview-window hidden
-  --bind '?:toggle-preview'
-  --bind 'ctrl-g:jump-accept'
-  --prompt '${PROMPT_SYMBOL:-❯} '
-  --color fg:23,hl:94,fg+:23,bg+:254,hl+:94
-  --color info:145,prompt:33,spinner:127,pointer:33,marker:23
-"
-
-export FZF_CTRL_T_OPTS="
-  --preview '[[ \$(file --mime {}) =~ binary ]] && file -b {} || cat {} 2>/dev/null'
-"
-
-export FZF_ALT_C_OPTS="
-  --preview 'tree --noreport --dirsfirst -C {} | head -100'
-"
 
 
 # vim:foldmethod=marker:foldlevel=2
