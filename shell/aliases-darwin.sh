@@ -7,7 +7,7 @@
 alias icloud="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs"
 
 # Delete all .DS_Store files recursively
-alias dsrm="find . -type f -name .DS_Store -delete"
+alias rmds="find . -type f -name .DS_Store -delete"
 
 alias ql="qlmanage -p >/dev/null 2>&1" # Open a file in quick look
 
