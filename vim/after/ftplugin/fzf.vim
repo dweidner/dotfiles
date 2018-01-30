@@ -4,14 +4,16 @@
 
 
 " Hide the status line
+setlocal nohlsearch
 setlocal laststatus=0
-setlocal noshowmode
 setlocal noruler
+setlocal noshowmode
 setlocal signcolumn="no"
 
 " Reset the settings when leaving the buffer
 autocmd vimrc BufLeave <buffer>
-  \ setlocal laststatus=2 |
-  \ setlocal showmode |
-  \ setlocal signcolumn="yes" |
-  \ setlocal ruler |
+      \ setlocal hlsearch |
+      \ setlocal laststatus=2 |
+      \ setlocal ruler |
+      \ setlocal showmode |
+      \ setlocal signcolumn="yes"
