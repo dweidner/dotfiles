@@ -200,11 +200,14 @@ cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<CR>
 xnoremap < <gv
 xnoremap > >gv
 
-" Reload syntax highlighting
-nnoremap <silent> U :syntax sync fromstart<CR><C-L>
-
 " qq to record, Q to replay a macro
 nmap Q @q
+
+" Toggle the visibility of the colorcolumn
+nnoremap <silent> =oC :call dw#ToggleColorColumn()<CR>
+
+" Toggle the visibility of the window showing the location list
+nnoremap <silent> =oL :silent call dw#ToggleLocList()<CR>
 
 " b) Movement ----------------------------------------------------------- {{{2
 
@@ -252,18 +255,7 @@ nnoremap <Leader>w :update<CR>
 " Close the location list and the delete the current buffer
 nnoremap <silent> <Leader>q :lclose<CR>:bdelete<CR>
 
-" Toggle the visibility of the colorcolumn
-nnoremap <silent> =oC :call dw#ToggleColorColumn()<CR>
-
-" Toggle the visibility of the window showing the location list
-nnoremap <silent> =oL :silent call dw#ToggleLocList()<CR>
-
-" d) Search/Replace ----------------------------------------------------- {{{2
-
-" Hide matches from previous search
-noremap <silent> <Leader>/ :nohlsearch<CR>
-
-" e) Formatting --------------------------------------------------------- {{{2
+" d) Formatting --------------------------------------------------------- {{{2
 
 " Auto format current buffer
 nnoremap <Leader>= ggVG=

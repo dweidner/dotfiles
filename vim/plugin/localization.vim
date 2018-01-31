@@ -41,9 +41,6 @@ function! s:ImproveGermanKeyboard() abort
   nnoremap <Leader>* <C-w>g}
   vnoremap <Leader>* <C-w>g}
 
-  " Hide matches from previous search
-  nmap <silent> <Leader>- <Leader>/
-
   " Auto format current buffer
   nmap <silent> <Leader>´ <Leader>=
 
