@@ -156,6 +156,23 @@ function! dw#FillLine(char) abort
 endfunction
 
 "
+" Reveal the given file in Finder.
+"
+" @param {String} file
+" @return {String}
+"
+function! dw#OpenFinder(...) abort
+  let l:file = expand(a:0 > 0 ? a:1 : '%:p')
+
+  if filereadable(l:file)
+    execute 'silent !open -R ' . shellescape(l:file)
+    redraw!
+  endif
+
+  return l:file
+endfunction
+
+"
 " Toggle the visibility of the color column.
 "
 " @return {void}
