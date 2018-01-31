@@ -64,6 +64,19 @@ export FZF_ALT_C_OPTS="
 
 # (5) FZF functions ----------------------------------------------------- {{{1
 
+# Open file/directory from bookmark list
+fb() {
+  local path
+  path="$(bookmark list | fzf --query="$1" --select-1 --exit-0)"
+
+  if [[ -d "$path" ]]; then
+    cd "$path" || return
+  elif [[ -f "$path" ]]; then
+    ${EDITOR:-vim} -- "$path"
+    printf "%s\\n" "$path"
+  fi
+}
+
 # Open selected files with the default editor
 fe() {
   local -a files=()

@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+
+readonly XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+
+readonly BOOKMARK_FILE="${BOOKMARK_FILE:-$XDG_DATA_HOME/dotfiles/bookmarks}"
+readonly BOOKMARK_DEFAULT_CMD="${BOOKMARK_DEFAULT_COMMAND:-list}"
+
+#
+# Display usage information.
+#
+usage() {
+  cat <<- EndOfUsage
+		Bookmarks v1.0.0
+
+		Usage:
+		  bookmark <command> [arguments]
+
+		Commands:
+		  add 		Add the given directory to the list of bookmarks.
+		  remove	Delete a given bookmark from the list.
+		  list		List all available bookmarks.
+		  find		Find all bookmarks matching a given keyword.
+		  open		Opens a given bookmark in ${EDITOR}, if it is file.
+	EndOfUsage
+}
+
+#
+# Add a new bookmark to the list.
+#
+# usage: add_bookmark [<path>]
+#
+add_bookmark() {
+  realpath "${1:-$PWD}" >> "$BOOKMARK_FILE"
+}
+
+#
+# Find all bookmarks matching the given keyword.
+#
+# usage: find_bookmark <name>
+#
+find_bookmark() {
+  list_bookmarks | grep -E ".*$1.*"
+}
+
+#
+# Remove a bookmark from the list.
+#
+# usage: remove_bookmark <name>
+#
+remove_bookmark() {
+  local name="$1"
+
+  local tmp_file
+  tmp_file="$(mktemp "${TMPDIR:-/tmp/}bookmarks.XXXXXXXXXXXX")"
+
+  sed "/^$name=/d" "$BOOKMARK_FILE" > "$tmp_file"
+  mv "$tmp_file" "$BOOKMARK_FILE"
+}
+
+#
+# List all available bookmarks.
+#
+# usage: list_bookmarks
+#
+list_bookmarks() {
+  grep -vE "(^\\s*#|^\\s*$)" "$BOOKMARK_FILE"
+}
+
+#
+# Open the given bookmark in the default editor. If the given bookmark is
+# a directory switch to the directory instead.
+#
+# usage: open_bookmark <name>
+#
+open_bookmark() {
+  local path
+  path="$(find_bookmark "$1" | head -n1)"
+
+  if [[ -z "$path" ]]; then
+    echo "==> Bookmark [$1] not found" >&2
+    return 1
+  fi
+
+  if [[ -d "$path" ]]; then
+    cd "$path" || return 1
+  elif [[ -f "$path" ]]; then
+    ${EDITOR:-vim} "$path"
+  fi
+}
+
+#
+# Maintain bookmarks for frequently visited files/directories.
+#
+# usage: bookmark [<cmd>]
+#
+main() {
+  local command="${1:-$BOOKMARK_DEFAULT_CMD}"
+
+  case "$command" in
+    a |add)    shift; add_bookmark "$@" ;;
+    rm|remove) shift; remove_bookmark "$@" ;;
+    f |find)   shift; find_bookmark "$@" ;;
+    o |open)   shift; open_bookmark "$@" ;;
+    ls|list)   list_bookmarks ;;
+    *)         usage ;;
+  esac
+}
+
+main "$@"

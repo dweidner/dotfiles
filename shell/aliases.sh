@@ -18,6 +18,7 @@
 
 # (1) Command abbreviations --------------------------------------------- {{{1
 
+alias b="bookmark"               # Manage a users bookmarks
 alias e="${EDITOR:-vi}"          # Open file in default editor
 alias o="${BROWSER:-open}"       # Open file in default file browser
 alias f="find"                   # Easily access the find command
