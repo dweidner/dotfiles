@@ -2,6 +2,7 @@
 "
 " @file Make VIM’s key bindings more accessible on certain keyboards
 
+
 " Get a list of system locales
 let s:languages = dw#Languages()
 
