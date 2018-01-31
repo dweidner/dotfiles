@@ -142,10 +142,16 @@ set completeopt+=menuone             " Show the popup even for single match
 
 " (7) Auto Formatting --------------------------------------------------- {{{1
 
+set formatoptions-=t                  " Do not auto-wrap text using textwidth
+set formatoptions-=l                  " Don't break long lines in insert mode
 set formatoptions-=o                  " Don't insert comment leader after o/O
-set formatoptions-=l                  " Don't break long lines
-set formatoptions+=n                  " Recognize numbered lists in comments
+set formatoptions+=1                  " Break before one letter words
+set formatoptions+=2                  " Use indent of 2nd line for paragraphs
+set formatoptions+=c                  " Auto-wrap comments using textwidth
 set formatoptions+=j                  " Remove comment leader when joining
+set formatoptions+=n                  " Recognize and and indent list items
+set formatoptions+=q                  " Allow formating of comments with gq
+set formatoptions+=r                  " Insert comment leader on new lines
 
 set nrformats-=octal                  " Don't use octals when incrementing
 
