@@ -13,15 +13,39 @@ usage() {
 		Bookmarks v1.0.0
 
 		Usage:
-		  bookmark <command> [arguments]
+		  bookmark <command> [options] [arguments]
 
 		Commands:
 		  add 		Add the given directory to the list of bookmarks.
-		  remove	Delete a given bookmark from the list.
 		  list		List all available bookmarks.
+		  remove	Delete a given bookmark from the list.
 		  find		Find all bookmarks matching a given keyword.
-		  open		Opens a given bookmark in ${EDITOR}, if it is file.
+		  edit		Open a given bookmark in the default editor.
+		  goto		Switch to the given bookmark if it is a directory.
 	EndOfUsage
+}
+
+#
+# Print an error message.
+#
+# usage: warn <message>
+#
+warn() {
+  echo -e "\\033[0;31m$*\\033[0;m" >&2
+}
+
+#
+# Confirm a question with the user.
+#
+# usage: confirm <question>
+#
+confirm() {
+  read -r -p $'\e[0;32m'"$* (y/n [n]) "$'\e[0;m' answer
+
+  case "$answer" in
+    y|Y) return 0 ;;
+    *) return 1 ;;
+  esac
 }
 
 #
@@ -34,12 +58,12 @@ add_bookmark() {
 }
 
 #
-# Find all bookmarks matching the given keyword.
+# List all available bookmarks.
 #
-# usage: find_bookmark <name>
+# usage: list_bookmarks
 #
-find_bookmark() {
-  list_bookmarks | grep --ignore-case --color=auto "$1"
+list_bookmarks() {
+  grep -vE "(^\\s*#|^\\s*$)" "$BOOKMARK_FILE"
 }
 
 #
@@ -53,45 +77,93 @@ remove_bookmark() {
   local tmp_file
   tmp_file="$(mktemp "${TMPDIR:-/tmp/}bookmarks.XXXXXXXXXXXX")"
 
-  sed "/^$name=/d" "$BOOKMARK_FILE" > "$tmp_file"
-  mv "$tmp_file" "$BOOKMARK_FILE"
+  while IFS=$'\n' read -r -u 3 file; do
+    if confirm "Do you want to delete ${file/$HOME/\~} from you list?"; then
+      grep -v "$file" "$BOOKMARK_FILE" > "$tmp_file"
+    fi
+  done 3< <(find_bookmark "$name")
+
+  if [[ -s "$tmp_file" ]]; then
+    mv "$tmp_file" "$BOOKMARK_FILE"
+  fi
 }
 
 #
-# List all available bookmarks.
+# Find all bookmarks matching the given keyword.
 #
-# usage: list_bookmarks
+# usage: find_bookmark [-type] [<name>]
 #
-list_bookmarks() {
-  grep -vE "(^\\s*#|^\\s*$)" "$BOOKMARK_FILE"
+find_bookmark() {
+  local name
+  local type
+
+  while (( $# > 0 )); do
+    case "$1" in
+      -type) type="$2"; shift; shift ;;
+      *)     name="$1"; shift ;;
+    esac
+  done
+
+  local -a files=()
+
+  while IFS=$'\n' read -r file; do
+    if [[ -z "$type" ]] \
+      || [[ "$type" == "f" && -f "$file" ]] \
+      || [[ "$type" == "d" && -d "$file" ]]; then
+      files+=("$file")
+    fi
+  done < <(list_bookmarks)
+
+  printf "%s\\n" "${files[@]}" | grep --ignore-case --color=auto "$name"
 }
 
 #
-# Open the given bookmark in the default editor. If the given bookmark is
-# a directory switch to the directory instead.
+# Open the given bookmark in the default editor. If no argument is given, the
+# bookmark file is opened instead.
 #
-# usage: open_bookmark <name>
+# usage: edit_bookmark <name>
 #
-open_bookmark() {
-  local path
-  path="$(find_bookmark "$1" | head -n1)"
+edit_bookmark() {
+  local name="$1"
 
-  if [[ -z "$path" ]]; then
-    echo "==> Bookmark [$1] not found" >&2
+  if [[ -z "$name" ]]; then
+    ${EDITOR:-vim} -- "$BOOKMARK_FILE" \
+      && return 0 \
+      || return 1
+  fi
+
+  local file
+  file="$(find_bookmark -type f "$name" | head -n1)"
+
+  if [[ -z "$file" ]]; then
+    warn "==> Bookmark [$name] not found"
     return 1
   fi
 
-  if [[ -d "$path" ]]; then
-    cd "$path" || return 1
-  elif [[ -f "$path" ]]; then
-    ${EDITOR:-vim} "$path"
-  fi
+  ${EDITOR:-vim} -- "$file"
 }
 
 #
-# Maintain bookmarks for frequently visited files/directories.
+# Switch to the given bookmark if it is a directory.
 #
-# usage: bookmark [<cmd>]
+# usage: goto_bookmark <name>
+#
+goto_bookmark() {
+  local dir
+  dir="$(find_bookmark -type d "$1" | head -n1)"
+
+  if [[ ! -d "$dir" ]]; then
+    warn "==> Bookmark [$1] not found"
+    return 1
+  fi
+
+  cd "$dir" || return 1
+}
+
+#
+# Maintain bookmarks for frequently used files/directories.
+#
+# usage: bookmark [<cmd>] [options] [arguments]
 #
 main() {
   local command="${1:-$BOOKMARK_DEFAULT_CMD}"
@@ -100,7 +172,8 @@ main() {
     a |add)    shift; add_bookmark "$@" ;;
     rm|remove) shift; remove_bookmark "$@" ;;
     f |find)   shift; find_bookmark "$@" ;;
-    o |open)   shift; open_bookmark "$@" ;;
+    e |edit)   shift; edit_bookmark "$@" ;;
+    cd|goto)   shift; goto_bookmark "$@" ;;
     ls|list)   list_bookmarks ;;
     *)         usage ;;
   esac
