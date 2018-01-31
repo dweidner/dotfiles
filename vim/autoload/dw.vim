@@ -156,6 +156,19 @@ function! dw#FillLine(char) abort
 endfunction
 
 "
+" Toggle the visibility of the color column.
+"
+" @return {void}
+"
+function! dw#ToggleColorColumn() abort
+  if match(&colorcolumn, '+1') >= 0
+    set colorcolumn-=+1
+  else
+    set colorcolumn+=+1
+  endif
+endfunction
+
+"
 " Toggle the visibility of the location window.
 "
 " @return {void}
