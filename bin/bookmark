@@ -21,7 +21,6 @@ usage() {
 		  remove	Delete a given bookmark from the list.
 		  find		Find all bookmarks matching a given keyword.
 		  edit		Open a given bookmark in the default editor.
-		  goto		Switch to the given bookmark if it is a directory.
 	EndOfUsage
 }
 
@@ -144,23 +143,6 @@ edit_bookmark() {
 }
 
 #
-# Switch to the given bookmark if it is a directory.
-#
-# usage: goto_bookmark <name>
-#
-goto_bookmark() {
-  local dir
-  dir="$(find_bookmark -type d "$1" | head -n1)"
-
-  if [[ ! -d "$dir" ]]; then
-    warn "==> Bookmark [$1] not found"
-    return 1
-  fi
-
-  cd "$dir" || return 1
-}
-
-#
 # Maintain bookmarks for frequently used files/directories.
 #
 # usage: bookmark [<cmd>] [options] [arguments]
@@ -173,7 +155,6 @@ main() {
     rm|remove) shift; remove_bookmark "$@" ;;
     f |find)   shift; find_bookmark "$@" ;;
     e |edit)   shift; edit_bookmark "$@" ;;
-    cd|goto)   shift; goto_bookmark "$@" ;;
     ls|list)   list_bookmarks ;;
     *)         usage ;;
   esac
