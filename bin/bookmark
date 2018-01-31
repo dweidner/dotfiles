@@ -39,7 +39,7 @@ add_bookmark() {
 # usage: find_bookmark <name>
 #
 find_bookmark() {
-  list_bookmarks | grep -E ".*$1.*"
+  list_bookmarks | grep --ignore-case --color=auto "$1"
 }
 
 #
