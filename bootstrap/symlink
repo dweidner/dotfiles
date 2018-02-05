@@ -181,7 +181,7 @@ main() {
   symlink "misc/tern-config" "${HOME}/.tern-config"
 
   # RVM/Ruby²
-  symlink "misc/gemrc" "${config_home}/gem/config"
+  symlink "misc/gemrc" "${config_home}/gem/gemrc"
 
   # Ctags¹
   symlink "misc/ctags" "${HOME}/.ctags"

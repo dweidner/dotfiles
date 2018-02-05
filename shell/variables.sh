@@ -85,8 +85,6 @@ export COMPOSER_HOME="${XDG_CONFIG_HOME}/composer"
 export COMPOSER_CACHE_DIR="${XDG_CACHE_HOME}/composer"
 
 export GEMRC="${XDG_CONFIG_HOME}/gem/gemrc"
-export GEM_HOME="${XDG_DATA_HOME}/gem"
-export GEM_SPEC_CACHE="${XDG_CACHE_HOME}/gem"
 
 export BUNDLE_USER_CONFIG="${XDG_CONFIG_HOME}/bundle"
 export BUNDLE_USER_HOME="${XDG_DATA_HOME}/bundle"
