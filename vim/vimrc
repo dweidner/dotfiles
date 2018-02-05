@@ -439,8 +439,8 @@ augroup vimrc
   autocmd WinLeave,InsertEnter * set nocursorline
 
   " Temporarily hide search results when entering insert mode
-  autocmd InsertEnter * setlocal nohlsearch
-  autocmd InsertLeave * setlocal hlsearch
+  autocmd InsertEnter * if &hlsearch | let b:hlsearch = 1 | setlocal nohlsearch | endif
+  autocmd InsertLeave * if exists('b:hlsearch') | unlet b:hlsearch | setlocal hlsearch | endif
 
   " Check if any buffers were changed outside of vim
   autocmd FocusGained * if &autoread | silent checktime | endif
