@@ -122,10 +122,10 @@ set ignorecase                        " Ignore case when searching
 set smartcase                         " Be case-sensitive when using capitals
 
 if executable('rg')
-  set grepprg=rg\ --vimgrep
+  set grepprg=rg\ --vimgrep\ $*
   set grepformat^=%f:%l:%c:%m
 elseif executable('ag')
-  set grepprg=ag\ --nogroup\ --nocolor\ --column
+  set grepprg=ag\ --vimgrep\ $*
   set grepformat^=%f:%l:%c:%m
 endif
 
