@@ -1,0 +1,26 @@
+# Global ignore file (used by ripgrep and the_silver_search)
+
+.git/
+.sass-cache/
+build/
+dist/
+vendor/
+node_modules/
+
+*~
+*.csv
+*.log
+*.lock
+*.map
+*.min.*
+*.bundle.*
+*.po
+*.svg
+jquery.*
+
+LICENSE*
+tags
+TAGS
+GTAGS
+GRTAGS
+GPATH

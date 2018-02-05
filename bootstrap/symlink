@@ -185,6 +185,9 @@ main() {
 
   # Ctags¹
   symlink "misc/ctags" "${HOME}/.ctags"
+
+  # Ripgrep/The Silver Searcher¹
+  symlink "misc/ignore" "${HOME}/.ignore"
 }
 
 main "$@"
