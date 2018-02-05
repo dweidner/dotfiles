@@ -84,10 +84,10 @@ function! dw#project#Find(type, name) abort
   endif
 
   let l:candidates = dw#Wrap(a:name)
+  let l:path = expand('%:p:h') . ';' . l:root
   let l:fn = a:type == s:t_directory ? 'finddir' : 'findfile'
 
   for l:candidate in l:candidates
-    let l:path = fnamemodify(l:candidate, ':p:h') . ';' . l:root
     let l:file = call(l:fn, [l:candidate, l:path])
 
     if !empty(l:file)
