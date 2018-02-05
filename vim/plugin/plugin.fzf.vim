@@ -24,6 +24,7 @@ let g:fzf_layout = { 'down': '~50%' }
 
 " A map of key bindings available within the fzf window
 let g:fzf_action = {
+      \   'ctrl-o': 'Finder',
       \   'ctrl-t': 'tab split',
       \   'ctrl-v': 'vsplit',
       \   'ctrl-x': 'split',
