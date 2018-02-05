@@ -24,14 +24,12 @@ if empty($XDG_CACHE_HOME)  | let $XDG_CACHE_HOME  = '~/.cache'       | endif
 if empty($XDG_CONFIG_HOME) | let $XDG_CONFIG_HOME = '~/.config'      | endif
 if empty($XDG_DATA_HOME)   | let $XDG_DATA_HOME   = '~/.local/share' | endif
 
+let g:vimrc_home   = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
+
 let s:editor       = has('nvim') ? 'nvim' : 'vim'
 let s:cache_home   = expand('$XDG_CACHE_HOME/' . s:editor)
 let s:config_home  = expand('$XDG_CONFIG_HOME/' . s:editor)
 let s:data_home    = expand('$XDG_DATA_HOME/' . s:editor)
-
-let g:vimrc_home   = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
-let g:plug_home    = fnamemodify(resolve(s:data_home . '/site/bundle'), ':p:h')
-let g:fzf_home     = fnamemodify(resolve(expand('$FZF_DIR')), ':p:h')
 
 
 " (2) General settings -------------------------------------------------- {{{1
@@ -305,7 +303,7 @@ function! DoNpmInstall(plug) abort
 endfunction
 
 
-call plug#begin()
+call plug#begin(s:data_home . '/bundle')
 
   " a) Essentials ------------------------------------------------------- {{{2
   " |- ack: Search file contents for patterns
@@ -341,8 +339,8 @@ call plug#begin()
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-unimpaired'
 
-  if isdirectory(g:fzf_home)
-    Plug g:fzf_home, { 'as': 'fzf' }
+  if isdirectory('/usr/local/opt/fzf')
+    Plug '/usr/local/opt/fzf'
     Plug 'junegunn/fzf.vim'
   endif
 

@@ -53,9 +53,10 @@ endfunction
 " Print each path in the &runtimepath to the current buffer.
 "
 " @see {@link https://github.com/davidosomething/dotfiles}
+" @return {List}
 "
 function! dw#Runtimepath() abort
-  put! =split(&runtimepath, ',', 0)
+  return split(&runtimepath, ',', 0)
 endfunction
 
 "
@@ -75,6 +76,18 @@ function! dw#Languages() abort
   let l:languages = map(l:languages, 'split(v:val, "\\.")[0]')
 
   return l:languages
+endfunction
+
+"
+" Get all files added to the users bookmark list.
+"
+" @return {List}
+"
+function! dw#Bookmarks() abort
+  let l:files = systemlist('bookmark list')
+  let l:files = filter(l:files, 'filereadable(v:val)')
+  
+  return l:files
 endfunction
 
 
