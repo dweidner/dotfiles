@@ -434,6 +434,9 @@ augroup vimrc
 
   autocmd!
 
+  " Check if any buffers were changed outside of vim
+  autocmd FocusGained * if &autoread | silent checktime | endif
+
   " Dynamically hide the cursorline 
   autocmd WinEnter,InsertLeave * set cursorline
   autocmd WinLeave,InsertEnter * set nocursorline
@@ -441,9 +444,6 @@ augroup vimrc
   " Temporarily hide search results when entering insert mode
   autocmd InsertEnter * if &hlsearch | let b:hlsearch = 1 | setlocal nohlsearch | endif
   autocmd InsertLeave * if exists('b:hlsearch') | unlet b:hlsearch | setlocal hlsearch | endif
-
-  " Check if any buffers were changed outside of vim
-  autocmd FocusGained * if &autoread | silent checktime | endif
 
 augroup END
 
