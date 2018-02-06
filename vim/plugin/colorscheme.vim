@@ -35,6 +35,8 @@ function! s:CustomizeAtomOne() abort
   hi link NeomakeError SpellBad
   hi link NeomakeWarning SpellCap
   hi link ExtraWhitespace SpellCap
+  hi link phpDocTags jsDocTags
+  hi link phpDocIdentifier jsDocParam
 
   if $TERM_PROGRAM ==# 'Apple_Terminal'
     hi Normal ctermbg=NONE
