@@ -68,6 +68,30 @@ function! dw#project#GetRoot(...) abort
 endfunction
 
 "
+" Change the current directory for the current window to the root of the
+" current project. If a relative path is given the current directory is
+" changed to that instead.
+"
+" @param {String} path
+" @return {String}
+"
+function! dw#project#Cd(...) abort
+  let l:path = a:0 > 0 ? a:1 : ''
+  let l:root = dw#project#GetRoot()
+
+  let l:target = simplify(l:root . '/' . l:path)
+
+  if empty(l:root) || !isdirectory(l:target)
+    return ''
+  endif
+
+  execute 'lcd ' . l:target
+  pwd
+
+  return l:target
+endfunction
+
+"
 " Find the given file type within the current project tree.
 "
 " @param {String} type
