@@ -317,6 +317,7 @@ call plug#begin(s:data_home . '/bundle')
   " |- lightline: Configurable statusline
   " |- one: Atom one color scheme
   " |- repeat: Enable repeating supported plugin maps
+  " |- startuptime: Identify slow plugins
   " |- surround: Wrap text objects
   " |- unimpaired: Handy bracket key mappings
   " |- fzf: A fuzzy finder
@@ -334,6 +335,7 @@ call plug#begin(s:data_home . '/bundle')
   Plug 'itchyny/lightline.vim'
   Plug 'rakr/vim-one'
   Plug 'tpope/vim-repeat'
+  Plug 'tweekmonster/startuptime.vim', { 'on': [ 'StartupTime' ] }
   Plug 'tpope/vim-surround'
   Plug 'tpope/vim-unimpaired'
 
