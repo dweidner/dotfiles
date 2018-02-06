@@ -204,8 +204,6 @@ nmap Q @q
 " Toggle the visibility of the colorcolumn
 nnoremap <silent> =oC :call dw#ToggleColorColumn()<CR>
 
-" Toggle the visibility of the window showing the location list
-nnoremap <silent> =oL :silent call dw#ToggleLocList()<CR>
 
 " b) Movement ----------------------------------------------------------- {{{2
 
@@ -437,13 +435,13 @@ augroup vimrc
   " Check if any buffers were changed outside of vim
   autocmd FocusGained * if &autoread | silent checktime | endif
 
-  " Dynamically hide the cursorline 
-  autocmd WinEnter,InsertLeave * set cursorline
-  autocmd WinLeave,InsertEnter * set nocursorline
+  " Temporarily hide the cursorline
+  autocmd WinLeave,InsertEnter * call dw#ui#DisableTemporarily('cursorline')
+  autocmd WinEnter,InsertLeave * call dw#ui#Restore('cursorline')
 
   " Temporarily hide search results when entering insert mode
-  autocmd InsertEnter * if &hlsearch | let b:hlsearch = 1 | setlocal nohlsearch | endif
-  autocmd InsertLeave * if exists('b:hlsearch') | unlet b:hlsearch | setlocal hlsearch | endif
+  autocmd InsertEnter * call dw#ui#DisableTemporarily('hlsearch')
+  autocmd InsertLeave * call dw#ui#Restore('hlsearch')
 
 augroup END
 

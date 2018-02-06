@@ -19,7 +19,6 @@
 if exists('g:loaded_dw') | finish | endif
 let g:loaded_dw = 1
 
-
 " Determine the currently running terminal emulator
 let s:terminal_app  = $TERM_PROGRAM ==# 'Apple_Terminal'
 let s:iterm         = $TERM_PROGRAM ==# 'iTerm.app'
@@ -88,6 +87,23 @@ function! dw#Bookmarks() abort
   let l:files = filter(l:files, 'filereadable(v:val)')
   
   return l:files
+endfunction
+
+"
+" Reveal the given file in Finder.
+"
+" @param {String} file
+" @return {String}
+"
+function! dw#OpenFinder(...) abort
+  let l:file = expand(a:0 > 0 ? a:1 : '%:p')
+
+  if filereadable(l:file)
+    execute 'silent !open -R ' . shellescape(l:file)
+    redraw!
+  endif
+
+  return l:file
 endfunction
 
 
@@ -166,53 +182,6 @@ function! dw#FillLine(char) abort
   endif
 
   call setpos('.', l:cursor)
-endfunction
-
-"
-" Reveal the given file in Finder.
-"
-" @param {String} file
-" @return {String}
-"
-function! dw#OpenFinder(...) abort
-  let l:file = expand(a:0 > 0 ? a:1 : '%:p')
-
-  if filereadable(l:file)
-    execute 'silent !open -R ' . shellescape(l:file)
-    redraw!
-  endif
-
-  return l:file
-endfunction
-
-"
-" Toggle the visibility of the color column.
-"
-" @return {void}
-"
-function! dw#ToggleColorColumn() abort
-  if match(&colorcolumn, '+1') >= 0
-    set colorcolumn-=+1
-  else
-    set colorcolumn+=+1
-  endif
-endfunction
-
-"
-" Toggle the visibility of the location window.
-"
-" @return {void}
-"
-function! dw#ToggleLocList() abort
-  silent redir => l:output
-    filter /^\[Location List\]$/ buffers!
-  redir END
-
-  if empty(l:output)
-    lwindow
-  else
-    lclose
-  endif
 endfunction
 
 
