@@ -436,12 +436,12 @@ augroup vimrc
   autocmd FocusGained * if &autoread | silent checktime | endif
 
   " Temporarily hide the cursorline
-  autocmd WinLeave,InsertEnter * call dw#ui#DisableTemporarily('cursorline')
-  autocmd WinEnter,InsertLeave * call dw#ui#Restore('cursorline')
+  autocmd WinLeave,InsertEnter * call dw#ui#DisableTemporarily('%', 'cursorline')
+  autocmd WinEnter,InsertLeave * call dw#ui#Restore('%', 'cursorline')
 
   " Temporarily hide search results when entering insert mode
-  autocmd InsertEnter * call dw#ui#DisableTemporarily('hlsearch')
-  autocmd InsertLeave * call dw#ui#Restore('hlsearch')
+  autocmd InsertEnter * call dw#ui#DisableTemporarily('%', 'hlsearch')
+  autocmd InsertLeave * call dw#ui#Restore('%', 'hlsearch')
 
 augroup END
 

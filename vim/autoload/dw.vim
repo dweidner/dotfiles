@@ -188,6 +188,24 @@ endfunction
 " (5) Support ----------------------------------------------------------- {{{1
 
 "
+" Get a local dictionary by name. Create one if it does not exist yet.
+"
+" @param {String} bufnr
+" @param {String} name
+" @return {Dictionary}
+"
+function! dw#GetStore(bufnr, name) abort
+  let l:store = getbufvar(a:bufnr, a:name)
+
+  if empty(l:store)
+    let l:store = {}
+    call setbufvar(a:bufnr, a:name, l:store)
+  endif
+
+  return l:store
+endfunction
+
+"
 " If the given value is not of type list, wrap it in one.
 "
 " @param {*} list
