@@ -10,6 +10,9 @@ let g:html_indent_autotags = 'html,head,body'
 let g:html_indent_script1 = 'inc'
 let g:html_indent_style1 = 'inc'
 
-if !dw#IsInstalled('html5.vim')
-  let g:html_exclude_tags = ['html', 'head', 'style', 'script' 'body']
+" Auto close the previously opened tag
+inoremap <buffer> <lt>/ <lt>/<C-x><C-o><Esc>==gi
+
+if dw#IsInstalled('html5.vim')
+  let g:html_exclude_tags = ['html', 'head', 'style', 'script', 'body']
 endif
