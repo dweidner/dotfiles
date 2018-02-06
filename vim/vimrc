@@ -396,7 +396,7 @@ call plug#begin(s:data_home . '/bundle')
   Plug 'mxw/vim-jsx'
   Plug 'groenewege/vim-less'
   Plug 'tpope/vim-liquid'
-  Plug 'StanAngeloff/php.vim', { 'for': [ 'php' ] }
+  Plug 'StanAngeloff/php.vim'
   Plug '2072/PHP-Indenting-for-Vim'
   Plug 'cakebaker/scss-syntax.vim'
   Plug 'tmux-plugins/vim-tmux'
