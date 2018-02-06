@@ -202,7 +202,7 @@ xnoremap > >gv
 nmap Q @q
 
 " Toggle the visibility of the colorcolumn
-nnoremap <silent> =oC :call dw#ToggleColorColumn()<CR>
+nnoremap <silent> =oC :call dw#ui#ToggleColorColumn()<CR>
 
 
 " b) Movement ----------------------------------------------------------- {{{2
