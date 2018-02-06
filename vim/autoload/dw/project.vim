@@ -10,7 +10,6 @@ let s:t_directory = 'd'
 " A list of project root markers
 let s:markers = [
       \   'composer.json',
-      \   'Gemfile',
       \   'package.json',
       \ ]
 
@@ -44,7 +43,6 @@ endfunction
 "
 function! dw#project#GetRoot(...) abort
   let l:bufnr = a:0 > 0 && type(a:1) == v:t_number ? a:1 : '%'
-
   let l:project_dir = getbufvar(l:bufnr, 'project_root')
 
   if !empty(l:project_dir)
@@ -83,12 +81,19 @@ function! dw#project#Find(type, name) abort
     return ''
   endif
 
+  let l:Find = a:type == s:t_directory ? function('finddir') : function('findfile')
+
   let l:candidates = dw#Wrap(a:name)
-  let l:path = expand('%:p:h') . ';' . l:root
-  let l:fn = a:type == s:t_directory ? 'finddir' : 'findfile'
+  let l:directory = expand('%:p:h')
+
+  if l:directory == l:root || stridx(a:haystack, a:needle) == -1
+    let l:path = l:root
+  else
+    let l:path = l:directory . ';' . l:path
+  endif
 
   for l:candidate in l:candidates
-    let l:file = call(l:fn, [l:candidate, l:path])
+    let l:file = l:Find(l:candidate, l:path)
 
     if !empty(l:file)
       return fnamemodify(resolve(expand(l:file)), ':p')
