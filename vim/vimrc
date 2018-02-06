@@ -286,7 +286,10 @@ endfunction
 " Run the install script in the given plugin directory
 function! DoRunInstall(plug) abort
   silent !bash install.sh
-  silent UpdateRemotePlugins
+
+  if exists(':UpdateRemotePlugins')
+    silent UpdateRemotePlugins
+  endif
 endfunction
 
 " Use composer to install PHP package dependencies with a plugin
