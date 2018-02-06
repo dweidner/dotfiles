@@ -3,6 +3,13 @@
 " @file Configuration of the color scheme
 
 
+"
+" Run through a list of color schemes and enable the first one installed on
+" the current system.
+"
+" @param {Dictionary} dict
+" @return {String}
+"
 function! s:EnableColorScheme(dict) abort
   if dw#IsSupported('truecolors')
     set termguicolors
@@ -11,10 +18,18 @@ function! s:EnableColorScheme(dict) abort
   for [l:plugin, l:scheme] in items(a:dict)
     if dw#IsLoaded(l:plugin)
       execute 'colorscheme ' . l:scheme
+      return l:plugin
     endif
-  endfo
+  endfor
+
+  return ''
 endfunction
 
+"
+" Customize the highlighting groups of rakr/vim-one.
+"
+" @return {void}
+"
 function! s:CustomizeAtomOne() abort
   let g:fzf_colors = {
         \   'fg': ['fg', 'Normal'],
@@ -46,9 +61,11 @@ function! s:CustomizeAtomOne() abort
   endif
 endfunction
 
+" Register functions used to customize the individual color schemes
 autocmd vimrc ColorScheme one call s:CustomizeAtomOne()
 
-call s:EnableColorScheme({
+" Enable the first color scheme available in the current system
+let s:color_scheme = s:EnableColorScheme({
       \   'vim-one': 'one',
       \   'gruvbox': 'gruvbox',
       \   'vim-colors-solarized': 'solarized',
