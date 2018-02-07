@@ -1,12 +1,16 @@
 # Global ignore file (used by ripgrep and the_silver_search)
 
 .git/
+.hg/
+.svn/
 .sass-cache/
 build/
 dist/
 vendor/
 node_modules/
 
+.DS_Store
+._*
 *~
 *.csv
 *.log
