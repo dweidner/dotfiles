@@ -31,9 +31,9 @@ fi
 # (4) Configuration ----------------------------------------------------- {{{1
 
 if dot::command_exists "rg"; then
-  export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --glob ""'
+  export FZF_DEFAULT_COMMAND='rg --files --hidden --no-ignore-vcs --glob ""'
 elif dot::command_exists "ag"; then
-  export FZF_DEFAULT_COMMAND='ag --skip-vcs-ignores -g ""'
+  export FZF_DEFAULT_COMMAND='ag --hidden --skip-vcs-ignores -g ""'
 else
   export FZF_DEFAULT_COMMAND='find . -path "*/\.*" -prune -o -type f -print -o -type l -print | sed s/^..//'
 fi
