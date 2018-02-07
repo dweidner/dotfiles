@@ -113,7 +113,7 @@ function! dw#project#Find(type, name) abort
   if l:directory == l:root || stridx(l:directory, l:root) == -1
     let l:path = l:root
   else
-    let l:path = l:directory . ';' . l:path
+    let l:path = l:directory . ';' . l:root
   endif
 
   for l:candidate in l:candidates
