@@ -110,7 +110,7 @@ function! dw#project#Find(type, name) abort
   let l:candidates = dw#Wrap(a:name)
   let l:directory = expand('%:p:h')
 
-  if l:directory == l:root || stridx(a:haystack, a:needle) == -1
+  if l:directory == l:root || stridx(a:directory, a:root) == -1
     let l:path = l:root
   else
     let l:path = l:directory . ';' . l:path
