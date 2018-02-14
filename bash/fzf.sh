@@ -91,8 +91,33 @@ fe() {
   fi
 }
 
+# Browse the git commit log
+fgl() {
+  dot::in_git_repository || return
+
+  local shell="${SHELL:-/bin/sh}"
+  local needle="[a-f0-9]\\{7,\\}"
+
+  local git_show="git show --color --date=short --pretty=nice"
+
+  if dot::command_exists "diff-so-fancy"; then
+    git_show="${git_show} | diff-so-fancy"
+  fi
+
+  local sha1
+  sha1=$(
+    git log --color=always --graph --date=short --pretty=nice \
+      | fzf --ansi --no-sort --preview "grep -o \"${needle}\" <<< {} | xargs ${git_show}" \
+      | grep -o "$needle"
+  )
+
+  if [[ -n "$sha1" ]]; then
+    xargs "$shell" -c "$git_show | less --tabs=4 -FRX" <<< "$sha1"
+  fi
+}
+
 # Searching file contents with ripgrep and open selection with editor
-fg() {
+frg() {
   local -a grep_cmd=()
 
   if dot::command_exists "rg"; then
@@ -118,33 +143,8 @@ fg() {
   fi
 }
 
-# Browse the git commit log
-fl() {
-  dot::in_git_repository || return
-
-  local shell="${SHELL:-/bin/sh}"
-  local needle="[a-f0-9]\\{7,\\}"
-
-  local git_show="git show --color --date=short --pretty=nice"
-
-  if dot::command_exists "diff-so-fancy"; then
-    git_show="${git_show} | diff-so-fancy"
-  fi
-
-  local sha1
-  sha1=$(
-    git log --color=always --graph --date=short --pretty=nice \
-      | fzf --ansi --no-sort --preview "grep -o \"${needle}\" <<< {} | xargs ${git_show}" \
-      | grep -o "$needle"
-  )
-
-  if [[ -n "$sha1" ]]; then
-    xargs "$shell" -c "$git_show | less --tabs=4 -FRX" <<< "$sha1"
-  fi
-}
-
 # Search ctags and open the selected file with the default editor
-ft() {
+ftag() {
   dot::in_git_repository || return
 
   local git_dir
