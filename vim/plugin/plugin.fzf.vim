@@ -35,9 +35,9 @@ let s:fzf_preview = 'right:50%:hidden'
 
 " Determine the command to use for search operations
 if executable('rg')
-  let s:fzf_grep_command = 'rg --column --line-number --no-heading --color=always'
+  let s:fzf_grep_command = 'rg --hidden --no-ignore-vcs --column --no-heading --color=always'
 elseif executable('ag')
-  let s:fzf_grep_command = 'ag --column --nogroup --color'
+  let s:fzf_grep_command = 'ag --hidden --skip-vcs-ignores --column --nogroup --color'
 else
   let s:fzf_grep_command = 'grep -r --line-number --color=always'
 endif
