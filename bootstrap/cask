@@ -44,6 +44,8 @@ install_development_tools() {
 
   brew cask install slack
 
+  brew cask install tad
+
   brew cask install fira-code
   brew cask install source-code-pro
 }
@@ -60,7 +62,6 @@ install_web_tools() {
   brew cask install firefox
   brew cask install google-chrome
 
-  brew cask install dropbox
   brew cask install spotify
 
   brew cask install jadengeller-helium
@@ -73,7 +74,7 @@ main() {
   if ! dot::command_exists "brew"; then
     dot::exit "Cannot find homebrew command"
   fi
-  
+
   local profile="${1:-full}"
 
   case "${profile}" in
