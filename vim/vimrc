@@ -322,6 +322,7 @@ call plug#begin(s:data_home . '/bundle')
   " |- repeat: Enable repeating supported plugin maps
   " |- startuptime: Identify slow plugins
   " |- surround: Wrap text objects
+  " |- tabular: Text filtering and alignment
   " |- unimpaired: Handy bracket key mappings
   " |- fzf: A fuzzy finder
 
@@ -340,6 +341,7 @@ call plug#begin(s:data_home . '/bundle')
   Plug 'tpope/vim-repeat'
   Plug 'tweekmonster/startuptime.vim', { 'on': [ 'StartupTime' ] }
   Plug 'tpope/vim-surround'
+  Plug 'godlygeek/tabular', { 'on': [ 'Tabularize' ] }
   Plug 'tpope/vim-unimpaired'
 
   if isdirectory('/usr/local/opt/fzf')
