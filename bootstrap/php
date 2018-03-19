@@ -57,7 +57,7 @@ install_wpc() {
 main() {
   if dot::command_exists "phpcs"; then
     if dot::confirm "Do you want to customize the default settings used by php code sniffer?"; then
-      confige_phpcs
+      configure_phpcs
     fi
 
     if dot::confirm "Do you want to install the WordPress Coding Standards?"; then
