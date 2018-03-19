@@ -30,5 +30,7 @@ endif
 " Auto format the current php file using the PHP code sniffer with its
 " standard configuration
 if executable('phpcbf')
-  nnoremap <buffer><silent><special> <Leader>= :silent %!phpcbf<CR>:redraw!<CR>
+  nnoremap <silent><special><buffer>
+        \ <Leader>=
+        \ :silent %!phpcbf<CR>:checktime<CR>
 endif
