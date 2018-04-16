@@ -37,32 +37,40 @@ install_core_formulae() {
 #
 # Install formulae of choise used during Web Development.
 #
-# usage: install_web_formulae
+# usage: install_dev_formulae
 #
-install_web_formulae() {
+install_dev_formulae() {
   dot::info "Installing web formulae …"
 
-  brew tap homebrew/php
-
   brew install neovim
-  brew install python3
+  brew install python
   brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
   brew install git
   brew install icdiff diff-so-fancy
 
   brew install httpd
-  brew install php71 --with-httpd --with-homebrew-curl
-  brew install php71-xdebug
-  brew install composer
-  brew install php-code-sniffer phpmd
-  brew install psysh
-  brew install adminer
+  brew install php
   brew install mariadb
 
-  brew install yarn --without-node
+  brew install composer
+  brew install php-code-sniffer
+  brew install phpmd
+  brew install adminer
+
   brew install tidy-html5
   brew install shellcheck
+}
+
+#
+# Install additional php extensions.
+#
+# usage: install_php_extensions
+#
+install_php_extensions() {
+  dot::info "Installing php packages …"
+
+  pecl install xdebug
 }
 
 #
@@ -73,11 +81,12 @@ install_web_formulae() {
 install_php_packages() {
   dot::info "Installing php packages …"
 
-  brew tap homebrew/php
+  composer global require consolidation/cgr
 
-  brew install drush
-  brew install drupalconsole
-  brew install wp-cli
+  cgr psy/psysh
+  cgr wp-cli/wp-cli
+  cgr drush/drush:8.x
+  cgr getkirby/cli
 }
 
 #
@@ -93,8 +102,9 @@ main() {
   case "${profile}" in
     full)
       install_core_formulae
-      install_web_formulae
+      install_dev_formulae
       install_php_packages
+      install_php_extensions
       ;;
     *)
       install_core_formulae
