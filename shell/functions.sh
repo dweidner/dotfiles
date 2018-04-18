@@ -65,6 +65,26 @@ ff() {
 }
 
 #
+# Remove directories from the stack.
+#
+# usage: po [<directory>]
+#
+po() {
+  builtin popd "$@" >/dev/null || return
+  builtin dirs -v
+}
+
+#
+# Add directories to the stack.
+#
+# usage: pu [<directory>]
+#
+pu() {
+  builtin pushd "$@" >/dev/null || return
+  builtin dirs -v
+}
+
+#
 # Supress output if a given command and run it in the background. Does not
 # supress error messages.
 #

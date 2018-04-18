@@ -31,9 +31,6 @@ alias h="history"                # Easily access the command history
 alias -- ..="cd .."                # Switch to the parent directory
 alias -- --="cd - >/dev/null 2>&1" # Switch to the previous directory
 
-alias pu="pushd"                   # Push a directory to the stack
-alias po="popd"                    # Remove the last directory from the stack
-
 
 # (3) Error prevention -------------------------------------------------- {{{1
 
