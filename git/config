@@ -36,6 +36,7 @@
 	# git add
 	aa = add --all
 	au = add --update
+	ai = add --interactive
 
 	# git branch
 	branches = branch -a
