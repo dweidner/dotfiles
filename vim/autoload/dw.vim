@@ -85,7 +85,7 @@ endfunction
 function! dw#Bookmarks() abort
   let l:files = systemlist('bookmark list')
   let l:files = filter(l:files, 'filereadable(v:val)')
-  
+
   return l:files
 endfunction
 
@@ -104,6 +104,22 @@ function! dw#OpenFinder(...) abort
   endif
 
   return l:file
+endfunction
+
+"
+" Open the given file in Visual Studio Code.
+"
+" @param {String} file
+" @return {String}
+"
+function! dw#OpenVSCode(...) abort
+  if a:0 > 0
+    execute "silent !code --goto '" . expand(a:1) . "'" | redraw!
+    return expand(a:1)
+  endif
+
+  execute "silent !code --goto '" . expand("%") . ":" . line(".") . ":" . col(".") . "'" | redraw!
+  return expand("%")
 endfunction
 
 
