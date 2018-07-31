@@ -136,6 +136,8 @@ set complete-=i                      " Don't scan included files
 set complete-=t                      " Avoid tag completion by default
 set completeopt+=menu                " Show possible completions in a popup
 set completeopt+=menuone             " Show the popup even for single match
+set completeopt+=noinsert            " Do not insert any text
+set completeopt+=noselect            " Do not select a match in the menu
 
 
 " (7) Auto Formatting --------------------------------------------------- {{{1
@@ -319,6 +321,7 @@ call plug#begin(s:data_home . '/bundle')
   " |- lastplace: Reopen file at last edit position
   " |- lightline: Configurable statusline
   " |- one: Atom one color scheme
+  " |- yarp: Yet Another Remote Plugin Framework for Neovim
   " |- repeat: Enable repeating supported plugin maps
   " |- startuptime: Identify slow plugins
   " |- surround: Wrap text objects
@@ -338,6 +341,7 @@ call plug#begin(s:data_home . '/bundle')
   Plug 'farmergreg/vim-lastplace'
   Plug 'itchyny/lightline.vim'
   Plug 'rakr/vim-one'
+  Plug 'roxma/nvim-yarp'
   Plug 'tpope/vim-repeat'
   Plug 'tweekmonster/startuptime.vim', { 'on': [ 'StartupTime' ] }
   Plug 'tpope/vim-surround'
@@ -410,19 +414,17 @@ call plug#begin(s:data_home . '/bundle')
   Plug 'stephpy/vim-yaml'
 
   " d) Completion Manager ---------------------------------------------- {{{2
-  " |- nvim-completion-manager: Fast and extensible completion framework
-  " |- ncm-css: CSS completion for CSS, SASS and LESS
-  " |- neco-vim: Vim completion sources for deoplete/ncm
-  " |- nvim-cm-tern: JavaScript completion using ternjs code analysis
+  " |- ncm2: Slim, fast and hackable completion framework
+  " |- ncm2-tern: JavaScript completion using ternjs code analysis
+  " |- ncm2-cssomni: CSS completion for CSS, SASS and LESS
   " |- languageclient: Vim support for the Language Server Protocol
   " |- languageserver-php: PHP implementation of the LSP
 
-  Plug 'roxma/nvim-completion-manager', PlugIf(IsSupported('completion'), { 'on': [] })
-  Plug 'calebeby/ncm-css', PlugIf(IsSupported('completion'))
-  Plug 'Shougo/neco-vim', PlugIf(IsSupported('completion'))
+  Plug 'ncm2/ncm2', PlugIf(IsSupported('completion'))
+  Plug 'ncm2/ncm2-cssomni', PlugIf(IsSupported('completion'))
 
   if executable('npm')
-    Plug 'roxma/nvim-cm-tern', PlugIf(IsSupported('completion'), { 'do': function('DoNpmInstall') })
+    Plug 'ncm2/ncm2-tern', PlugIf(IsSupported('completion'), { 'do': function('DoNpmInstall') })
   endif
 
   if executable('composer')
