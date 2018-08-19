@@ -9,7 +9,7 @@ readonly DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
 
 source "${DOTFILES}/shell/utilities.sh"
 
-readonly RVM_DIR"${1:-$HOME/.local/share/rvm}"
+readonly RVM_DIR="${1:-$HOME/.local/share/rvm}"
 
 dot::info "Installing rvm …"
 
