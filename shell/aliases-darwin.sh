@@ -18,6 +18,7 @@ alias cask="brew cask"                 # Easily install apps via homebrew
 alias services="brew services"         # Easily maintain homebrew services
 alias reload="source ~/.bash_profile"  # Reload bash configuration
 
+alias vscode="code"                    # Custom alias for VS Code
 alias finder="open -a Finder"          # Open a directory in Finder
 alias chrome="open -a Google\ Chrome"  # Open a website in Google Chrome
 alias firefox="open -a Firefox"        # Open a website in Firefox
