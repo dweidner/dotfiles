@@ -452,7 +452,6 @@ cleanup_homebrew() {
 
   dot::info "Removing old versions of installed formulae …"
   brew cleanup
-  brew cask cleanup
 
   dot::info "Removing dead symlinks …"
   brew prune
