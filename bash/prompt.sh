@@ -21,11 +21,6 @@ __prompt_git() {
     && echo -e "$(__prompt_branch_name)$(__prompt_dirty)"
 }
 
-# Remember the exit status of the last command executed
-__prompt_remember_exit_code() {
-  export LAST_EXIT_CODE=$?
-}
-
 # Render the prompt symbol
 __prompt_symbol() {
   local symbol="${PROMPT_SYMBOL:-❯}"
@@ -37,7 +32,18 @@ __prompt_symbol() {
   fi
 }
 
-# Prepare the bash prompt
+# Add a custom command to environment variable
+__prompt_add_command() {
+  [[ ";${PROMPT_COMMAND};" = *";${1};"* ]] \
+    || export PROMPT_COMMAND="$1${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+}
+
+# Remember the exit status of the last command executed
+__prompt_remember_exit_code() {
+  export LAST_EXIT_CODE=$?
+}
+
+# Prepare both, the primary and secondary prompt
 __prompt() {
   local nl='\n'
   local reset='\[\e[0m\]'
@@ -52,8 +58,8 @@ __prompt() {
 
   export PS1="${nl}${cwd} ${git}${nl}${symbol} ${reset}"
   export PS2="${gray}⋮${reset} "
-
-  export PROMPT_COMMAND="__prompt_remember_exit_code;$PROMPT_COMMAND"
 }
 
+# Setup the prompt and register hooks to execute before each prompt
 __prompt
+__prompt_add_command "__prompt_remember_exit_code"
