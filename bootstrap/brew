@@ -52,10 +52,7 @@ install_dev_formulae() {
   brew install httpd
   brew install php
   brew install mariadb
-
   brew install composer
-  brew install php-code-sniffer
-  brew install phpmd
   brew install adminer
 
   brew install tidy-html5
@@ -63,34 +60,9 @@ install_dev_formulae() {
 }
 
 #
-# Install additional php extensions.
-#
-# usage: install_php_extensions
-#
-install_php_extensions() {
-  dot::info "Installing php packages …"
-
-  pecl install xdebug
-}
-
-#
-# Install additional php packages.
-#
-# usage: install_php_packages
-#
-install_php_packages() {
-  dot::info "Installing php packages …"
-
-  composer global require consolidation/cgr
-
-  cgr psy/psysh
-  cgr wp-cli/wp-cli
-  cgr drush/drush:8.x
-  cgr getkirby/cli
-}
-
-#
 # Install shell utilities using Homebrew the missing package manager for macOS.
+#
+# usage: main [profile]
 #
 main() {
   if ! dot::command_exists "brew"; then
@@ -103,8 +75,6 @@ main() {
     full)
       install_core_formulae
       install_dev_formulae
-      install_php_packages
-      install_php_extensions
       ;;
     *)
       install_core_formulae
