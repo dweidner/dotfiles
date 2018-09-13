@@ -38,6 +38,11 @@ __prompt_add_command() {
     || export PROMPT_COMMAND="$1${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 }
 
+# Append history lines from the current session
+__prompt_history_append() {
+  command history -a
+}
+
 # Remember the exit status of the last command executed
 __prompt_remember_exit_code() {
   export LAST_EXIT_CODE=$?
@@ -62,4 +67,5 @@ __prompt() {
 
 # Setup the prompt and register hooks to execute before each prompt
 __prompt
+__prompt_add_command "__prompt_history_append"
 __prompt_add_command "__prompt_remember_exit_code"
