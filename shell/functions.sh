@@ -4,6 +4,24 @@
 
 
 #
+# Switch to a bookmarked directory.
+#
+# usage: cdb <keyword>
+#
+cdb() {
+  local needle="$*"
+
+  while read -r bookmark; do
+    if [[ -d "$bookmark" ]]; then
+      builtin cd -- "$bookmark"
+      return
+    fi
+  done < <(bookmark find "$needle")
+
+  echo "cdb: $needle: No such file or directory"
+}
+
+#
 # Switch to the given directory of the dotfiles repository.
 #
 # usage: cdd [<path>]
