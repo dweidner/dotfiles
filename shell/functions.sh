@@ -11,14 +11,14 @@
 cdb() {
   local needle="$*"
 
-  while read -r bookmark; do
-    if [[ -d "$bookmark" ]]; then
-      builtin cd -- "$bookmark"
-      return
-    fi
-  done < <(bookmark find "$needle")
+  local directory
+  directory="$(bookmark find -type d "$needle" | head -n1)"
 
-  echo "cdb: $needle: No such file or directory"
+  if [[ -d "$directory" ]]; then
+    builtin cd -- "$directory"
+  else
+    echo "cdb: $needle: Bookmark not found" >&2
+  fi
 }
 
 #

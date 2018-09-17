@@ -59,10 +59,29 @@ add_bookmark() {
 #
 # List all available bookmarks.
 #
-# usage: list_bookmarks
+# usage: list_bookmarks [-type]
 #
 list_bookmarks() {
-  grep -vE "(^\\s*#|^\\s*$)" "$BOOKMARK_FILE"
+  local type
+
+  while (( $# > 0 )); do
+    case "$1" in
+      -type) type="$2"; shift; shift ;;
+      *) shift ;;
+    esac
+  done
+
+  local -a files=()
+
+  while IFS=$'\n' read -r file; do
+    if [[ -z "$type" ]] \
+      || [[ "$type" == "f" && -f "$file" ]] \
+      || [[ "$type" == "d" && -d "$file" ]]; then
+      files+=("$file")
+    fi
+  done < <(grep -vE "(^\\s*#|^\\s*$)" "$BOOKMARK_FILE")
+
+  printf "%s\\n" "${files[@]}"
 }
 
 #
@@ -93,27 +112,18 @@ remove_bookmark() {
 # usage: find_bookmark [-type] [<name>]
 #
 find_bookmark() {
-  local name
-  local type
+  local -a options=()
+  local -a needle=()
 
   while (( $# > 0 )); do
     case "$1" in
-      -type) type="$2"; shift; shift ;;
-      *)     name="$1"; shift ;;
+      -*) options+=( "$1" "$2" ); shift; shift ;;
+      *)  needle+=( "$1" ); shift ;;
     esac
   done
 
-  local -a files=()
-
-  while IFS=$'\n' read -r file; do
-    if [[ -z "$type" ]] \
-      || [[ "$type" == "f" && -f "$file" ]] \
-      || [[ "$type" == "d" && -d "$file" ]]; then
-      files+=("$file")
-    fi
-  done < <(list_bookmarks)
-
-  printf "%s\\n" "${files[@]}" | grep --ignore-case --color=auto "$name"
+  list_bookmarks "${options[@]}" | \
+    grep --ignore-case --color=auto "${needle[*]}"
 }
 
 #
@@ -126,9 +136,7 @@ edit_bookmark() {
   local name="$1"
 
   if [[ -z "$name" ]]; then
-    ${EDITOR:-vim} -- "$BOOKMARK_FILE" \
-      && return 0 \
-      || return 1
+    ${EDITOR:-vim} -- "$BOOKMARK_FILE" && return 0 || return 1
   fi
 
   local file
@@ -155,7 +163,7 @@ main() {
     rm|remove) shift; remove_bookmark "$@" ;;
     f |find)   shift; find_bookmark "$@" ;;
     e |edit)   shift; edit_bookmark "$@" ;;
-    ls|list)   list_bookmarks ;;
+    ls|list)   shift; list_bookmarks "$@" ;;
     *)         usage ;;
   esac
 }
