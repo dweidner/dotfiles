@@ -9,77 +9,19 @@ readonly DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
 
 source "${DOTFILES}/shell/utilities.sh"
 
+if ! dot::command_exists "brew"; then
+  dot::exit "Cannot find homwbrew command"
+fi
 
-#
-# Install forumulae used for system administration on a Mac system.
-#
-# usage: install_core_formulae
-#
-install_core_formulae() {
-  dot::info "Installing essential formulae …"
+dot::info "Installing homebrew formulae …"
 
-  brew tap homebrew/services
+brew install bash bash-completion@2
+brew install tmux
 
-  brew install bash bash-completion@2
-  brew install tmux
+brew install curl rsync
+brew install git
+brew install icdiff diff-so-fancy
 
-  brew install coreutils
-  brew install curl
-  brew install grep
-  brew install rsync
-  brew install wget
-
-  brew install ack
-  brew install ripgrep
-  brew install tree
-}
-
-#
-# Install formulae of choise used during Web Development.
-#
-# usage: install_dev_formulae
-#
-install_dev_formulae() {
-  dot::info "Installing web formulae …"
-
-  brew install neovim
-  brew install python
-  brew install --HEAD universal-ctags/universal-ctags/universal-ctags
-
-  brew install git
-  brew install icdiff diff-so-fancy
-
-  brew install httpd
-  brew install php
-  brew install mariadb
-  brew install composer
-  brew install adminer
-
-  brew install tidy-html5
-  brew install shellcheck
-}
-
-#
-# Install shell utilities using Homebrew the missing package manager for macOS.
-#
-# usage: main [profile]
-#
-main() {
-  if ! dot::command_exists "brew"; then
-    dot::exit "Cannot find homwbrew command"
-  fi
-
-  local profile="${1:-minimal}"
-
-  case "${profile}" in
-    full)
-      install_core_formulae
-      install_dev_formulae
-      ;;
-    *)
-      install_core_formulae
-      ;;
-  esac
-}
-
-main "$@"
+brew install ack grep ripgrep tree
+brew install neovim
+brew install --HEAD universal-ctags/universal-ctags/universal-ctags

@@ -9,84 +9,30 @@ readonly DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
 
 source "${DOTFILES}/shell/utilities.sh"
 
+if ! dot::command_exists "brew"; then
+  dot::exit "Cannot find homebrew command"
+fi
 
-#
-# Install frequently used system tools.
-#
-# usage: install_system_tools
-#
-install_system_tools() {
-  dot::info "Installing system tools …"
+dot::info "Installing cask formulae …"
 
-  brew cask install alfred
-  brew cask install bartender
-  brew cask install 1password
-  brew cask install daisydisk
-  brew cask install the-unarchiver
-  
-  brew cask install qlcolorcode
-  brew cask install qlmarkdown
-  brew cask install qlstephen
-}
+brew cask install alfred
+brew cask install bartender
+brew cask install 1password
+brew cask install daisydisk
+brew cask install tad
+brew cask install the-unarchiver
 
-#
-# Install frequently used development tools.
-#
-# usage: install_development_tools
-#
-install_development_tools() {
-  dot::info "Installing development tools …"
+brew cask install firefox
+brew cask install google-chrome
 
-  brew cask install imagealpha
-  brew cask install imageoptim
+brew cask install spotify
 
-  brew cask install virtualbox virtualbox-extension-pack
+brew cask install imagealpha
+brew cask install imageoptim
 
-  brew cask install slack
+brew cask install fira-code
+brew cask install source-code-pro
 
-  brew cask install tad
-
-  brew cask install fira-code
-  brew cask install source-code-pro
-}
-
-#
-# Install frequently used web applications.
-#
-# usage: install_web_tools
-#
-install_web_tools() {
-  dot::info "Installing web tools …"
-
-  brew cask install brave
-  brew cask install firefox
-  brew cask install google-chrome
-
-  brew cask install spotify
-
-  brew cask install jadengeller-helium
-}
-
-#
-# Install macOS applications from the command line using Homebrew Cask.
-#
-main() {
-  if ! dot::command_exists "brew"; then
-    dot::exit "Cannot find homebrew command"
-  fi
-
-  local profile="${1:-full}"
-
-  case "${profile}" in
-    full)
-      install_system_tools
-      install_development_tools
-      install_web_tools
-      ;;
-    *)
-      install_system_tools
-      ;;
-  esac
-}
-
-main "$@"
+brew cask install qlcolorcode
+brew cask install qlmarkdown
+brew cask install qlstephen
