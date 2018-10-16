@@ -17,7 +17,8 @@ function! s:EnableColorScheme(dict) abort
 
   for [l:plugin, l:scheme] in items(a:dict)
     if dw#IsLoaded(l:plugin)
-      execute 'colorscheme ' . l:scheme
+      execute 'colorscheme ' . get(l:scheme, 0)
+      execute 'set background=' . get(l:scheme, 1)
       return l:plugin
     endif
   endfor
@@ -53,11 +54,13 @@ function! s:CustomizeAtomOne() abort
   hi link phpDocTags jsDocTags
   hi link phpDocIdentifier jsDocParam
 
-  if $TERM_PROGRAM ==# 'Apple_Terminal'
-    hi Normal ctermbg=NONE
-    hi SignifySignAdd ctermbg=255 guibg=#fafafa
-    hi SignifySignChange ctermbg=255 guibg=#fafafa
-    hi SignifySignDelete ctermbg=255 guibg=#fafafa
+  if &background ==# 'light'
+    if $TERM_PROGRAM ==# 'Apple_Terminal'
+      hi Normal ctermbg=NONE
+      hi SignifySignAdd ctermbg=255 guibg=#fafafa
+      hi SignifySignChange ctermbg=255 guibg=#fafafa
+      hi SignifySignDelete ctermbg=255 guibg=#fafafa
+    endif
   endif
 endfunction
 
@@ -66,7 +69,7 @@ autocmd vimrc ColorScheme one call s:CustomizeAtomOne()
 
 " Enable the first color scheme available in the current system
 let s:color_scheme = s:EnableColorScheme({
-      \   'vim-one': 'one',
-      \   'gruvbox': 'gruvbox',
-      \   'vim-colors-solarized': 'solarized',
+      \   'vim-one': ['one', 'dark'],
+      \   'gruvbox': ['gruvbox', 'dark'],
+      \   'vim-colors-solarized': ['solarized', 'dark'],
       \ })
