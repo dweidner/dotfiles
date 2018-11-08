@@ -69,7 +69,7 @@ autocmd vimrc ColorScheme one call s:CustomizeAtomOne()
 
 " Enable the first color scheme available in the current system
 let s:color_scheme = s:EnableColorScheme({
-      \   'vim-one': ['one', 'dark'],
-      \   'gruvbox': ['gruvbox', 'dark'],
-      \   'vim-colors-solarized': ['solarized', 'dark'],
+      \   'vim-one': ['one', 'light'],
+      \   'gruvbox': ['gruvbox', 'light'],
+      \   'vim-colors-solarized': ['solarized', 'light'],
       \ })
