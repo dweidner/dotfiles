@@ -15,13 +15,4 @@ fi
 
 dot::info "Installing homebrew formulae …"
 
-brew install bash bash-completion@2
-brew install tmux
-
-brew install curl rsync
-brew install git
-brew install icdiff diff-so-fancy
-
-brew install ack grep ripgrep tree
-brew install neovim
-brew install --HEAD universal-ctags/universal-ctags/universal-ctags
+brew bundle install --file="${DOTFILES}/misc/Brewfile" --verbose

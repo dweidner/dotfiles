@@ -176,6 +176,9 @@ main() {
   symlink "vim/plugin" "${config_home}/nvim/plugin"
   symlink "vim/autoload" "${config_home}/nvim/autoload"
 
+  # Homebrew¹
+  symlink "misc/Brewfile" "${HOME}/.Brewfile"
+
   # NVM/Node/NPM²
   symlink "misc/default-node-packages" "${config_home}/nvm/default-packages"
   symlink "misc/tern-config" "${HOME}/.tern-config"

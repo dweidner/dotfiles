@@ -1,0 +1,70 @@
+# misc/Brewfile
+
+# (1) Repositories -------------------------------- {{{1
+
+tap 'homebrew/core'
+tap 'homebrew/cask'
+tap 'homebrew/cask-fonts'
+tap 'homebrew/bundle'
+tap 'universal-ctags/universal-ctags'
+
+
+
+# (2) Formulae ------------------------------------ {{{1
+
+brew 'bash'
+brew 'bash-completion@2'
+brew 'tmux'
+brew 'fzf'
+
+brew 'curl'
+brew 'rsync'
+brew 'git'
+brew 'icdiff'
+brew 'diff-so-fancy'
+
+brew 'ack'
+brew 'grep'
+brew 'ripgrep'
+brew 'tree'
+
+brew 'neovim'
+brew 'jq'
+brew 'universal-ctags' args: ['HEAD']
+
+
+
+# (3) Applications -------------------------------- {{{1
+
+cask_args appdir: '~/Applications'
+
+cask '1password'
+cask 'alfred'
+cask 'bartender'
+cask 'daisydisk'
+cask 'the-unarchiver'
+
+cask 'firefox'
+cask 'google-chrome'
+
+cask 'spotify'
+
+cask 'imagealpha'
+cask 'imageoptim'
+
+cask 'visual-studio-code'
+cask 'dash'
+cask 'tad'
+
+cask 'qlcolorcode'
+cask 'qlmarkdown'
+cask 'qlstephen'
+cask 'quicklook-json'
+cask 'quicklook-csv'
+
+cask 'font-fira-code'
+cask 'font-source-code-pro'
+
+
+
+# vim:foldmethod=marker:foldlevel=2
