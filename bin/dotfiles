@@ -96,7 +96,7 @@ confirm() {
 # usage: print_message <message>
 #
 print_message() {
-  echo -e "\\033[0;34m$*\\033[0;m"
+  echo -e "\\033[0;34m==> $*\\033[0;m"
 }
 
 #
@@ -105,7 +105,7 @@ print_message() {
 # usage: print_success <message>
 #
 print_success() {
-  echo -e "\\033[0;32m$*\\033[0;m"
+  echo -e "\\033[0;32m==> $*\\033[0;m"
 }
 
 #
@@ -114,7 +114,7 @@ print_success() {
 # usage: print_warning <message>
 #
 print_warning() {
-  echo -e "\\033[0;33m$*\\033[0;m" >&2
+  echo -e "\\033[0;33m==> $*\\033[0;m" >&2
 }
 
 #
@@ -123,7 +123,7 @@ print_warning() {
 # usage: print_error <message>
 #
 print_error() {
-  echo -e "\\033[0;31m$*\\033[0;m" >&2
+  echo -e "\\033[0;31m==> $*\\033[0;m" >&2
 }
 
 #
@@ -152,7 +152,7 @@ unknown_option() {
 # usage: unknown_component <name>
 #
 unknown_component() {
-  print_error "Unknown system component [${1}]"
+  print_error "Unknown component name [${1}]"
 }
 
 #
@@ -284,7 +284,7 @@ help_cleanup_command() {
 		  The cleanup command purges various caches on the current system and removes
 		  older versions of installed commands.
 		
-		    e.g. dotfiles cleanup homebrew
+		    e.g. dotfiles cleanup brew
 		
 		  In order to cleanup all system components in one go leave out the component
 		  name.
@@ -370,7 +370,7 @@ help_update_command() {
 		  The update command can be used to fetch the latest version of various
 		  system components.
 		
-		    e.g. dotfiles update homebrew
+		    e.g. dotfiles update brew
 		
 	EOF
 }
@@ -383,24 +383,30 @@ help_update_command() {
 # usage: status [<component>]
 #
 status() {
-  local -a components=("system" "brew" "node" "ruby" "python")
-  local -a queue=( "$@" )
+  local -a components=( "$@" )
+
+  if (( $# == 0 )); then
+    components=(
+      "system"
+      "brew"
+      "node_packages"
+      "python_packages"
+      "gems"
+    )
+  fi
 
   local updates=0
   local total=0
 
-  if (( $# == 0 )); then
-    queue=( "${components[@]}" )
-  fi
-
-  for component in "${queue[@]}"; do
+  for component in "${components[@]}"; do
     if function_exists "status_${component}"; then
       updates=$("status_${component}")
       total=$((total + updates))
+
       if (( updates > 0 )); then
-        printf '\033[0;30m%s\t%2d\n\033[0;m' "${component}" "${updates}"
+        printf '\033[0;30m%s\t%2d\n\033[0;m' "${component%_*}" "${updates}"
       else
-        printf '%s\t%2d\n' "${component}" "${updates}"
+        printf '%s\t%2d\n' "${component%_*}" "${updates}"
       fi
     else
       unknown_component "${component}"
@@ -409,9 +415,9 @@ status() {
 
   if (( total > 0 )); then
     return 1
+  else
+    return 0
   fi
-
-  return 0
 }
 
 #
@@ -442,25 +448,25 @@ status_brew() {
 #
 # Determine the number of outdated node packages.
 #
-status_node() {
+status_node_packages() {
   command_exists "npm" || return 1
-  npm outdated --global --parseable | wc -l | tr -d " "
-}
-
-#
-# Determine the number of outdated gems.
-#
-status_ruby() {
-  command_exists "rvm" || return 1
-  rvm @global do gem outdated | wc -l | tr -d " "
+  npm outdated --global --parseable --depth=0 | wc -l | tr -d " "
 }
 
 #
 # Determine the number of outdated python packages.
 #
-status_python() {
+status_python_packages() {
   command_exists "pip3" || return 1
   pip3 list --outdated | tail -n +3 | wc -l | tr -d " "
+}
+
+#
+# Determine the number of outdated gems.
+#
+status_gems() {
+  command_exists "rvm" || return 1
+  rvm @global do gem outdated | wc -l | tr -d " "
 }
 
 # (d) Setup Command ----------------------------------------------------- {{{2
@@ -471,14 +477,25 @@ status_python() {
 # usage: setup [<component>]
 #
 setup() {
-  local -a components=("symlinks" "brew" "tpm" "nvm" "node" "php" "python" "rvm" "ruby")
-  local -a queue=( "$@" )
+  local -a components=( "$@" )
 
   if (( $# == 0 )); then
-    queue=( "${components[@]}" )
+    components=(
+      "symlinks"
+      "brew"
+      "nvm"
+      "node"
+      "node_packages"
+      "php_packages"
+      "python_packages"
+      "rvm"
+      "gems"
+      "tpm"
+      "tmux_plugins"
+    )
   fi
 
-  for component in "${queue[@]}"; do
+  for component in "${components[@]}"; do
     if function_exists "setup_${component}"; then
       "setup_${component}"
     else
@@ -560,21 +577,6 @@ setup_brew() {
 }
 
 #
-# Install tmux plugin manager.
-#
-setup_tpm() {
-  print_message "Installing tmux plugin manager …"
-
-  git clone "https://github.com/tmux-plugins/tpm" "${XDG_DATA_HOME}/tmux/plugins/tpm" || {
-    print_error "Cannot checkout tpm repository"
-    return 1
-  }
-
-  print_message "Installing tmux plugins …"
-  "${XDG_DATA_HOME}/tmux/plugins/tpm/bin/install_plugins"
-}
-
-#
 # Install node version manager.
 #
 setup_nvm() {
@@ -593,19 +595,23 @@ setup_nvm() {
     return 1
   }
 
+  source "${XDG_DATA_HOME}/nvm/nvm.sh"
+}
+
+#
+# Install the latest version of node.
+#
+setup_node() {
+  function_exists "nvm" || return 1
+
   print_message "Installing latest node version …"
-
-  if ! function_exists "nvm"; then
-    source "${XDG_DATA_HOME}/nvm/nvm.sh"
-  fi
-
-  nvm install --lts
+  nvm install --lts --latest-npm
 }
 
 #
 # Install latest npm version and default packages.
 #
-setup_node() {
+setup_node_packages() {
   command_exists "npm" || return 1
 
   print_message "Installing latest npm version …"
@@ -623,9 +629,19 @@ setup_node() {
 }
 
 #
+# Install cgr, a safer alternative to `composer global require`.
+#
+setup_cgr() {
+  command_exists "composer" || return 1
+
+  print_message "Installing cgr …"
+  composer global require consolidation/cgr
+}
+
+#
 # Install global php packages.
 #
-setup_php() {
+setup_php_packages() {
   command_exists "composer" || return 1
   command_exists "cgr" || setup_cgr
 
@@ -637,19 +653,9 @@ setup_php() {
 }
 
 #
-# Install cgr, a safer alternative to `composer global require`.
-#
-setup_cgr() {
-  command_exists "composer" || return 1
-
-  print_message "Installing cgr …"
-  composer global require consolidation/cgr
-}
-
-#
 # Install latest pip version and default packages.
 #
-setup_python() {
+setup_python_packages() {
   command_exists "pip3" || return 1
 
   print_message "Updating pip …"
@@ -675,7 +681,7 @@ setup_rvm() {
 #
 # Install global gems.
 #
-setup_ruby() {
+setup_gems() {
   command_exists "rvm" || return 1
 
   print_message "Installing global gems …"
@@ -683,6 +689,28 @@ setup_ruby() {
   while read -r name; do
     rvm @global do gem install "${name}"
   done < "${DOTFILES}/misc/default-gems"
+}
+
+#
+# Install tmux plugin manager.
+#
+setup_tpm() {
+  print_message "Installing tmux plugin manager …"
+
+  git clone "https://github.com/tmux-plugins/tpm" "${XDG_DATA_HOME}/tmux/plugins/tpm" || {
+    print_error "Cannot checkout tpm repository"
+    return 1
+  }
+}
+
+#
+# Install tmux plugins.
+#
+setup_tmux_plugins() {
+  [[ -d "${XDG_DATA_HOME}/tmux/plugins/tpm" ]] || return 1
+
+  print_message "Installing tmux plugins …"
+  "${XDG_DATA_HOME}/tmux/plugins/tpm/bin/install_plugins"
 }
 
 # (e) Update Command ---------------------------------------------------- {{{2
@@ -693,14 +721,25 @@ setup_ruby() {
 # usage: update [<component>]
 #
 update() {
-  local -a components=("system" "homebrew" "nvm" "node" "rvm" "tpm")
-  local -a queue=( "$@" )
+  local -a components=( "$@" )
 
   if (( $# == 0 )); then
-    queue=( "${components[@]}" )
+    components=(
+      "system"
+      "brew"
+      "nvm"
+      "node"
+      "node_packages"
+      "php_packages"
+      "python_packages"
+      "rvm"
+      "gems"
+      "tpm"
+      "tmux_plugins"
+    )
   fi
 
-  for component in "${queue[@]}"; do
+  for component in "${components[@]}"; do
     if function_exists "update_${component}"; then
       "update_${component}"
     else
@@ -731,7 +770,7 @@ update_macos() {
 #
 # Update homebrew the missing package manager for macOS
 #
-update_homebrew() {
+update_brew() {
   command_exists "brew" || return 1
 
   print_message "Updating homebrew …"
@@ -758,39 +797,37 @@ update_homebrew() {
 # Update the node version manager
 #
 update_nvm() {
-  cd -- "$NVM_DIR" 2>/dev/null || return 1
+  function_exists "nvm" || source "${NVM_DIR}/nvm.sh"
 
-  function_exists "nvm" || source "$NVM_DIR/nvm.sh"
   print_message "Updating nvm …"
 
-  git checkout --quiet master
-  git pull --quiet --progress --tags
+  git -C "${NVM_DIR}" checkout --quiet master
+  git -C "${NVM_DIR}" pull --quiet --progress --tags
 
   local version
   version="$(nvm --version)"
 
   local latest
-  latest="$(git describe --abbrev=0 --match "v[0-9]*" origin --tags)"
+  latest="$(git -C "${NVM_DIR}" describe --abbrev=0 --match "v[0-9]*" origin --tags)"
 
-  if [[ "$version" == "$latest" ]]; then
-    git checkout --quiet "${version}"
+  if [[ "v${version}" == "${latest}" ]]; then
     print_success "nvm is already up-to-date."
     return 0
   fi
 
-  git checkout --quiet --progress "${latest}" \
+  git -C "${NVM_DIR}" checkout --quiet --progress "${latest}" \
     && print_success "Updated nvm to version ${latest}"
 
-  source "$NVM_DIR/nvm.sh"
+  source "${NVM_DIR}/nvm.sh"
 }
 
 #
 # Update the Node.js
 #
 update_node() {
-  cd -- "$NVM_DIR" 2>/dev/null || return 1
+  cd -- "${NVM_DIR}" 2>/dev/null || return 1
 
-  function_exists "nvm" || source "$NVM_DIR/nvm.sh"
+  function_exists "nvm" || source "${NVM_DIR}/nvm.sh"
   print_message "Updating Node.js …"
 
   local version
@@ -801,7 +838,7 @@ update_node() {
 
   wait
 
-  if [[ "$version" == "$latest" ]]; then
+  if [[ "${version}" == "${latest}" ]]; then
     print_success "Node.js is already up-to-date."
     return 0
   fi
@@ -816,6 +853,64 @@ update_node() {
     nvm use "${latest}"
     print_success "Using version ${latest} of Node.js as your new system default."
   fi
+}
+
+#
+# Update global node packages.
+#
+update_node_packages() {
+  command_exists "npm" || return 1
+
+  print_message "Updating global node packages …"
+
+  local outdated
+  outdated="$(npm outdated --global --parseable --depth=0)"
+
+  if [[ -z "${outdated}" ]]; then
+    print_success "Global node packages are already up-to-date."
+    return 0
+  fi
+
+  npm update --global \
+    && print_success "Updated outdated node packages."
+}
+
+#
+# Update global php packages.
+#
+update_php_packages() {
+  command_exists "composer" || return 1
+  command_exists "cgr" || return 1
+
+  print_message "Updating cgr …"
+
+  composer global update consolidation/cgr \
+    && print_success "Updated cgr."
+
+  print_message "Updating global php packages …"
+
+  cgr update \
+    && print_success "Update global php packages."
+}
+
+#
+# Update outdated python packages.
+#
+update_python_packages() {
+  command_exists "pip3" || return 1
+
+  print_message "Updating python packages …"
+
+  local outdated
+  outdated="$(pip3 list --outdated | tail -n +3 | cut -d " " -f 1)"
+
+  if [[ -z "${outdated}" ]]; then
+    print_success "Python packages are already up-to-date."
+    return 0
+  fi
+
+  pip3 install --upgrade "${outdated}" \
+    && print_success "Upgraded outdated python packages."
 }
 
 #
@@ -847,15 +942,35 @@ update_rvm() {
 }
 
 #
-# Update tmux plugin manager and installed plugins
+# Update global gems.
+#
+update_gems() {
+  command_exists "rvm" || return 1
+
+  print_message "Updating global ruby gems …"
+
+  local outdated
+  outdated="$(rvm @global do gem outdated)"
+
+  if [[ -z "${outdated}" ]]; then
+    print_success "Global ruby gems are already up-to-date"
+    return 0
+  fi
+
+  rvm @global do gem update \
+    && print_success "Updated global ruby gems."
+}
+
+#
+# Update tmux plugin manager.
 #
 update_tpm() {
-  local tpm_path="${TMUX_PLUGIN_MANAGER_PATH:-$XDG_DATA_HOME/tmux/plugins}"
+  local tpm_path="${TMUX_PLUGIN_MANAGER_PATH:-${XDG_DATA_HOME}/tmux/plugins}"
 
-  [[ -d "$tpm_path/tpm" ]] || return 1
+  [[ -d "${tpm_path}/tpm" ]] || return 1
 
   print_message "Updating Tmux plugin manager …"
-  cd "$tpm_path/tpm" || return 1
+  cd "${tpm_path}/tpm" || return 1
   git remote update >/dev/null
 
   local current
@@ -869,6 +984,15 @@ update_tpm() {
   else
     print_success "Tmux plugin manager is already up-to-date."
   fi
+}
+
+#
+# Update tmux plugins.
+#
+update_tmux_plugins() {
+  local tpm_path="${TMUX_PLUGIN_MANAGER_PATH:-${XDG_DATA_HOME}/tmux/plugins}"
+
+  [[ -d "$tpm_path/tpm" ]] || return 1
 
   print_message "Updating tmux plugins …"
 
@@ -884,11 +1008,14 @@ update_tpm() {
 # usage: cleanup [<component>]
 #
 cleanup() {
-  local -a components=("homebrew" "rvm")
-  local -a queue=( "$@" )
+  local -a components=( "$@" )
 
   if (( $# == 0 )); then
-    queue=( "${components[@]}" )
+    components=(
+      "brew"
+      "rvm"
+      "gems"
+    )
   fi
 
   for component in "${components[@]}"; do
@@ -903,7 +1030,7 @@ cleanup() {
 #
 # Cleanup old versions of installed packages and prune dead symlinks.
 #
-cleanup_homebrew() {
+cleanup_brew() {
   command_exists "brew" || return 1
 
   print_message "Removing old versions of installed formulae …"
@@ -922,6 +1049,16 @@ cleanup_rvm() {
 
   print_message "Cleaning up rvm resources …"
   rvm cleanup all
+}
+
+#
+# Clean up old versions of installed gems.
+#
+cleanup_gems() {
+  command_exists "rvm" || return 1
+
+  print_message "Cleaning up old versions of installed gems …"
+  rvm @global do gem cleanup
 }
 
 
