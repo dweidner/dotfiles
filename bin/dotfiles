@@ -1,12 +1,129 @@
 #!/usr/bin/env bash
 
-readonly BASEDIR="$(dirname "$0")"
-readonly DOTFILES="${DOTFILES:-$(dirname "$BASEDIR")}"
+# -----------------------------------------------------------------------
+# Table of Contents
+# -----------------------------------------------------------------------
+# 1. Global Variables
+# 2. Utility Functions
+# 3. Commands
+# |- a) Usage Command
+# |- b) Help Command
+# |- c) Setup Command
+# |- d) Update Command
+# |- e) Cleanup Command
+# 4. Entry Point
+# -----------------------------------------------------------------------
 
-readonly XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 
-source "${DOTFILES}/shell/utilities.sh"
 
+# (1) Global Variables -------------------------------------------------- {{{1
+
+set -e
+
+readonly XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
+readonly XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
+readonly XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
+
+readonly SCRIPT_DIR="$(dirname "$0")"
+readonly DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
+
+
+
+# (2) Utility Functions ------------------------------------------------- {{{1
+
+#
+# Determine wheter a given value exists in an array
+#
+# usage: in_array <needle> <array>
+#
+in_array() {
+  local needle="$1"
+  local item
+
+  shift
+
+  for item; do
+    if [[ "$needle" == "$item" ]]; then
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+#
+# Determine whether a command with the given name exists in the current
+# environment.
+#
+# usage: command_exists <name>
+#
+command_exists() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+#
+# Determine whether a function with the given name exists.
+#
+# Tries to declare the function which will return with an exit code > 0 if
+# a function with the given name already exists (supposed to be faster than
+# executing type -f).
+#
+# usage: function_exists <name>
+#
+function_exists() {
+  declare -fF "$1" >/dev/null
+  return $?
+}
+
+#
+# Confirm a question with the user.
+#
+# usage: confirm <question>
+#
+confirm() {
+  read -r -p $'\e[0;32m'"$* (y/n [n]) "$'\e[0;m' answer
+
+  case "$answer" in
+    y|Y) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+#
+# Print a status message.
+#
+# usage: print_message <message>
+#
+print_message() {
+  echo -e "\\033[0;34m$*\\033[0;m"
+}
+
+#
+# Print a message after a successfull operation.
+#
+# usage: print_success <message>
+#
+print_success() {
+  echo -e "\\033[0;32m$*\\033[0;m"
+}
+
+#
+# Print a warning message.
+#
+# usage: print_warning <message>
+#
+print_warning() {
+  echo -e "\\033[0;33m$*\\033[0;m" >&2
+}
+
+#
+# Print an error message.
+#
+# usage: print_error <message>
+#
+print_error() {
+  echo -e "\\033[0;31m$*\\033[0;m" >&2
+}
 
 #
 # Notify the user that a given command is not defined.
@@ -14,8 +131,9 @@ source "${DOTFILES}/shell/utilities.sh"
 # usage: command_not_found <command>
 #
 command_not_found() {
-  dot::error "Command [${1}] is not defined\\n"
+  print_error "Command [${1}] is not defined\\n"
   usage
+  exit 1
 }
 
 #
@@ -24,7 +142,7 @@ command_not_found() {
 # usage: unknown_option <name>
 #
 unknown_option() {
-  dot::error "Unknown option given [${1}]"
+  print_error "Unknown option given [${1}]"
 }
 
 #
@@ -33,16 +151,92 @@ unknown_option() {
 # usage: unknown_component <name>
 #
 unknown_component() {
-  dot::error "Unknown system component [${1}]"
+  print_error "Unknown system component [${1}]"
 }
 
 #
-# Display usage information.
+# Create the directory structure for a given file path.
 #
+# usage: prepare_path <path>
+#
+prepare_path() {
+  local path="${1}"
+  local dir
+  dir="$(dirname "$path")"
+
+  if [[ -d "${dir}" ]]; then
+    return 0
+  fi
+
+  mkdir -p "${dir}"
+}
+
+#
+# Copy a file from the dotfiles repository to the home directory of the
+# current user.
+#
+# usage: copy <source> <target>
+#
+copy() {
+  local source="${DOTFILES}/$1"
+  local target="$2"
+
+  if [[ -e "${target}" ]]; then
+    if ! confirm "overwrite ${target}?"; then
+      print_warning "skipping ${target} …"
+      return 1
+    fi
+  fi
+
+  if ! prepare_path "${target}"; then
+    print_error "could not create parent directory"
+    return 1
+  fi
+
+  cp -f "${source}" "${target}" \
+    && print_success "copied file to ${target}"
+}
+
+#
+# Create a symlink from a file in the dotfiles repository to a file in the
+# home directory.
+#
+# usage: symlink <source> <target>
+#
+symlink() {
+  local source="${DOTFILES}/$1"
+  local target="$2"
+
+  if [[ -e "${target}" ]]; then
+    if ! confirm "overwrite ${target}?"; then
+      print_warning "skipping ${target} …"
+      return 1
+    fi
+  fi
+
+  if ! prepare_path "${target}"; then
+    print_error "could not create parent directory"
+    return 1
+  fi
+
+  ln -fns "${source}" "${target}" \
+    && print_success "created symlink at ${target}"
+}
+
+
+
+# (3) Commands ---------------------------------------------------------- {{{1
+
+# (a) Usage Command ----------------------------------------------------- {{{2
+
+#
+# Display a list of available commands.
+#
+# usage: usage
 #
 usage() {
   cat <<- EOF
-		Dotfiles v2.1.1
+		Dotfiles Utility
 
 		Usage:
 		  dotfiles <command> [options] [arguments]
@@ -50,15 +244,33 @@ usage() {
 		Commands:
 		  cleanup		Cleanup caches of various system components
 		  help			Display help for a command
-		  list			List available commands
+		  setup			Run the initial setup for various system components
 		  update		Fetch the latest version of various system components
 	EOF
+}
+
+# (b) Help Command ------------------------------------------------------ {{{2
+
+#
+# Display help for a command.
+#
+# usage: help <command>
+#
+help() {
+  local commands=("cleanup" "help" "setup" "update")
+  local command="${1:-help}"
+
+  if ! in_array "${command}" "${commands[@]}"; then
+    command_not_found "$command"
+  fi
+
+  "help_${command}_command"
 }
 
 #
 # Display usage information for the cleanup command.
 #
-usage_cleanup_command() {
+help_cleanup_command() {
   cat <<-EOF
 		Usage:
 		  cleanup [<component>]
@@ -83,7 +295,7 @@ usage_cleanup_command() {
 #
 # Display usage information for the help command.
 #
-usage_help_command() {
+help_help_command() {
   cat <<-EOF
 		Usage:
 		  help [<command>]
@@ -102,24 +314,21 @@ usage_help_command() {
 }
 
 #
-# Display usage information for the list command
+# Display usage information for the setup command.
 #
-usage_list_command() {
+help_setup_command() {
   cat <<-EOF
 		Usage:
-		  list [options]
+			setup [<component>]
 		
-		Options:
-		  --raw  Display only the list of commands (no descriptions)
+		Arguments:
+		  component  	Name of the system component to run the initial setup for.
 		
 		Help:
-		  The list command lists all available commands:
+		  The setup command can be used to run the initial setup for a specific
+		  system component.
 		
-		    e.g. dotfiles list
-		
-		  It is possible to retrieve a raw list of commands using the --raw option.
-		
-		    e.g. dotfiles list --raw
+		    e.g. dotfiles setup php
 		
 	EOF
 }
@@ -127,7 +336,7 @@ usage_list_command() {
 #
 # Display usage information for the update command.
 #
-usage_update_command() {
+help_update_command() {
   cat <<-EOF
 		Usage:
 			update <component>
@@ -144,51 +353,238 @@ usage_update_command() {
 	EOF
 }
 
-#
-# Display help for a command.
-#
-# usage: help [<command>]
-#
-help() {
-  local command="${1:-help}"
-
-  case "$command" in
-    cleanup) usage_cleanup_command ;;
-    help)    usage_help_command ;;
-    list)    usage_list_command ;;
-    update)  usage_update_command ;;
-    *)       command_not_found "$command" ;;
-  esac
-}
+# (c) Setup Command ----------------------------------------------------- {{{2
 
 #
-# Display a list of commands.
+# Setup development dependencies.
 #
-# usage: list [options]
+# usage: setup [<component>]
 #
-list() {
-  local raw=0
+setup() {
+  local -a components=("symlinks" "brew" "tpm" "nvm" "node" "php" "python" "rvm" "ruby")
+  local -a queue=( "$@" )
 
-  while (( $# > 0 )); do
-    case "$1" in
-      --raw) raw=1 ;;
-      --*)   unknown_option "$1" ;;
-    esac
-    shift
-  done
-
-  if (( raw == 0 )); then
-    usage
-    return
+  if (( $# == 0 )); then
+    queue=( "${components[@]}" )
   fi
 
-  cat <<-EOF
-		cleanup
-		help
-		list
-		update
-	EOF
+  for component in "${queue[@]}"; do
+    if function_exists "setup_${component}"; then
+      "setup_${component}"
+    else
+      unknown_component "${component}"
+    fi
+  done
 }
+
+#
+# Create symlinks to included configuration files (uses XDG base
+# directories if supported by the application).
+#
+# @link https://wiki.archlinux.org/index.php/XDG_Base_Directory_support|XDG Base Directory support
+#
+setup_symlinks() {
+  local -a directories=(
+    "${XDG_CONFIG_HOME}"
+    "${XDG_CACHE_HOME}"
+    "${XDG_CACHE_HOME}/bundle"
+    "${XDG_CACHE_HOME}/composer"
+    "${XDG_CACHE_HOME}/gem"
+    "${XDG_CACHE_HOME}/npm"
+    "${XDG_CACHE_HOME}/nvim"
+    "${XDG_CACHE_HOME}/vim"
+    "${XDG_DATA_HOME}"
+    "${XDG_DATA_HOME}/bash"
+    "${XDG_DATA_HOME}/bundle"
+    "${XDG_DATA_HOME}/bundle/plugin"
+    "${XDG_DATA_HOME}/dotfiles"
+    "${XDG_DATA_HOME}/gem"
+    "${XDG_DATA_HOME}/less"
+    "${XDG_DATA_HOME}/nvim"
+    "${XDG_DATA_HOME}/tmux"
+    "${XDG_DATA_HOME}/vim"
+    "${XDG_DATA_HOME}/vim/backup"
+    "${XDG_DATA_HOME}/vim/swap"
+    "${XDG_DATA_HOME}/vim/undo"
+  )
+
+  print_message "Creating directories …"
+
+  for directory in "${directories[@]}"; do
+    mkdir -p "${directory}" && print_success "created ${directory}"
+  done
+
+  print_message "Creating symlinks …"
+
+  symlink "bash/bash_profile"          "${HOME}/.bash_profile"
+  symlink "bash/bashrc"                "${HOME}/.bashrc" 
+  symlink "bash/completions"           "${XDG_DATA_HOME}/bash-completion/completions"
+  symlink "readline/inputrc"           "${XDG_CONFIG_HOME}/readline/inputrc"
+  symlink "git/ignore"                 "${XDG_CONFIG_HOME}/git/ignore"
+  symlink "git/commitmsg"              "${XDG_CONFIG_HOME}/git/commitmsg"
+  symlink "vim/"                       "${HOME}/.vim"
+  symlink "vim/nvimrc"                 "${XDG_CONFIG_HOME}/nvim/init.vim"
+  symlink "vim/after"                  "${XDG_CONFIG_HOME}/nvim/after"
+  symlink "vim/plugin"                 "${XDG_CONFIG_HOME}/nvim/plugin"
+  symlink "vim/autoload"               "${XDG_CONFIG_HOME}/nvim/autoload"
+  symlink "tmux/tmux.conf"             "${XDG_CONFIG_HOME}/tmux/tmux.conf"
+  symlink "misc/default-node-packages" "${XDG_CONFIG_HOME}/nvm/default-packages"
+  symlink "misc/gemrc"                 "${XDG_CONFIG_HOME}/gem/gemrc"
+  symlink "misc/ctags"                 "${HOME}/.ctags"
+  symlink "misc/Brewfile"              "${HOME}/.Brewfile"
+  symlink "misc/ignore"                "${HOME}/.ignore"
+  symlink "misc/editorconfig"          "${HOME}/.editorconfig"
+  symlink "misc/tern-config"           "${HOME}/.tern-config"
+  copy    "git/config"                 "${XDG_DATA_HOME}/git/config"
+}
+
+#
+# Install essential homebrew formulae.
+#
+setup_brew() {
+  command_exists "brew" || return 1
+
+  print_message "Installing homebrew formulae …"
+  brew bundle install --global --verbose
+  print_success "Installed formulae listed in ~/.Brewfile"
+}
+
+#
+# Install tmux plugin manager.
+#
+setup_tpm() {
+  print_message "Installing tmux plugin manager …"
+
+  git clone "https://github.com/tmux-plugins/tpm" "${XDG_DATA_HOME}/tmux/plugins/tpm" || {
+    print_error "Cannot checkout tpm repository"
+    return 1
+  }
+
+  print_message "Installing tmux plugins …"
+
+  "${XDG_DATA_HOME}/tmux/plugins/tpm/bin/install_plugins"
+  print_error "Not Implemented"
+}
+
+#
+# Install node version manager.
+#
+setup_nvm() {
+  print_message "Installing nvm …"
+
+  git clone "https://github.com/creationix/nvm.git" "${XDG_DATA_HOME}/nvm" || {
+    print_error "Cannot checkout nvm repository"
+    return 1
+  }
+
+  local version
+  version="$(git -C "${XDG_DATA_HOME}/nvm" describe --abbrev=0 --tags --match "v[0-9]*" origin)"
+
+  git -C "${XDG_DATA_HOME}/nvm" checkout "${version}" || {
+    print_error "Cannot switch to NVM version [${version}]"
+    return 1
+  }
+
+  print_message "Installing latest node version …"
+
+  if ! function_exists "nvm"; then
+    source "${XDG_DATA_HOME}/nvm/nvm.sh"
+  fi
+
+  nvm install --lts
+}
+
+#
+# Install latest npm version and default packages.
+#
+setup_node() {
+  command_exists "npm" || return 1
+
+  print_message "Installing latest npm version …"
+  npm install --global --production npm@latest
+
+  print_message "Installing global node packages …"
+  npm install --global --production yo
+  npm install --global --production eslint
+
+  while read -r package; do
+    if [[ "${package}" != "yo" ]] && [[ "${package}" != "eslint" ]]; then
+      npm install --global --production "${package}"
+    fi
+  done < "${DOTFILES}/misc/default-node-packages"
+}
+
+#
+# Install global php packages.
+#
+setup_php() {
+  command_exists "composer" || return 1
+  command_exists "cgr" || setup_cgr
+
+  print_message "Installing php packages …"
+
+  while read -r package; do
+    cgr "$package"
+  done < "${DOTFILES}/misc/default-php-packages"
+}
+
+#
+# Install cgr, a safer alternative to `composer global require`.
+#
+setup_cgr() {
+  command_exists "composer" || return 1
+
+  print_message "Installing cgr …"
+  composer global require consolidation/cgr
+}
+
+#
+# Install latest pip version and default packages.
+#
+setup_python() {
+  command_exists "pip3" || return 1
+
+  print_message "Updating pip …"
+  pip3 install --upgrade pip
+
+  print_message "Installing python packages …"
+
+  while read -r package; do
+    pip3 install --upgrade "${package}"
+  done < "${DOTFILES}/misc/default-python-packages"
+}
+
+#
+# Install default node packages.
+#
+setup_node() {
+  print_error "Not Implemented"
+}
+
+#
+# Install ruby version manager.
+#
+setup_rvm() {
+  print_message "Installing rvm …"
+
+  curl -sSL "https://get.rvm.io" \
+    | bash -s -- --path "${XDG_DATA_HOME}/rvm" --ignore-dotfiles --ruby
+}
+
+#
+# Install global gems.
+#
+setup_ruby() {
+  command_exists "rvm" || return 1
+
+  print_message "Installing global gems …"
+
+  while read -r name; do
+    rvm @global do gem install "${name}"
+  done < "${DOTFILES}/misc/default-gems"
+}
+
+# (d) Update Command ---------------------------------------------------- {{{2
 
 #
 # Update system components.
@@ -196,42 +592,24 @@ list() {
 # usage: update [<component>]
 #
 update() {
-  # Udate all components if no argument is given
-  if (( $# == 0)); then
-    update_all
-    return 0
+  local -a components=("system" "homebrew" "nvm" "node" "rvm" "tpm")
+  local -a queue=( "$@" )
+
+  if (( $# == 0 )); then
+    queue=( "${components[@]}" )
   fi
 
-  # Update only specific system components
-  case "$1" in
-    brew|homebrew) update_homebrew ;;
-    node) update_node ;;
-    nvm) update_nvm ;;
-    rvm) update_rvm ;;
-    system) update_system ;;
-    tpm) update_tpm ;;
-    *) unknown_component "$1" ;;
-  esac
-}
-
-#
-# Update all system components
-#
-# usage: update_all
-#
-update_all() {
-  update_system
-  update_homebrew
-  update_nvm
-  update_node
-  update_rvm
-  update_tpm
+  for component in "${queue[@]}"; do
+    if function_exists "update_${component}"; then
+      "update_${component}"
+    else
+      unknown_component "${component}"
+    fi
+  done
 }
 
 #
 # Update the operating system
-#
-# usage: update_system
 #
 update_system() {
   case "$OSTYPE" in
@@ -242,26 +620,23 @@ update_system() {
 #
 # Update macOS from the command line
 #
-# usage: update_macos
-#
 update_macos() {
-  dot::info "Updating macOS (requires root privileges) …"
+  print_message "Updating macOS (requires root privileges) …"
+
   sudo softwareupdate --install --all \
-    && dot::ok "Updated macOS."
+    && print_success "Updated macOS."
 }
 
 #
 # Update homebrew the missing package manager for macOS
 #
-# usage: update_homebrew
-#
 update_homebrew() {
-  dot::command_exists "brew" || return 1
+  command_exists "brew" || return 1
 
-  dot::info "Updating homebrew …"
+  print_message "Updating homebrew …"
   brew update --quiet & wait
 
-  dot::info "Updating homebrew formulae …"
+  print_message "Updating homebrew formulae …"
 
   local outdated_formulae
   outdated_formulae="$(brew outdated --quiet)"
@@ -269,25 +644,23 @@ update_homebrew() {
   wait
 
   if [[ -z "$outdated_formulae" ]]; then
-    dot::ok "Installed formulae are already up-to-date."
+    print_success "Installed formulae are already up-to-date."
     return 0
   fi
 
-  dot::info "Upgrading outdated formulae …"
+  print_message "Upgrading outdated formulae …"
   brew upgrade & wait
-  dot::ok "Upgraded outdated formulae."
+  print_success "Upgraded outdated formulae."
 }
 
 #
 # Update the node version manager
 #
-# usage: update_nvm
-#
 update_nvm() {
   cd -- "$NVM_DIR" 2>/dev/null || return 1
 
-  dot::function_exists "nvm" || source "$NVM_DIR/nvm.sh"
-  dot::info "Updating nvm …"
+  function_exists "nvm" || source "$NVM_DIR/nvm.sh"
+  print_message "Updating nvm …"
 
   git checkout --quiet master
   git pull --quiet --progress --tags
@@ -300,12 +673,12 @@ update_nvm() {
 
   if [[ "$version" == "$latest" ]]; then
     git checkout --quiet "${version}"
-    dot::ok "nvm is already up-to-date."
+    print_success "nvm is already up-to-date."
     return 0
   fi
 
   git checkout --quiet --progress "${latest}" \
-    && dot::ok "Updated nvm to version ${latest}"
+    && print_success "Updated nvm to version ${latest}"
 
   source "$NVM_DIR/nvm.sh"
 }
@@ -313,13 +686,11 @@ update_nvm() {
 #
 # Update the Node.js
 #
-# usage: update_node
-#
 update_node() {
   cd -- "$NVM_DIR" 2>/dev/null || return 1
 
-  dot::function_exists "nvm" || source "$NVM_DIR/nvm.sh"
-  dot::info "Updating Node.js …"
+  function_exists "nvm" || source "$NVM_DIR/nvm.sh"
+  print_message "Updating Node.js …"
 
   local version
   version="$(nvm current)"
@@ -330,31 +701,29 @@ update_node() {
   wait
 
   if [[ "$version" == "$latest" ]]; then
-    dot::ok "Node.js is already up-to-date."
+    print_success "Node.js is already up-to-date."
     return 0
   fi
 
-  dot::info "Upgrading Node.js from version ${version} to ${latest} …"
+  print_message "Upgrading Node.js from version ${version} to ${latest} …"
   nvm install "${latest}" & wait
   nvm install-latest-npm & wait
-  dot::ok "Upgraded Node.js to version ${latest}."
+  print_success "Upgraded Node.js to version ${latest}."
 
-  if dot::confirm "Do you want to use version ${latest} of Node.js as your system default?"; then
+  if confirm "Do you want to use version ${latest} of Node.js as your system default?"; then
     nvm alias default "${latest}"
     nvm use "${latest}"
-    dot::ok "Using version ${latest} of Node.js as your new system default."
+    print_success "Using version ${latest} of Node.js as your new system default."
   fi
 }
 
 #
 # Update the ruby version manager
 #
-# usage: update_rvm
-#
 update_rvm() {
-  dot::command_exists "rvm" || return 1
+  command_exists "rvm" || return 1
 
-  dot::info "Updating Ruby Version Manager …"
+  print_message "Updating Ruby Version Manager …"
 
   local version
   version="$(rvm -v | cut -d ' ' -f 2)"
@@ -365,28 +734,26 @@ update_rvm() {
   wait
 
   if [[ "$version" == "$latest" ]]; then
-    dot::ok "Ruby Version Manager is already up-to-date."
+    print_success "Ruby Version Manager is already up-to-date."
     return 0
   fi
 
-  dot::info "Upgrading Ruby Version Manager from version ${version} to ${latest} …"
+  print_message "Upgrading Ruby Version Manager from version ${version} to ${latest} …"
   rvm get head
   rvm reload
   rvm get stable
-  dot::ok "Upgraded Ruby Version Manager to version ${latest}."
+  print_success "Upgraded Ruby Version Manager to version ${latest}."
 }
 
 #
 # Update tmux plugin manager and installed plugins
-#
-# usage: update_tpm
 #
 update_tpm() {
   local tpm_path="${TMUX_PLUGIN_MANAGER_PATH:-$XDG_DATA_HOME/tmux/plugins}"
 
   [[ -d "$tpm_path/tpm" ]] || return 1
 
-  dot::info "Updating Tmux plugin manager …"
+  print_message "Updating Tmux plugin manager …"
   cd "$tpm_path/tpm" || return 1
   git remote update >/dev/null
 
@@ -397,16 +764,18 @@ update_tpm() {
   remote="$(git rev-parse "@{u}")"
 
   if [[ "$current" != "$remote" ]]; then
-    git pull --quiet --progress && dot::ok "Updated Tmux plugin manager."
+    git pull --quiet --progress && print_success "Updated Tmux plugin manager."
   else
-    dot::ok "Tmux plugin manager is already up-to-date."
+    print_success "Tmux plugin manager is already up-to-date."
   fi
 
-  dot::info "Updating tmux plugins …"
+  print_message "Updating tmux plugins …"
 
   TMUX_PLUGIN_MANAGER_PATH="$tpm_path" "$tpm_path/tpm/bin/update_plugins" all >/dev/null \
-    && dot::ok "Updated tmux plugins."
+    && print_success "Updated tmux plugins."
 }
+
+# (e) Cleanup Command --------------------------------------------------- {{{2
 
 #
 # Cleanup the current system
@@ -414,46 +783,32 @@ update_tpm() {
 # usage: cleanup [<component>]
 #
 cleanup() {
-  # Cleanup all components if no argument is given
-  if (( $# == 0)); then
-    cleanup_all
-    return 0
+  local -a components=("homebrew" "rvm")
+  local -a queue=( "$@" )
+
+  if (( $# == 0 )); then
+    queue=( "${components[@]}" )
   fi
 
-  # Cleanup a specific component only
-  case "$1" in
-    brew|homebrew) cleanup_homebrew ;;
-    rvm) cleanup_rvm ;;
-    *) unknown_component "$1" ;;
-  esac
-}
-
-#
-# Cleanup all system components
-#
-# usage: cleanup_all
-#
-cleanup_all() {
-  if ! dot::confirm "Do you really want to clean up all system components?"; then
-    return 1
-  fi
-
-  cleanup_homebrew
-  cleanup_rvm
+  for component in "${components[@]}"; do
+    if function_exists "cleanup_${component}"; then
+      "cleanup_${component}"
+    else
+      unknown_component "${component}"
+    fi
+  done
 }
 
 #
 # Cleanup old versions of installed packages and prune dead symlinks.
 #
-# usage: cleanup_homebrew
-#
 cleanup_homebrew() {
-  dot::command_exists "brew" || return 1
+  command_exists "brew" || return 1
 
-  dot::info "Removing old versions of installed formulae …"
+  print_message "Removing old versions of installed formulae …"
   brew cleanup
 
-  dot::info "Removing dead symlinks …"
+  print_message "Removing dead symlinks …"
   brew prune
 }
 
@@ -461,14 +816,16 @@ cleanup_homebrew() {
 # Reclaim all of the space used by rvm archives, repository clones, source
 # files and logs
 #
-# usgage: cleanup_rvm
-#
 cleanup_rvm() {
-  dot::command_exists "rvm" || return 1
+  command_exists "rvm" || return 1
 
-  dot::info "Cleaning up rvm resources …"
+  print_message "Cleaning up rvm resources …"
   rvm cleanup all
 }
+
+
+
+# (4) Entry Point ------------------------------------------------------- {{{1
 
 #
 # Main entry point of the script.
@@ -482,17 +839,21 @@ main() {
     return 1
   fi
 
+  # Run the given command
   local command="$1"
   shift
 
-  # Run the given command
   case "$command" in
     cleanup) cleanup "$@" ;;
     help)    help "$@" ;;
-    list)    list "$@" ;;
+    setup)   setup "$@" ;;
     update)  update "$@" ;;
     *)       command_not_found "$command" ;;
   esac
 }
 
 main "$@"
+
+
+
+# vim:foldmethod=marker:foldlevel=2

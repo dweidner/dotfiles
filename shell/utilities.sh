@@ -13,6 +13,26 @@ dot::in_git_repository() {
 }
 
 #
+# Determine wheter a given value exists in an array
+#
+# usage: dot::in_array <needle> <array>
+#
+dot::in_array() {
+  local needle="$1"
+  local item
+
+  shift
+
+  for item; do
+    if [[ "$needle" == "$item" ]]; then
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+#
 # Determine whether a command with the given name exists in the current
 # environment.
 #
@@ -94,4 +114,19 @@ dot::confirm() {
 dot::exit() {
   dot::error "$@"
   exit 1
+}
+
+#
+# Remove a single characters from the beginning and end of the given string.
+#
+# usage: trim <str> [<char>]
+#
+dot::trim() {
+  local str="$1"
+  local needle="${2:- }"
+
+  str="${str#$needle}"
+  str="${str%$needle}"
+
+  echo "$str"
 }
