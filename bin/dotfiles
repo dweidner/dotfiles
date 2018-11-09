@@ -8,9 +8,10 @@
 # 3. Commands
 # |- a) Usage Command
 # |- b) Help Command
-# |- c) Setup Command
-# |- d) Update Command
-# |- e) Cleanup Command
+# |- c) Status Command
+# |- d) Setup Command
+# |- e) Update Command
+# |- f) Cleanup Command
 # 4. Entry Point
 # -----------------------------------------------------------------------
 
@@ -236,7 +237,7 @@ symlink() {
 #
 usage() {
   cat <<- EOF
-		Dotfiles Utility
+		Dotfiles Utilities
 
 		Usage:
 		  dotfiles <command> [options] [arguments]
@@ -245,6 +246,7 @@ usage() {
 		  cleanup		Cleanup caches of various system components
 		  help			Display help for a command
 		  setup			Run the initial setup for various system components
+		  status		Display status information for various system components
 		  update		Fetch the latest version of various system components
 	EOF
 }
@@ -257,7 +259,7 @@ usage() {
 # usage: help <command>
 #
 help() {
-  local commands=("cleanup" "help" "setup" "update")
+  local commands=("cleanup" "help" "setup" "status" "update")
   local command="${1:-help}"
 
   if ! in_array "${command}" "${commands[@]}"; then
@@ -334,12 +336,32 @@ help_setup_command() {
 }
 
 #
+# Display usage information for the status command.
+#
+help_status_command() {
+  cat <<-EOF
+		Usage:
+			status [<component>]
+
+		Arguments:
+		  component  	Name of the system component to retrieve the status for.
+		
+		Help:
+		  The status command can be used to display status information for various
+		  system components.
+		
+		    e.g. dotfiles status
+		
+	EOF
+}
+
+#
 # Display usage information for the update command.
 #
 help_update_command() {
   cat <<-EOF
 		Usage:
-			update <component>
+			update [<component>]
 		
 		Arguments:
 		  component  	Name of the system component to update
@@ -353,7 +375,95 @@ help_update_command() {
 	EOF
 }
 
-# (c) Setup Command ----------------------------------------------------- {{{2
+# (c) Status Command ---------------------------------------------------- {{{2
+
+#
+# Display status information about different system components.
+#
+# usage: status [<component>]
+#
+status() {
+  local -a components=("system" "brew" "node" "ruby" "python")
+  local -a queue=( "$@" )
+
+  local updates=0
+  local total=0
+
+  if (( $# == 0 )); then
+    queue=( "${components[@]}" )
+  fi
+
+  for component in "${queue[@]}"; do
+    if function_exists "status_${component}"; then
+      updates=$("status_${component}")
+      total=$((total + updates))
+      if (( updates > 0 )); then
+        printf '\033[0;30m%s\t%2d\n\033[0;m' "${component}" "${updates}"
+      else
+        printf '%s\t%2d\n' "${component}" "${updates}"
+      fi
+    else
+      unknown_component "${component}"
+    fi
+  done
+
+  if (( total > 0 )); then
+    return 1
+  fi
+
+  return 0
+}
+
+#
+# Determine the number of updates available for the current system.
+#
+status_system() {
+  case "$OSTYPE" in
+    darwin*) status_macos ;;
+  esac
+}
+
+#
+# Determine the number of updates availabe for macOS.
+#
+status_macos() {
+  command_exists "mas" || return 1
+  mas outdated | wc -l | tr -d " "
+}
+
+#
+# Determine the number of outdated homebrew formulae.
+#
+status_brew() {
+  command_exists "brew" || return 1
+  brew outdated -q | wc -l | tr -d " "
+}
+
+#
+# Determine the number of outdated node packages.
+#
+status_node() {
+  command_exists "npm" || return 1
+  npm outdated --global --parseable | wc -l | tr -d " "
+}
+
+#
+# Determine the number of outdated gems.
+#
+status_ruby() {
+  command_exists "rvm" || return 1
+  rvm @global do gem outdated | wc -l | tr -d " "
+}
+
+#
+# Determine the number of outdated python packages.
+#
+status_python() {
+  command_exists "pip3" || return 1
+  pip3 list --outdated | tail -n +3 | wc -l | tr -d " "
+}
+
+# (d) Setup Command ----------------------------------------------------- {{{2
 
 #
 # Setup development dependencies.
@@ -461,9 +571,7 @@ setup_tpm() {
   }
 
   print_message "Installing tmux plugins …"
-
   "${XDG_DATA_HOME}/tmux/plugins/tpm/bin/install_plugins"
-  print_error "Not Implemented"
 }
 
 #
@@ -555,13 +663,6 @@ setup_python() {
 }
 
 #
-# Install default node packages.
-#
-setup_node() {
-  print_error "Not Implemented"
-}
-
-#
 # Install ruby version manager.
 #
 setup_rvm() {
@@ -584,7 +685,7 @@ setup_ruby() {
   done < "${DOTFILES}/misc/default-gems"
 }
 
-# (d) Update Command ---------------------------------------------------- {{{2
+# (e) Update Command ---------------------------------------------------- {{{2
 
 #
 # Update system components.
@@ -775,7 +876,7 @@ update_tpm() {
     && print_success "Updated tmux plugins."
 }
 
-# (e) Cleanup Command --------------------------------------------------- {{{2
+# (f) Cleanup Command --------------------------------------------------- {{{2
 
 #
 # Cleanup the current system
@@ -834,7 +935,7 @@ cleanup_rvm() {
 #
 main() {
   # Stop script execution, expect at least a command name
-  if (( $# == 0)); then
+  if (( $# == 0 )); then
     usage
     return 1
   fi
@@ -847,6 +948,7 @@ main() {
     cleanup) cleanup "$@" ;;
     help)    help "$@" ;;
     setup)   setup "$@" ;;
+    status)  status "$@" ;;
     update)  update "$@" ;;
     *)       command_not_found "$command" ;;
   esac
