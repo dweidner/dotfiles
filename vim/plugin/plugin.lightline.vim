@@ -97,6 +97,7 @@ function! LightlineLinter() abort
           \   'format_running': s:GetSymbol('spinner'),
           \   'format_loclist_ok': '',
           \   'format_loclist_unknown': '',
+          \   'format_loclist_issues': '%s',
           \   'format_loclist_type_E': ' ' . s:GetSymbol('error') . ' {{count}}',
           \   'format_loclist_type_W': ' ' . s:GetSymbol('warning') . ' {{count}}',
           \   'format_loclist_type_I': ' ' . s:GetSymbol('info') . ' {{count}}',
