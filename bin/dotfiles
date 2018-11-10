@@ -19,8 +19,6 @@
 
 # (1) Global Variables -------------------------------------------------- {{{1
 
-set -e
-
 readonly XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
 readonly XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
 readonly XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
