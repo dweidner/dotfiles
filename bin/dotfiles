@@ -19,16 +19,32 @@
 
 # (1) Global Variables -------------------------------------------------- {{{1
 
-readonly XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
-readonly XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
-readonly XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
-
 readonly SCRIPT_DIR="$(dirname "$0")"
-readonly DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
+
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
+XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
+
+DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
+NVM_DIR="${NVM_DIR:-${XDG_DATA_HOME}/nvm}"
+RVM_PATH="${RVM_PATH:-${XDG_DATA_HOME}/rvm}"
+TPM_PATH="${TPM_PATH:-${XDG_DATA_HOME}/tmux/plugins/tpm}"
+
+QUIET=0
+VERBOSE=0
 
 
 
 # (2) Utility Functions ------------------------------------------------- {{{1
+
+#
+# Determine whether the current system is running macOS.
+#
+# usgage: is_mac
+#
+is_mac() {
+  [[ "${OSTYPE}" =~ "darwin"* ]]
+}
 
 #
 # Determine wheter a given value exists in an array
@@ -94,7 +110,8 @@ confirm() {
 # usage: print_message <message>
 #
 print_message() {
-  echo -e "\\033[0;34m==> $*\\033[0;m"
+  (( ! QUIET )) \
+    && echo -e "\\033[0;34m==> $*\\033[0;m"
 }
 
 #
@@ -103,7 +120,8 @@ print_message() {
 # usage: print_success <message>
 #
 print_success() {
-  echo -e "\\033[0;32m==> $*\\033[0;m"
+  (( ! QUIET )) \
+    && echo -e "\\033[0;32m==> $*\\033[0;m"
 }
 
 #
@@ -112,7 +130,8 @@ print_success() {
 # usage: print_warning <message>
 #
 print_warning() {
-  echo -e "\\033[0;33m==> $*\\033[0;m" >&2
+  (( ! QUIET )) \
+    && echo -e "\\033[0;33m==> $*\\033[0;m" >&2
 }
 
 #
@@ -121,7 +140,8 @@ print_warning() {
 # usage: print_error <message>
 #
 print_error() {
-  echo -e "\\033[0;31m==> $*\\033[0;m" >&2
+  (( ! QUIET )) \
+    && echo -e "\\033[0;31m==> $*\\033[0;m" >&2
 }
 
 #
@@ -145,12 +165,54 @@ unknown_option() {
 }
 
 #
-# Notify the user about an unknown system component.
+# Try to load an external dependency.
 #
-# usage: unknown_component <name>
+# usage: load_dependency <name>
 #
-unknown_component() {
-  print_error "Unknown component name [${1}]"
+load_dependency() {
+  local loaded=1
+
+  case "$1" in
+    nvm) load_nvm; loaded=$? ;;
+    rvm) load_rvm; loaded=$? ;;
+  esac
+
+  return ${loaded}
+}
+
+#
+# Load the node version manager into the current environment.
+#
+# usage: load_nvm
+#
+load_nvm() {
+  if function_exists "nvm"; then
+    return 0
+  fi
+
+  if [[ ! -r "${NVM_DIR}/nvm.sh" ]]; then
+    return 1
+  fi
+
+  source "${NVM_DIR}/nvm.sh"
+}
+
+
+#
+# Load the ruby version manager into the current environment.
+#
+# usage: load_rvm
+#
+load_rvm() {
+  if function_exists "rvm"; then
+    return 0
+  fi
+
+  if [[ ! -r "${RVM_PATH}/scripts/rvm" ]]; then
+    return 1
+  fi
+
+  source "${RVM_PATH}/scripts/rvm"
 }
 
 #
@@ -386,12 +448,17 @@ status() {
   if (( $# == 0 )); then
     components=(
       "system"
-      "brew"
+      "formulae"
       "node_packages"
       "python_packages"
       "gems"
     )
   fi
+
+  local bold="\\033[0;30m"
+  local light="\\033[0;39m"
+  local reset="\\033[0;m"
+  local color="${light}"
 
   local updates=0
   local total=0
@@ -401,28 +468,23 @@ status() {
       updates=$("status_${component}")
       total=$((total + updates))
 
-      if (( updates > 0 )); then
-        printf '\033[0;30m%s\t%2d\n\033[0;m' "${component%_*}" "${updates}"
-      else
-        printf '%s\t%2d\n' "${component%_*}" "${updates}"
-      fi
-    else
-      unknown_component "${component}"
+      (( updates > 0 )) \
+        && color="${bold}" \
+        || color="${light}"
+
+      (( ! QUIET )) \
+        && printf '%b%-16s %2d%b\n' "${color}" "${component}" "${updates}" "${reset}"
     fi
   done
 
-  if (( total > 0 )); then
-    return 1
-  else
-    return 0
-  fi
+  (( total == 0 ))
 }
 
 #
 # Determine the number of updates available for the current system.
 #
 status_system() {
-  case "$OSTYPE" in
+  case "${OSTYPE}" in
     darwin*) status_macos ;;
   esac
 }
@@ -432,14 +494,16 @@ status_system() {
 #
 status_macos() {
   command_exists "mas" || return 1
+
   mas outdated | wc -l | tr -d " "
 }
 
 #
 # Determine the number of outdated homebrew formulae.
 #
-status_brew() {
+status_formulae() {
   command_exists "brew" || return 1
+
   brew outdated -q | wc -l | tr -d " "
 }
 
@@ -447,7 +511,9 @@ status_brew() {
 # Determine the number of outdated node packages.
 #
 status_node_packages() {
+  load_dependency "nvm" || return 1
   command_exists "npm" || return 1
+
   npm outdated --global --parseable --depth=0 | wc -l | tr -d " "
 }
 
@@ -456,6 +522,7 @@ status_node_packages() {
 #
 status_python_packages() {
   command_exists "pip3" || return 1
+
   pip3 list --outdated | tail -n +3 | wc -l | tr -d " "
 }
 
@@ -463,7 +530,9 @@ status_python_packages() {
 # Determine the number of outdated gems.
 #
 status_gems() {
-  command_exists "rvm" || return 1
+  load_dependency "rvm" || return 1
+  function_exists "rvm" || return 1
+
   rvm @global do gem outdated | wc -l | tr -d " "
 }
 
@@ -480,7 +549,8 @@ setup() {
   if (( $# == 0 )); then
     components=(
       "symlinks"
-      "brew"
+      "homebrew"
+      "formulae"
       "nvm"
       "node"
       "node_packages"
@@ -496,8 +566,6 @@ setup() {
   for component in "${components[@]}"; do
     if function_exists "setup_${component}"; then
       "setup_${component}"
-    else
-      unknown_component "${component}"
     fi
   done
 }
@@ -541,32 +609,47 @@ setup_symlinks() {
 
   print_message "Creating symlinks …"
 
-  symlink "bash/bash_profile"          "${HOME}/.bash_profile"
-  symlink "bash/bashrc"                "${HOME}/.bashrc" 
-  symlink "bash/completions"           "${XDG_DATA_HOME}/bash-completion/completions"
-  symlink "readline/inputrc"           "${XDG_CONFIG_HOME}/readline/inputrc"
-  symlink "git/ignore"                 "${XDG_CONFIG_HOME}/git/ignore"
-  symlink "git/commitmsg"              "${XDG_CONFIG_HOME}/git/commitmsg"
-  symlink "vim/"                       "${HOME}/.vim"
-  symlink "vim/nvimrc"                 "${XDG_CONFIG_HOME}/nvim/init.vim"
-  symlink "vim/after"                  "${XDG_CONFIG_HOME}/nvim/after"
-  symlink "vim/plugin"                 "${XDG_CONFIG_HOME}/nvim/plugin"
-  symlink "vim/autoload"               "${XDG_CONFIG_HOME}/nvim/autoload"
-  symlink "tmux/tmux.conf"             "${XDG_CONFIG_HOME}/tmux/tmux.conf"
-  symlink "misc/default-node-packages" "${XDG_CONFIG_HOME}/nvm/default-packages"
-  symlink "misc/gemrc"                 "${XDG_CONFIG_HOME}/gem/gemrc"
-  symlink "misc/ctags"                 "${HOME}/.ctags"
-  symlink "misc/Brewfile"              "${HOME}/.Brewfile"
-  symlink "misc/ignore"                "${HOME}/.ignore"
-  symlink "misc/editorconfig"          "${HOME}/.editorconfig"
-  symlink "misc/tern-config"           "${HOME}/.tern-config"
-  copy    "git/config"                 "${XDG_DATA_HOME}/git/config"
+  symlink "bash/bash_profile"            "${HOME}/.bash_profile"
+  symlink "bash/bashrc"                  "${HOME}/.bashrc" 
+  symlink "bash/completions"             "${XDG_DATA_HOME}/bash-completion/completions"
+  symlink "readline/inputrc"             "${XDG_CONFIG_HOME}/readline/inputrc"
+  symlink "git/ignore"                   "${XDG_CONFIG_HOME}/git/ignore"
+  symlink "git/commitmsg"                "${XDG_CONFIG_HOME}/git/commitmsg"
+  symlink "vim/"                         "${HOME}/.vim"
+  symlink "vim/nvimrc"                   "${XDG_CONFIG_HOME}/nvim/init.vim"
+  symlink "vim/after"                    "${XDG_CONFIG_HOME}/nvim/after"
+  symlink "vim/plugin"                   "${XDG_CONFIG_HOME}/nvim/plugin"
+  symlink "vim/autoload"                 "${XDG_CONFIG_HOME}/nvim/autoload"
+  symlink "tmux/tmux.conf"               "${XDG_CONFIG_HOME}/tmux/tmux.conf"
+  symlink "misc/default-node-packages"   "${XDG_CONFIG_HOME}/nvm/default-packages"
+  symlink "misc/gemrc"                   "${XDG_CONFIG_HOME}/gem/gemrc"
+  symlink "misc/ctags"                   "${HOME}/.ctags"
+  symlink "misc/ignore"                  "${HOME}/.ignore"
+  symlink "misc/editorconfig"            "${HOME}/.editorconfig"
+  symlink "misc/tern-config"             "${HOME}/.tern-config"
+  copy    "git/config"                   "${XDG_DATA_HOME}/git/config"
+
+  if is_mac; then
+    symlink "macos/Brewfile"             "${HOME}/.Brewfile"
+    symlink "macos/launchd/status.plist" "${HOME}/Library/LaunchAgents/de.dweidner.dotfiles.status.plist"
+  fi
+}
+
+#
+# Install homebrew.
+#
+setup_homebrew() {
+  is_mac || return 1
+
+  print_message "Installing hombrew …"
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  print_success "Installed homebrew."
 }
 
 #
 # Install essential homebrew formulae.
 #
-setup_brew() {
+setup_formulae() {
   command_exists "brew" || return 1
 
   print_message "Installing homebrew formulae …"
@@ -580,20 +663,20 @@ setup_brew() {
 setup_nvm() {
   print_message "Installing nvm …"
 
-  git clone "https://github.com/creationix/nvm.git" "${XDG_DATA_HOME}/nvm" || {
+  git clone "https://github.com/creationix/nvm.git" "${NVM_DIR}" || {
     print_error "Cannot checkout nvm repository"
     return 1
   }
 
   local version
-  version="$(git -C "${XDG_DATA_HOME}/nvm" describe --abbrev=0 --tags --match "v[0-9]*" origin)"
+  version="$(git -C "${NVM_DIR}" describe --abbrev=0 --tags --match "v[0-9]*" origin)"
 
-  git -C "${XDG_DATA_HOME}/nvm" checkout "${version}" || {
+  git -C "${NVM_DIR}" checkout "${version}" || {
     print_error "Cannot switch to NVM version [${version}]"
     return 1
   }
 
-  source "${XDG_DATA_HOME}/nvm/nvm.sh"
+  load_dependency "nvm" || return 1
 }
 
 #
@@ -673,14 +756,14 @@ setup_rvm() {
   print_message "Installing rvm …"
 
   curl -sSL "https://get.rvm.io" \
-    | bash -s -- --path "${XDG_DATA_HOME}/rvm" --ignore-dotfiles --ruby
+    | bash -s -- --path "${RVM_PATH}" --ignore-dotfiles --ruby
 }
 
 #
 # Install global gems.
 #
 setup_gems() {
-  command_exists "rvm" || return 1
+  function_exists "rvm" || return 1
 
   print_message "Installing global gems …"
 
@@ -724,7 +807,8 @@ update() {
   if (( $# == 0 )); then
     components=(
       "system"
-      "brew"
+      "homebrew"
+      "formulae"
       "nvm"
       "node"
       "node_packages"
@@ -740,8 +824,6 @@ update() {
   for component in "${components[@]}"; do
     if function_exists "update_${component}"; then
       "update_${component}"
-    else
-      unknown_component "${component}"
     fi
   done
 }
@@ -768,11 +850,19 @@ update_macos() {
 #
 # Update homebrew the missing package manager for macOS
 #
-update_brew() {
+update_homebrew() {
   command_exists "brew" || return 1
 
   print_message "Updating homebrew …"
   brew update --quiet & wait
+  print_success "Updated homebrew."
+}
+
+#
+# Update homebrew formulae.
+#
+update_formulae() {
+  command_exists "brew" || return 1
 
   print_message "Updating homebrew formulae …"
 
@@ -795,7 +885,7 @@ update_brew() {
 # Update the node version manager
 #
 update_nvm() {
-  function_exists "nvm" || source "${NVM_DIR}/nvm.sh"
+  [[ -d "${NVM_DIR}/.git" ]] || return 1
 
   print_message "Updating nvm …"
 
@@ -823,9 +913,9 @@ update_nvm() {
 # Update the Node.js
 #
 update_node() {
-  cd -- "${NVM_DIR}" 2>/dev/null || return 1
+  load_dependency "nvm" || return 1
+  function_exists "nvm" || return 1
 
-  function_exists "nvm" || source "${NVM_DIR}/nvm.sh"
   print_message "Updating Node.js …"
 
   local version
@@ -857,6 +947,7 @@ update_node() {
 # Update global node packages.
 #
 update_node_packages() {
+  load_dependency "nvm" || return 1
   command_exists "npm" || return 1
 
   print_message "Updating global node packages …"
@@ -915,7 +1006,8 @@ update_python_packages() {
 # Update the ruby version manager
 #
 update_rvm() {
-  command_exists "rvm" || return 1
+  load_dependency "rvm" || return 1
+  function_exists "rvm" || return 1
 
   print_message "Updating Ruby Version Manager …"
 
@@ -943,7 +1035,8 @@ update_rvm() {
 # Update global gems.
 #
 update_gems() {
-  command_exists "rvm" || return 1
+  load_dependency "rvm" || return 1
+  function_exists "rvm" || return 1
 
   print_message "Updating global ruby gems …"
 
@@ -963,12 +1056,11 @@ update_gems() {
 # Update tmux plugin manager.
 #
 update_tpm() {
-  local tpm_path="${TMUX_PLUGIN_MANAGER_PATH:-${XDG_DATA_HOME}/tmux/plugins}"
-
-  [[ -d "${tpm_path}/tpm" ]] || return 1
+  [[ -d "${TPM_PATH}" ]] || return 1
 
   print_message "Updating Tmux plugin manager …"
-  cd "${tpm_path}/tpm" || return 1
+
+  cd "${TPM_PATH}" || return 1
   git remote update >/dev/null
 
   local current
@@ -988,13 +1080,11 @@ update_tpm() {
 # Update tmux plugins.
 #
 update_tmux_plugins() {
-  local tpm_path="${TMUX_PLUGIN_MANAGER_PATH:-${XDG_DATA_HOME}/tmux/plugins}"
-
-  [[ -d "$tpm_path/tpm" ]] || return 1
+  [[ -d "${TPM_PATH}" ]] || return 1
 
   print_message "Updating tmux plugins …"
 
-  TMUX_PLUGIN_MANAGER_PATH="$tpm_path" "$tpm_path/tpm/bin/update_plugins" all >/dev/null \
+  TMUX_PLUGIN_MANAGER_PATH="$(dirname "${TPM_PATH}")" "${TPM_PATH}/bin/update_plugins" all >/dev/null \
     && print_success "Updated tmux plugins."
 }
 
@@ -1010,7 +1100,7 @@ cleanup() {
 
   if (( $# == 0 )); then
     components=(
-      "brew"
+      "homebrew"
       "rvm"
       "gems"
     )
@@ -1019,8 +1109,6 @@ cleanup() {
   for component in "${components[@]}"; do
     if function_exists "cleanup_${component}"; then
       "cleanup_${component}"
-    else
-      unknown_component "${component}"
     fi
   done
 }
@@ -1028,7 +1116,7 @@ cleanup() {
 #
 # Cleanup old versions of installed packages and prune dead symlinks.
 #
-cleanup_brew() {
+cleanup_homebrew() {
   command_exists "brew" || return 1
 
   print_message "Removing old versions of installed formulae …"
@@ -1043,7 +1131,8 @@ cleanup_brew() {
 # files and logs
 #
 cleanup_rvm() {
-  command_exists "rvm" || return 1
+  load_dependency "rvm" || return 1
+  function_exists "rvm" || return 1
 
   print_message "Cleaning up rvm resources …"
   rvm cleanup all
@@ -1053,7 +1142,8 @@ cleanup_rvm() {
 # Clean up old versions of installed gems.
 #
 cleanup_gems() {
-  command_exists "rvm" || return 1
+  load_dependency "rvm" || return 1
+  function_exists "rvm" || return 1
 
   print_message "Cleaning up old versions of installed gems …"
   rvm @global do gem cleanup
@@ -1066,7 +1156,7 @@ cleanup_gems() {
 #
 # Main entry point of the script.
 #
-# usage: dotfiles <command>
+# usage: dotfiles <command> [<option>] [<arguments>]
 #
 main() {
   # Stop script execution, expect at least a command name
@@ -1075,9 +1165,21 @@ main() {
     return 1
   fi
 
-  # Run the given command
+  # Ensure that user binaries are included in the PATH variable
+  if [[ ":${PATH}:" != *":/usr/local/bin:"* ]]; then
+    PATH="/usr/local/bin:${PATH}"
+  fi
+
+  # Extract options and run the specified command
   local command="$1"
   shift
+
+  while (( $# > 0 )); do
+    case "$1" in
+      -q|--quiet)   QUIET=1;   shift ;;
+      -v|--verbose) VERBOSE=1; shift ;;
+    esac
+  done
 
   case "$command" in
     cleanup) cleanup "$@" ;;
