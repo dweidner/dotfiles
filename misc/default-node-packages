@@ -1,9 +1,10 @@
 eslint
+stylelint
 jsonlint
 neovim
-npm-check-updates
 svgo
 tern
 tern-browser-extension
 tern-fetch
 tern-node-extension
+npm-check-updates
