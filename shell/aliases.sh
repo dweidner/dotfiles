@@ -104,7 +104,9 @@ fi
 
 # (7) File comparison --------------------------------------------------- {{{1
 
-if dot::command_exists "pygmentize"; then
+if dot::command_exists "bat"; then
+  alias c="bat"
+elif dot::command_exists "pygmentize"; then
   alias c="pygmentize -g"
 elif dot::command_exists "highlight"; then
   alias c="highlight -O ansi"
