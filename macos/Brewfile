@@ -3,9 +3,9 @@
 # (1) Repositories -------------------------------- {{{1
 
 tap 'homebrew/core'
+tap 'homebrew/bundle'
 tap 'homebrew/cask'
 tap 'homebrew/cask-fonts'
-tap 'homebrew/bundle'
 tap 'universal-ctags/universal-ctags'
 
 
@@ -24,15 +24,21 @@ brew 'icdiff'
 brew 'diff-so-fancy'
 
 brew 'ack'
-brew 'grep'
-brew 'ripgrep'
 brew 'tree'
+brew 'bat'
+brew 'ripgrep'
 
 brew 'neovim'
+brew 'shellcheck'
+brew 'tidy-html5', args: ['HEAD']
+brew 'universal-ctags/universal-ctags/universal-ctags', args: ['HEAD']
 brew 'jq'
-brew 'universal-ctags' args: ['HEAD']
+
+brew 'composer'
 
 brew 'mas'
+brew 'tag'
+brew 'trash'
 brew 'terminal-notifier'
 
 
@@ -67,6 +73,12 @@ cask 'quicklook-csv'
 
 cask 'font-fira-code'
 cask 'font-source-code-pro'
+
+mas 'Amphetamine', id: 937984704
+mas 'Magnet', id: 441258766
+mas 'Things3', id: 904280696
+mas 'Affinity Designer', id: 824171161
+mas 'Affinity Photo', id: 824183456
 
 
 
