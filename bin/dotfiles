@@ -91,6 +91,20 @@ function_exists() {
 }
 
 #
+# Run a given command.
+#
+# usage: run <command>
+#
+run() {
+  # shellcheck disable=SC2048
+  if (( ! VERBOSE )) || (( QUIET )); then
+    $* >/dev/null
+  else
+    $*
+  fi
+}
+
+#
 # Confirm a question with the user.
 #
 # usage: confirm <question>
@@ -194,6 +208,7 @@ load_nvm() {
     return 1
   fi
 
+  # shellcheck source=/dev/null
   source "${NVM_DIR}/nvm.sh"
 }
 
@@ -212,6 +227,7 @@ load_rvm() {
     return 1
   fi
 
+  # shellcheck source=/dev/null
   source "${RVM_PATH}/scripts/rvm"
 }
 
@@ -561,6 +577,7 @@ setup() {
       "gems"
       "tpm"
       "tmux_plugins"
+      "phpcs"
     )
   fi
 
@@ -832,6 +849,39 @@ setup_tmux_plugins() {
   "${XDG_DATA_HOME}/tmux/plugins/tpm/bin/install_plugins"
 }
 
+#
+# Setup php code sniffer.
+#
+setup_phpcs() {
+  command_exists "phpcs" || return 1
+
+  print_message "Setting default configuration for phpcs …"
+
+  run phpcs --config-set default_standard PSR2
+  run phpcs --config-set encoding utf-8
+  run phpcs --config-set show_progress 1
+  run phpcs --config-set colors 1
+  run phpcs --config-set report_width auto
+
+  command_exists "cgr" || return 0
+
+  print_message "Registering additional coding standards …"
+
+  local cgr_path="${COMPOSER_HOME}/global"
+  local wpcs_path="${cgr_path}/wp-coding-standards/wpcs/vendor/wp-coding-standards/wpcs"
+  local coder_path="${cgr_path}/drupal/coder/vendor/drupal/coder/coder_sniffer"
+
+  local path
+  path="$(phpcs --config-show | grep installed_paths | cut -d: -f2 | sed -e 's/^[[:space:]]*//g')"
+
+  [[ -d "${wpcs_path}" ]]  && [[ ",${path}," != *",${wpcs_path},"* ]]  && path="${wpcs_path},${path}"
+  [[ -d "${coder_path}" ]] && [[ ",${path}," != *",${coder_path},"* ]] && path="${coder_path},${path}"
+
+  path="$(sed -e 's/^,*//g' -e 's/,*$//g' <<< "${path}")"
+
+  run phpcs --config-set installed_paths "${path}"
+}
+
 # (e) Update Command ---------------------------------------------------- {{{2
 
 #
@@ -944,6 +994,7 @@ update_nvm() {
   git -C "${NVM_DIR}" checkout --quiet --progress "${latest}" \
     && print_success "Updated nvm to version ${latest}"
 
+  # shellcheck source=/dev/null
   source "${NVM_DIR}/nvm.sh"
 }
 
@@ -1194,7 +1245,7 @@ cleanup_gems() {
 #
 # Main entry point of the script.
 #
-# usage: dotfiles <command> [<option>] [<arguments>]
+# usage: dotfiles <command> [<option>] [<argument>]
 #
 main() {
   # Stop script execution, expect at least a command name
@@ -1216,6 +1267,7 @@ main() {
     case "$1" in
       -q|--quiet)   QUIET=1;   shift ;;
       -v|--verbose) VERBOSE=1; shift ;;
+      *)            break ;;
     esac
   done
 
