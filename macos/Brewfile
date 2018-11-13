@@ -18,7 +18,11 @@ brew 'tmux'
 brew 'fzf'
 
 brew 'curl'
+brew 'wget'
 brew 'rsync'
+brew 'httpie'
+brew 'jq'
+
 brew 'git'
 brew 'icdiff'
 brew 'diff-so-fancy'
@@ -30,10 +34,9 @@ brew 'ripgrep'
 
 brew 'neovim'
 brew 'shellcheck'
-brew 'tidy-html5', args: ['HEAD']
 brew 'yamllint'
+brew 'tidy-html5', args: ['HEAD']
 brew 'universal-ctags/universal-ctags/universal-ctags', args: ['HEAD']
-brew 'jq'
 
 brew 'composer'
 
