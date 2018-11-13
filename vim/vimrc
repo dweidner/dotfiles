@@ -421,6 +421,7 @@ call plug#begin(s:data_home . '/bundle')
   " |- languageserver-php: PHP implementation of the LSP
 
   Plug 'ncm2/ncm2', PlugIf(IsSupported('completion'))
+  Plug 'ncm2/ncm2-path', PlugIf(IsSupported('completion'))
   Plug 'ncm2/ncm2-cssomni', PlugIf(IsSupported('completion'))
 
   if executable('npm')
