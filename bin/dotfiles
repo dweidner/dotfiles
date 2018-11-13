@@ -631,6 +631,7 @@ setup_symlinks() {
 
   if is_mac; then
     symlink "macos/Brewfile"             "${HOME}/.Brewfile"
+    symlink "macos/hushlogin"            "${HOME}/.hushlogin"
     symlink "macos/launchd/status.plist" "${HOME}/Library/LaunchAgents/de.dweidner.dotfiles.status.plist"
   fi
 }
