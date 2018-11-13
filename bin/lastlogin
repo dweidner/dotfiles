@@ -13,11 +13,12 @@ lastlogin() {
 
   while (( $# > 0 )); do
     case "$1" in
-      -f|--format) format="$2";   shift; shift ;;
-      -s|--start)  date="$2";     shift; shift ;;
-      -n)          limit="$2";    shift; shift ;;
-      -[0-9])      limit="${1:1}" shift;
+      -[0-9])      limit="${1:1}"       ;;
+      -f|--format) format="$2";   shift ;;
+      -s|--start)  date="$2";     shift ;;
+      -n)          limit="$2";    shift ;;
     esac
+    shift;
   done
 
   case "${date}" in
