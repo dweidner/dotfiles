@@ -551,6 +551,7 @@ setup() {
       "symlinks"
       "homebrew"
       "formulae"
+      "shell"
       "nvm"
       "node"
       "node_packages"
@@ -642,6 +643,20 @@ setup_symlinks() {
 setup_homebrew() {
   is_mac || return 1
 
+  local directory="${HOMEBREW_PREFIX:-/usr/local}"
+
+  print_message "Preparing '${directory}' (might require root privileges) …"
+
+  if [[ ! -d "${directory}" ]]; then
+    sudo mkdir "${directory}"
+    sudo chflags norestricted "${directory}"
+    sudo chown -R "${LOGNAME}:admin" "${directory}"
+  fi
+
+  if [[ ! -r "${directory}" ]]; then
+    sudo chown -R "${LOGNAME}:admin" "${directory}"
+  fi
+
   print_message "Installing hombrew …"
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   print_success "Installed homebrew."
@@ -656,6 +671,28 @@ setup_formulae() {
   print_message "Installing homebrew formulae …"
   brew bundle install --global --verbose
   print_success "Installed formulae listed in ~/.Brewfile"
+}
+
+#
+# Change the user's shell.
+#
+setup_shell() {
+  local path
+  path="$(command -v bash)"
+
+  if [[ ! -x "${path}" ]] || [[ "${SHELL}" == "${path}" ]]; then
+    return 0
+  fi
+
+  grep "${path}" /etc/shells >/dev/null 2>&1 || {
+    print_message "Adding '${path}' to /etc/shells"
+    sudo sh -c "echo ${path} >> /etc/shells"
+  }
+
+  if confirm "Do you want to change the shell for the current user to '${path}'?"; then
+    sudo chsh -s "${path}" "${USER}" \
+      && print_success "Changed the user’s shell to '${path}'"
+  fi
 }
 
 #
