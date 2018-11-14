@@ -91,20 +91,6 @@ function_exists() {
 }
 
 #
-# Run a given command.
-#
-# usage: run <command>
-#
-run() {
-  # shellcheck disable=SC2048
-  if (( ! VERBOSE )) || (( QUIET )); then
-    $* >/dev/null
-  else
-    $*
-  fi
-}
-
-#
 # Confirm a question with the user.
 #
 # usage: confirm <question>
@@ -300,6 +286,20 @@ symlink() {
     && print_success "created symlink at ${target}"
 }
 
+#
+# Run a given silently.
+#
+# usage: run <command>
+#
+silent() {
+  # shellcheck disable=SC2048
+  if (( ! VERBOSE )) || (( QUIET )); then
+    $* >/dev/null
+  else
+    $*
+  fi
+}
+
 
 
 # (3) Commands ---------------------------------------------------------- {{{1
@@ -488,8 +488,7 @@ status() {
         && color="${bold}" \
         || color="${light}"
 
-      (( ! QUIET )) \
-        && printf '%b%-16s %2d%b\n' "${color}" "${component}" "${updates}" "${reset}"
+      printf '%b%-16s %2d%b\n' "${color}" "${component}" "${updates}" "${reset}"
     fi
   done
 
@@ -857,11 +856,11 @@ setup_phpcs() {
 
   print_message "Setting default configuration for phpcs …"
 
-  run phpcs --config-set default_standard PSR2
-  run phpcs --config-set encoding utf-8
-  run phpcs --config-set show_progress 1
-  run phpcs --config-set colors 1
-  run phpcs --config-set report_width auto
+  silent phpcs --config-set default_standard PSR2
+  silent phpcs --config-set encoding utf-8
+  silent phpcs --config-set show_progress 1
+  silent phpcs --config-set colors 1
+  silent phpcs --config-set report_width auto
 
   command_exists "cgr" || return 0
 
@@ -879,7 +878,7 @@ setup_phpcs() {
 
   path="$(sed -e 's/^,*//g' -e 's/,*$//g' <<< "${path}")"
 
-  run phpcs --config-set installed_paths "${path}"
+  silent phpcs --config-set installed_paths "${path}"
 }
 
 # (e) Update Command ---------------------------------------------------- {{{2
@@ -1248,29 +1247,30 @@ cleanup_gems() {
 # usage: dotfiles <command> [<option>] [<argument>]
 #
 main() {
-  # Stop script execution, expect at least a command name
+  # Stop script execution, expect at least a command name.
   if (( $# == 0 )); then
     usage
     return 1
   fi
 
-  # Ensure that user binaries are included in the PATH variable
+  # Ensure that user binaries are included in the PATH variable.
   if [[ ":${PATH}:" != *":/usr/local/bin:"* ]]; then
     PATH="/usr/local/bin:${PATH}"
   fi
 
-  # Extract options and run the specified command
+  # Extract the command and globally available options.
   local command="$1"
   shift
 
   while (( $# > 0 )); do
     case "$1" in
-      -q|--quiet)   QUIET=1;   shift ;;
-      -v|--verbose) VERBOSE=1; shift ;;
+      -q|--quiet)   QUIET=1; VERBOSE=0; shift ;;
+      -v|--verbose) QUIET=0; VERBOSE=1; shift ;;
       *)            break ;;
     esac
   done
 
+  # Run the specified command.
   case "$command" in
     cleanup) cleanup "$@" ;;
     help)    help "$@" ;;
