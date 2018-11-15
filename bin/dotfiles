@@ -968,6 +968,7 @@ update_formulae() {
 # Update the node version manager
 #
 update_nvm() {
+  require_nvm || return 1
   [[ -d "${NVM_DIR}/.git" ]] || return 1
 
   print_message "Updating nvm …"
