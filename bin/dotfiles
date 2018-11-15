@@ -782,8 +782,18 @@ setup_php_packages() {
 
   print_message "Installing php packages …"
 
+  local package
+  local version
+
   while read -r package; do
-    cgr "$package"
+    version="${package#*:}"
+    name="${package%:*}"
+
+    if [[ -n "${version}" ]]; then
+      cgr --stability RC "${name}" "${version}"
+    else
+      cgr --stability RC "${name}"
+    fi
   done < "${DOTFILES}/misc/default-php-packages"
 }
 
