@@ -165,27 +165,11 @@ unknown_option() {
 }
 
 #
-# Try to load an external dependency.
-#
-# usage: load_dependency <name>
-#
-load_dependency() {
-  local loaded=1
-
-  case "$1" in
-    nvm) load_nvm; loaded=$? ;;
-    rvm) load_rvm; loaded=$? ;;
-  esac
-
-  return ${loaded}
-}
-
-#
 # Load the node version manager into the current environment.
 #
-# usage: load_nvm
+# usage: require_nvm
 #
-load_nvm() {
+require_nvm() {
   if function_exists "nvm"; then
     return 0
   fi
@@ -202,9 +186,9 @@ load_nvm() {
 #
 # Load the ruby version manager into the current environment.
 #
-# usage: load_rvm
+# usage: require_rvm
 #
-load_rvm() {
+require_rvm() {
   if function_exists "rvm"; then
     return 0
   fi
@@ -526,7 +510,7 @@ status_formulae() {
 # Determine the number of outdated node packages.
 #
 status_node_packages() {
-  load_dependency "nvm" || return 1
+  require_nvm || return 1
   command_exists "npm" || return 1
 
   npm outdated --global --parseable --depth=0 | wc -l | tr -d " "
@@ -545,7 +529,7 @@ status_python_packages() {
 # Determine the number of outdated gems.
 #
 status_gems() {
-  load_dependency "rvm" || return 1
+  require_rvm || return 1
   function_exists "rvm" || return 1
 
   rvm @global do gem outdated | wc -l | tr -d " "
@@ -730,7 +714,7 @@ setup_nvm() {
     return 1
   }
 
-  load_dependency "nvm" || return 1
+  require_nvm || return 1
 }
 
 #
@@ -747,6 +731,7 @@ setup_node() {
 # Install latest npm version and default packages.
 #
 setup_node_packages() {
+  require_nvm || return 1
   command_exists "npm" || return 1
 
   print_message "Installing latest npm version …"
@@ -827,6 +812,7 @@ setup_rvm() {
 # Install global gems.
 #
 setup_gems() {
+  require_rvm || return 1
   function_exists "rvm" || return 1
 
   print_message "Installing global gems …"
@@ -1011,7 +997,7 @@ update_nvm() {
 # Update the Node.js
 #
 update_node() {
-  load_dependency "nvm" || return 1
+  require_nvm || return 1
   function_exists "nvm" || return 1
 
   print_message "Updating Node.js …"
@@ -1045,7 +1031,7 @@ update_node() {
 # Update global node packages.
 #
 update_node_packages() {
-  load_dependency "nvm" || return 1
+  require_nvm || return 1
   command_exists "npm" || return 1
 
   print_message "Updating global node packages …"
@@ -1104,7 +1090,7 @@ update_python_packages() {
 # Update the ruby version manager
 #
 update_rvm() {
-  load_dependency "rvm" || return 1
+  require_rvm || return 1
   function_exists "rvm" || return 1
 
   print_message "Updating Ruby Version Manager …"
@@ -1133,7 +1119,7 @@ update_rvm() {
 # Update global gems.
 #
 update_gems() {
-  load_dependency "rvm" || return 1
+  require_rvm || return 1
   function_exists "rvm" || return 1
 
   print_message "Updating global ruby gems …"
@@ -1229,7 +1215,7 @@ cleanup_homebrew() {
 # files and logs
 #
 cleanup_rvm() {
-  load_dependency "rvm" || return 1
+  require_rvm || return 1
   function_exists "rvm" || return 1
 
   print_message "Cleaning up rvm resources …"
@@ -1240,7 +1226,7 @@ cleanup_rvm() {
 # Clean up old versions of installed gems.
 #
 cleanup_gems() {
-  load_dependency "rvm" || return 1
+  require_rvm || return 1
   function_exists "rvm" || return 1
 
   print_message "Cleaning up old versions of installed gems …"
