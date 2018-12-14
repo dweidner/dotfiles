@@ -23,6 +23,6 @@ alias safari="open -a Safari"            # Open a website in Safari
 alias preview="open -a Preview"          # Display a preview of any file
 
 alias dce="docker-compose exec"          # Run a command in a given service
-alias dcl="docker-compose logs"          # Display log output of a service
+alias dcr="docker-compose restart"       # Restart a given service
 alias dcu="docker-compose up -d --build" # Build, start and attach to a service
 alias dcd="docker-compose down"          # Stop and remove containers
