@@ -2,6 +2,7 @@ eslint
 stylelint
 jsonlint
 neovim
+imagemin-cli
 svgo
 tern
 tern-browser-extension
