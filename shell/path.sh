@@ -20,7 +20,7 @@
 #
 # usage: path [<path>]
 #
-path() {
+dot::path() {
   echo "${1:-$PATH}" | while read -rd: dir; do
     echo "${dir}"
   done
@@ -31,7 +31,7 @@ path() {
 #
 # usage: path_contains <directory>
 #
-path_contains() {
+dot::path_contains() {
   [[ ":${PATH}:" = *":${1}:"* ]]
 }
 
@@ -40,32 +40,33 @@ path_contains() {
 #
 # usage: path_add <directory>
 #
-path_add() {
+dot::path_add() {
   [[ -d "${1}" ]] || return
 
-  if ! path_contains "${1}"; then
+  if ! dot::path_contains "${1}"; then
     PATH="${1}:${PATH}"
   fi
 }
 
-# (1) Local Binaries ---------------------------------------------------- {{{1
 
-path_add "/usr/local/sbin"
-path_add "/usr/local/bin"
+# (2) Local Binaries ---------------------------------------------------- {{{1
 
-
-# (2) Package Managers -------------------------------------------------- {{{1
-
-path_add "${COMPOSER_HOME}/vendor/bin"
+dot::path_add "/usr/local/sbin"
+dot::path_add "/usr/local/bin"
 
 
-# (3) Trumps ------------------------------------------------------------- {{{1
+# (3) Package Managers -------------------------------------------------- {{{1
 
-path_add "${HOME}/.local/bin"
-path_add "${DOTFILES}/bin"
+dot::path_add "${COMPOSER_HOME}/vendor/bin"
 
 
-# (4) User Manuals ------------------------------------------------------- {{{1
+# (4) Trumps ------------------------------------------------------------- {{{1
+
+dot::path_add "${HOME}/.local/bin"
+dot::path_add "${DOTFILES}/bin"
+
+
+# (5) User Manuals ------------------------------------------------------- {{{1
 
 if command -v manpath >/dev/null 2>&1; then
   MANPATH="$(manpath)"
@@ -76,5 +77,6 @@ fi
 
 export PATH
 export MANPATH
+
 
 # vim:foldmethod=marker:foldlevel=2

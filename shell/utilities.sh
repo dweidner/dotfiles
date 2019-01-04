@@ -57,6 +57,33 @@ dot::function_exists() {
 }
 
 #
+# Generate a heading text.
+#
+# usage: dot::heading <heading> [<character>]
+#
+dot::heading() {
+  local heading
+  local hr
+
+  heading="$(echo "${1}" | tr "[:lower:]" "[:upper:]")"
+  hr="$(dot::hr $(( ${#heading} + 1 )))"
+
+  echo -e "\033[0;34m${heading} ${hr}\033[0;m"
+}
+
+#
+# Draw a horizontal line.
+#
+# usage: dot::hr [<offset>] [<char>]
+#
+dot::hr() {
+  local offset="${1:-0}"
+  local char="${2:-─}"
+
+  printf "%*s" $(( COLUMNS - offset )) " " | tr " " "${char}"
+}
+
+#
 # Print a status message.
 #
 # usage: dot::info <message>
@@ -119,7 +146,7 @@ dot::exit() {
 #
 # Remove a single characters from the beginning and end of the given string.
 #
-# usage: trim <str> [<char>]
+# usage: dot::trim <str> [<char>]
 #
 dot::trim() {
   local str="$1"
@@ -129,4 +156,42 @@ dot::trim() {
   str="${str%$needle}"
 
   echo "$str"
+}
+
+#
+# Edit a list of files in the default editor.
+#
+# usage: dot::edit [+<line>] <file>
+#
+dot::edit() {
+  (( $# > 0 )) || return
+
+  local editor="${EDITOR:-vim}"
+
+  local files=()
+  local line=0
+
+  for opt in "$@"; do
+    case "${opt}" in
+      +*) line="${opt##+}" ;;
+      *)  files+=("${opt}") ;;
+    esac
+  done
+
+  (( ${#files[@]} > 0 )) || return
+
+  case "${editor}" in
+    *vim)
+      ${editor} +"${line}" -- "${files[@]}"
+      ;;
+    atom)
+      ${editor} -n -- "${files[0]}:${line}" "${files[@]:1}"
+      ;;
+    code)
+      ${editor} -n -g "${files[0]}:${line}" -- "${files[@]:1}"
+      ;;
+    *)
+      ${editor} -- "${files[@]}"
+      ;;
+  esac
 }
