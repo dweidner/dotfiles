@@ -43,12 +43,12 @@ export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
 
 # (3) Command History --------------------------------------------------- {{{1
 
-export HISTSIZE=1000             # Number of lines saved in memory
-export HISTFILESIZE=$HISTSIZE    # Number of lines saved in file
-export HISTTIMEFORMAT="%F %T%t"  # Distinguish history lines by date/time
-export HISTCONTROL=ignoredups    # Ignore duplicates
-export HISTIGNORE="ls:cd:cd -"   # Ignore simple directory commands
-export SAVEHIST=$SAVEHIST        # Enable/disable the command history
+export HISTSIZE=1000                # Number of lines saved in memory
+export HISTFILESIZE=$HISTSIZE       # Number of lines saved in file
+export HISTTIMEFORMAT="%F %T%t"     # Distinguish history lines by date
+export HISTCONTROL=ignoredups       # Ignore duplicates
+export HISTIGNORE="ls:ll:cd:cd -"   # Ignore simple directory commands
+export SAVEHIST=$SAVEHIST           # Enable/disable the command history
 
 
 # (4) Pagers ------------------------------------------------------------ {{{1
