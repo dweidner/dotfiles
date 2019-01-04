@@ -53,15 +53,15 @@ alias tl="tmux list-sessions"
 # (5) List directory contents ------------------------------------------- {{{1
 
 # Test whether the ls command supports a given option
-ls_supports() {
+dot::ls_supports() {
   command ls "$@" >/dev/null 2>&1
 }
 
 declare -a ls_options
 
-if ls_supports --color=auto; then
+if dot::ls_supports --color=auto; then
   ls_options+=( --color=auto )
-elif ls_supports -G; then
+elif dot::ls_supports -G; then
   ls_options+=( -G )
 fi
 
@@ -79,13 +79,13 @@ alias t="tree -a --noreport --dirsfirst -I '.git|node_modules|.DS_Store'"
 # (6) File pattern searching -------------------------------------------- {{{1
 
 # Test whether grep supports a given option
-grep_supports() {
+dot::grep_supports() {
   grep "$1" "?" >/dev/null 2>&1 <(echo "?" 2>&1)
 }
 
 declare -a grep_options
 
-if grep_supports --color=auto; then
+if dot::grep_supports --color=auto; then
   grep_options+=( --color=auto )
 fi
 
