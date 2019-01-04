@@ -188,6 +188,31 @@ fgd() {
 }
 
 #
+# Browse and fetch gitignore templates from a public API endpoint.
+#
+# usage: fgi [<query>]
+#
+fgi() {
+  local url="${GITIGNORE_URL:-https://www.gitignore.io/api}"
+  local templates=()
+
+  while read -r item; do templates+=("${item}"); done < <(
+    curl -L -s "${url}/list" \
+      | tr "," "\n" \
+      | fzf \
+          --query "${1}" \
+          --multi \
+          --preview "curl -L -s ${url}/{}"
+  )
+
+  (( ${#templates[@]} > 0 )) || return
+
+  curl -L -s "${url}/$(tr " " "," <<< "${templates[*]}")" \
+    | tail -n +5 \
+    | sed '$d'
+}
+
+#
 # Browse the git commit history.
 #
 # usage: fgl
