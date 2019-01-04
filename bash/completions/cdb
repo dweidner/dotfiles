@@ -1,0 +1,19 @@
+# bash/completions/cdb
+#
+# @file Enable completion for the cdb function
+
+_complete_bookmark_directories() {
+  local count="${#COMPREPLY[@]}"
+
+  local cur
+  _get_comp_words_by_ref cur
+
+  while IFS=$'\n' read -r dir; do
+    COMPREPLY[count++]="${dir}"
+  done < <(bookmark find -type d "${cur}")
+}
+
+complete -F _complete_bookmark_directories -o nospace cdb
+
+# vim:filetype=sh
+
