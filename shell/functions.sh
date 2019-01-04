@@ -74,29 +74,6 @@ cdr() {
 }
 
 #
-# Display log output for a given service.
-#
-# usage: dcl [<service>]
-#
-dcl() {
-  local name="${1}"
-
-  if [[ -z "${name}" ]]; then
-    docker-compose logs -f --tail 100
-    return
-  fi
-
-  local id
-  id="$(docker-compose ps -q "${name}" 2>/dev/null)"
-
-  if [[ -z "${id}" ]]; then
-    return
-  fi
-
-  docker logs --follow --since 1h "${id}"
-}
-
-#
 # Find files whose name matches a given pattern.
 #
 # usage: ff <pattern>

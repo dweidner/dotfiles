@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+#
+# Display log output for a given service using docker compose.
+#
+# usage: dcl [<service>]
+#
+dcl() {
+  (( $# > 0 )) || docker-compose logs -follow --tail 60
+
+  local service="$*"
+  local id="${service}"
+
+  id="$(docker-compose ps -q "${service}" 2>/dev/null)" || return
+
+  docker logs --follow --tail 60 "${id}"
+}
+
+dcl "$@"
