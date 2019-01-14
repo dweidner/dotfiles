@@ -1083,8 +1083,11 @@ update_python_packages() {
     return 0
   fi
 
-  pip3 install --upgrade "${outdated}" \
-    && print_success "Upgraded outdated python packages."
+  while read -r package; do
+    pip3 install --upgrade "${package}"
+  done <<< "${outdated}"
+
+  print_success "Upgraded outdated python packages."
 }
 
 #
@@ -1110,9 +1113,11 @@ update_rvm() {
   fi
 
   print_message "Upgrading Ruby Version Manager from version ${version} to ${latest} …"
+
   rvm get head
   rvm reload
   rvm get stable
+
   print_success "Upgraded Ruby Version Manager to version ${latest}."
 }
 
