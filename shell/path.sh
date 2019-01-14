@@ -21,7 +21,7 @@
 # usage: path [<path>]
 #
 dot::path() {
-  echo "${1:-$PATH}" | while read -rd: dir; do
+  echo "${1:-$PATH}:" | while read -rd: dir; do
     echo "${dir}"
   done
 }
