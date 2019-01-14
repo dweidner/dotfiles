@@ -20,7 +20,7 @@
 export FZF_DIR="/usr/local/opt/fzf"
 
 if [[ -d "${FZF_DIR}/bin" ]]; then
-  dot::path_add "${FZF_DIR}/bin"
+  PATH="${PATH}:${FZF_DIR}/bin"
 fi
 
 if [[ -s "${FZF_DIR}/shell/completion.bash" ]]; then
