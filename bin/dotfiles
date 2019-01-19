@@ -1211,9 +1211,6 @@ cleanup_homebrew() {
 
   print_message "Removing old versions of installed formulae …"
   brew cleanup
-
-  print_message "Removing dead symlinks …"
-  brew prune
 }
 
 #
