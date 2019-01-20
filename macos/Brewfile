@@ -79,11 +79,12 @@ cask 'quicklook-csv'
 cask 'font-fira-code'
 cask 'font-source-code-pro'
 
-mas 'Amphetamine', id: 937984704
-mas 'Magnet', id: 441258766
-mas 'Things3', id: 904280696
 mas 'Affinity Designer', id: 824171161
 mas 'Affinity Photo', id: 824183456
+mas 'Amphetamine', id: 937984704
+mas 'Gestimer', id: 990588172
+mas 'Magnet', id: 441258766
+mas 'Things3', id: 904280696
 
 
 
