@@ -58,6 +58,9 @@
 	dt = !"for name in $(git diff --name-only $1); do git difftool $1 $name & done"
 	df = !"git diff --color \"$@\" | diff-so-fancy | less --tabs=4 -FRX"
 
+        # git subtree
+        st = subtree
+
 	# git grep
 	gg = grep --break --heading --line-number
 
