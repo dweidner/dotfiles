@@ -1,7 +1,5 @@
 psy/psysh
 squizlabs/php_codesniffer:^3
 phpmd/phpmd
-wp-cli/wp-cli
 wp-coding-standards/wpcs
-drush/drush
 drupal/coder
