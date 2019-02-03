@@ -561,6 +561,7 @@ setup() {
       "tpm"
       "tmux_plugins"
       "phpcs"
+      "icloud"
     )
   fi
 
@@ -875,6 +876,32 @@ setup_phpcs() {
   path="$(sed -e 's/^,*//g' -e 's/,*$//g' <<< "${path}")"
 
   silent phpcs --config-set installed_paths "${path}"
+}
+
+#
+# Setup a symlink for the iCloud Drive.
+#
+# On macOS the iCloud Drive is hidden in an obscure directory within a users
+# Library. To make more accessible from the command line this will create a
+# symlink that will be hidden from Finder by default.
+#
+setup_icloud() {
+  is_mac || return
+
+  print_message "Creating a hidden symlink to iCloud Drive…"
+
+  # Create symlink if it does not already exist.
+  if [[ ! -L "${HOME}/iCloud" ]];then
+    ln -s \
+      "${HOME}/Library/Mobile Documents/com~apple~CloudDocs" \
+      "${HOME}/iCloud"
+  fi
+
+  # Hide the directory in Finder.app
+  #
+  # -P = Perform action on symlink instead of following it
+  # -a = Change file attribute
+  SetFile -P -a V "${HOME}/iCloud"
 }
 
 # (e) Update Command ---------------------------------------------------- {{{2
