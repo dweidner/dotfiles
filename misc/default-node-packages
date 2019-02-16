@@ -1,6 +1,7 @@
 eslint
-stylelint
+prettier
 jsonlint
+stylelint
 neovim
 imagemin-cli
 svgo
