@@ -6,7 +6,7 @@
 # (1) Python Package Manager -------------------------------------------- {{{1
 
 if dot::command_exists "pip"; then
-  eval "$(pip completion --bash)"
+  eval "$(pip -qq --disable-pip-version-check completion --bash)"
 fi
 
 
