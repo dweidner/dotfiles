@@ -77,7 +77,11 @@ cask 'qlstephen'
 cask 'quicklook-json'
 cask 'quicklook-csv'
 
+cask 'font-charter'
+cask 'font-fira-sans'
 cask 'font-fira-code'
+cask 'font-ibm-plex'
+cask 'font-source-serif-pro'
 cask 'font-source-code-pro'
 
 mas 'Affinity Designer', id: 824171161
