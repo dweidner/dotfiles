@@ -16,6 +16,6 @@ alias preview="open -a Preview"          # Display a preview of any file
 alias ql="qlmanage -p >/dev/null 2>&1"   # Open a file in quick look
 
 alias dce="docker-compose exec"          # Run a command in a given service
-alias dcr="docker-compose restart"       # Restart a given service
+alias dcr="docker-compose run --rm"      # Run a one off command in a container
 alias dcu="docker-compose up -d --build" # Build, start and attach to a service
 alias dcd="docker-compose down"          # Stop and remove containers
