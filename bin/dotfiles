@@ -926,6 +926,7 @@ update() {
       "php_packages"
       "python_packages"
       "rvm"
+      "ruby"
       "gems"
       "tpm"
       "tmux_plugins"
@@ -1131,7 +1132,7 @@ update_rvm() {
   version="$(rvm -v | cut -d ' ' -f 2)"
 
   local latest
-  latest="$(curl -s --fail --location https://github.com/rvm/rvm/raw/master/VERSION)"
+  latest="$(curl -s --fail --location https://github.com/rvm/rvm/raw/stable/VERSION)"
 
   wait
 
@@ -1142,11 +1143,43 @@ update_rvm() {
 
   print_message "Upgrading Ruby Version Manager from version ${version} to ${latest} …"
 
-  rvm get head
-  rvm reload
   rvm get stable
 
   print_success "Upgraded Ruby Version Manager to version ${latest}."
+}
+
+#
+# Update the current ruby version.
+#
+update_ruby() {
+  require_rvm || return 1
+  function_exists "rvm" || return 1
+
+  print_message "Updating ruby …"
+
+  local version
+  version="$(rvm list default string | grep -oE "\d{1,2}\.\d{1,2}(\.\d{1,2})?$" | tail -n1)"
+
+  local latest
+  latest="$(rvm list known | grep "^\[ruby-]" | grep -oE "\d{1,2}\.\d{1,2}((\.\d{1,2})|(\[\.\d{1,2}\]))?" | tr -d [] | tail -n1)"
+
+  wait
+
+  if [[ "${version}" == "${latest}" ]]; then
+    print_success "Ruby is already up-to-date."
+    return 0
+  fi
+
+  print_message "Upgrading ruby from version ${version} to ${latest} …"
+  rvm install "${latest}" & wait
+  rvm alias create latest "${latest}" & wait
+  print_success "Upgraded ruby to version ${latest}."
+
+  if confirm "Do you want to use version ${latest} of ruby as your default?"; then
+    rvm alias create default "${latest}"
+    nvm default
+    print_success "Using version ${latest} of ruby as your new default."
+  fi
 }
 
 #
