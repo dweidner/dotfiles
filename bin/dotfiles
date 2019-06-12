@@ -624,11 +624,11 @@ setup_symlinks() {
   symlink "vim/plugin"                   "${XDG_CONFIG_HOME}/nvim/plugin"
   symlink "vim/autoload"                 "${XDG_CONFIG_HOME}/nvim/autoload"
   symlink "tmux/tmux.conf"               "${XDG_CONFIG_HOME}/tmux/tmux.conf"
-  symlink "misc/default-node-packages"   "${XDG_CONFIG_HOME}/nvm/default-packages"
-  symlink "misc/gemrc"                   "${XDG_CONFIG_HOME}/gem/gemrc"
+  symlink "ruby/gemrc"                   "${XDG_CONFIG_HOME}/gem/gemrc"
+  symlink "node/default-packages"        "${XDG_CONFIG_HOME}/nvm/default-packages"
   symlink "misc/ctags"                   "${HOME}/.ctags"
-  symlink "misc/ignore"                  "${HOME}/.ignore"
   symlink "misc/editorconfig"            "${HOME}/.editorconfig"
+  symlink "misc/ignore"                  "${HOME}/.ignore"
   symlink "misc/tern-config"             "${HOME}/.tern-config"
   copy    "git/config"                   "${XDG_DATA_HOME}/git/config"
 
@@ -747,7 +747,7 @@ setup_node_packages() {
     if [[ "${package}" != "yo" ]] && [[ "${package}" != "eslint" ]]; then
       npm install --global --production "${package}"
     fi
-  done < "${DOTFILES}/misc/default-node-packages"
+  done < "${DOTFILES}/node/default-packages"
 }
 
 #
@@ -781,7 +781,7 @@ setup_php_packages() {
     else
       cgr --stability RC "${name}"
     fi
-  done < "${DOTFILES}/misc/default-php-packages"
+  done < "${DOTFILES}/php/default-packages"
 }
 
 #
@@ -794,10 +794,7 @@ setup_python_packages() {
   pip3 install --upgrade pip
 
   print_message "Installing python packages …"
-
-  while read -r package; do
-    pip3 install --upgrade "${package}"
-  done < "${DOTFILES}/misc/default-python-packages"
+  pip3 install --upgrade --requirement "${DOTFILES}/python/requirements.txt"
 }
 
 #
@@ -821,7 +818,7 @@ setup_gems() {
 
   while read -r name; do
     rvm @global do gem install "${name}"
-  done < "${DOTFILES}/misc/default-gems"
+  done < "${DOTFILES}/ruby/default-gems"
 }
 
 #
@@ -1112,9 +1109,9 @@ update_python_packages() {
     return 0
   fi
 
-  while read -r package; do
-    pip3 install --upgrade "${package}"
-  done <<< "${outdated}"
+  pip3 install --upgrade setuptools
+  pip3 install --upgrade pip
+  pip3 install --upgrade --requirement "${DOTFILES}/python/requirements.txt"
 
   print_success "Upgraded outdated python packages."
 }
