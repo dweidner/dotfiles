@@ -633,9 +633,9 @@ setup_symlinks() {
   copy    "git/config"                   "${XDG_DATA_HOME}/git/config"
 
   if is_mac; then
-    symlink "macos/Brewfile"             "${HOME}/.Brewfile"
-    symlink "macos/hushlogin"            "${HOME}/.hushlogin"
-    symlink "macos/launchd/status.plist" "${HOME}/Library/LaunchAgents/de.dweidner.dotfiles.status.plist"
+    symlink "mac/Brewfile"             "${HOME}/.Brewfile"
+    symlink "mac/hushlogin"            "${HOME}/.hushlogin"
+    symlink "mac/launchd/status.plist" "${HOME}/Library/LaunchAgents/de.dweidner.dotfiles.status.plist"
   fi
 }
 
