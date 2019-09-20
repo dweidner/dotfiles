@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+#
+# Reset the spotlight index for a given volume. Requires administration
+# privileges.
+#
+# usage: mdreset [<volume>]
+#
+mdreset() {
+  local path="${1:-/}"
+
+  if [[ -d "/Volumes/${path}" ]]; then
+    path="/Volumes/${path}"
+  fi
+
+  if [[ -d "${path}" ]]; then
+    sudo mdutil -E "${path}"
+  fi
+}
+
+mdreset "$@"
