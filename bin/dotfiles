@@ -1155,10 +1155,10 @@ update_ruby() {
   print_message "Updating ruby …"
 
   local version
-  version="$(rvm list default string | grep -oE "\d{1,2}\.\d{1,2}(\.\d{1,2})?$" | tail -n1)"
+  version="$(rvm list default string | grep -oE "\d{1,2}\.\d{1,2}(\.\d{1,2}(-[a-z0-9]+)?)?" | tail -n1)"
 
   local latest
-  latest="$(rvm list known | grep "^\[ruby-]" | grep -oE "\d{1,2}\.\d{1,2}((\.\d{1,2})|(\[\.\d{1,2}\]))?" | tr -d [] | tail -n1)"
+  latest="$(rvm list known | grep "^\[ruby-]" | grep -oE "\d{1,2}\.\d{1,2}((\.\d{1,2})|(\[\.\d{1,2}(-[a-z0-9]+)?\]))?" | tr -d [] | tail -n1)"
 
   wait
 
@@ -1174,7 +1174,7 @@ update_ruby() {
 
   if confirm "Do you want to use version ${latest} of ruby as your default?"; then
     rvm alias create default "${latest}"
-    nvm default
+    rvm use default
     print_success "Using version ${latest} of ruby as your new default."
   fi
 }
