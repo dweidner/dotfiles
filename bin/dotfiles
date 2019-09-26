@@ -617,6 +617,7 @@ setup_symlinks() {
   symlink "readline/inputrc"             "${XDG_CONFIG_HOME}/readline/inputrc"
   symlink "git/commitmsg"                "${XDG_CONFIG_HOME}/git/commitmsg"
   symlink "git/ignore"                   "${XDG_CONFIG_HOME}/git/ignore"
+  symlink "git/aliases"                  "${XDG_CONFIG_HOME}/git/aliases"
   symlink "git/template"                 "${XDG_CONFIG_HOME}/git/template"
   symlink "vim/"                         "${HOME}/.vim"
   symlink "vim/nvimrc"                   "${XDG_CONFIG_HOME}/nvim/init.vim"
