@@ -49,8 +49,6 @@ brew 'terminal-notifier'
 
 # (3) Applications -------------------------------- {{{1
 
-cask_args appdir: '~/Applications'
-
 cask '1password'
 cask 'alfred'
 cask 'bartender'
@@ -84,11 +82,16 @@ cask 'font-ibm-plex'
 cask 'font-source-serif-pro'
 cask 'font-source-code-pro'
 
+mas '1Password', id: 1333542190
 mas 'Affinity Designer', id: 824171161
 mas 'Affinity Photo', id: 824183456
 mas 'Amphetamine', id: 937984704
 mas 'Gestimer', id: 990588172
+mas 'iA Writer', id: 77573759
 mas 'Magnet', id: 441258766
+mas 'Marked 2', id: 890031187
+mas 'Pixelmator', id: 407963104
+mas 'Reeder 3', id: 880001334
 mas 'Things3', id: 904280696
 
 
