@@ -177,6 +177,33 @@ get_end_of_week() {
 }
 
 #
+# Change the time of the given date object.
+#
+# usage: set_time <date> [<hours>] [<minutes>] [<seconds>]
+#
+set_time() {
+  date -r "$(get_timestamp "${1}")" -v "${2:-0}H" -v "${3:-0}M" -v "${4:-0}S" "+%s"
+}
+
+#
+# Add one day to the given date.
+#
+# usage: add_day <date>
+#
+add_day() {
+  add_days "${1}" 1
+}
+
+#
+# Add the given number of days to the date.
+#
+# usage: add_days <date> [<count>]
+#
+add_days() {
+  date -r "$(get_timestamp "${1}")" -v "+${2:-0}d" "+%s"
+}
+
+#
 # Add one week to the given date.
 #
 # usage: add_week <date>
@@ -195,12 +222,39 @@ add_weeks() {
 }
 
 #
-# Change the time of the given date object.
+# Subtract one day from the given date.
 #
-# usage: set_time <date> [<hours>] [<minutes>] [<seconds>]
+# usage: sub_day <date>
 #
-set_time() {
-  date -r "$(get_timestamp "${1}")" -v "${2:-0}H" -v "${3:-0}M" -v "${4:-0}S" "+%s"
+sub_day() {
+  sub_days "${1}" 1
+}
+
+#
+# Subtract the given number of days from the date.
+#
+# usage: sub_days <date> [<count>]
+#
+sub_days() {
+  date -r "$(get_timestamp "${1}")" -v "-${2:-0}d" "+%s"
+}
+
+#
+# Subtract one week from the given date.
+#
+# usage: sub_week <date>
+#
+sub_week() {
+  sub_weeks "${1}" 1
+}
+
+#
+# Subtract the given number of weeks from the date.
+#
+# usage: sub_weeks <date> [<count>]
+#
+sub_weeks() {
+  date -r "$(get_timestamp "${1}")" -v "-${2:-0}w" "+%s"
 }
 
 #
@@ -337,6 +391,7 @@ parse_timespan() {
     if is_integer "${1}"; then
       from="$(get_start_of_week "${year}" "${1}")"
       to="$(add_week "${from}")"
+      to="$(sub_day "${to}")"
     else
       from="$(get_timestamp "${1}")"
       to="${from}"
@@ -344,6 +399,7 @@ parse_timespan() {
   else
     from="$(get_start_of_week)"
     to="$(add_week "${from}")"
+    to="$(sub_day "${to}")"
   fi
 
   printf "%s\n%s\n" \
