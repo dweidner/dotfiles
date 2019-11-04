@@ -42,11 +42,9 @@ elif [[ -r "/etc/bash_completion" ]]; then
   source "/etc/bash_completion"
 fi
 
-# Load bash completion bundle installed via homebrew
-if (( BASH_VERSINFO[0] >= 4 )); then
-  if [[ -r "${HOMEBREW_PREFIX}/share/bash-completion/bash_completion" ]]; then
-    source "${HOMEBREW_PREFIX}/share/bash-completion/bash_completion"
-  fi
+# Load bash completion installed via homebrew
+if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]; then
+  source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
 fi
 
 

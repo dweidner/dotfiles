@@ -19,13 +19,11 @@
 
 # (1) Global Variables -------------------------------------------------- {{{1
 
-readonly SCRIPT_DIR="$(dirname "$0")"
-
 XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
 XDG_DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
 
-DOTFILES="${DOTFILES:-$(dirname "$SCRIPT_DIR")}"
+DOTFILES="${DOTFILES:-${XDG_CONFIG_HOME}/dotfiles}"
 NVM_DIR="${NVM_DIR:-${XDG_DATA_HOME}/nvm}"
 RVM_PATH="${RVM_PATH:-${XDG_DATA_HOME}/rvm}"
 TPM_PATH="${TPM_PATH:-${XDG_DATA_HOME}/tmux/plugins/tpm}"
@@ -590,6 +588,7 @@ setup_symlinks() {
     "${XDG_CACHE_HOME}/vim"
     "${XDG_DATA_HOME}"
     "${XDG_DATA_HOME}/bash"
+    "${XDG_DATA_HOME}/bash-completion"
     "${XDG_DATA_HOME}/bundle"
     "${XDG_DATA_HOME}/bundle/plugin"
     "${XDG_DATA_HOME}/dotfiles"
