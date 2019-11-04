@@ -146,7 +146,7 @@ endfunction
 " @return {Boolean}
 "
 function! dw#IsLoaded(plugin) abort
-  return has_key(g:plugs, a:plugin) && stridx(&rtp, g:plugs[a:plugin].dir) >= 0
+  return has_key(g:plugs, a:plugin) && stridx(&rtp, dw#Rtrim(g:plugs[a:plugin].dir, '/')) >= 0
 endfunction
 
 
@@ -239,7 +239,39 @@ endfunction
 " @param {String} str
 " @return {Boolean}
 "
-function! dw#Trim(str) abort
+function! dw#Trim(str, ...) abort
+  if a:0 > 0
+    return substitute(a:str, '\V\^' . escape(a:2, '/\') . '\*\(\.\{-\}\)' . escape(a:2, '/\'). '\*\$', '\1', '')
+  endif
+
+  return substitute(a:str, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
+endfunction
+
+"
+" Remove whitespace from the beginning of a string.
+"
+" @param {String} str
+" @return {Boolean}
+"
+function! dw#Ltrim(str, ...) abort
+  if a:0 > 0
+    return substitute(a:str, '\V\^' . escape(a:1, '/\') . '\*', '', '')
+  endif
+
+  return substitute(a:str, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
+endfunction
+
+"
+" Remove whitespace from the end of a string.
+"
+" @param {String} str
+" @return {Boolean}
+"
+function! dw#Rtrim(str, ...) abort
+  if a:0 > 0
+    return substitute(a:str, '\V' . escape(a:1, '/\') . '\*\$', '', '')
+  endif
+
   return substitute(a:str, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
 endfunction
 
