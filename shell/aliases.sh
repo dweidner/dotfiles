@@ -67,6 +67,7 @@ fi
 
 alias ls="command ls ${ls_options[*]}"
 
+alias l1="ls -1"    # Short list, one entry per row
 alias ll="ls -lhF"  # Long list, human readable sizes
 alias la="ll -A"    # Long list including hidden files
 alias lt="ll -t"    # By date, most recent first
