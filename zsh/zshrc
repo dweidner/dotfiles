@@ -1,0 +1,49 @@
+# zsh/zshrc
+#
+# @file Configuration file sourced on interactive shells
+#
+# -----------------------------------------------------------------------
+# Table of Contents
+# -----------------------------------------------------------------------
+# 1. Global functions and aliases
+# 2. Setup environment and tools
+# 3. Zsh settings
+# 4. Local configuration
+# -----------------------------------------------------------------------
+
+
+# (1) Global functions and aliases -------------------------------------- {{{1
+
+DOTFILES="${DOTFILES:-$HOME/.config/dotfiles}"
+
+source "${DOTFILES}/shell/variables.sh"
+source "${DOTFILES}/shell/path.sh"
+source "${DOTFILES}/shell/utilities.sh"
+source "${DOTFILES}/shell/functions.sh"
+source "${DOTFILES}/shell/aliases.sh"
+
+
+# (2) Setup environments and tools -------------------------------------- {{{1
+
+source "${DOTFILES}/shell/node.sh"
+source "${DOTFILES}/shell/php.sh"
+source "${DOTFILES}/shell/ruby.sh"
+source "${DOTFILES}/shell/python.sh"
+
+
+# (3) Zsh settings ----------------------------------------------------- {{{1
+
+source "${DOTFILES}/zsh/plugins.zsh"
+source "${DOTFILES}/zsh/options.zsh"
+source "${DOTFILES}/zsh/completion.zsh"
+source "${DOTFILES}/zsh/keybindings.zsh"
+
+
+# (4) Local configuration ----------------------------------------------- {{{1
+
+if [[ -r "${HOME}/.local/zshrc" ]]; then
+  source "${HOME}/.local/zshrc"
+fi
+
+
+# vim:filetype=zsh:foldmethod=marker:foldlevel=2
