@@ -586,6 +586,7 @@ setup_symlinks() {
     "${XDG_CACHE_HOME}/npm"
     "${XDG_CACHE_HOME}/nvim"
     "${XDG_CACHE_HOME}/vim"
+    "${XDG_CACHE_HOME}/zsh"
     "${XDG_DATA_HOME}"
     "${XDG_DATA_HOME}/bash"
     "${XDG_DATA_HOME}/bash-completion"
@@ -611,6 +612,7 @@ setup_symlinks() {
 
   print_message "Creating symlinks …"
 
+  symlink "zsh/zshrc"                    "${HOME}/.zshrc"
   symlink "bash/bash_profile"            "${HOME}/.bash_profile"
   symlink "bash/bashrc"                  "${HOME}/.bashrc" 
   symlink "bash/completions"             "${XDG_DATA_HOME}/bash-completion/completions"
