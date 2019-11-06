@@ -4,8 +4,7 @@
 
 
 export DOTFILES_OS="Darwin"
-
-export CLICOLORS=1
+export DOTFILES_THEME="One Light"
 
 export HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-/usr/local}"
 
