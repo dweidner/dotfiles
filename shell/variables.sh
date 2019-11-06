@@ -37,9 +37,6 @@ export LC_MEASUREMENT="de_DE.UTF-8"
 [[ -z "$XDG_DOCUMENTS_DIR" ]]   && export XDG_DOCUMENTS_DIR="${HOME}/Documents"
 [[ -z "$XDG_DOWNLOAD_DIR" ]]    && export XDG_DOWNLOAD_DIR="${HOME}/Downloads"
 
-export DOTFILES="${XDG_CONFIG_HOME}/dotfiles"
-export INPUTRC="${XDG_CONFIG_HOME}/readline/inputrc"
-
 
 # (3) Command History --------------------------------------------------- {{{1
 
@@ -94,10 +91,8 @@ export BUNDLE_USER_CACHE="${XDG_CACHE_HOME}/bundle"
 
 # (7) Shell-specific ---------------------------------------------------- {{{1
 
-case "$SHELL" in
-  */bash) export HISTFILE="${XDG_DATA_HOME}/bash/history" ;;
-  */zsh)  export HISTFILE="${XDG_DATA_HOME}/zsh/history" ;;
-esac
+[[ -n "$BASH_VERSION" ]] && source "${DOTFILES}/shell/variables-bash.sh"
+[[ -n "$ZSH_VERSION" ]]  && source "${DOTFILES}/shell/variables-zsh.sh"
 
 
 # (8) OS-specific ------------------------------------------------------- {{{1
