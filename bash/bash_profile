@@ -2,11 +2,6 @@
 #
 # @file Configuration file sourced on login shells
 
-DOTFILES="${DOTFILES:-$HOME/.config/dotfiles}"
-
-source "${DOTFILES}/shell/variables.sh"
-source "${DOTFILES}/shell/path.sh"
-
 [[ -r "${HOME}/.bashrc" ]] && source "${HOME}/.bashrc"
 
 # vim:filetype=sh

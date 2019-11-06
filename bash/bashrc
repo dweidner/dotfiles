@@ -1,3 +1,5 @@
+[[ $- = *i* ]] || return
+
 # bash/bashrc
 #
 # @file Configuration file sourced on interactive shells
@@ -12,22 +14,18 @@
 # -----------------------------------------------------------------------
 
 
-[[ $- = *i* ]] || return
-
-
 # (1) Global functions and aliases -------------------------------------- {{{1
 
-if [[ -z "${DOTFILES}" ]]; then
-  source "${DOTFILES}/shell/variables.sh"
-  source "${DOTFILES}/shell/path.sh"
-fi
+DOTFILES="${DOTFILES:-$HOME/.config/dotfiles}"
 
+source "${DOTFILES}/shell/variables.sh"
+source "${DOTFILES}/shell/path.sh"
 source "${DOTFILES}/shell/utilities.sh"
 source "${DOTFILES}/shell/functions.sh"
 source "${DOTFILES}/shell/aliases.sh"
 
 
-# (2) Setup environment and tools --------------------------------------- {{{1
+# (2) Setup environments and tools -------------------------------------- {{{1
 
 source "${DOTFILES}/shell/node.sh"
 source "${DOTFILES}/shell/php.sh"
