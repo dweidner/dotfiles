@@ -600,6 +600,7 @@ setup_symlinks() {
     "${XDG_DATA_HOME}/vim/backup"
     "${XDG_DATA_HOME}/vim/swap"
     "${XDG_DATA_HOME}/vim/undo"
+    "${XDG_DATA_HOME}/zsh"
   )
 
   print_message "Creating directories …"
