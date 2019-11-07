@@ -48,6 +48,16 @@ confirm() {
 }
 
 #
+# Return the canonical path of the specified filename, eliminating any symbolic
+# links encountered in the path
+#
+# usage: realpath <path>
+#
+realpath() {
+  python -c "import os,sys; print os.path.realpath(*(sys.argv[1:]))" "$@"
+}
+
+#
 # Add a new bookmark to the list.
 #
 # usage: add_bookmark [<path>]
