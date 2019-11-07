@@ -12,8 +12,3 @@ Overview of default and custom key bindings in **BASH**.
 `Ctrl` + `x` `Ctrl` + `u` - Undo  
 
 `Alt` + `.` - Insert last argument of the previous command (same as `!$`)  
-
-`Ctrl` + `x` `g` - List pattern matches in menu  
-`Ctrl` + `x` `s` - Show the working tree status in short format¹  
-`Ctrl` + `x` `f` - Execute current command and pipe the output through fzf¹  
-`Ctrl` + `x` `l` - Execute current command and pipe the output through less¹  
