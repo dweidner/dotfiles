@@ -1,34 +1,35 @@
-# bash/fzf.sh
+# shell/fzf.sh
 #
 # @file Load command-line fuzzy finder
 #
 # -----------------------------------------------------------------------
 # Table of Contents
 # -----------------------------------------------------------------------
-# 1. Setup FZF
+# 1. FZF Setup
 # 2. FZF Configuration
-# 3. FZF functions
-# 4. FZF completions
+# 3. FZF Functions
 # -----------------------------------------------------------------------
 
 
 [[ -d "/usr/local/opt/fzf" ]] || return
 
 
-# (1) Setup FZF --------------------------------------------------------- {{{1
+# (1) FZF Setup --------------------------------------------------------- {{{1
 
 export FZF_DIR="/usr/local/opt/fzf"
 
-if [[ -d "${FZF_DIR}/bin" ]]; then
+if [[ ! "${PATH}" == *"${FZF_DIR}/bin"* ]]; then
   PATH="${PATH}:${FZF_DIR}/bin"
 fi
 
-if [[ -s "${FZF_DIR}/shell/completion.bash" ]]; then
+if [[ "${SHELL_NAME}" == "bash" ]]; then
   source "${FZF_DIR}/shell/completion.bash"
+  source "${FZF_DIR}/shell/key-bindings.bash"
 fi
 
-if [[ -s "${FZF_DIR}/shell/key-bindings.bash" ]]; then
-  source "${FZF_DIR}/shell/key-bindings.bash"
+if [[ "${SHELL_NAME}" == "zsh" ]]; then
+  source "${FZF_DIR}/shell/completion.zsh"
+  source "${FZF_DIR}/shell/key-bindings.zsh"
 fi
 
 
@@ -97,7 +98,7 @@ export FZF_CTRL_T_PREVIEW="[[ \$(file --mime {}) =~ binary ]] && file -b {} || $
 export FZF_CTRL_T_OPTS="--preview '${FZF_CTRL_T_PREVIEW}'"
 
 
-# (3) FZF functions ----------------------------------------------------- {{{1
+# (3) FZF Functions ----------------------------------------------------- {{{1
 
 #
 # Open a selected file/directory from the bookmark list.
@@ -105,9 +106,9 @@ export FZF_CTRL_T_OPTS="--preview '${FZF_CTRL_T_PREVIEW}'"
 # usage: fb [<query>]
 #
 fb() {
-  local path
+  local bookmark
 
-  path="$(
+  bookmark="$(
     bookmark list \
       | fzf \
           --query="${1}" \
@@ -116,10 +117,10 @@ fb() {
           --preview "[[ -d {} ]] && ${FZF_DEFAULT_DIR_PREVIEW} || ${FZF_DEFAULT_FILE_PREVIEW}"
   )"
 
-  if [[ -f "${path}" ]]; then
-    dot::edit "${path}"
-  elif [[ -d "${path}" ]]; then
-   cd "${path}" || return
+  if [[ -f "${bookmark}" ]]; then
+    dot::edit "${bookmark}"
+  elif [[ -d "${bookmark}" ]]; then
+    cd "${bookmark}" || return
   fi
 }
 
@@ -277,19 +278,6 @@ frg() {
 
   dot::edit +"${head[1]:-0}" "${files[@]}"
 }
-
-
-# (4) FZF completions --------------------------------------------------- {{{1
-
-# Enable path completion for custom aliases
-for cmd in "b" "c" "d" "e"; do
-  complete -F _fzf_path_completion -o default -o bashdefault "${cmd}"
-done
-
-# Enable directory completion for custom commands
-for cmd in "pu" "tree"; do
-  complete -F _fzf_dir_completion -o nospace -o dirnames "${cmd}"
-done
 
 
 # vim:foldmethod=marker:foldlevel=2

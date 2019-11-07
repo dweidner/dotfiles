@@ -31,6 +31,7 @@ source "${DOTFILES}/shell/node.sh"
 source "${DOTFILES}/shell/php.sh"
 source "${DOTFILES}/shell/ruby.sh"
 source "${DOTFILES}/shell/python.sh"
+source "${DOTFILES}/shell/fzf.sh"
 
 
 # (3) Bash settings ----------------------------------------------------- {{{1
@@ -38,7 +39,6 @@ source "${DOTFILES}/shell/python.sh"
 source "${DOTFILES}/bash/options.sh"
 source "${DOTFILES}/bash/completion.sh"
 source "${DOTFILES}/bash/prompt.sh"
-source "${DOTFILES}/bash/fzf.sh"
 
 
 # (4) Local configuration ----------------------------------------------- {{{1

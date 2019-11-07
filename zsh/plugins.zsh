@@ -38,11 +38,9 @@ zplug "zsh-users/zsh-completions", from:"github"
 # (b) Tools ------------------------------------------------------------- {{{2
 #  |- bd: Jump back to a specific directory
 #  |- extract: Uncompress archive files
-#  |- fzf: A command-line fuzzy finder
 
 zplug "tarrasch/zsh-bd", from:"github"
 zplug "plugins/extract", from:"oh-my-zsh"
-zplug "plugins/fzf", from:"oh-my-zsh"
 
 # (c) Themes ------------------------------------------------------------ {{{2
 #  |- pure: Pretty, minimal and fast ZSH prompt

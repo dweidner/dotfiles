@@ -29,6 +29,7 @@ source "${DOTFILES}/shell/node.sh"
 source "${DOTFILES}/shell/php.sh"
 source "${DOTFILES}/shell/ruby.sh"
 source "${DOTFILES}/shell/python.sh"
+source "${DOTFILES}/shell/fzf.sh"
 
 
 # (3) Zsh settings ----------------------------------------------------- {{{1
