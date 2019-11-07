@@ -1,0 +1,11 @@
+#compdef cdr
+
+#
+# @file Enable completion for the cdr function
+#
+
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  return
+fi
+
+_path_files -/ -W "$(git rev-parse --show-toplevel)"

@@ -34,6 +34,11 @@ source "${DOTFILES}/shell/fzf.sh"
 
 # (3) Zsh settings ----------------------------------------------------- {{{1
 
+fpath=("${DOTFILES}/zsh/completions" $fpath)
+fpath=("${DOTFILES}/zsh/functions" $fpath)
+
+autoload -U compinit
+
 source "${DOTFILES}/zsh/plugins.zsh"
 source "${DOTFILES}/zsh/options.zsh"
 source "${DOTFILES}/zsh/completion.zsh"

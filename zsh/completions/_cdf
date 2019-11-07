@@ -1,0 +1,7 @@
+#compdef cdf
+
+#
+# @file Enable completion for the cdf function
+#
+
+_path_files -/ -W "$(printfd)"
