@@ -683,7 +683,7 @@ setup_formulae() {
 #
 setup_shell() {
   local path
-  path="$(command -v bash)"
+  path="$(command -v "${1:-zsh}")"
 
   if [[ ! -x "${path}" ]] || [[ "${SHELL}" == "${path}" ]]; then
     return 0
