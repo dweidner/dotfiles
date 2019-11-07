@@ -29,11 +29,15 @@ source "${ZPLUG_HOME}/init.zsh"
 #  |- zplug: Manage zplug itself like other packages
 #  |- async: Perform tasks asynchronously
 #  |- completions: Additional completion definitions
+#  |- autosuggestions: Fast/unobtrusive autosuggestions
+#  |- history-substring-search: History search using the up arrow
 
 zplug "zplug/zplug", hook-build:"zplug --self-manage"
 
 zplug "mafredri/zsh-async", from:"github"
 zplug "zsh-users/zsh-completions", from:"github"
+zplug "zsh-users/zsh-autosuggestions", from:"github"
+zplug "zsh-users/zsh-history-substring-search", from:"github"
 
 # (b) Tools ------------------------------------------------------------- {{{2
 #  |- bd: Jump back to a specific directory
@@ -55,11 +59,19 @@ zplug "denysdovhan/spaceship-prompt", from:"github", as:"theme", use:"spaceship.
 zplug check || zplug install
 zplug load
 
-# (a) FZF --------------------------------------------------------------- {{{2
+# (a) Autosuggestions --------------------------------------------------- {{{2
 
-export FZF_BASE="/usr/local/opt/fzf"
+export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+export ZSH_AUTOSUGGEST_USE_ASYNC=1
+export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=145"
 
-# (b) Pure Theme -------------------------------------------------------- {{{2
+# (b) History Search ---------------------------------------------------- {{{2
+
+export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="fg=black,bold"
+export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="fg=red"
+
+# (c) Pure Theme -------------------------------------------------------- {{{2
 
 export PURE_PROMPT_SYMBOL="${PROMPT_SYMBOL:-❯}"
 
@@ -67,7 +79,7 @@ zstyle ":prompt:pure:prompt:success" "${PROMPT_COLOR_SUCCESS:-magenta}"
 zstyle ":prompt:pure:prompt:error" "${PROMPT_COLOR_ERROR:-red}"
 zstyle ":prompt:pure:path" "${PROMPT_COLOR_PATH:-blue}"
 
-# (c) Spaceship Theme --------------------------------------------------- {{{2
+# (d) Spaceship Theme --------------------------------------------------- {{{2
 
 export SPACESHIP_CHAR_SYMBOL="${PROMPT_SYMBOL:-❯}"
 export SPACESHIP_CHAR_SUFFIX=" "
