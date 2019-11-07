@@ -269,6 +269,27 @@ symlink() {
 }
 
 #
+# Replace a given string in a template file.
+#
+# usage: template <file> [<search> <replace>]
+#
+template() {
+  local file="${1}"
+  shift
+
+  local search
+  local replace
+
+  while (( $# > 1 )); do
+    search="${1}"
+    replace="${2}"
+    shift 2
+
+    sed -i "" "s@${search}@${replace}@" "${file}"
+  done
+}
+
+#
 # Run a given silently.
 #
 # usage: run <command>
@@ -638,9 +659,13 @@ setup_symlinks() {
   copy    "git/config"             "${XDG_DATA_HOME}/git/config"
   copy    "mac/bookmarks"          "${XDG_DATA_HOME}/dotfiles/bookmarks"
 
+  template "${XDG_DATA_HOME}/dotfiles/bookmarks" \
+    "\${XDG_CONFIG_HOME}" "${XDG_CONFIG_HOME}" \
+    "\${HOME}" "${HOME}"
+
   if is_mac; then
-    symlink "mac/Brewfile"   "${HOME}/.Brewfile"
-    symlink "mac/hushlogin"  "${HOME}/.hushlogin"
+    symlink "mac/Brewfile"         "${HOME}/.Brewfile"
+    symlink "mac/hushlogin"        "${HOME}/.hushlogin"
   fi
 }
 
