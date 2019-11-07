@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 
 #
+# Return the canonical path of the specified filename, eliminating any symbolic
+# links encountered in the path
+#
+# usage: realpath <path>
+#
+realpath() {
+  python -c "import os,sys; print os.path.realpath(*(sys.argv[1:]))" "$@"
+}
+
+#
 # Recursively find all folders with a given name and exclude them from the
 # spotlight index. Requires reindexing.
 #
@@ -9,12 +19,12 @@
 mdignore() {
   # Parse command options.
   local depth=25
-  local path="."
+  local dir="."
 
   while true; do
     case "$1" in
       -d | --depth ) depth=$2; shift 2 ;;
-      -p | --path )  path="$2"; shift 2 ;;
+      -p | --path )  dir="$2"; shift 2 ;;
       -- )           shift; break ;;
       * )            break ;;
     esac
@@ -35,7 +45,7 @@ mdignore() {
   done
 
   # Search for the given directories and add the noindex file.
-  find "$(realpath "${path}")" \
+  find "$(realpath "${dir}")" \
     \( \
       -path "*/.*" \
       -or -path "*node_modules/*" \

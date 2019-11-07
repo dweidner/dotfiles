@@ -205,9 +205,9 @@ require_rvm() {
 # usage: prepare_path <path>
 #
 prepare_path() {
-  local path="${1}"
+  local src="${1}"
   local dir
-  dir="$(dirname "$path")"
+  dir="$(dirname "$src")"
 
   if [[ -d "${dir}" ]]; then
     return 0
@@ -682,21 +682,21 @@ setup_formulae() {
 # Change the user's shell.
 #
 setup_shell() {
-  local path
-  path="$(command -v "${1:-zsh}")"
+  local shell_path
+  shell_path="$(command -v "${1:-zsh}")"
 
-  if [[ ! -x "${path}" ]] || [[ "${SHELL}" == "${path}" ]]; then
+  if [[ ! -x "${shell_path}" ]] || [[ "${SHELL}" == "${shell_path}" ]]; then
     return 0
   fi
 
-  grep "${path}" /etc/shells >/dev/null 2>&1 || {
-    print_message "Adding '${path}' to /etc/shells"
-    sudo sh -c "echo ${path} >> /etc/shells"
+  grep "${shell_path}" /etc/shells >/dev/null 2>&1 || {
+    print_message "Adding '${shell_path}' to /etc/shells"
+    sudo sh -c "echo ${shell_path} >> /etc/shells"
   }
 
-  if confirm "Do you want to change the shell for the current user to '${path}'?"; then
-    sudo chsh -s "${path}" "${USER}" \
-      && print_success "Changed the user’s shell to '${path}'"
+  if confirm "Do you want to change the shell for the current user to '${shell_path}'?"; then
+    sudo chsh -s "${shell_path}" "${USER}" \
+      && print_success "Changed the user’s shell to '${shell_path}'"
   fi
 }
 
@@ -868,15 +868,18 @@ setup_phpcs() {
   local wpcs_path="${cgr_path}/wp-coding-standards/wpcs/vendor/wp-coding-standards/wpcs"
   local coder_path="${cgr_path}/drupal/coder/vendor/drupal/coder/coder_sniffer"
 
-  local path
-  path="$(phpcs --config-show | grep installed_paths | cut -d: -f2 | sed -e 's/^[[:space:]]*//g')"
+  local standards_path
+  standards_path="$(phpcs --config-show | grep installed_paths | cut -d: -f2 | sed -e 's/^[[:space:]]*//g')"
 
-  [[ -d "${wpcs_path}" ]]  && [[ ",${path}," != *",${wpcs_path},"* ]]  && path="${wpcs_path},${path}"
-  [[ -d "${coder_path}" ]] && [[ ",${path}," != *",${coder_path},"* ]] && path="${coder_path},${path}"
+  [[ -d "${wpcs_path}" ]]  && [[ ",${standards_path}," != *",${wpcs_path},"* ]]  \
+    && standards_path="${wpcs_path},${standards_path}"
 
-  path="$(sed -e 's/^,*//g' -e 's/,*$//g' <<< "${path}")"
+  [[ -d "${coder_path}" ]] && [[ ",${standards_path}," != *",${coder_path},"* ]] \
+    && standards_path="${coder_path},${standards_path}"
 
-  silent phpcs --config-set installed_paths "${path}"
+  standards_path="$(sed -e 's/^,*//g' -e 's/,*$//g' <<< "${standards_path}")"
+
+  silent phpcs --config-set installed_paths "${standards_path}"
 }
 
 #

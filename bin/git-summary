@@ -413,7 +413,7 @@ parse_timespan() {
 # usage: summary [<date>]
 #
 main() {
-  local path="${PROJECT_PATH:-"${HOME}/Sites:${HOME}/Projects"}"
+  local candidates="${PROJECT_PATH:-"${HOME}/Sites:${HOME}/Projects"}"
 
   local author
   author="$(get_user_name)"
@@ -442,7 +442,7 @@ main() {
         show_summary "${repository}" "${author}" "${from}" "${to}"
       fi
     done < <(get_repositories "${candidate}")
-  done <<< "${path}:"
+  done <<< "${candidates}:"
 }
 
 main "$@"

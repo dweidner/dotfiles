@@ -7,14 +7,14 @@
 # usage: mdreset [<volume>]
 #
 mdreset() {
-  local path="${1:-/}"
+  local volume_path="${1:-/}"
 
-  if [[ -d "/Volumes/${path}" ]]; then
-    path="/Volumes/${path}"
+  if [[ -d "/Volumes/${volume_path}" ]]; then
+    volume_path="/Volumes/${volume_path}"
   fi
 
-  if [[ -d "${path}" ]]; then
-    sudo mdutil -E "${path}"
+  if [[ -d "${volume_path}" ]]; then
+    sudo mdutil -E "${volume_path}"
   fi
 }
 
