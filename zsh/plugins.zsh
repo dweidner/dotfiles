@@ -48,8 +48,8 @@ zplug "plugins/fzf", from:"oh-my-zsh"
 #  |- pure: Pretty, minimal and fast ZSH prompt
 #  |- spaceship: A Zsh prompt for Astronauts
 
-zplug "sindresorhus/pure", from:"github", as:"theme", use:"pure.zsh"
-# zplug "denysdovhan/spaceship-prompt", from:"github", as:"theme", use:"spaceship.zsh"
+zplug "sindresorhus/pure", from:"github", as:"theme", use:"pure.zsh", if:"[[ \$SHELL_THEME = pure ]]"
+zplug "denysdovhan/spaceship-prompt", from:"github", as:"theme", use:"spaceship.zsh", if:"[[ \$SHELL_THEME = spaceship ]]"
 
 
 # (3) Plugin Configuration ---------------------------------------------- {{{1
