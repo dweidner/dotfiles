@@ -18,7 +18,7 @@ __prompt_dirty() {
 # Collect information about the current git repository
 __prompt_git() {
   dot::in_git_repository \
-    && echo -e "$(__prompt_branch_name)$(__prompt_dirty)"
+    && echo -e "${1}$(__prompt_branch_name)${2}$(__prompt_dirty)${3:-\e[0m}"
 }
 
 # Render the prompt symbol
@@ -50,16 +50,17 @@ __prompt_remember_exit_code() {
 
 # Prepare both, the primary and secondary prompt
 __prompt() {
-  local nl='\n'
-  local reset='\[\e[0m\]'
   local red='\[\e[0;31m\]'
   local blue='\[\e[0;34m\]'
   local purple='\[\e[0;35m\]'
   local gray='\[\e[1;37m\]'
 
+  local nl='\n'
+  local reset='\[\e[0m\]'
+
   local cwd="${blue}\\w"
   local symbol="\$(__prompt_symbol \"${purple}\" \"${red}\")"
-  local git="${gray}\$(__prompt_git)"
+  local git="\$(__prompt_git \"${gray}\" \"${purple}\")"
 
   export PS1="${nl}${cwd} ${git}${nl}${symbol} ${reset}"
   export PS2="${gray}⋮${reset} "

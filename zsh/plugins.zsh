@@ -59,7 +59,7 @@ zplug load
 
 # (a) FZF --------------------------------------------------------------- {{{2
 
-export FTF_BASE="/usr/local/opt/fzf"
+export FZF_BASE="/usr/local/opt/fzf"
 
 # (b) Pure Theme -------------------------------------------------------- {{{2
 
