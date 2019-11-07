@@ -1,0 +1,125 @@
+{
+  // (1) Workbench ----------------------------
+
+  "workbench.colorTheme": "Atom One Light",
+  "workbench.iconTheme": "vs-minimal",
+  "workbench.startupEditor": "newUntitledFile",
+  "workbench.sideBar.location": "left",
+
+  // (2) Editor -------------------------------
+
+  "editor.fontFamily": "Fira Code, Source Code Pro, monospace",
+  "editor.fontSize": 14,
+  "editor.fontLigatures": true,
+  "editor.lineHeight": 24,
+  "editor.rulers": [ 80 ],
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "editor.renderWhitespace": "boundary",
+  "editor.renderLineHighlight": "all",
+  "editor.minimap.enabled": false,
+
+  // (3) Window -------------------------------
+
+  "window.zoomLevel": 0,
+  "window.restoreWindows": "none",
+
+  // (4) Breadcrumbs --------------------------
+
+  "breadcrumbs.enabled": true,
+  "breadcrumbs.filePath": "last",
+
+  // (5) Explorer -----------------------------
+
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.openEditors.visible": 0,
+
+  // (6) Terminal -----------------------------
+
+  "terminal.integrated.shell.osx": "/usr/local/bin/zsh",
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.fontFamily": "Fira Code, Source Code Pro, monospace",
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.fontWeightBold": "normal",
+  "terminal.integrated.lineHeight": 1.25,
+
+  // (7) Files --------------------------------
+
+  "files.trimTrailingWhitespace": true,
+  "files.associations": {
+    ".dockerignore": "ignore",
+    ".php_cs*": "php",
+    "*.inc": "php",
+    "*.module": "php",
+    "*.theme": "php"
+  },
+
+  // (8) File Types ---------------------------
+
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false
+  },
+  "[plaintext]": {
+    "files.trimTrailingWhitespace": false
+  },
+
+  // (9) Extensions ---------------------------
+
+  // (a) Workspace ------------
+
+  "projectManager.sortList": "Recent",
+  "projectManager.showProjectNameInStatusBar": false,
+  "projectManager.git.maxDepthRecursion": 2,
+  "projectManager.git.baseFolders": [
+    "$home\\Sites",
+    "$home\\Projekte"
+  ],
+
+  // (b) Intellisense ---------
+
+  "php.suggest.basic": false,
+
+  // (c) Source Control -------
+
+  "git.confirmSync": false,
+  "git.countBadge": "tracked",
+  "gitlens.codeLens.enabled": false,
+  "gitlens.statusBar.enabled": false,
+  "gitlens.currentLine.enabled": false,
+  "gitlens.views.repositories.enabled": false,
+  "gitlens.advanced.messages": {
+    "suppressShowKeyBindingsNotice": true
+  },
+
+  // (d) Text Editing ---------
+
+  "alignment.surroundSpace": {
+    "colon": [ -1, 1 ],
+    "assignment": [ 1, 1 ],
+    "arrow": [ 1, 1 ],
+    "comment": 2
+  },
+  "emmet.includeLanguages": {
+    "nunjucks": "html"
+  },
+  "highlight-matching-tag.showPath": false,
+  "highlight-matching-tag.showRuler": false,
+  "highlight-matching-tag.styles": {
+    "opening": {
+      "name": {
+        "underline": "green"
+      }
+    }
+  },
+  "rewrap.autoWrap.enabled": false,
+  "spellright.statusBarIndicator": false,
+  "spellright.language": ["de", "en"],
+  "spellright.documentTypes": [
+    "markdown",
+    "latex",
+    "plaintext"
+  ]
+
+}
+

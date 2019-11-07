@@ -560,6 +560,7 @@ setup() {
       "tmux_plugins"
       "phpcs"
       "icloud"
+      "vscode"
     )
   fi
 
@@ -612,33 +613,34 @@ setup_symlinks() {
 
   print_message "Creating symlinks …"
 
-  symlink "zsh/zshrc"                    "${HOME}/.zshrc"
-  symlink "bash/bash_profile"            "${HOME}/.bash_profile"
-  symlink "bash/bashrc"                  "${HOME}/.bashrc" 
-  symlink "bash/completions"             "${XDG_DATA_HOME}/bash-completion/completions"
-  symlink "readline/inputrc"             "${XDG_CONFIG_HOME}/readline/inputrc"
-  symlink "git/commitmsg"                "${XDG_CONFIG_HOME}/git/commitmsg"
-  symlink "git/ignore"                   "${XDG_CONFIG_HOME}/git/ignore"
-  symlink "git/aliases"                  "${XDG_CONFIG_HOME}/git/aliases"
-  symlink "git/template"                 "${XDG_CONFIG_HOME}/git/template"
-  symlink "vim/"                         "${HOME}/.vim"
-  symlink "vim/nvimrc"                   "${XDG_CONFIG_HOME}/nvim/init.vim"
-  symlink "vim/after"                    "${XDG_CONFIG_HOME}/nvim/after"
-  symlink "vim/plugin"                   "${XDG_CONFIG_HOME}/nvim/plugin"
-  symlink "vim/autoload"                 "${XDG_CONFIG_HOME}/nvim/autoload"
-  symlink "tmux/tmux.conf"               "${XDG_CONFIG_HOME}/tmux/tmux.conf"
-  symlink "ruby/gemrc"                   "${XDG_CONFIG_HOME}/gem/gemrc"
-  symlink "node/default-packages"        "${XDG_CONFIG_HOME}/nvm/default-packages"
-  symlink "misc/ctags"                   "${HOME}/.ctags"
-  symlink "misc/editorconfig"            "${HOME}/.editorconfig"
-  symlink "misc/ignore"                  "${HOME}/.ignore"
-  symlink "misc/tern-config"             "${HOME}/.tern-config"
-  copy    "git/config"                   "${XDG_DATA_HOME}/git/config"
+  symlink "zsh/zshrc"              "${HOME}/.zshrc"
+  symlink "bash/bash_profile"      "${HOME}/.bash_profile"
+  symlink "bash/bashrc"            "${HOME}/.bashrc" 
+  symlink "bash/completions"       "${XDG_DATA_HOME}/bash-completion/completions"
+  symlink "readline/inputrc"       "${XDG_CONFIG_HOME}/readline/inputrc"
+  symlink "git/commitmsg"          "${XDG_CONFIG_HOME}/git/commitmsg"
+  symlink "git/ignore"             "${XDG_CONFIG_HOME}/git/ignore"
+  symlink "git/aliases"            "${XDG_CONFIG_HOME}/git/aliases"
+  symlink "git/template"           "${XDG_CONFIG_HOME}/git/template"
+  symlink "vim/"                   "${HOME}/.vim"
+  symlink "vim/nvimrc"             "${XDG_CONFIG_HOME}/nvim/init.vim"
+  symlink "vim/after"              "${XDG_CONFIG_HOME}/nvim/after"
+  symlink "vim/plugin"             "${XDG_CONFIG_HOME}/nvim/plugin"
+  symlink "vim/autoload"           "${XDG_CONFIG_HOME}/nvim/autoload"
+  symlink "tmux/tmux.conf"         "${XDG_CONFIG_HOME}/tmux/tmux.conf"
+  symlink "ruby/gemrc"             "${XDG_CONFIG_HOME}/gem/gemrc"
+  symlink "node/default-packages"  "${XDG_CONFIG_HOME}/nvm/default-packages"
+  symlink "misc/ctags"             "${HOME}/.ctags"
+  symlink "misc/editorconfig"      "${HOME}/.editorconfig"
+  symlink "misc/ignore"            "${HOME}/.ignore"
+  symlink "misc/tern-config"       "${HOME}/.tern-config"
+
+  copy    "git/config"             "${XDG_DATA_HOME}/git/config"
+  copy    "mac/bookmarks"          "${XDG_DATA_HOME}/dotfiles/bookmarks"
 
   if is_mac; then
-    symlink "mac/Brewfile"             "${HOME}/.Brewfile"
-    symlink "mac/hushlogin"            "${HOME}/.hushlogin"
-    symlink "mac/launchd/status.plist" "${HOME}/Library/LaunchAgents/de.dweidner.dotfiles.status.plist"
+    symlink "mac/Brewfile"   "${HOME}/.Brewfile"
+    symlink "mac/hushlogin"  "${HOME}/.hushlogin"
   fi
 }
 
@@ -906,6 +908,27 @@ setup_icloud() {
   # -P = Perform action on symlink instead of following it
   # -a = Change file attribute
   SetFile -P -a V "${HOME}/iCloud"
+}
+
+#
+# Setup vscode on macOS.
+#
+setup_vscode() {
+  is_mac || return
+  command_exists "code" || return
+
+  local config_dir="${HOME}/Library/Application Support/Code/User"
+
+  print_message "Preparing settings for Visual Studio Code …"
+
+  copy "mac/vscode/settings.json" "${config_dir}/settings.json"
+  copy "mac/vscode/settings.json" "${config_dir}/settings.json"
+
+  print_message "Installing extensions for Visual Studio Code …"
+
+  while read -r name; do
+    code --install-extension "${name}"
+  done < "${DOTFILES}/mac/vscode/extensions"
 }
 
 # (e) Update Command ---------------------------------------------------- {{{2
