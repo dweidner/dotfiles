@@ -88,6 +88,13 @@ else
   export FZF_GIT_SHOW_COMMAND="git show --color --date=short --pretty=nice"
 fi
 
+# Alternative command used to edit files
+if dot::command_exists "code"; then
+  export FZF_ALTERNATIVE_EDITOR="code"
+else
+  export FZF_ALTERNATIVE_EDITOR="${EDITOR}"
+fi
+
 # Options used when the directory widget is executed via the ALT-C key binding.
 export FZF_ALT_C_PREVIEW="${FZF_DEFAULT_DIR_PREVIEW}"
 export FZF_ALT_C_OPTS="--preview '${FZF_ALT_C_PREVIEW}'"
@@ -125,23 +132,39 @@ fb() {
 }
 
 #
-# Open selected files with the default editor.
+# Open selected files (with the default editor).
 #
 # usage: fe [<query>]
 #
 fe() {
   local files=()
 
-  while read -r item; do files+=("${item}"); done < <(
+  local item
+  local key
+
+  while read -r item; do
+    if [[ -z "${item}" ]] || [[ "${item}" == "ctrl-"? ]]; then
+      key="${item}"
+    else
+      files+=("${item}")
+    fi
+  done < <(
     fzf \
       --query="${1}" \
       --multi \
       --select-1 \
       --exit-0 \
+      --expect=ctrl-o,ctrl-v \
       --preview "${FZF_DEFAULT_FILE_PREVIEW}"
   )
 
-  dot::edit "${files[@]}"
+  if [[ "${key}" == "ctrl-o" ]]; then
+    dot::open "${files[@]}"
+  elif [[ "${key}" == "ctrl-v" ]]; then
+    ${FZF_ALTERNATIVE_EDITOR} -- "${files[@]}"
+  else
+    dot::edit "${files[@]}"
+  fi
 }
 
 #
@@ -232,51 +255,6 @@ fgl() {
           --preview "grep -o \"[a-f0-9]\\{7,\\}\" <<< {} | xargs ${FZF_GIT_SHOW_COMMAND}" \
       | grep -o "[a-f0-9]\\{7,\\}" \
       | xargs sh -c "${FZF_GIT_SHOW_COMMAND}"
-}
-
-#
-# Search file contents with ripgrep and open selected files in the
-# default editor.
-#
-# usage: frg [<query>]
-#
-frg() {
-  dot::command_exists "rg" || return
-
-  local IFS=":"
-
-  local files=()
-  local head=()
-
-  while read -ra item; do
-    if (( ${#files[@]} == 0 )); then
-      head=("${item[@]}")
-    fi
-
-    files+=("${item[0]}")
-  done < <(
-    rg \
-      --color=always \
-      --line-number \
-      --no-heading \
-      --no-messages \
-      --trim \
-      --colors 'line:fg:green' \
-      --colors 'match:fg:23' \
-      --colors 'path:fg:blue' \
-      . \
-        | fzf \
-            --query="${1}" \
-            --ansi \
-            --multi \
-            --delimiter=":" \
-            --nth=2.. \
-            --with-nth=1,3.. \
-            --exit-0 \
-            --preview "cut -d ':' -f 1 <<< {} | xargs -I {} ${FZF_DEFAULT_FILE_PREVIEW}"
-  )
-
-  dot::edit +"${head[1]:-0}" "${files[@]}"
 }
 
 

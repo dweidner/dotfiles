@@ -195,3 +195,23 @@ dot::edit() {
       ;;
   esac
 }
+
+#
+# Open a list of files.
+#
+# usage: dot::open <file> [<file>]
+#
+dot::open() {
+  (( $# > 0 )) || return
+
+  local cmd
+
+  case "${OSTYPE}" in
+    darwin*) cmd="open" ;;
+    linux*)  cmd="nohup xdg-open" ;;
+    cygwin*) cmd="cygstart" ;;
+    *)       cmd="cat" ;;
+  esac
+
+  ${cmd} -- "$@" &>/dev/null
+}
