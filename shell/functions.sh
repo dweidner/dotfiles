@@ -55,7 +55,7 @@ cdf() {
 # usage: cdl [<path>]
 #
 cdl() {
-  builtin cd -- "$*" && command ls -lhF "${ls_options[@]}"
+  builtin cd -- "$*" && command ls "${ls_options[@]}"
 }
 
 #

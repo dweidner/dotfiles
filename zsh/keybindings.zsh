@@ -22,7 +22,7 @@ key=(
   "Escape"    '\e'
   "Space"     ' '
   "Tab"       "${terminfo[ht]}"
-  "STab"      "${terminfo[kcbt]}"
+  "ShiftTab"  "${terminfo[kcbt]}"
   "Home"      "${terminfo[khome]}"
   "End"       "${terminfo[kend]}"
   "Insert"    "${terminfo[kich1]}"
@@ -40,20 +40,35 @@ for k in "${(k)key[@]}"; do
   [[ -z "$key[$k]" ]] && key[$k]='�'
 done
 
-# Use emacs-like key bindings by default
-bindkey -e
+# Bind key sequences to standard Zsh Line Editor (ZLE) widgets
+bindkey "${key[Space]}"     magic-space
+bindkey "${key[Home]}"      beginning-of-line
+bindkey "${key[End]}"       end-of-line
+bindkey "${key[Left]}"      backward-char
+bindkey "${key[Right]}"     forward-char
+bindkey "${key[Delete]}"    delete-char
+bindkey "${key[ShiftTab]}"  reverse-menu-complete
 
-# Bind key sequences to Zsh Line Editor (ZLE) commands
-bindkey "${key[Space]}"   magic-space
-bindkey "${key[Home]}"    beginning-of-line
-bindkey "${key[End]}"     end-of-line
-bindkey "${key[Left]}"    backward-char
-bindkey "${key[Right]}"   forward-char
-bindkey "${key[Delete]}"  delete-char
-bindkey "${key[STab]}"    reverse-menu-complete
+# Bind key sequences to frequently used commands
+# [Ctrl]+[x]+[b|f|i|j|k|l|o|p|q|v|w|x|y| |,|.|-]
+bindkey -s "${key[Ctrl]}x." "^U..^M"
+bindkey -s "${key[Ctrl]}x:" "^Ucdl ..^M"
+bindkey -s "${key[Ctrl]}x-" "^Upo^M"
+bindkey -s "${key[Ctrl]}x_" "^Udirs -v^M"
+bindkey -s "${key[Ctrl]}xb" "^Ufb^M"
+bindkey -s "${key[Ctrl]}xi" "^Ug ll^M"
+bindkey -s "${key[Ctrl]}xI" "^Ug l^M"
+bindkey -s "${key[Ctrl]}xs" "^Ug ss^M"
+bindkey -s "${key[Ctrl]}xS" "^Ug s^M"
+bindkey -s "${key[Ctrl]}xl" "^Uls^M"
+bindkey -s "${key[Ctrl]}xL" "^Ull^M"
+bindkey -s "${key[Ctrl]}xo" "^Ufe^M"
 
-# Improve the behavior of the delete-word command for POSIX paths
-bindkey "${key[Ctrl]}w" slash-backward-delete-word
+# Expand global abbreviations
+bindkey "${key[Ctrl]}x " dotfiles-expand-abbreviation
+
+# Improve the behavior of the kill-word widgets for POSIX paths
+bindkey "${key[Ctrl]}w" dotfiles-backward-kill-word
 
 # Improve history search using [Arrow Up/Down]
 if (( $+widgets[history-substring-search-up] )); then
@@ -114,11 +129,20 @@ function zle-line-finish() {
 zle -N zle-line-finish
 
 # Delete a directory from a full POSIX path.
-function slash-backward-delete-word() {
+function dotfiles-backward-kill-word() {
   local WORDCHARS="${WORDCHARS:s@/@}"
   zle backward-kill-word
 }
-zle -N slash-backward-delete-word
+zle -N dotfiles-backward-kill-word
+
+# Custom ZLE command used to expand abbreviations
+function dotfiles-expand-abbreviation() {
+  local MATCH
+  setopt EXTENDED_GLOB
+  LBUFFER=${LBUFFER%%(#m)[_a-zA-Z0-9]#}
+  LBUFFER+=${abbreviations[${MATCH}]:-${MATCH}}
+}
+zle -N dotfiles-expand-abbreviation
 
 
 # vim:foldmethod=marker:foldlevel=2
