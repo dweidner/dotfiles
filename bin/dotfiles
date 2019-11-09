@@ -174,8 +174,7 @@ require_nvm() {
 
   if [[ ! -r "${NVM_DIR}/nvm.sh" ]]; then
     return 1
-  fi
-
+  fi 
   # shellcheck source=/dev/null
   source "${NVM_DIR}/nvm.sh"
 }
@@ -947,7 +946,7 @@ setup_vscode() {
   print_message "Preparing settings for Visual Studio Code …"
 
   copy "mac/vscode/settings.json" "${config_dir}/settings.json"
-  copy "mac/vscode/settings.json" "${config_dir}/settings.json"
+  copy "mac/vscode/keybindings.json" "${config_dir}/keybindings.json"
 
   print_message "Installing extensions for Visual Studio Code …"
 
