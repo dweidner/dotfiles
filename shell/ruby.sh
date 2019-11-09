@@ -12,14 +12,14 @@ fi
 
 # (2) Ruby Version Manager ---------------------------------------------- {{{1
 
-export RVM_PATH="${XDG_DATA_HOME}/rvm"
+export rvm_path="${XDG_DATA_HOME}/rvm"
 
-if [[ -r "${RVM_PATH}/scripts/rvm" ]]; then
-  source "${RVM_PATH}/scripts/rvm"
+if [[ -r "${rvm_path}/scripts/rvm" ]]; then
+  source "${rvm_path}/scripts/rvm"
 fi
 
-if [[ -r "${RVM_PATH}/scripts/completion" ]]; then
-  source "${RVM_PATH}/scripts/completion"
+if [[ -r "${rvm_path}/scripts/completion" ]]; then
+  source "${rvm_path}/scripts/completion"
 fi
 
 
