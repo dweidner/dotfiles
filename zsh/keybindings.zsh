@@ -62,9 +62,6 @@ bindkey -s "${key[Ctrl]}xl" "^Uls^M"
 bindkey -s "${key[Ctrl]}xL" "^Ull^M"
 bindkey -s "${key[Ctrl]}xo" "^Ufe^M"
 
-# Expand global abbreviations
-bindkey "${key[Ctrl]}${key[Space]}" expand-abbreviation
-
 # Improve history search using [Arrow Up/Down]
 if (( $+widgets[history-substring-search-up] )); then
   bindkey "${key[Up]}"    history-substring-search-up
@@ -75,7 +72,7 @@ else
 fi
 
 
-# (a) Completion Menu --------------------------------------------------- {{{2
+# (a) Keymap: Completion Menu ------------------------------------------- {{{2
 
 # Insert the currently selected menu item, but keep the menu open
 bindkey -M menuselect "+" accept-and-menu-complete
@@ -84,7 +81,7 @@ bindkey -M menuselect "+" accept-and-menu-complete
 bindkey -M menuselect "${key[Ctrl]}o" accept-and-infer-next-history
 
 
-# (b) EMACS mode -------------------------------------------------------- {{{2
+# (b) Keymap: EMACS ----------------------------------------------------- {{{2
 
 # Search history with [Ctrl]+[P/N] in EMACS mode
 if (( $+widgets[history-substring-search-up] )); then
@@ -96,7 +93,7 @@ else
 fi
 
 
-# (c) VI mode ----------------------------------------------------------- {{{2
+# (c) Keymap: VI -------------------------------------------------------- {{{2
 
 # Search history with [j/k] in VIM mode
 if (( $+widgets[history-substring-search-up] )); then
@@ -142,15 +139,6 @@ function accept-or-down-line() {
   fi
 }
 zle -N accept-or-down-line
-
-# Expand abbreviations
-function expand-abbreviation() {
-  local MATCH
-  setopt EXTENDED_GLOB
-  LBUFFER=${LBUFFER%%(#m)[_a-zA-Z0-9]#}
-  LBUFFER+=${abbreviations[${MATCH}]:-${MATCH}}
-}
-zle -N expand-abbreviation
 
 
 # vim:foldmethod=marker:foldlevel=2
