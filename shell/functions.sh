@@ -98,6 +98,19 @@ ff() {
 }
 
 #
+# Get an overview of the current network addresses.
+#
+# usage: myip
+#
+myip() {
+  printf "\033[0;34m%s\033[0;m\n" "INTERNAL IP:"
+  ifconfig | awk '/inet /{ print $2 }' | grep -v "127.0.0.1"
+
+  printf "\033[0;34m\n%s\033[0;m\n" "EXTERNAL IP:"
+  dig @resolver1.opendns.com ANY myip.opendns.com +short -4
+}
+
+#
 # Remove directories from the stack.
 #
 # usage: po [<directory>]
