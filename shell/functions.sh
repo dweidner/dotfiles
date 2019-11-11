@@ -74,6 +74,21 @@ cdr() {
 }
 
 #
+# Move a file to the trash.
+#
+# usage: del <file>
+#
+del() {
+  local dir="${TRASH_DIR:-${HOME}/.Trash}"
+
+  if [[ ! -d "${dir}" ]]; then
+    mkdir -p "${dir}" 
+  fi
+
+  mv "$@" "${dir}"
+}
+
+#
 # Find files whose name matches a given pattern.
 #
 # usage: ff <pattern>
@@ -100,6 +115,14 @@ po() {
 pu() {
   builtin pushd "$@" >/dev/null || return
   builtin dirs -v
+}
+
+#
+# Start a web server on the given local address and port.
+#
+# usage: serve [<directory>]
+serve() {
+  php -S localhost:8080 "${1:-.}"
 }
 
 #
