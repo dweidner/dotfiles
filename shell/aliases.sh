@@ -8,11 +8,10 @@
 # 1. Command abbreviations
 # 2. Switch directories
 # 3. Error prevention
-# 4. Session management
-# 5. List directory contents
-# 6. File pattern searching
-# 7. File comparison
-# 8. System specific aliases
+# 4. List directory contents
+# 5. File pattern searching
+# 6. File comparison
+# 7. System specific aliases
 # -----------------------------------------------------------------------
 
 
@@ -39,18 +38,7 @@ alias mv="mv -i"
 alias rm="rm -i"
 
 
-# (4) Session managment ------------------------------------------------- {{{1
-
-if [[ -r "${XDG_CONFIG_HOME}/tmux/tmux.conf" ]]; then
-  alias tmux='tmux -f "${XDG_CONFIG_HOME}/tmux/tmux.conf"'
-fi
-
-alias ta="tmux attach -t"
-alias ts="tmux new-session -s"
-alias tl="tmux list-sessions"
-
-
-# (5) List directory contents ------------------------------------------- {{{1
+# (4) List directory contents ------------------------------------------- {{{1
 
 # Test whether the ls command supports a given option
 dot::ls_supports() {
@@ -77,7 +65,7 @@ alias tree="tree -CF"
 alias t="tree -a --noreport --dirsfirst -I '.git|node_modules|.DS_Store'"
 
 
-# (6) File pattern searching -------------------------------------------- {{{1
+# (5) File pattern searching -------------------------------------------- {{{1
 
 # Test whether grep supports a given option
 dot::grep_supports() {
@@ -103,7 +91,7 @@ elif dot::command_exists "ag"; then
 fi
 
 
-# (7) File comparison --------------------------------------------------- {{{1
+# (6) File comparison --------------------------------------------------- {{{1
 
 if dot::command_exists "bat"; then
   alias c="bat"
@@ -127,7 +115,7 @@ case "$EDITOR" in
 esac
 
 
-# (8) System specific aliases ------------------------------------------- {{{1
+# (7) System specific aliases ------------------------------------------- {{{1
 
 case "$OSTYPE" in
   darwin*) source "${DOTFILES}/shell/aliases-darwin.sh" ;;
