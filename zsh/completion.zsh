@@ -6,7 +6,8 @@
 # Table of Contents
 # -----------------------------------------------------------------------
 # 1. General Settings
-# 2. Look & Feel
+# 2. Completion Menu
+# 3. Completion Matching
 # -----------------------------------------------------------------------
 
 
@@ -15,8 +16,28 @@
 # Enable the completion system
 zmodload zsh/complist
 
+# Enable cache for the completion system
+zstyle ":completion:*" use-cache true
+zstyle ":completion:*" cache-path "${XDG_CACHE_HOME}/zsh"
+
+
+# (2) Completion Menu --------------------------------------------------- {{{1
+
 # Unconditionally start menu selection
-zstyle ":completion:*" menu select
+zstyle ":completion:*" menu "select=1"
+
+# Use the same colors in the completion menu as used by the `ls` command
+if [[ -n "${LS_COLORS}" ]]; then
+  zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+else
+  zstyle ":completion:*" list-colors "di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43:"
+fi
+
+# List directories first in the menu
+zstyle ":completion:*" list-dirs-first true
+
+
+# (3) Completion Matching ----------------------------------------------- {{{1
 
 # Try:
 # 1) smart-case completion
@@ -29,15 +50,11 @@ zstyle ":completion:*" matcher-list \
   "r:|[._-]=* r:|=*" \
   "l:|=* r:|=*"
 
+# Don't complete usernames
+zstyle ":completion:*" users ""
 
-# (2) Look & Feel ------------------------------------------------------- {{{1
-
-# Use the same colors in the completion menu as used by the `ls` command
-if [[ -n "${LS_COLORS}" ]]; then
-  zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-else
-  zstyle ":completion:*" list-colors "di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43:"
-fi
+# Don't complete home directories
+zstyle ":completion::complete:cd:*" tag-order "! users"
 
 
 # vim:foldmethod=marker:foldlevel=2
