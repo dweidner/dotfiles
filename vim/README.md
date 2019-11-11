@@ -270,12 +270,12 @@ Overview of default and custom key bindings in **VIM**.
 `[e` - Exchange the current line with the line above  
 `]e` - Exchange the current line with the line below  
 
-`cob` - Toggle background of the colorscheme (`background`)  
-`coc` - Toggle highlighting of the current line (`cursorline`)  
-`coh` - Toggle search higlighting (`hlsearch`)  
-`cor` - Toggle relative numbers (`relativenumber`)  
-`cos` - Toggle spell checker (`spell`)  
-`cow` - Toggle line wrapping (`wrap`)  
+`yob` - Toggle background of the colorscheme (`background`)  
+`yoc` - Toggle highlighting of the current line (`cursorline`)  
+`yoh` - Toggle search higlighting (`hlsearch`)  
+`yor` - Toggle relative numbers (`relativenumber`)  
+`yos` - Toggle spell checker (`spell`)  
+`yow` - Toggle line wrapping (`wrap`)  
 
 **TIP:**  
 In order to make it easier to access the `[` and `]` mappings on german keyboards `ö` or `ä` are mapped as custom binding.  
