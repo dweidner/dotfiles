@@ -22,6 +22,13 @@ abbreviations=(
 )
 
 
+# (2) Suffix Aliases ---------------------------------------------------- {{{1
+
+alias -s log="tail -f" # Open log files with tail
+alias -s md="c"        # Display the contents of a markdown file in bat/cat
+alias -s txt="c"       # Display the contents of a text file in bat/cat
+
+
 # (2) Online Help ------------------------------------------------------- {{{1
 
 unalias run-help
