@@ -659,7 +659,7 @@ setup_symlinks() {
   copy    "mac/bookmarks"          "${XDG_DATA_HOME}/dotfiles/bookmarks"
 
   template "${XDG_DATA_HOME}/dotfiles/bookmarks" \
-    "\${XDG_CONFIG_HOME}" "${XDG_CONFIG_HOME}" \
+    "\${DOTFILES}" "${DOTFILES}" \
     "\${HOME}" "${HOME}"
 
   if is_mac; then
