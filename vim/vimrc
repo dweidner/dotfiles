@@ -95,9 +95,7 @@ set showbreak=↪\                     " Show line breaks
 set fillchars=vert:│                 " Vertical seperator for splits
 set fillchars+=diff:⣿                " Fill character for blank lines 
 
-set diffopt+=vertical                " Start diff mode with vertical splits
-set diffopt+=filler                  " Keep sides aligned
-set diffopt+=iwhite                  " Ignore whitespace changes
+set diffopt=vertical,filler,iwhite   " Use vertical splits, ignore whitespace
 
 
 " (4) Indentation & Tabs ------------------------------------------------ {{{1
