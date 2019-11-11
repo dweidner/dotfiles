@@ -56,8 +56,6 @@ bindkey -s "${key[Ctrl]}x:" "^Ucdl ..^M"
 bindkey -s "${key[Ctrl]}x-" "^Upo^M"
 bindkey -s "${key[Ctrl]}x_" "^Udirs -v^M"
 bindkey -s "${key[Ctrl]}xb" "^Ufb^M"
-bindkey -s "${key[Ctrl]}xi" "^Ug ll^M"
-bindkey -s "${key[Ctrl]}xI" "^Ug l^M"
 bindkey -s "${key[Ctrl]}xs" "^Ug ss^M"
 bindkey -s "${key[Ctrl]}xS" "^Ug s^M"
 bindkey -s "${key[Ctrl]}xl" "^Uls^M"
@@ -65,10 +63,7 @@ bindkey -s "${key[Ctrl]}xL" "^Ull^M"
 bindkey -s "${key[Ctrl]}xo" "^Ufe^M"
 
 # Expand global abbreviations
-bindkey "${key[Ctrl]}x " dotfiles-expand-abbreviation
-
-# Improve the behavior of the kill-word widgets for POSIX paths
-bindkey "${key[Ctrl]}w" dotfiles-backward-kill-word
+bindkey "${key[Ctrl]}${key[Space]}" expand-abbreviation
 
 # Improve history search using [Arrow Up/Down]
 if (( $+widgets[history-substring-search-up] )); then
@@ -94,10 +89,10 @@ bindkey -M menuselect "${key[Ctrl]}o" accept-and-infer-next-history
 # Search history with [Ctrl]+[P/N] in EMACS mode
 if (( $+widgets[history-substring-search-up] )); then
   bindkey -M emacs "${key[Ctrl]}P"  history-substring-search-up
-  bindkey -M emacs "${key[Ctrl]}N"  history-substring-search-down
+  bindkey -M emacs "${key[Ctrl]}N"  accept-or-history-substring-search-down
 else
   bindkey -M emacs "${key[Ctrl]}P"  up-line-or-history
-  bindkey -M emacs "${key[Ctrl]}N"  down-line-or-history
+  bindkey -M emacs "${key[Ctrl]}N"  accept-or-down-line
 fi
 
 
@@ -106,10 +101,10 @@ fi
 # Search history with [j/k] in VIM mode
 if (( $+widgets[history-substring-search-up] )); then
   bindkey -M vicmd "k"  history-substring-search-up
-  bindkey -M vicmd "j"  history-substring-search-down
+  bindkey -M vicmd "j"  accept-or-history-substring-search-down
 else
   bindkey -M vicmd "k"  up-line-or-history
-  bindkey -M vicmd "j"  down-line-or-history
+  bindkey -M vicmd "j"  dotfiles-accept-or-down-line
 fi
 
 
@@ -128,21 +123,34 @@ function zle-line-finish() {
 }
 zle -N zle-line-finish
 
-# Delete a directory from a full POSIX path.
-function dotfiles-backward-kill-word() {
-  local WORDCHARS="${WORDCHARS:s@/@}"
-  zle backward-kill-word
+# Accept suggestion or search history down
+function accept-or-history-substring-search-down() {
+  if (( $#POSTDISPLAY )) && (( $+widgets[autosuggest-accept] )); then
+    zle autosuggest-accept
+  else
+    zle history-substring-search-down
+  fi
 }
-zle -N dotfiles-backward-kill-word
+zle -N accept-or-history-substring-search-down
 
-# Custom ZLE command used to expand abbreviations
-function dotfiles-expand-abbreviation() {
+# Accept suggestion or move down one line in the current buffer
+function accept-or-down-line() {
+  if (( $#POSTDISPLAY )) && (( $+widgets[autosuggest-accept] )); then
+    zle autosuggest-accept
+  else
+    zle down-line-or-history
+  fi
+}
+zle -N accept-or-down-line
+
+# Expand abbreviations
+function expand-abbreviation() {
   local MATCH
   setopt EXTENDED_GLOB
   LBUFFER=${LBUFFER%%(#m)[_a-zA-Z0-9]#}
   LBUFFER+=${abbreviations[${MATCH}]:-${MATCH}}
 }
-zle -N dotfiles-expand-abbreviation
+zle -N expand-abbreviation
 
 
 # vim:foldmethod=marker:foldlevel=2

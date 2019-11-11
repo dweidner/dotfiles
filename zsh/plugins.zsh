@@ -61,19 +61,21 @@ zplug load
 
 # (a) Autosuggestions --------------------------------------------------- {{{2
 
-export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-export ZSH_AUTOSUGGEST_USE_ASYNC=1
-export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=145"
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_USE_ASYNC=1
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=145"
+ZSH_AUTOSUGGEST_IGNORE_WIDGETS+="accept-or-history-substring-search-down"
+ZSH_AUTOSUGGEST_IGNORE_WIDGETS+="accept-or-down-line"
 
 # (b) History Search ---------------------------------------------------- {{{2
 
-export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="fg=black,bold"
-export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="fg=red"
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="fg=black,bold"
+HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="fg=red"
 
 # (c) Pure Theme -------------------------------------------------------- {{{2
 
-export PURE_PROMPT_SYMBOL="${PROMPT_SYMBOL:-❯}"
+PURE_PROMPT_SYMBOL="${PROMPT_SYMBOL:-❯}"
 
 zstyle ":prompt:pure:prompt:success" "${PROMPT_COLOR_SUCCESS:-magenta}"
 zstyle ":prompt:pure:prompt:error" "${PROMPT_COLOR_ERROR:-red}"
@@ -81,13 +83,13 @@ zstyle ":prompt:pure:path" "${PROMPT_COLOR_PATH:-blue}"
 
 # (d) Spaceship Theme --------------------------------------------------- {{{2
 
-export SPACESHIP_CHAR_SYMBOL="${PROMPT_SYMBOL:-❯}"
-export SPACESHIP_CHAR_SUFFIX=" "
-export SPACESHIP_CHAR_COLOR_SUCCESS="${PROMPT_COLOR_SUCCESS:-magenta}"
-export SPACESHIP_CHAR_COLOR_FAILURE="${PROMPT_COLOR_ERROR:-red}"
-export SPACESHIP_DIR_COLOR="${PROMPT_COLOR_PATH:-blue}"
-export SPACESHIP_DIR_TRUNC=0
-export SPACESHIP_DIR_TRUNC_REPO=0
+SPACESHIP_CHAR_SYMBOL="${PROMPT_SYMBOL:-❯}"
+SPACESHIP_CHAR_SUFFIX=" "
+SPACESHIP_CHAR_COLOR_SUCCESS="${PROMPT_COLOR_SUCCESS:-magenta}"
+SPACESHIP_CHAR_COLOR_FAILURE="${PROMPT_COLOR_ERROR:-red}"
+SPACESHIP_DIR_COLOR="${PROMPT_COLOR_PATH:-blue}"
+SPACESHIP_DIR_TRUNC=0
+SPACESHIP_DIR_TRUNC_REPO=0
 
 
 # vim:foldmethod=marker:foldlevel=2
