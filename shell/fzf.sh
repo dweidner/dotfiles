@@ -47,16 +47,16 @@ fi
 # A set of default options provided to the fzf binary.
 export FZF_DEFAULT_OPTS="
   --inline-info
-  --height 38%
   --min-height 16
+  --height 38%
   --tabstop 4
   --reverse
   --bind '?:toggle-preview'
   --prompt '${PROMPT_SYMBOL:-❯} '
   --border
   --color light
-  --color fg:23,hl:94,fg+:23,bg+:254,hl+:94
-  --color info:145,prompt:33,spinner:127,pointer:33,marker:23
+  --color fg:8,hl:4,fg+:8,bg+:254,hl+:4
+  --color header:242,info:242,prompt:5,spinner:242,pointer:5,marker:5,border:254
   --preview-window right:62%:hidden
 "
 
@@ -91,6 +91,8 @@ fi
 # Alternative command used to edit files
 if dot::command_exists "code"; then
   export FZF_ALTERNATIVE_EDITOR="code"
+elif dot::command_exists "atom"; then
+  export FZF_ALTNERNATIVE_EDITOR="atom"
 else
   export FZF_ALTERNATIVE_EDITOR="${EDITOR}"
 fi
