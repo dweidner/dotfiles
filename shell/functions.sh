@@ -89,6 +89,29 @@ del() {
 }
 
 #
+# Load a given file to the ~/Downloads folder.
+#
+# usage: download <url>
+#
+download() {
+  local user_agent="${CURL_USER_AGENT:-Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:70.0) Gecko/20100101 Firefox/70.0}"
+  local target_dir="${XDG_DOWNLOAD_DIR:-${HOME}/Downloads}"
+
+  (
+    builtin cd -- "${target_dir}" && \
+      wget \
+        --user-agent="${user_agent}" \
+        --random-wait \
+        --quiet \
+        --show-progress \
+        --continue \
+        --content-disposition \
+        --xattr \
+        "$@"
+  )
+}
+
+#
 # Find files whose name matches a given pattern.
 #
 # usage: ff <pattern>
