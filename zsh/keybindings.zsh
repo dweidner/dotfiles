@@ -85,11 +85,21 @@ bindkey -M menuselect "${key[Ctrl]}o" accept-and-infer-next-history
 
 # Search history with [Ctrl]+[P/N] in EMACS mode
 if (( $+widgets[history-substring-search-up] )); then
-  bindkey -M emacs "${key[Ctrl]}P"  history-substring-search-up
-  bindkey -M emacs "${key[Ctrl]}N"  accept-or-history-substring-search-down
+  bindkey -M emacs "${key[Ctrl]}p"  history-substring-search-up
+  bindkey -M emacs "${key[Ctrl]}n"  accept-or-history-substring-search-down
 else
-  bindkey -M emacs "${key[Ctrl]}P"  up-line-or-history
-  bindkey -M emacs "${key[Ctrl]}N"  accept-or-down-line
+  bindkey -M emacs "${key[Ctrl]}p"  up-line-or-history
+  bindkey -M emacs "${key[Ctrl]}n"  accept-or-down-line
+fi
+
+# Select a file using fzf
+if (( $+widgets[fzf-file-widget] )); then
+  bindkey -M emacs "${key[Ctrl]}t"  fzf-file-widget
+fi
+
+# Search command history with fzf
+if (( $+widgets[fzf-history-widget] )); then
+  bindkey -M emacs "${key[Ctrl]}r"  fzf-history-widget
 fi
 
 
