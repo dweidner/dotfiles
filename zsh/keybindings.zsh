@@ -94,14 +94,18 @@ fi
 
 # Select a file using fzf
 if (( $+widgets[fzf-file-widget] )); then
-  bindkey -M emacs "${key[Ctrl]}t"  fzf-file-widget
+  bindkey -M emacs "${key[Ctrl]}t" fzf-file-widget
 fi
 
 # Search command history with fzf
 if (( $+widgets[fzf-history-widget] )); then
-  bindkey -M emacs "${key[Ctrl]}r"  fzf-history-widget
+  bindkey -M emacs "${key[Ctrl]}r" fzf-history-widget
 fi
 
+# Change current working directory using fzf
+if (( $+widgets[fzf-cd-widget] )); then
+  bindkey -M emacs "${key[Escape]}c" fzf-cd-widget
+fi
 
 # (c) Keymap: VI -------------------------------------------------------- {{{2
 
