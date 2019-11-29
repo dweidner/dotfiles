@@ -1,4 +1,4 @@
-# misc/gemrc
+# ruby/gemrc
 
 backtrace: true
 update_sources: true
