@@ -1211,7 +1211,7 @@ update_ruby() {
   version="$(rvm list default string | grep -oE "\d{1,2}\.\d{1,2}(\.\d{1,2}(-[a-z0-9]+)?)?" | tail -n1)"
 
   local latest
-  latest="$(rvm list known | grep "^\[ruby-]" | grep -oE "\d{1,2}\.\d{1,2}((\.\d{1,2})|(\[\.\d{1,2}(-[a-z0-9]+)?\]))?" | tr -d [] | tail -n1)"
+  latest="$(rvm list known | grep "^\[ruby-]" | grep -oE "\d{1,2}\.\d{1,2}((\.\d{1,2})|(\[\.\d{1,2}(-[a-z0-9]+)?\]))?" | grep -vE "\-(head|preview)" | tr -d [] | tail -n1)"
 
   wait
 
