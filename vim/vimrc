@@ -431,6 +431,18 @@ call plug#begin(s:data_home . '/bundle')
     Plug 'roxma/LanguageServer-php-neovim', PlugIf(IsSupported('completion'), { 'do': function('DoComposerInstall') })
   endif
 
+  " e) Bookmarks ------------------------------------------------------- {{{2
+  " |- ale: Check syntax and fix files, with LSP support
+  " |- vim-cool: Disable search highlighting when you are done searching
+  " |- vim-ripgrep: Use RipGrep and display results in a quickfix list
+
+  " Plug 'dense-analysis/ale'
+  " Plug 'romainl/vim-cool'
+
+  " if executable('rg')
+  "   Plug 'jremmen/vim-ripgrep'
+  " endif
+
 call plug#end()
 
 
