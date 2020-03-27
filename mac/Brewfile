@@ -24,6 +24,7 @@ brew 'httpie'
 brew 'jq'
 
 brew 'git'
+brew 'git-flow-avh'
 brew 'icdiff'
 brew 'diff-so-fancy'
 
@@ -92,7 +93,6 @@ mas 'Magnet', id: 441258766
 mas 'Marked 2', id: 890031187
 mas 'Pixelmator', id: 407963104
 mas 'Reeder 3', id: 880001334
-mas 'Things3', id: 904280696
 
 
 
