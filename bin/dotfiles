@@ -28,6 +28,8 @@ NVM_DIR="${NVM_DIR:-${XDG_DATA_HOME}/nvm}"
 RVM_PATH="${RVM_PATH:-${XDG_DATA_HOME}/rvm}"
 TPM_PATH="${TPM_PATH:-${XDG_DATA_HOME}/tmux/plugins/tpm}"
 
+NODE_LTS_RELEASE="${NODE_LTS_RELEASE:-dubnium}"
+
 QUIET=0
 VERBOSE=0
 
@@ -1087,7 +1089,7 @@ update_node() {
   version="$(nvm current)"
 
   local latest
-  latest="$(nvm version-remote --lts)"
+  latest="$(nvm version-remote --lts=${NODE_LTS_RELEASE})"
 
   wait
 
@@ -1097,8 +1099,7 @@ update_node() {
   fi
 
   print_message "Upgrading Node.js from version ${version} to ${latest} …"
-  nvm install "${latest}" & wait
-  nvm install-latest-npm & wait
+  nvm install --latest-npm "${latest}" & wait
   print_success "Upgraded Node.js to version ${latest}."
 
   if confirm "Do you want to use version ${latest} of Node.js as your system default?"; then
