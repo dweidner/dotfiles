@@ -2,6 +2,8 @@
   // (1) Workbench ----------------------------
 
   "workbench.colorTheme": "Atom One Light",
+  "workbench.preferredLightColorTheme": "Atom One Light",
+  "workbench.preferredDarkColorTheme": "Atom One Dark",
   "workbench.iconTheme": "vs-minimal",
   "workbench.startupEditor": "newUntitledFile",
   "workbench.sideBar.location": "left",
@@ -18,6 +20,7 @@
   "editor.renderWhitespace": "boundary",
   "editor.renderLineHighlight": "all",
   "editor.minimap.enabled": false,
+  "editor.semanticHighlighting.enabled": false,
 
   // (3) Window -------------------------------
 
