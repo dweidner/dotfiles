@@ -45,12 +45,8 @@
 	gg = grep --break --heading --line-number
 
 	# git log
-	lg = log --graph
-	lk = log --graph --topo-order --abbrev-commit --date=short --decorate --all --boundary --pretty=nice
 	ll = log -n 15 --graph --topo-order --abbrev-commit --date=short --decorate --all --boundary --pretty=nice
 	lm = !git log --author $(git config user.email)
-	lo = log --oneline
-	lp = log --patch
 	search = !"f() { query=\"$1\"; shift; git log -S\"$query\" \"$@\"; }; f \"$@\""
 	contributors = shortlog --summary --numbered --no-merges
 
