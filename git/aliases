@@ -74,8 +74,11 @@
 	# git tag
 	tags = tag -n1 --list
 
-	# misc
+	# git helpers
 	ctags = !"$(git rev-parse --git-dir)/hooks/ctags"
 	gitignore = "!f() { curl -L -s https://www.gitignore.io/api/$@; }; f"
+
+	# github helpers
+	append-issue = "!f() { git commit --amend -m \"$(git log --format=%B -n) (#$1)\"; }; f"
 
 # vim:ft=gitconfig
