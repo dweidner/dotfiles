@@ -6,7 +6,6 @@ bierner.lit-html
 calebporzio.better-phpunit
 christian-kohler.npm-intellisense
 christian-kohler.path-intellisense
-csstools.postcss
 DavidAnson.vscode-markdownlint
 dbaeumer.vscode-eslint
 dbankier.vscode-quick-select
@@ -35,3 +34,4 @@ vincaslt.highlight-matching-tag
 WallabyJs.quokka-vscode
 whatwedo.twig
 wwm.better-align
+zignd.html-css-class-completion
