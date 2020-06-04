@@ -13,6 +13,9 @@
 [push]
 	default = simple
 
+[pull]
+	rebase = false
+
 [icdiff]
 	options = --line-numbers --tabsize=4 --numlines=8
 
