@@ -651,7 +651,6 @@ setup_symlinks() {
   symlink "vim/plugin"             "${XDG_CONFIG_HOME}/nvim/plugin"
   symlink "vim/autoload"           "${XDG_CONFIG_HOME}/nvim/autoload"
   symlink "tmux/tmux.conf"         "${XDG_CONFIG_HOME}/tmux/tmux.conf"
-  symlink "node/default-packages"  "${XDG_CONFIG_HOME}/nvm/default-packages"
   symlink "ruby/gemrc"             "${XDG_CONFIG_HOME}/gem/gemrc"
   symlink "ruby/rvmrc"             "${HOME}/.rvmrc"
   symlink "misc/ctags"             "${HOME}/.ctags"
@@ -748,6 +747,8 @@ setup_nvm() {
     print_error "Cannot switch to NVM version [${version}]"
     return 1
   }
+
+  symlink "node/default-packages" "${NVM_DIR}/default-packages"
 
   require_nvm || return 1
 }
