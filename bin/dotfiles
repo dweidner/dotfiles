@@ -28,7 +28,7 @@ NVM_DIR="${NVM_DIR:-${XDG_DATA_HOME}/nvm}"
 RVM_PATH="${RVM_PATH:-${XDG_DATA_HOME}/rvm}"
 TPM_PATH="${TPM_PATH:-${XDG_DATA_HOME}/tmux/plugins/tpm}"
 
-NODE_LTS_RELEASE="${NODE_LTS_RELEASE:-dubnium}"
+NODE_LTS_RELEASE="${NODE_LTS_RELEASE:-fermium}"
 
 QUIET=0
 VERBOSE=0
@@ -176,7 +176,7 @@ require_nvm() {
 
   if [[ ! -r "${NVM_DIR}/nvm.sh" ]]; then
     return 1
-  fi 
+  fi
   # shellcheck source=/dev/null
   source "${NVM_DIR}/nvm.sh"
 }
@@ -356,21 +356,21 @@ help_cleanup_command() {
   cat <<-EOF
 		Usage:
 		  cleanup [<component>]
-		
+
 		Arguments:
 		  component  	Name of the system component to cleanup
-		
+
 		Help:
 		  The cleanup command purges various caches on the current system and removes
 		  older versions of installed commands.
-		
+
 		    e.g. dotfiles cleanup brew
-		
+
 		  In order to cleanup all system components in one go leave out the component
 		  name.
-		
+
 		    e.g. dotfiles cleanup
-		
+
 	EOF
 }
 
@@ -381,17 +381,17 @@ help_help_command() {
   cat <<-EOF
 		Usage:
 		  help [<command>]
-		
+
 		Arguments:
 		  command  	Name of the command to display usage information for
-		
+
 		Help:
 		  The help command displays help for a given command:
-		
+
 		    e.g dotfiles help update
-		
+
 		  To display a list of available commands, please use the list command.
-		
+
 	EOF
 }
 
@@ -402,16 +402,16 @@ help_setup_command() {
   cat <<-EOF
 		Usage:
 			setup [<component>]
-		
+
 		Arguments:
 		  component  	Name of the system component to run the initial setup for.
-		
+
 		Help:
 		  The setup command can be used to run the initial setup for a specific
 		  system component.
-		
+
 		    e.g. dotfiles setup php
-		
+
 	EOF
 }
 
@@ -425,13 +425,13 @@ help_status_command() {
 
 		Arguments:
 		  component  	Name of the system component to retrieve the status for.
-		
+
 		Help:
 		  The status command can be used to display status information for various
 		  system components.
-		
+
 		    e.g. dotfiles status
-		
+
 	EOF
 }
 
@@ -442,16 +442,16 @@ help_update_command() {
   cat <<-EOF
 		Usage:
 			update [<component>]
-		
+
 		Arguments:
 		  component  	Name of the system component to update
-		
+
 		Help:
 		  The update command can be used to fetch the latest version of various
 		  system components.
-		
+
 		    e.g. dotfiles update brew
-		
+
 	EOF
 }
 
@@ -577,6 +577,7 @@ setup() {
       "php_packages"
       "python_packages"
       "rvm"
+      "ruby"
       "gems"
       "tpm"
       "tmux_plugins"
@@ -637,7 +638,7 @@ setup_symlinks() {
 
   symlink "zsh/zshrc"              "${HOME}/.zshrc"
   symlink "bash/bash_profile"      "${HOME}/.bash_profile"
-  symlink "bash/bashrc"            "${HOME}/.bashrc" 
+  symlink "bash/bashrc"            "${HOME}/.bashrc"
   symlink "bash/completions"       "${XDG_DATA_HOME}/bash-completion/completions"
   symlink "readline/inputrc"       "${XDG_CONFIG_HOME}/readline/inputrc"
   symlink "git/commitmsg"          "${XDG_CONFIG_HOME}/git/commitmsg"
@@ -650,7 +651,6 @@ setup_symlinks() {
   symlink "vim/plugin"             "${XDG_CONFIG_HOME}/nvim/plugin"
   symlink "vim/autoload"           "${XDG_CONFIG_HOME}/nvim/autoload"
   symlink "tmux/tmux.conf"         "${XDG_CONFIG_HOME}/tmux/tmux.conf"
-  symlink "node/default-packages"  "${XDG_CONFIG_HOME}/nvm/default-packages"
   symlink "ruby/gemrc"             "${XDG_CONFIG_HOME}/gem/gemrc"
   symlink "ruby/rvmrc"             "${HOME}/.rvmrc"
   symlink "misc/ctags"             "${HOME}/.ctags"
@@ -692,7 +692,7 @@ setup_homebrew() {
   fi
 
   print_message "Installing hombrew …"
-  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   print_success "Installed homebrew."
 }
 
@@ -748,6 +748,8 @@ setup_nvm() {
     return 1
   }
 
+  symlink "node/default-packages" "${NVM_DIR}/default-packages"
+
   require_nvm || return 1
 }
 
@@ -758,7 +760,7 @@ setup_node() {
   function_exists "nvm" || return 1
 
   print_message "Installing latest node version …"
-  nvm install --lts --latest-npm
+  nvm install --lts=${NODE_LTS_RELEASE} --latest-npm
 }
 
 #
@@ -837,6 +839,34 @@ setup_rvm() {
 
   curl -sSL "https://get.rvm.io" \
     | bash -s -- --path "${RVM_PATH}" --ignore-dotfiles --ruby
+}
+
+#
+# Install the latest version of ruby.
+#
+setup_ruby() {
+  require_rvm || return 1
+  function_exists "rvm" || return 1
+
+  local version
+  version="$(rvm list default string | grep "^ruby-" | cut -c 6- | grep -vE "\-(head|preview|p\d+)" | tail -n1)"
+
+  local latest
+  latest="$(rvm list known | grep "^\[ruby-]" | cut -c 8- | grep -vE "\-(head|preview|-p\d+)" | tr -d "[]" | tail -n1)"
+
+  wait
+
+  if [[ "${version}" == "${latest}" ]]; then
+    print_success "Ruby is already up-to-date."
+    return 0
+  fi
+
+  print_message "Installing latest ruby version …"
+  rvm install "${latest}" & wait
+  rvm alias create latest "${latest}" & wait
+  rvm alias create default "${latest}"
+  rvm use default
+  print_success "Using version ${latest} of ruby as your new default."
 }
 
 #
@@ -1210,10 +1240,10 @@ update_ruby() {
   print_message "Updating ruby …"
 
   local version
-  version="$(rvm list default string | grep -oE "\d{1,2}\.\d{1,2}(\.\d{1,2}(-[a-z0-9]+)?)?" | tail -n1)"
+  version="$(rvm list default string | grep "^ruby-" | cut -c 6- | grep -vE "\-(head|preview|p\d+)" | tail -n1)"
 
   local latest
-  latest="$(rvm list known | grep "^\[ruby-]" | grep -oE "\d{1,2}\.\d{1,2}((\.\d{1,2})|(\[\.\d{1,2}(-[a-z0-9]+)?\]))?" | grep -vE "\-(head|preview)" | tr -d [] | tail -n1)"
+  latest="$(rvm list known | grep "^\[ruby-]" | cut -c 8- | grep -vE "\-(head|preview|-p\d+)" | tr -d "[]" | tail -n1)"
 
   wait
 

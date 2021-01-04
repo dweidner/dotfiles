@@ -63,8 +63,6 @@ cscope.po.out
 .git/
 .hg/
 .svn/
-*.diff
-*.patch
 
 
 

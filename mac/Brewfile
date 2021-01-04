@@ -13,8 +13,7 @@ tap 'universal-ctags/universal-ctags'
 
 # (2) Formulae ------------------------------------ {{{1
 
-brew 'bash'
-brew 'bash-completion@2'
+brew 'zsh'
 brew 'tmux'
 brew 'fzf'
 
@@ -26,7 +25,7 @@ brew 'jq'
 
 brew 'git'
 brew 'git-flow-avh'
-brew 'github/gh/gh'
+brew 'gh'
 brew 'icdiff'
 brew 'diff-so-fancy'
 
@@ -39,7 +38,7 @@ brew 'neovim'
 brew 'shellcheck'
 brew 'yamllint'
 brew 'tidy-html5', args: ['HEAD']
-brew 'universal-ctags/universal-ctags/universal-ctags', args: ['HEAD']
+brew 'universal-ctags', args: ['HEAD']
 
 brew 'composer'
 
@@ -52,7 +51,6 @@ brew 'terminal-notifier'
 
 # (3) Applications -------------------------------- {{{1
 
-cask '1password'
 cask 'alfred'
 cask 'bartender'
 cask 'itsycal'
@@ -62,14 +60,12 @@ cask 'the-unarchiver'
 cask 'firefox'
 cask 'google-chrome'
 
-cask 'spotify'
-
 cask 'imagealpha'
 cask 'imageoptim'
 cask 'contraste'
 
 cask 'visual-studio-code'
-cask 'dash'
+cask 'dash4'
 cask 'tad'
 
 cask 'qlcolorcode'
