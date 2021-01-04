@@ -10,6 +10,9 @@
 [commit]
 	template = ~/.config/git/commitmsg
 
+[pull]
+	ff = only
+
 [push]
 	default = simple
 
