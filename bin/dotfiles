@@ -1210,10 +1210,10 @@ update_ruby() {
   print_message "Updating ruby …"
 
   local version
-  version="$(rvm list default string | grep -oE "\d{1,2}\.\d{1,2}(\.\d{1,2}(-[a-z0-9]+)?)?" | tail -n1)"
+  version="$(rvm list default string | grep "^ruby-" | cut -c 6- | grep -vE "\-(head|preview|p\d+)" | tail -n1)"
 
   local latest
-  latest="$(rvm list known | grep "^\[ruby-]" | grep -oE "\d{1,2}\.\d{1,2}((\.\d{1,2})|(\[\.\d{1,2}(-[a-z0-9]+)?\]))?" | grep -vE "\-(head|preview)" | tr -d [] | tail -n1)"
+  latest="$(rvm list known | grep "^\[ruby-]" | cut -c 8- | grep -vE "\-(head|preview|-p\d+)" | tr -d "[]" | tail -n1)"
 
   wait
 
