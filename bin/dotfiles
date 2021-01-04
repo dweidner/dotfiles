@@ -577,6 +577,7 @@ setup() {
       "php_packages"
       "python_packages"
       "rvm"
+      "ruby"
       "gems"
       "tpm"
       "tmux_plugins"
@@ -837,6 +838,34 @@ setup_rvm() {
 
   curl -sSL "https://get.rvm.io" \
     | bash -s -- --path "${RVM_PATH}" --ignore-dotfiles --ruby
+}
+
+#
+# Install the latest version of ruby.
+#
+setup_ruby() {
+  require_rvm || return 1
+  function_exists "rvm" || return 1
+
+  local version
+  version="$(rvm list default string | grep "^ruby-" | cut -c 6- | grep -vE "\-(head|preview|p\d+)" | tail -n1)"
+
+  local latest
+  latest="$(rvm list known | grep "^\[ruby-]" | cut -c 8- | grep -vE "\-(head|preview|-p\d+)" | tr -d "[]" | tail -n1)"
+
+  wait
+
+  if [[ "${version}" == "${latest}" ]]; then
+    print_success "Ruby is already up-to-date."
+    return 0
+  fi
+
+  print_message "Installing latest ruby version …"
+  rvm install "${latest}" & wait
+  rvm alias create latest "${latest}" & wait
+  rvm alias create default "${latest}"
+  rvm use default
+  print_success "Using version ${latest} of ruby as your new default."
 }
 
 #
