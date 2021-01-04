@@ -28,7 +28,7 @@ NVM_DIR="${NVM_DIR:-${XDG_DATA_HOME}/nvm}"
 RVM_PATH="${RVM_PATH:-${XDG_DATA_HOME}/rvm}"
 TPM_PATH="${TPM_PATH:-${XDG_DATA_HOME}/tmux/plugins/tpm}"
 
-NODE_LTS_RELEASE="${NODE_LTS_RELEASE:-dubnium}"
+NODE_LTS_RELEASE="${NODE_LTS_RELEASE:-fermium}"
 
 QUIET=0
 VERBOSE=0
@@ -760,7 +760,7 @@ setup_node() {
   function_exists "nvm" || return 1
 
   print_message "Installing latest node version …"
-  nvm install --lts=dubnium --latest-npm
+  nvm install --lts=${NODE_LTS_RELEASE} --latest-npm
 }
 
 #
