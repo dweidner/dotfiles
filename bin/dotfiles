@@ -176,7 +176,7 @@ require_nvm() {
 
   if [[ ! -r "${NVM_DIR}/nvm.sh" ]]; then
     return 1
-  fi 
+  fi
   # shellcheck source=/dev/null
   source "${NVM_DIR}/nvm.sh"
 }
@@ -356,21 +356,21 @@ help_cleanup_command() {
   cat <<-EOF
 		Usage:
 		  cleanup [<component>]
-		
+
 		Arguments:
 		  component  	Name of the system component to cleanup
-		
+
 		Help:
 		  The cleanup command purges various caches on the current system and removes
 		  older versions of installed commands.
-		
+
 		    e.g. dotfiles cleanup brew
-		
+
 		  In order to cleanup all system components in one go leave out the component
 		  name.
-		
+
 		    e.g. dotfiles cleanup
-		
+
 	EOF
 }
 
@@ -381,17 +381,17 @@ help_help_command() {
   cat <<-EOF
 		Usage:
 		  help [<command>]
-		
+
 		Arguments:
 		  command  	Name of the command to display usage information for
-		
+
 		Help:
 		  The help command displays help for a given command:
-		
+
 		    e.g dotfiles help update
-		
+
 		  To display a list of available commands, please use the list command.
-		
+
 	EOF
 }
 
@@ -402,16 +402,16 @@ help_setup_command() {
   cat <<-EOF
 		Usage:
 			setup [<component>]
-		
+
 		Arguments:
 		  component  	Name of the system component to run the initial setup for.
-		
+
 		Help:
 		  The setup command can be used to run the initial setup for a specific
 		  system component.
-		
+
 		    e.g. dotfiles setup php
-		
+
 	EOF
 }
 
@@ -425,13 +425,13 @@ help_status_command() {
 
 		Arguments:
 		  component  	Name of the system component to retrieve the status for.
-		
+
 		Help:
 		  The status command can be used to display status information for various
 		  system components.
-		
+
 		    e.g. dotfiles status
-		
+
 	EOF
 }
 
@@ -442,16 +442,16 @@ help_update_command() {
   cat <<-EOF
 		Usage:
 			update [<component>]
-		
+
 		Arguments:
 		  component  	Name of the system component to update
-		
+
 		Help:
 		  The update command can be used to fetch the latest version of various
 		  system components.
-		
+
 		    e.g. dotfiles update brew
-		
+
 	EOF
 }
 
@@ -637,7 +637,7 @@ setup_symlinks() {
 
   symlink "zsh/zshrc"              "${HOME}/.zshrc"
   symlink "bash/bash_profile"      "${HOME}/.bash_profile"
-  symlink "bash/bashrc"            "${HOME}/.bashrc" 
+  symlink "bash/bashrc"            "${HOME}/.bashrc"
   symlink "bash/completions"       "${XDG_DATA_HOME}/bash-completion/completions"
   symlink "readline/inputrc"       "${XDG_CONFIG_HOME}/readline/inputrc"
   symlink "git/commitmsg"          "${XDG_CONFIG_HOME}/git/commitmsg"
@@ -692,7 +692,7 @@ setup_homebrew() {
   fi
 
   print_message "Installing hombrew …"
-  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   print_success "Installed homebrew."
 }
 
