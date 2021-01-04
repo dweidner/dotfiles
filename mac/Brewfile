@@ -38,7 +38,7 @@ brew 'neovim'
 brew 'shellcheck'
 brew 'yamllint'
 brew 'tidy-html5', args: ['HEAD']
-brew 'universal-ctags/universal-ctags/universal-ctags', args: ['HEAD']
+brew 'universal-ctags', args: ['HEAD']
 
 brew 'composer'
 
@@ -51,7 +51,6 @@ brew 'terminal-notifier'
 
 # (3) Applications -------------------------------- {{{1
 
-cask '1password'
 cask 'alfred'
 cask 'bartender'
 cask 'itsycal'
@@ -60,8 +59,6 @@ cask 'the-unarchiver'
 
 cask 'firefox'
 cask 'google-chrome'
-
-cask 'spotify'
 
 cask 'imagealpha'
 cask 'imageoptim'
