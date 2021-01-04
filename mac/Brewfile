@@ -13,8 +13,7 @@ tap 'universal-ctags/universal-ctags'
 
 # (2) Formulae ------------------------------------ {{{1
 
-brew 'bash'
-brew 'bash-completion@2'
+brew 'zsh'
 brew 'tmux'
 brew 'fzf'
 
@@ -26,7 +25,7 @@ brew 'jq'
 
 brew 'git'
 brew 'git-flow-avh'
-brew 'github/gh/gh'
+brew 'gh'
 brew 'icdiff'
 brew 'diff-so-fancy'
 
@@ -69,7 +68,7 @@ cask 'imageoptim'
 cask 'contraste'
 
 cask 'visual-studio-code'
-cask 'dash'
+cask 'dash4'
 cask 'tad'
 
 cask 'qlcolorcode'
