@@ -759,7 +759,7 @@ setup_node() {
   function_exists "nvm" || return 1
 
   print_message "Installing latest node version …"
-  nvm install --lts --latest-npm
+  nvm install --lts=dubnium --latest-npm
 }
 
 #
