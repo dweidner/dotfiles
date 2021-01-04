@@ -822,13 +822,13 @@ setup_php_packages() {
 # Install latest pip version and default packages.
 #
 setup_python_packages() {
-  command_exists "pip3" || return 1
+  command_exists "python3" || return 1
 
   print_message "Updating pip …"
-  pip3 install --upgrade pip
+  python3 -m pip install --upgrade pip
 
   print_message "Installing python packages …"
-  pip3 install --upgrade --requirement "${DOTFILES}/python/requirements.txt"
+  python3 -m pip install --upgrade --requirement "${DOTFILES}/python/requirements.txt"
 }
 
 #
@@ -1182,21 +1182,21 @@ update_php_packages() {
 # Update outdated python packages.
 #
 update_python_packages() {
-  command_exists "pip3" || return 1
+  command_exists "python3" || return 1
 
   print_message "Updating python packages …"
 
   local outdated
-  outdated="$(pip3 list --outdated | tail -n +3 | cut -d " " -f 1)"
+  outdated="$(python3 -m pip list --outdated | tail -n +3 | cut -d " " -f 1)"
 
   if [[ -z "${outdated}" ]]; then
     print_success "Python packages are already up-to-date."
     return 0
   fi
 
-  pip3 install --upgrade setuptools
-  pip3 install --upgrade pip
-  pip3 install --upgrade --requirement "${DOTFILES}/python/requirements.txt"
+  python3 -m pip install --upgrade setuptools
+  python3 -m pip install --upgrade pip
+  python3 -m pip install --upgrade --requirement "${DOTFILES}/python/requirements.txt"
 
   print_success "Upgraded outdated python packages."
 }
