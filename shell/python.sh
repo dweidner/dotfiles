@@ -5,15 +5,15 @@
 
 # (1) Python Package Manager -------------------------------------------- {{{1
 
-if dot::command_exists "pip3"; then
+if dot::command_exists "python3"; then
   case "$SHELL_NAME" in
-    bash) eval "$(pip3 completion --bash)" ;;
-    zsh)  eval "$(pip3 completion --zsh)" ;;
+    bash) eval "$(python3 -m pip completion --bash)" ;;
+    zsh)  eval "$(python3 -m pip completion --zsh)" ;;
   esac
 fi
 
 
-# (3) Python Versions --------------------------------------------------- {{{1
+# (2) Python Versions --------------------------------------------------- {{{1
 
 alias py="python3"
 alias py2="python2"

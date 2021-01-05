@@ -23,12 +23,19 @@ if [[ -r "${rvm_path}/scripts/completion" ]]; then
 fi
 
 
-# (3) Ruby Bundler ------------------------------------------------------ {{{1
+# (3) Ruby Package Manager ---------------------------------------------- {{{1
 
-alias be="bundle exec"
-alias bi="bundle install"
-alias bl="bundle list"
-alias bu="bundle update"
+export GEMRC="${XDG_CONFIG_HOME}/gem/gemrc"
+export GEM_HOME="${XDG_DATA_HOME}/gem"
+export GEM_SPEC_CACHE="${XDG_CACHE_HOME}/gem"
+
+
+# (4) Ruby Bundler ------------------------------------------------------ {{{1
+
+export BUNDLE_USER_CONFIG="${XDG_CONFIG_HOME}/bundle"
+export BUNDLE_USER_HOME="${XDG_DATA_HOME}/bundle"
+export BUNDLE_USER_PLUGIN="${XDG_DATA_HOME}/bundle/plugin"
+export BUNDLE_USER_CACHE="${XDG_CACHE_HOME}/bundle"
 
 
 # vim:foldmethod=marker:foldlevel=2

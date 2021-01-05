@@ -10,9 +10,8 @@
 # 3. Command History
 # 4. Text Editors
 # 5. Pagers
-# 6. Package Managers
-# 7. Shell-specific
-# 8. OS-specific
+# 6. Shell-specific
+# 7. OS-specific
 # -----------------------------------------------------------------------
 
 
@@ -76,26 +75,13 @@ done
 export VISUAL="$EDITOR"
 
 
-# (6) Package Managers -------------------------------------------------- {{{1
-
-export COMPOSER_HOME="${XDG_CONFIG_HOME}/composer"
-export COMPOSER_CACHE_DIR="${XDG_CACHE_HOME}/composer"
-
-export GEMRC="${XDG_CONFIG_HOME}/gem/gemrc"
-
-export BUNDLE_USER_CONFIG="${XDG_CONFIG_HOME}/bundle"
-export BUNDLE_USER_HOME="${XDG_DATA_HOME}/bundle"
-export BUNDLE_USER_PLUGIN="${XDG_DATA_HOME}/bundle/plugin"
-export BUNDLE_USER_CACHE="${XDG_CACHE_HOME}/bundle"
-
-
-# (7) Shell-specific ---------------------------------------------------- {{{1
+# (6) Shell-specific ---------------------------------------------------- {{{1
 
 [[ -n "$BASH_VERSION" ]] && source "${DOTFILES}/shell/variables-bash.sh"
 [[ -n "$ZSH_VERSION" ]]  && source "${DOTFILES}/shell/variables-zsh.sh"
 
 
-# (8) OS-specific ------------------------------------------------------- {{{1
+# (7) OS-specific ------------------------------------------------------- {{{1
 
 case "$OSTYPE" in
   darwin*) source "${DOTFILES}/shell/variables-darwin.sh" ;;
