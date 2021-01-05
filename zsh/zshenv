@@ -1,0 +1,8 @@
+# zsh/zshenv
+#
+# @file ZSH-specific environment variables
+
+DOTFILES="${DOTFILES:-$HOME/.config/dotfiles}"
+ZDOTDIR="${ZDOTDIR:-$HOME}"
+
+source "${DOTFILES}/shell/variables-zsh.sh"
