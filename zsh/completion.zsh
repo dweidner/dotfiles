@@ -57,13 +57,4 @@ zstyle ":completion:*" users ""
 zstyle ":completion::complete:cd:*" tag-order "! users"
 
 
-# (4) Git Completions ...------------------------------------------------ {{{1
-
-# Prefer zsh's builtin git completion
-if [[ -r "${HOMEBREW_PREFIX}/share/zsh/site-functions/_git" ]]; then
-  chmod -r "${HOMEBREW_PREFIX}/share/zsh/site-functions/_git"
-  chmod -r "${HOMEBREW_PREFIX}/share/zsh/site-functions/git-completion.bash"
-fi
-
-
 # vim:foldmethod=marker:foldlevel=2
