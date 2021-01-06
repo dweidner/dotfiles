@@ -638,6 +638,7 @@ setup_symlinks() {
 
   symlink "zsh/zshenv"                 "${HOME}/.zshenv"
   symlink "zsh/zshrc"                  "${HOME}/.zshrc"
+  symlink "zsh/fsh"                    "${XDG_CONFIG_HOME}/fsh"
   symlink "bash/bash_sessions_disable" "${HOME}/.bash_sessions_disable"
   symlink "bash/bash_profile"          "${HOME}/.bash_profile"
   symlink "bash/bashrc"                "${HOME}/.bashrc"
