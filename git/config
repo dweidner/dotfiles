@@ -5,6 +5,7 @@
 	interactive = auto
 
 [init]
+	defaultBranch = main
 	tempaltedir = ~/.config/git/template
 
 [commit]
