@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+#
+# Prettify CSV formatted files.
+#
+# @see {https://www.stefaanlippens.net/pretty-csv.html}
+#
+# usage: pretty_csv [<file>]
+#
+pretty_csv() {
+  perl -pe 's/((?<=,)|(?<=^)),/ ,/g;' "$@" | column -t -s, | exec less  -S -X -K
+}
+
+pretty_csv "$@"
