@@ -10,7 +10,14 @@ if [[ -r "${HOMEBREW_PREFIX}/opt/openssl" ]]; then
 fi
 
 
-# (2) Ruby Version Manager ---------------------------------------------- {{{1
+# (2) Ruby Package Manager ---------------------------------------------- {{{1
+
+export GEMRC="${XDG_CONFIG_HOME}/gem/gemrc"
+export GEM_HOME="${XDG_DATA_HOME}/gem"
+export GEM_SPEC_CACHE="${XDG_CACHE_HOME}/gem"
+
+
+# (3) Ruby Version Manager ---------------------------------------------- {{{1
 
 export rvm_path="${XDG_DATA_HOME}/rvm"
 
@@ -21,13 +28,6 @@ fi
 if [[ -r "${rvm_path}/scripts/completion" ]]; then
   source "${rvm_path}/scripts/completion"
 fi
-
-
-# (3) Ruby Package Manager ---------------------------------------------- {{{1
-
-export GEMRC="${XDG_CONFIG_HOME}/gem/gemrc"
-export GEM_HOME="${XDG_DATA_HOME}/gem"
-export GEM_SPEC_CACHE="${XDG_CACHE_HOME}/gem"
 
 
 # (4) Ruby Bundler ------------------------------------------------------ {{{1
