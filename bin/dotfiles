@@ -1179,6 +1179,10 @@ update_php_packages() {
 
   cgr update \
     && print_success "Update global php packages."
+
+  # Updating phpcs overwrites the configuration file as a consequence we have
+  # to reapply the changes
+  setup_phpcs
 }
 
 #
@@ -1243,10 +1247,10 @@ update_ruby() {
   print_message "Updating ruby …"
 
   local version
-  version="$(rvm list default string | grep "^ruby-" | cut -c 6- | grep -vE "\-(head|preview|p\d+)" | tail -n1)"
+  version="$(rvm list default string | grep "^ruby-" | cut -c 6- | grep -vE "\-(head|preview|next|p\d+)" | tail -n1)"
 
   local latest
-  latest="$(rvm list known | grep "^\[ruby-]" | cut -c 8- | grep -vE "\-(head|preview|-p\d+)" | tr -d "[]" | tail -n1)"
+  latest="$(rvm list known | grep "^\[ruby-]" | cut -c 8- | grep -vE "\-(head|preview|next|-p\d+)" | tr -d "[]" | tail -n1)"
 
   wait
 
