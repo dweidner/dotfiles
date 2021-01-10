@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+#
+# Test the loading time of the current shell
+#
+# usage: timesh [<shell>]
+#
+timesh() {
+  declare -a options=()
+
+  local shell="${1:-${SHELL}}"
+
+  case "${shell}" in
+    */bash)
+      options+=("-i")
+      options+=("-c" "exit")
+      ;;
+    */zsh)
+      options+=("-i")
+      options+=("-c" "exit")
+      ;;
+    *)
+      echo "Current shell is not supported" >&2
+      return 1
+      ;;
+  esac
+
+  for i in {1..10}; do
+    time "${shell}" "${options[@]}"
+  done
+}
+
+timesh "$@"
