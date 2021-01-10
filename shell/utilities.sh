@@ -112,13 +112,19 @@ dot::confirm() {
 # usage: dot::slugify <str>
 #
 dot::slugify() {
-  echo "${*}" | \
-    tr "[:upper:]" "[:lower:]" | \
-    tr "-" "[:space:]" | \
-    tr "_" "[:space:]" | \
-    tr -s "[:space:]" | \
-    tr " " "-" | \
-    sed "s/[^a-z0-9-]//g"
+  local str
+
+  case "${SHELL}" in
+    */zsh)  str="${(L)*}" ;;
+    */bash) str="${*,,}"  ;;
+  esac
+
+  str="${str//[^a-z0-9]/-}"
+  str="${str//--/-}"
+  str="${str#-}"
+  str="${str%-}"
+
+  echo "${str}"
 }
 
 #
@@ -207,13 +213,15 @@ dot::eval() {
   local extension="sh"
 
   case "${SHELL}" in
-    */bash) extension="bash" ;;
     */zsh)  extension="zsh"  ;;
+    */bash) extension="bash" ;;
   esac
 
+  local key
+  key="$(dot::slugify "${*}")"
+
   local directory="${XDG_CACHE_HOME}/dotfiles"
-  local file="${directory}/eval-${1##*/}.${extension}"
-  #local file="${directory}/eval-$(dot::slugify "${1##*/}").${extension}"
+  local file="${directory}/eval-${key}.${extension}"
 
   if [[ -s "${file}" ]]; then
     source "${file}"
