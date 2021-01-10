@@ -18,7 +18,7 @@ __prompt_dirty() {
 # Collect information about the current git repository
 __prompt_git() {
   dot::in_git_repository \
-    && echo -e "${1}$(__prompt_branch_name)${2}$(__prompt_dirty)${3:-\e[0m}"
+    && echo -e "${1}$(__prompt_branch_name)${2}$(__prompt_dirty)"
 }
 
 # Render the prompt symbol
@@ -62,7 +62,7 @@ __prompt() {
   local symbol="\$(__prompt_symbol \"${purple}\" \"${red}\")"
   local git="\$(__prompt_git \"${gray}\" \"${purple}\")"
 
-  export PS1="${nl}${cwd} ${git}${nl}${symbol} ${reset}"
+  export PS1="${nl}${cwd} ${git}${reset}${nl}${symbol}${reset} "
   export PS2="${gray}⋮${reset} "
 }
 
