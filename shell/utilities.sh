@@ -116,7 +116,7 @@ dot::slugify() {
 
   case "${SHELL}" in
     */zsh)  str="${(L)*}" ;;
-    */bash) str="${*,,}"  ;;
+    *)      str="$(tr "[:upper:]" "[:lower:]" <<< "${*}")" ;;
   esac
 
   str="${str//[^a-z0-9]/-}"
