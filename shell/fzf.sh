@@ -18,16 +18,16 @@
 
 export FZF_DIR="/usr/local/opt/fzf"
 
-if [[ ! "${PATH}" == *"${FZF_DIR}/bin"* ]]; then
+if [[ "${PATH}" != *"${FZF_DIR}/bin"* ]]; then
   PATH="${PATH}:${FZF_DIR}/bin"
 fi
 
-if [[ "${SHELL_NAME}" == "bash" ]]; then
+if [[ "${SHELL}" == */bash ]]; then
   source "${FZF_DIR}/shell/completion.bash"
   source "${FZF_DIR}/shell/key-bindings.bash"
 fi
 
-if [[ "${SHELL_NAME}" == "zsh" ]]; then
+if [[ "${SHELL}" == */zsh ]]; then
   source "${FZF_DIR}/shell/completion.zsh"
   source "${FZF_DIR}/shell/key-bindings.zsh"
 fi
@@ -150,7 +150,7 @@ fe() {
     else
       files+=("${item}")
     fi
-  done < <(
+  done <<<"$(
     fzf \
       --query="${1}" \
       --multi \
@@ -158,7 +158,7 @@ fe() {
       --exit-0 \
       --expect=ctrl-o,ctrl-v \
       --preview "${FZF_DEFAULT_FILE_PREVIEW}"
-  )
+  )"
 
   if [[ "${key}" == "ctrl-o" ]]; then
     dot::open "${files[@]}"
@@ -200,7 +200,7 @@ fgd() {
 
   local files=()
 
-  while read -r item; do files+=("${item}"); done < <(
+  while read -r item; do files+=("${item}"); done <<<"$(
     git ls-files --modified \
       | fzf \
           --query="${1}" \
@@ -208,34 +208,9 @@ fgd() {
           --select-1 \
           --exit-0 \
           --preview "${FZF_GIT_DIFF_COMMAND}"
-  )
+  )"
 
   xargs -I {} sh -c "${FZF_GIT_DIFF_COMMAND}" <<< "${files[*]}"
-}
-
-#
-# Browse and fetch gitignore templates from a public API endpoint.
-#
-# usage: fgi [<query>]
-#
-fgi() {
-  local url="${GITIGNORE_URL:-https://www.gitignore.io/api}"
-  local templates=()
-
-  while read -r item; do templates+=("${item}"); done < <(
-    curl -L -s "${url}/list" \
-      | tr "," "\n" \
-      | fzf \
-          --query "${1}" \
-          --multi \
-          --preview "curl -L -s ${url}/{}"
-  )
-
-  (( ${#templates[@]} > 0 )) || return
-
-  curl -L -s "${url}/$(tr " " "," <<< "${templates[*]}")" \
-    | tail -n +5 \
-    | sed '$d'
 }
 
 #
