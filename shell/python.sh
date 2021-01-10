@@ -6,9 +6,9 @@
 # (1) Python Package Manager -------------------------------------------- {{{1
 
 if dot::command_exists "python3"; then
-  case "$SHELL_NAME" in
-    bash) eval "$(python3 -m pip completion --bash)" ;;
-    zsh)  eval "$(python3 -m pip completion --zsh)" ;;
+  case "${SHELL}" in
+    */bash) dot::eval python3 -m pip completion --bash;;
+    */zsh)  dot::eval python3 -m pip completion --zsh;;
   esac
 fi
 

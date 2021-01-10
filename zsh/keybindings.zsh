@@ -63,13 +63,8 @@ bindkey -s "${key[Ctrl]}xL" "^Ull^M"
 bindkey -s "${key[Ctrl]}xo" "^Ufe^M"
 
 # Improve history search using [Arrow Up/Down]
-if (( $+widgets[history-substring-search-up] )); then
-  bindkey "${key[Up]}"    history-substring-search-up
-  bindkey "${key[Down]}"  history-substring-search-down
-else
-  bindkey "${key[Up]}"    up-line-or-history
-  bindkey "${key[Down]}"  down-line-or-history
-fi
+bindkey "${key[Up]}"    up-line-or-history
+bindkey "${key[Down]}"  down-line-or-history
 
 
 # (a) Keymap: Completion Menu ------------------------------------------- {{{2
@@ -84,13 +79,8 @@ bindkey -M menuselect "${key[Ctrl]}o" accept-and-infer-next-history
 # (b) Keymap: EMACS ----------------------------------------------------- {{{2
 
 # Search history with [Ctrl]+[P/N] in EMACS mode
-if (( $+widgets[history-substring-search-up] )); then
-  bindkey -M emacs "${key[Ctrl]}p"  history-substring-search-up
-  bindkey -M emacs "${key[Ctrl]}n"  accept-or-history-substring-search-down
-else
-  bindkey -M emacs "${key[Ctrl]}p"  up-line-or-history
-  bindkey -M emacs "${key[Ctrl]}n"  accept-or-down-line
-fi
+bindkey -M emacs "${key[Ctrl]}p"  up-line-or-history
+bindkey -M emacs "${key[Ctrl]}n"  accept-or-down-line
 
 # Select a file using fzf
 if (( $+widgets[fzf-file-widget] )); then
@@ -110,13 +100,8 @@ fi
 # (c) Keymap: VI -------------------------------------------------------- {{{2
 
 # Search history with [j/k] in VIM mode
-if (( $+widgets[history-substring-search-up] )); then
-  bindkey -M vicmd "k"  history-substring-search-up
-  bindkey -M vicmd "j"  accept-or-history-substring-search-down
-else
-  bindkey -M vicmd "k"  up-line-or-history
-  bindkey -M vicmd "j"  dotfiles-accept-or-down-line
-fi
+bindkey -M vicmd "k"  up-line-or-history
+bindkey -M vicmd "j"  dotfiles-accept-or-down-line
 
 
 # (2) ZLE Commands ------------------------------------------------------ {{{1

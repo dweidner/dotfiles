@@ -16,9 +16,6 @@
 
 # (1) Input/Output ------------------------------------------------------ {{{1
 
-stty -ixon                     # Disable start/stop output control
-ttyctl -f                      # Restore terminal settings when exiting abnormal
-
 setopt EMACS                   # Selects keymap `emacs' for any operations
 setopt NO_FLOW_CONTROL         # Disable start/stop characters in editor
 setopt NO_CLOBBER              # Don’t overwrite files with > and >>

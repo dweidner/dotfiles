@@ -17,14 +17,10 @@ export NPM_CONFIG_INIT_LICENSE="MIT"
 
 # (2) Node Version Manager ---------------------------------------------- {{{1
 
-export NVM_DIR="${XDG_DATA_HOME}/nvm"
+export NVM_DIR="${NVM_DIR:-${XDG_DATA_HOME}/nvm}"
 
-if [[ -r "${NVM_DIR}/nvm.sh" ]]; then
-  source "${NVM_DIR}/nvm.sh"
-fi
-
-if [[ -n "${BASH}" ]] && [[ -r "${NVM_DIR}/bash_completion" ]]; then
-  source "${NVM_DIR}/bash_completion"
+if [[ -s "${NVM_DIR}/nvm.sh" ]]; then
+  dot::defer "${NVM_DIR}/nvm.sh" nvm node npm ncu svgo
 fi
 
 

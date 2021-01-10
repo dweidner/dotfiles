@@ -50,11 +50,11 @@ zstyle ":completion:*" matcher-list \
   "r:|[._-]=* r:|=*" \
   "l:|=* r:|=*"
 
-# Don't complete usernames
-zstyle ":completion:*" users ""
-
 # Don't complete home directories
 zstyle ":completion::complete:cd:*" tag-order "! users"
+
+# Don't complete usernames
+zstyle ":completion:*" users ""
 
 
 # vim:foldmethod=marker:foldlevel=2

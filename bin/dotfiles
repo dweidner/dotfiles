@@ -177,6 +177,7 @@ require_nvm() {
   if [[ ! -r "${NVM_DIR}/nvm.sh" ]]; then
     return 1
   fi
+
   # shellcheck source=/dev/null
   source "${NVM_DIR}/nvm.sh"
 }
@@ -1181,7 +1182,7 @@ update_php_packages() {
     && print_success "Update global php packages."
 
   # Updating phpcs overwrites the configuration file as a consequence we have
-  # to reapply the changes
+  # to reapply the changes with each update
   setup_phpcs
 }
 
@@ -1340,6 +1341,7 @@ cleanup() {
 
   if (( $# == 0 )); then
     components=(
+      "cache"
       "homebrew"
       "rvm"
       "gems"
@@ -1349,6 +1351,21 @@ cleanup() {
   for component in "${components[@]}"; do
     if function_exists "cleanup_${component}"; then
       "cleanup_${component}"
+    fi
+  done
+}
+
+#
+# Cleanup the dotfiles cache.
+#
+cleanup_cache() {
+  [[ -d "${XDG_CACHE_HOME}/dotfiles" ]] || return 0
+
+  print_message "Removing cache files…"
+
+  for file in "${XDG_CACHE_HOME}/dotfiles/eval-"*; do
+    if [[ -s "${file}" ]]; then
+      rm "${file}"
     fi
   done
 }

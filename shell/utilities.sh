@@ -57,33 +57,6 @@ dot::function_exists() {
 }
 
 #
-# Generate a heading text.
-#
-# usage: dot::heading <heading> [<character>]
-#
-dot::heading() {
-  local heading
-  local hr
-
-  heading="$(echo "${1}" | tr "[:lower:]" "[:upper:]")"
-  hr="$(dot::hr $(( ${#heading} + 1 )))"
-
-  echo -e "\033[0;34m${heading} ${hr}\033[0;m"
-}
-
-#
-# Draw a horizontal line.
-#
-# usage: dot::hr [<offset>] [<char>]
-#
-dot::hr() {
-  local offset="${1:-0}"
-  local char="${2:-─}"
-
-  printf "%*s" $(( COLUMNS - offset )) " " | tr " " "${char}"
-}
-
-#
 # Print a status message.
 #
 # usage: dot::info <message>
@@ -134,13 +107,18 @@ dot::confirm() {
 }
 
 #
-# Print an error message and stop script execution.
+# Create a URL friendly string.
 #
-# usage: dot::exit <message>
+# usage: dot::slugify <str>
 #
-dot::exit() {
-  dot::error "$@"
-  exit 1
+dot::slugify() {
+  echo "${*}" | \
+    tr "[:upper:]" "[:lower:]" | \
+    tr "-" "[:space:]" | \
+    tr "_" "[:space:]" | \
+    tr -s "[:space:]" | \
+    tr " " "-" | \
+    sed "s/[^a-z0-9-]//g"
 }
 
 #
@@ -156,6 +134,99 @@ dot::trim() {
   str="${str%$needle}"
 
   echo "$str"
+}
+
+#
+# Open a list of files.
+#
+# usage: dot::open <file> [<file>]
+#
+dot::open() {
+  (( $# > 0 )) || return
+
+  local cmd
+
+  case "${OSTYPE}" in
+    darwin*) cmd="open" ;;
+    linux*)  cmd="nohup xdg-open" ;;
+    cygwin*) cmd="cygstart" ;;
+    *)       cmd="cat" ;;
+  esac
+
+  ${cmd} -- "$@" &>/dev/null
+}
+
+#
+# Load a given script before executing a command. Removes aliases that
+# have been previously created to defer loading.
+#
+# @see {https://github.com/qoomon/zsh-lazyload}
+#
+# usage: dot::load <source> <cmd> [<aliases>]
+#
+dot::load() {
+  local script="${1}"
+  local cmd="${2}"
+
+  declare -a aliases
+
+  case "${SHELL}" in
+    */zsh)  aliases+=("${(s: :)${3}}") ;;
+    */bash) aliases=(${3}) ;;
+  esac
+
+  unalias "${aliases[@]}"
+  source "${script}"
+  "${cmd}" "${@:4}"
+}
+
+#
+# Defer loading of shell functions.
+#
+# usage: dot::defer <source> <cmd> […]
+#
+dot::defer() {
+  local script="${1}"
+  shift
+
+  for cmd in "${@}"; do
+    alias -- "${cmd}=dot::load \"${script}\" \"${cmd}\" \"${*}\""
+  done
+}
+
+#
+# Read the arguments as input to the shell and execute the resulting
+# command in the current shell process. Caches the result for subsequent
+# calls.
+#
+# @see {https://github.com/mroth/evalcache}
+#
+# usage: dot::eval <command>
+#
+dot::eval() {
+  local extension="sh"
+
+  case "${SHELL}" in
+    */bash) extension="bash" ;;
+    */zsh)  extension="zsh"  ;;
+  esac
+
+  local directory="${XDG_CACHE_HOME}/dotfiles"
+  local file="${directory}/eval-${1##*/}.${extension}"
+  #local file="${directory}/eval-$(dot::slugify "${1##*/}").${extension}"
+
+  if [[ -s "${file}" ]]; then
+    source "${file}"
+    return $?
+  elif dot::command_exists "${1}"; then
+    mkdir -p "${directory}"
+    "${@}" > "${file}"
+    source "${file}"
+    return $?
+  else
+    dot::error "eval: command not found: ${*}"
+    return 1
+  fi
 }
 
 #
@@ -196,22 +267,3 @@ dot::edit() {
   esac
 }
 
-#
-# Open a list of files.
-#
-# usage: dot::open <file> [<file>]
-#
-dot::open() {
-  (( $# > 0 )) || return
-
-  local cmd
-
-  case "${OSTYPE}" in
-    darwin*) cmd="open" ;;
-    linux*)  cmd="nohup xdg-open" ;;
-    cygwin*) cmd="cygstart" ;;
-    *)       cmd="cat" ;;
-  esac
-
-  ${cmd} -- "$@" &>/dev/null
-}

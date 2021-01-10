@@ -5,34 +5,23 @@
 # -----------------------------------------------------------------------
 # Table of Contents
 # -----------------------------------------------------------------------
-# 1. Global functions and aliases
-# 2. Setup environment and tools
-# 3. Zsh settings
+# 1. Global variables and utilities
+# 2. Zsh settings
+# 2. Environments and tools
 # 4. Local configuration
 # -----------------------------------------------------------------------
 
 
-# (1) Global functions and aliases -------------------------------------- {{{1
+# (1) Global variables and utilities ------------------------------------ {{{1
 
 DOTFILES="${DOTFILES:-$HOME/.config/dotfiles}"
 
 source "${DOTFILES}/shell/variables.sh"
 source "${DOTFILES}/shell/path.sh"
 source "${DOTFILES}/shell/utilities.sh"
-source "${DOTFILES}/shell/functions.sh"
-source "${DOTFILES}/shell/aliases.sh"
 
 
-# (2) Setup environments and tools -------------------------------------- {{{1
-
-source "${DOTFILES}/shell/node.sh"
-source "${DOTFILES}/shell/php.sh"
-source "${DOTFILES}/shell/ruby.sh"
-source "${DOTFILES}/shell/python.sh"
-source "${DOTFILES}/shell/fzf.sh"
-
-
-# (3) Zsh settings ----------------------------------------------------- {{{1
+# (2) Zsh settings ------------------------------------------------------ {{{1
 
 fpath=("${DOTFILES}/zsh/completions" $fpath)
 fpath=("${DOTFILES}/zsh/functions" $fpath)
@@ -42,6 +31,18 @@ source "${DOTFILES}/zsh/options.zsh"
 source "${DOTFILES}/zsh/completion.zsh"
 source "${DOTFILES}/zsh/keybindings.zsh"
 source "${DOTFILES}/zsh/misc.zsh"
+
+
+# (3) Environments and tools -------------------------------------------- {{{1
+
+source "${DOTFILES}/shell/functions.sh"
+source "${DOTFILES}/shell/aliases.sh"
+
+source "${DOTFILES}/shell/node.sh"
+source "${DOTFILES}/shell/php.sh"
+source "${DOTFILES}/shell/ruby.sh"
+source "${DOTFILES}/shell/python.sh"
+source "${DOTFILES}/shell/fzf.sh"
 
 
 # (4) Local configuration ----------------------------------------------- {{{1
