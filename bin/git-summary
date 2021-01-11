@@ -12,10 +12,15 @@ TIME_FORMAT="${TIME_FORMAT:-"%H:%M"}"
 WEEKDAYS=("Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday" "Sunday")
 
 MONDAY=1
+TUESDAY=2
+WEDNESDAY=
+THURSDAY=4
+FRIDAY=5
+SATURDAY=6
 SUNDAY=7
 
 START_OF_WEEK="${START_OF_WEEK:-$MONDAY}"
-END_OF_WEEK="${START_OF_WEEK:-$SUNDAY}"
+END_OF_WEEK="${END_OF_WEEK:-$SUNDAY}"
 
 
 
@@ -127,8 +132,15 @@ get_day_of_week() {
   local weekDay="${3}"
 
   local timestamp
-  timestamp="$(date -jf "%Y-%m-%d" "${year}-01-01" "+%s")"
-  timestamp="$(date -r "${timestamp}" -v -Monday "+%s")"
+  timestamp="$(date -jf "%Y-%m-%d %H:%M:%S" "${year}-01-01 00:00:00" "+%s")"
+
+  # The first calendar week of a year is the week that contains the first
+  # Thursday in January (@see ISO 8601).
+  if [[ "$(get_week_day "${timestamp}")" -gt "${THURSDAY}" ]]; then
+    timestamp="$(date -r "${timestamp}" -v +Monday "+%s")"
+  else
+    timestamp="$(date -r "${timestamp}" -v -Monday "+%s")"
+  fi
 
   local offset=$(( week - 1 ))
   local index=$(( weekDay - 1 ))
@@ -266,6 +278,14 @@ format_date() {
   date -jf "%s" "${1}" "+${DATE_FORMAT} ${TIME_FORMAT}"
 }
 
+#
+# Get a formatted date that can be parsed by git.
+#
+# usage: git_date <str>
+#
+git_date() {
+  date -jf "%s" "${1}" "+%m-%d-%Y %H:%M"
+}
 
 
 
@@ -302,8 +322,8 @@ has_commits() {
     git -C "${dir}" shortlog HEAD \
       --summary \
       --author "${author// /\\ }" \
-      --after "$(format_date "${from}")" \
-      --before "$(format_date "${to}")" \
+      --after "$(git_date "${from}")" \
+      --before "$(git_date "${to}")" \
       2>/dev/null \
       | awk '{ print $1; }'
   )"
@@ -346,7 +366,7 @@ show_summary() {
     return 1
   fi
 
-  heading "${dir/#${HOME}/\~}"
+  heading "${dir/#${HOME}/~}"
 
   git -C "${dir}" log \
     --graph \
@@ -356,8 +376,8 @@ show_summary() {
     --abbrev-commit \
     --topo-order \
     --author "${author// /\\ }" \
-    --after "$(format_date "${from}")" \
-    --before "$(format_date "${to}")"
+    --after "$(git_date "${from}")" \
+    --before "$(git_date "${to}")"
 }
 
 
@@ -391,7 +411,6 @@ parse_timespan() {
     if is_integer "${1}"; then
       from="$(get_start_of_week "${year}" "${1}")"
       to="$(add_week "${from}")"
-      to="$(sub_day "${to}")"
     else
       from="$(get_timestamp "${1}")"
       to="${from}"
@@ -413,7 +432,7 @@ parse_timespan() {
 # usage: summary [<date>]
 #
 main() {
-  local candidates="${PROJECT_PATH:-"${HOME}/Sites:${HOME}/Projects"}"
+  local candidates="${PROJECT_PATH:-"${HOME}/Sites"}"
 
   local author
   author="$(get_user_name)"
