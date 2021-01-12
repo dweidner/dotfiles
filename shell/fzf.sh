@@ -36,7 +36,9 @@ fi
 # (2) FZF Configuration ------------------------------------------------- {{{1
 
 # Command used to fetch the list of files.
-if dot::command_exists "rg"; then
+if dot::command_exists "fd"; then
+  export FZF_DEFAULT_COMMAND='fd --type file --hidden --no-ignore-vcs'
+elif dot::command_exists "rg"; then
   export FZF_DEFAULT_COMMAND='rg --files --hidden --no-messages --no-ignore-vcs --glob ""'
 elif dot::command_exists "ag"; then
   export FZF_DEFAULT_COMMAND='ag --hidden --silent --skip-vcs-ignores -g ""'
@@ -141,13 +143,13 @@ fe() {
       --multi \
       --select-1 \
       --exit-0 \
-      --expect=ctrl-o,ctrl-v \
+      --expect=ctrl-o,ctrl-e \
       --preview "${FZF_DEFAULT_FILE_PREVIEW}"
   )"
 
   if [[ "${key}" == "ctrl-o" ]]; then
     dot::open "${files[@]}"
-  elif [[ "${key}" == "ctrl-v" ]]; then
+  elif [[ "${key}" == "ctrl-e" ]]; then
     ${FZF_ALTERNATIVE_EDITOR} -- "${files[@]}"
   else
     dot::edit "${files[@]}"

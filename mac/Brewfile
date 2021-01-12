@@ -32,6 +32,7 @@ brew 'diff-so-fancy'
 brew 'ack'
 brew 'tree'
 brew 'bat'
+brew 'fd'
 brew 'ripgrep'
 
 brew 'neovim'
