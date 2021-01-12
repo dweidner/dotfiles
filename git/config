@@ -1,15 +1,38 @@
 # git/config
 
 [color]
-	ui = auto
+	branch = auto
+	diff = auto
+	grep = auto
 	interactive = auto
+	status = auto
+	ui = auto
+	pager = true
 
 [init]
 	defaultBranch = main
 	tempaltedir = ~/.config/git/template
 
+[branch]
+	autosetupmerge = always
+	autosetuprebase = always
+
 [commit]
 	template = ~/.config/git/commitmsg
+
+[diff]
+	compactionHeuristic = true
+	renames = true
+	renameLimit = 12650
+
+[difftool]
+	prompt = false
+
+[mergetool]
+	prompt = false
+
+[pager]
+	status = true
 
 [pull]
 	ff = only
@@ -20,11 +43,14 @@
 [pull]
 	rebase = false
 
-[icdiff]
-	options = --line-numbers --tabsize=4 --numlines=8
-
 [pretty]
 	nice = "format:%Cgreen%ad %Cred%h%Creset -%C(yellow)%d%Creset %s %Cblue[%cn]%Creset"
 
+[rebase]
+	stat = true
+
 [include]
 	path = ~/.config/git/aliases
+
+[include]
+	path = ~/.local/gitconfig

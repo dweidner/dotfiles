@@ -18,9 +18,9 @@
 
 DOTFILES="${DOTFILES:-$HOME/.config/dotfiles}"
 
+source "${DOTFILES}/shell/utilities.sh"
 source "${DOTFILES}/shell/variables.sh"
 source "${DOTFILES}/shell/path.sh"
-source "${DOTFILES}/shell/utilities.sh"
 
 
 # (3) Bash settings ----------------------------------------------------- {{{1

@@ -62,11 +62,19 @@ export LESSHISTFILE="${XDG_DATA_HOME}/less/history"
 export PAGER="less -X"
 export MANPAGER="$PAGER"
 
+if dot::command_exists "delta"; then
+  export GIT_PAGER="delta --light"
+elif dot::command_exists "diff-so-fancy"; then
+  export GIT_PAGER="diff-so-fancy | less -x4"
+else
+  export GIT_PAGER="less -x4"
+fi
+
 
 # (5) Text Editors ------------------------------------------------------ {{{1
 
 for cmd in "nvim" "vim" "vi"; do
-  if command -v "$cmd" >/dev/null 2>&1; then
+  if dot::command_exists "${cmd}"; then
     export EDITOR="$cmd"
     break
   fi

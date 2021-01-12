@@ -103,7 +103,9 @@ else
   alias c="cat"
 fi
 
-if dot::command_exists "icdiff"; then
+if dot::command_exists "delta"; then
+  alias d="delta"
+elif dot::command_exists "icdiff"; then
   alias d="icdiff --tabsize=4 --numlines=8"
 else
   alias d="diff --side-by-side --width=\$(( COLUMNS - 2 ))"

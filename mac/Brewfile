@@ -24,10 +24,9 @@ brew 'httpie'
 brew 'jq'
 
 brew 'git'
+brew 'git-delta'
 brew 'git-flow-avh'
 brew 'gh'
-brew 'icdiff'
-brew 'diff-so-fancy'
 
 brew 'ack'
 brew 'tree'
