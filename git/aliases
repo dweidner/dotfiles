@@ -21,64 +21,33 @@
 	au = add --update
 	ai = add --interactive
 
-	# git branch
-	branches = branch -a
-
 	# git checkout
 	co = checkout
-
-	# git config
-	aliases = "!git config --get-regexp '^alias\\.' | colrm 1 6 | sed 's/ / = /'"
 
 	# git commit
 	ca = commit --amend
 	ci = commit --interactive
 	cm = commit --message
 
+	# git status
+	ss = status --short
+
 	# git diff[tool]
 	dc = diff --cached
 	ds = diff --staged
-	df = !"git diff --color \"$@\" | diff-so-fancy | less --tabs=4 -RFX"
+	df = !"git diff --color \"$@\" | ${GIT_PAGER} | less --tabs=4 -RFX"
 	dt = !"for name in $(git diff --name-only $1); do git difftool $1 $name & done"
-
-	# git grep
-	gg = grep --break --heading --line-number
 
 	# git log
 	ll = log -n 15 --graph --topo-order --abbrev-commit --date=short --decorate --all --boundary --pretty=nice
 	lm = !git log --author $(git config user.email)
-	search = !"f() { query=\"$1\"; shift; git log -S\"$query\" \"$@\"; }; f \"$@\""
-	contributors = shortlog --summary --numbered --no-merges
-
-	# git push
-	publish = !"git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)"
-	unpublish = !"git push origin :$(git rev-parse --abbrev-ref HEAD)"
-
-	# git remote
-	remotes = remote -v
-
-	# git reset
-	undo = reset --soft HEAD~1
-
-	# git stash
-	save = stash save
-	pop = stash pop
-	snapshot = !git stash save "snapshot: $(date)" && git stash apply "stash@{0}"
-
-	# git status
-	ss = status --short
-
-	# git submodule
-	sm = submodule
-
-	# git tag
-	tags = tag -n1 --list
 
 	# git helpers
+	aliases = "!git config --get-regexp '^alias\\.' | colrm 1 6 | sed 's/ / = /'"
 	ctags = !"$(git rev-parse --git-dir)/hooks/ctags"
-	gitignore = "!f() { curl -L -s https://www.gitignore.io/api/$@; }; f"
-
-	# github helpers
-	append-issue = "!f() { git commit --amend -m \"$(git log --format=%B -n) (#$1)\"; }; f"
+	branches = branch -a
+	contributors = shortlog --summary --numbered --no-merges
+	remotes = remote -v
+	tags = tag -n1 --list
 
 # vim:ft=gitconfig
