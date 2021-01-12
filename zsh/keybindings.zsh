@@ -50,16 +50,10 @@ bindkey "${key[Delete]}"    delete-char
 bindkey "${key[ShiftTab]}"  reverse-menu-complete
 
 # Bind key sequences to frequently used commands
-# [Ctrl]+[x]+[b|f|i|j|k|l|o|p|q|v|w|x|y| |,|.|-]
+# [Ctrl]+[x]+[b|l|o|.]
 bindkey -s "${key[Ctrl]}x." "^U..^M"
-bindkey -s "${key[Ctrl]}x:" "^Ucdl ..^M"
-bindkey -s "${key[Ctrl]}x-" "^Upo^M"
-bindkey -s "${key[Ctrl]}x_" "^Udirs -v^M"
 bindkey -s "${key[Ctrl]}xb" "^Ufb^M"
-bindkey -s "${key[Ctrl]}xs" "^Ug ss^M"
-bindkey -s "${key[Ctrl]}xS" "^Ug s^M"
-bindkey -s "${key[Ctrl]}xl" "^Uls^M"
-bindkey -s "${key[Ctrl]}xL" "^Ull^M"
+bindkey -s "${key[Ctrl]}xl" "^Ull^M"
 bindkey -s "${key[Ctrl]}xo" "^Ufe^M"
 
 # Improve history search using [Arrow Up/Down]
@@ -101,7 +95,7 @@ fi
 
 # Search history with [j/k] in VIM mode
 bindkey -M vicmd "k"  up-line-or-history
-bindkey -M vicmd "j"  dotfiles-accept-or-down-line
+bindkey -M vicmd "j"  accept-or-down-line
 
 
 # (2) ZLE Commands ------------------------------------------------------ {{{1
