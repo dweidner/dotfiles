@@ -59,7 +59,6 @@ export FZF_DEFAULT_OPTS="
   --color header:242,info:242,prompt:5,spinner:242,pointer:5,marker:5,border:254
   --preview-window right:62%:hidden
 "
-
 # Command used to generate a preview for a generic text file.
 if dot::command_exists "bat"; then
   export FZF_DEFAULT_FILE_PREVIEW="bat --color always --style changes,numbers {} 2>/dev/null"
@@ -72,20 +71,6 @@ if dot::command_exists "tree"; then
   export FZF_DEFAULT_DIR_PREVIEW="tree --noreport --dirsfirst -C -L 7 {} | head -100"
 else
   export FZF_DEFAULT_DIR_PREVIEW="ls -1 {} | head -100"
-fi
-
-# Command used to show changes of a given file.
-if dot::command_exists "diff-so-fancy"; then
-  export FZF_GIT_DIFF_COMMAND="git diff --color=always -- {} | diff-so-fancy | less --tabs 4 -FRX"
-else
-  export FZF_GIT_DIFF_COMMAND="git diff --color=always -- {}"
-fi
-
-# Command used to show changes in the current working directory.
-if dot::command_exists "diff-so-fancy"; then
-  export FZF_GIT_SHOW_COMMAND="git show --color --date=short --pretty=nice | diff-so-fancy | less --tabs 4 -FRX"
-else
-  export FZF_GIT_SHOW_COMMAND="git show --color --date=short --pretty=nice"
 fi
 
 # Alternative command used to edit files
@@ -167,71 +152,6 @@ fe() {
   else
     dot::edit "${files[@]}"
   fi
-}
-
-#
-# Add selected files to the git index.
-#
-# usage: fga [<query>]
-#
-fga() {
-  dot::in_git_repository || return
-
-  git ls-files \
-    --modified \
-    --others \
-    --exclude-standard \
-      | fzf \
-          --query="${1}" \
-          --multi \
-          --print0 \
-          --exit-0 \
-          --preview "${FZF_DEFAULT_FILE_PREVIEW}" \
-      | xargs -0 -o git add
-}
-
-#
-# Display current changes since last commit of all selected files.
-#
-# usage: fgd [<query>]
-#
-fgd() {
-  dot::in_git_repository || return
-
-  local files=()
-
-  while read -r item; do files+=("${item}"); done <<<"$(
-    git ls-files --modified \
-      | fzf \
-          --query="${1}" \
-          --multi \
-          --select-1 \
-          --exit-0 \
-          --preview "${FZF_GIT_DIFF_COMMAND}"
-  )"
-
-  xargs -I {} sh -c "${FZF_GIT_DIFF_COMMAND}" <<< "${files[*]}"
-}
-
-#
-# Browse the git commit history.
-#
-# usage: fgl
-#
-fgl() {
-  dot::in_git_repository || return
-
-  git log \
-    --color \
-    --graph \
-    --date=short \
-    --pretty=nice \
-      | fzf \
-          --ansi \
-          --no-sort \
-          --preview "grep -o \"[a-f0-9]\\{7,\\}\" <<< {} | xargs ${FZF_GIT_SHOW_COMMAND}" \
-      | grep -o "[a-f0-9]\\{7,\\}" \
-      | xargs sh -c "${FZF_GIT_SHOW_COMMAND}"
 }
 
 

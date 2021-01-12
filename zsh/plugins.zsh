@@ -41,11 +41,14 @@ ZSH_AUTOSUGGEST_IGNORE_WIDGETS+="accept-or-down-line"
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND="fg=black,bold"
 HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="fg=red"
 
-# (c) NVM Plugin -------------------------------------------------------- {{{2
+# (c) Forgit ------------------------------------------------------------ {{{2
 
-export NVM_DIR="${XDG_DATA_HOME}/nvm"
-export NVM_LAZY_LOAD=1
-export NVM_COMPLETION=1
+FORGIT_NO_ALIASES=1
+
+alias fgl="forgit::log"
+alias fgd="forgit::diff"
+alias fga="forgit::add"
+alias fgi="forgit::ignore"
 
 # (c) Pure Theme -------------------------------------------------------- {{{2
 
@@ -63,7 +66,19 @@ zstyle ":prompt:pure:path" "${PROMPT_COLOR_PATH:-blue}"
 zinit ice compile"(pure|async).zsh" pick"async.zsh" src"pure.zsh" notify
 zinit load "sindresorhus/pure"
 
-# (b) Widgets ----------------------------------------------------------- {{{2
+# (b) Tools -------------------------------------------------------- {{{2
+
+zinit wait lucid for \
+   "hlissner/zsh-autopair" \
+   "tarrasch/zsh-bd" \
+   "OMZP::cp" \
+   "OMZP::extract"
+
+zinit has"fzf" wait lucid for \
+  "wfxr/forgit"
+
+
+# (c) Widgets ----------------------------------------------------------- {{{2
 
 zinit ice wait lucid atload"
   bindkey -M emacs '\C-p' history-substring-search-up
@@ -75,27 +90,20 @@ zinit ice wait lucid atload"
 "
 zinit load "zsh-users/zsh-history-substring-search"
 
-# (c) Tools -------------------------------------------------------- {{{2
-
-zinit wait lucid for \
-   "hlissner/zsh-autopair" \
-   "tarrasch/zsh-bd" \
-   "OMZP::cp" \
-   "OMZP::extract"
-
 # (d) Completions ------------------------------------------------------- {{{2
 
 zinit has"docker" as"completion" is-snippet for \
   "https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker" \
   "https://github.com/docker/compose/blob/master/contrib/completion/zsh/_docker-compose"
 
-zinit wait lucid for \
- atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-    "zdharma/fast-syntax-highlighting" \
- atload"_zsh_autosuggest_start" \
-    "zsh-users/zsh-autosuggestions" \
- blockf atpull"zinit creinstall -q ." \
-    "zsh-users/zsh-completions"
+zinit ice wait lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay"
+zinit load "zdharma/fast-syntax-highlighting"
+
+zinit ice wait lucid atload"_zsh_autosuggest_start"
+zinit load "zsh-users/zsh-autosuggestions"
+
+zinit ice wait lucid blockf atpull"zinit creinstall -q ."
+zinit load "zsh-users/zsh-completions"
 
 
 # vim:foldmethod=marker:foldlevel=2
