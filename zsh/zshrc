@@ -30,7 +30,6 @@ source "${DOTFILES}/zsh/plugins.zsh"
 source "${DOTFILES}/zsh/options.zsh"
 source "${DOTFILES}/zsh/completion.zsh"
 source "${DOTFILES}/zsh/keybindings.zsh"
-source "${DOTFILES}/zsh/misc.zsh"
 
 
 # (3) Environments and tools -------------------------------------------- {{{1
