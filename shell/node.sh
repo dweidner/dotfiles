@@ -20,7 +20,7 @@ export NPM_CONFIG_INIT_LICENSE="MIT"
 export NVM_DIR="${NVM_DIR:-${XDG_DATA_HOME}/nvm}"
 
 if [[ -s "${NVM_DIR}/nvm.sh" ]]; then
-  dot::defer "${NVM_DIR}/nvm.sh" nvm node npm ncu svgo
+  dot::defer "${NVM_DIR}/nvm.sh" nvm node npm npx ncu svgo
 fi
 
 
