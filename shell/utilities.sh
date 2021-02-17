@@ -163,44 +163,6 @@ dot::open() {
 }
 
 #
-# Load a given script before executing a command. Removes aliases that
-# have been previously created to defer loading.
-#
-# @see {https://github.com/qoomon/zsh-lazyload}
-#
-# usage: dot::load <source> <cmd> [<aliases>]
-#
-dot::load() {
-  local script="${1}"
-  local cmd="${2}"
-
-  declare -a aliases
-
-  case "${SHELL}" in
-    */zsh)  aliases+=("${(s: :)${3}}") ;;
-    */bash) aliases=(${3}) ;;
-  esac
-
-  unalias "${aliases[@]}"
-  source "${script}"
-  "${cmd}" "${@:4}"
-}
-
-#
-# Defer loading of shell functions.
-#
-# usage: dot::defer <source> <cmd> […]
-#
-dot::defer() {
-  local script="${1}"
-  shift
-
-  for cmd in "${@}"; do
-    alias -- "${cmd}=dot::load \"${script}\" \"${cmd}\" \"${*}\""
-  done
-}
-
-#
 # Read the arguments as input to the shell and execute the resulting
 # command in the current shell process. Caches the result for subsequent
 # calls.

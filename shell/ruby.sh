@@ -30,7 +30,7 @@ export BUNDLE_USER_CACHE="${XDG_CACHE_HOME}/bundle"
 export rvm_path="${XDG_DATA_HOME}/rvm"
 
 if [[ -s "${rvm_path}/scripts/rvm" ]]; then
-  dot::defer "${rvm_path}/scripts/rvm" rvm irb rake rails gem bundle
+  source "${rvm_path}/scripts/rvm"
 fi
 
 
