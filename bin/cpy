@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+#
+# Copy files using rsync.
+#
+# usage: cpy <source> <destination>
+#
+cpy() {
+  rsync --archive --progress --human-readable --backup --backup-dir=/tmp/rsync "${@}"
+}
+
+cpy "$@"

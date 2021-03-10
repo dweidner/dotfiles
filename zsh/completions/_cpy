@@ -1,0 +1,7 @@
+#compdef cpy
+
+#
+# @file Enable completion for the cpy command
+#
+
+_dispatch -s rsync rsync
