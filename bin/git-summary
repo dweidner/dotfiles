@@ -27,6 +27,26 @@ END_OF_WEEK="${END_OF_WEEK:-$SUNDAY}"
 # (2) Utility Functions ------------------------------------------------- {{{1
 
 #
+# Determine wheter a given value exists in an array
+#
+# usage: in_array <needle> <array>
+#
+in_array() {
+  local needle="$1"
+  local item
+
+  shift
+
+  for item; do
+    if [[ "$needle" == "$item" ]]; then
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+#
 # Determine whether the given value represents an integer.
 #
 # usage: is_integer <value>
@@ -432,6 +452,20 @@ parse_timespan() {
 # usage: summary [<date>]
 #
 main() {
+  declare -a excludes
+
+  while (( $# > 0 )); do
+    case "$1" in
+      -e|--exclude)
+        excludes+=("${2}")
+        shift 2
+        ;;
+      *)
+        echo "Unknwon option" >&2
+        return 1
+    esac
+  done
+
   local candidates="${PROJECT_PATH:-"${HOME}/Sites"}"
 
   local author
@@ -457,8 +491,10 @@ main() {
     while read -r directory; do
       repository="$(dirname "${directory}")"
 
-      if has_commits "${repository}" "${author}" "${from}" "${to}"; then
-        show_summary "${repository}" "${author}" "${from}" "${to}"
+      if ! in_array "${repository}" "${excludes[@]}"; then
+        if has_commits "${repository}" "${author}" "${from}" "${to}"; then
+          show_summary "${repository}" "${author}" "${from}" "${to}"
+        fi
       fi
     done < <(get_repositories "${candidate}")
   done <<< "${candidates}:"
