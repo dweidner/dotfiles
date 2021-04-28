@@ -29,6 +29,7 @@ RVM_PATH="${RVM_PATH:-${XDG_DATA_HOME}/rvm}"
 TPM_PATH="${TPM_PATH:-${XDG_DATA_HOME}/tmux/plugins/tpm}"
 
 NODE_LTS_RELEASE="${NODE_LTS_RELEASE:-fermium}"
+PYTHON_VERSION="${PYTHON_VERSION:-3.9.4}"
 
 QUIET=0
 VERBOSE=0
@@ -471,7 +472,6 @@ status() {
       "system"
       "formulae"
       "node_packages"
-      "python_packages"
       "gems"
     )
   fi
@@ -538,15 +538,6 @@ status_node_packages() {
 }
 
 #
-# Determine the number of outdated python packages.
-#
-status_python_packages() {
-  command_exists "pip3" || return 1
-
-  python3 -m pip list --outdated | tail -n +3 | wc -l | tr -d " "
-}
-
-#
 # Determine the number of outdated gems.
 #
 status_gems() {
@@ -576,6 +567,7 @@ setup() {
       "node"
       "node_packages"
       "php_packages"
+      "python"
       "python_packages"
       "rvm"
       "ruby"
@@ -823,16 +815,35 @@ setup_php_packages() {
 }
 
 #
+# Install latest version of python
+#
+setup_python() {
+  if ! command_exists "pyenv"; then
+    return 1
+  fi
+
+  if ! pyenv version | grep "${PYTHON_VERSION}"; then
+    pyenv install "${PYTHON_VERSION}"
+  fi
+}
+
+#
 # Install latest pip version and default packages.
 #
 setup_python_packages() {
-  command_exists "python3" || return 1
+  if ! command_exists "pyenv"; then
+    return 1
+  fi
+
+  if pyenv version | grep "system"; then
+    return 1
+  fi
 
   print_message "Updating pip …"
-  python3 -m pip install --upgrade pip
+  python -m pip install --upgrade pip
 
   print_message "Installing python packages …"
-  python3 -m pip install --upgrade --requirement "${DOTFILES}/python/requirements.txt"
+  python -m pip install --upgrade --requirement "${DOTFILES}/python/requirements.txt"
 }
 
 #
@@ -1190,21 +1201,27 @@ update_php_packages() {
 # Update outdated python packages.
 #
 update_python_packages() {
-  command_exists "python3" || return 1
+  if ! command_exists "pyenv"; then
+    return 1
+  fi
+
+  if pyenv version | grep "system"; then
+    return 1
+  fi
 
   print_message "Updating python packages …"
 
   local outdated
-  outdated="$(python3 -m pip list --outdated | tail -n +3 | cut -d " " -f 1)"
+  outdated="$(python -m pip list --outdated | tail -n +3 | cut -d " " -f 1)"
 
   if [[ -z "${outdated}" ]]; then
     print_success "Python packages are already up-to-date."
     return 0
   fi
 
-  python3 -m pip install --upgrade setuptools
-  python3 -m pip install --upgrade pip
-  python3 -m pip install --upgrade --requirement "${DOTFILES}/python/requirements.txt"
+  python -m pip install --upgrade setuptools
+  python -m pip install --upgrade pip
+  python -m pip install --upgrade --requirement "${DOTFILES}/python/requirements.txt"
 
   print_success "Upgraded outdated python packages."
 }

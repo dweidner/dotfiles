@@ -41,7 +41,7 @@ brew 'tidy-html5', args: ['HEAD']
 brew 'universal-ctags', args: ['HEAD']
 
 brew 'composer'
-brew 'python3'
+brew 'pyenv'
 
 brew 'mas'
 brew 'tag'

@@ -16,20 +16,23 @@ let g:vimrc_home = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
 
 " (1) Python Setup  ----------------------------------------------------- {{{1
 
-let s:python2_exec = '/usr/local/bin/python2'
+let s:pyenv_python3 = expand('$PYENV_ROOT/versions/3.9.4/bin/python')
 
-if executable(s:python2_exec)
-  let g:python_host_prog = s:python2_exec
+let s:python3 = '/usr/bin/python3'
+let s:python2 = '/usr/bin/python2'
+
+if executable(s:python2)
+  let g:python2_host_prog = s:python2
 else
-  let g:loaded_python_provider = 1
+  let g:loaded_python_provider = 0
 endif
 
-let s:python3_exec = '/usr/local/bin/python3'
-
-if executable(s:python3_exec)
-  let g:python3_host_prog = s:python3_exec
+if executable(s:pyenv_python3)
+  let g:python3_host_prog = s:pyenv_python3
+elseif executable(s:python3)
+  let g:python3_host_prog = s:python3
 else
-  let g:loaded_python3_provider = 1
+  let g:loaded_python3_provider = 0
 endif
 
 

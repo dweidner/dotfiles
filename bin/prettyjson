@@ -28,8 +28,8 @@ pretty_json() {
 
   if command_exists "jq"; then
     cat "${@}" | jq
-  elif command_exists "python3"; then
-    cat "${@}" | python3 -m "json.tool" | "${colorize[@]}"
+  elif command_exists "python"; then
+    cat "${@}" | python -m "json.tool" | "${colorize[@]}"
   elif command_exists "php"; then
     cat "${@}" | php -r 'echo json_encode(json_decode(file_get_contents("php://stdin")), JSON_PRETTY_PRINT) . "\n";' | "${colorize[@]}"
   else
