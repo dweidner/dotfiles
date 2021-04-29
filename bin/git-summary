@@ -461,8 +461,7 @@ main() {
         shift 2
         ;;
       *)
-        echo "Unknwon option" >&2
-        return 1
+        break;
     esac
   done
 
