@@ -31,9 +31,6 @@ TPM_PATH="${TPM_PATH:-${XDG_DATA_HOME}/tmux/plugins/tpm}"
 NODE_LTS_RELEASE="${NODE_LTS_RELEASE:-fermium}"
 PYTHON_VERSION="${PYTHON_VERSION:-3.9.4}"
 
-QUIET=0
-VERBOSE=0
-
 
 
 # (2) Utility Functions ------------------------------------------------- {{{1
@@ -111,8 +108,7 @@ confirm() {
 # usage: print_message <message>
 #
 print_message() {
-  (( ! QUIET )) \
-    && echo -e "\\033[0;34m==> $*\\033[0;m"
+  echo -e "\\033[0;34m==> $*\\033[0;m"
 }
 
 #
@@ -121,8 +117,7 @@ print_message() {
 # usage: print_success <message>
 #
 print_success() {
-  (( ! QUIET )) \
-    && echo -e "\\033[0;32m==> $*\\033[0;m"
+  echo -e "\\033[0;32m==> $*\\033[0;m"
 }
 
 #
@@ -131,8 +126,7 @@ print_success() {
 # usage: print_warning <message>
 #
 print_warning() {
-  (( ! QUIET )) \
-    && echo -e "\\033[0;33m==> $*\\033[0;m" >&2
+  echo -e "\\033[0;33m==> $*\\033[0;m" >&2
 }
 
 #
@@ -141,8 +135,7 @@ print_warning() {
 # usage: print_error <message>
 #
 print_error() {
-  (( ! QUIET )) \
-    && echo -e "\\033[0;31m==> $*\\033[0;m" >&2
+  echo -e "\\033[0;31m==> $*\\033[0;m" >&2
 }
 
 #
@@ -163,43 +156,6 @@ command_not_found() {
 #
 unknown_option() {
   print_error "Unknown option given [${1}]"
-}
-
-#
-# Load the node version manager into the current environment.
-#
-# usage: require_nvm
-#
-require_nvm() {
-  if function_exists "nvm"; then
-    return 0
-  fi
-
-  if [[ ! -r "${NVM_DIR}/nvm.sh" ]]; then
-    return 1
-  fi
-
-  # shellcheck source=/dev/null
-  source "${NVM_DIR}/nvm.sh"
-}
-
-
-#
-# Load the ruby version manager into the current environment.
-#
-# usage: require_rvm
-#
-require_rvm() {
-  if function_exists "rvm"; then
-    return 0
-  fi
-
-  if [[ ! -r "${RVM_PATH}/scripts/rvm" ]]; then
-    return 1
-  fi
-
-  # shellcheck source=/dev/null
-  source "${RVM_PATH}/scripts/rvm"
 }
 
 #
@@ -299,11 +255,108 @@ template() {
 #
 silent() {
   # shellcheck disable=SC2048
-  if (( ! VERBOSE )) || (( QUIET )); then
-    $* >/dev/null
-  else
-    $*
+  $* >/dev/null
+}
+
+#
+# Compare two version numbers.
+#
+# usage: version_compare <v1> <v2>
+#
+version_compare() {
+  local latest
+  latest="$(printf '%s\n%s' "${1}" "${2}" | sort --version-sort | tail -n1)"
+
+  if [[ "${1}" == "${2}" ]]; then
+    echo "0"
+  elif [[ "${1}" == "${latest}" ]]; then
+    echo "1"
+  elif [[ "${2}" == "${latest}" ]]; then
+    echo "-1"
   fi
+}
+
+#
+# Determine whether the first version number is greater than the second
+# number.
+#
+# usage: version_gt <v1> <v2>
+#
+version_gt() {
+  local result
+  result="$(version_compare "${1}" "${2}")"
+
+  (( result > 0 ))
+}
+
+#
+# Determine whether the first version number is greater than or equal to the
+# second number.
+#
+# usage: version_gte <v1> <v2>
+#
+version_gte() {
+  local result
+  result="$(version_compare "${1}" "${2}")"
+
+  (( result >= 0 ))
+}
+
+#
+# Load the node version manager into the current environment.
+#
+# usage: require_nvm
+#
+require_nvm() {
+  if function_exists "nvm"; then
+    return 0
+  fi
+
+  if [[ ! -r "${NVM_DIR}/nvm.sh" ]]; then
+    return 1
+  fi
+
+  # shellcheck source=/dev/null
+  source "${NVM_DIR}/nvm.sh"
+}
+
+
+#
+# Load the ruby version manager into the current environment.
+#
+# usage: require_rvm
+#
+require_rvm() {
+  if function_exists "rvm"; then
+    return 0
+  fi
+
+  if [[ ! -r "${RVM_PATH}/scripts/rvm" ]]; then
+    return 1
+  fi
+
+  # shellcheck source=/dev/null
+  source "${RVM_PATH}/scripts/rvm"
+}
+
+#
+# Ensure that a python version is available in the current environment.
+#
+# usage: require_python [<version>]
+#
+require_python() {
+  if ! command_exists "pyenv"; then
+    return 1
+  fi
+
+  local version
+  version="$(pyenv version)"
+
+  if [[ "${version}" == "system" ]]; then
+    return 1
+  fi
+
+  version_gte "${version}" "${1:-3}"
 }
 
 
@@ -815,29 +868,21 @@ setup_php_packages() {
 }
 
 #
-# Install latest version of python
+# Install a specific version of python..
 #
 setup_python() {
-  if ! command_exists "pyenv"; then
+  command_exists "pyenv" || \
     return 1
-  fi
 
-  if ! pyenv version | grep "${PYTHON_VERSION}"; then
+  require_python "${PYTHON_VERSION}" || \
     pyenv install "${PYTHON_VERSION}"
-  fi
 }
 
 #
 # Install latest pip version and default packages.
 #
 setup_python_packages() {
-  if ! command_exists "pyenv"; then
-    return 1
-  fi
-
-  if pyenv version | grep "system"; then
-    return 1
-  fi
+  require_python "${PYTHON_VERSION}" || return 1
 
   print_message "Updating pip …"
   python -m pip install --upgrade pip
@@ -871,7 +916,7 @@ setup_ruby() {
 
   wait
 
-  if [[ "${version}" == "${latest}" ]]; then
+  if version_gte "${latest}" "${version}"; then
     print_success "Ruby is already up-to-date."
     return 0
   fi
@@ -1107,9 +1152,9 @@ update_nvm() {
   version="$(nvm --version)"
 
   local latest
-  latest="$(git -C "${NVM_DIR}" describe --abbrev=0 --match "v[0-9]*" origin --tags)"
+  latest="$(git -C "${NVM_DIR}" describe --abbrev=0 --match "v[0-9]*" origin --tags | sed 's/^v//')"
 
-  if [[ "v${version}" == "${latest}" ]]; then
+  if version_gte "${latest}" "${version}"; then
     print_success "nvm is already up-to-date."
     return 0
   fi
@@ -1138,7 +1183,7 @@ update_node() {
 
   wait
 
-  if [[ "${version}" == "${latest}" ]]; then
+  if version_gte "${latest}" "${version}"; then
     print_success "Node.js is already up-to-date."
     return 0
   fi
@@ -1201,13 +1246,7 @@ update_php_packages() {
 # Update outdated python packages.
 #
 update_python_packages() {
-  if ! command_exists "pyenv"; then
-    return 1
-  fi
-
-  if pyenv version | grep "system"; then
-    return 1
-  fi
+  require_python "${PYTHON_VERSION}" || return 1
 
   print_message "Updating python packages …"
 
@@ -1243,7 +1282,7 @@ update_rvm() {
 
   wait
 
-  if [[ "$version" == "$latest" ]]; then
+  if version_gte "${latest}" "${version}"; then
     print_success "Ruby Version Manager is already up-to-date."
     return 0
   fi
@@ -1272,7 +1311,7 @@ update_ruby() {
 
   wait
 
-  if [[ "${version}" == "${latest}" ]]; then
+  if version_gte "${latest}" "${version}"; then
     print_success "Ruby is already up-to-date."
     return 0
   fi
@@ -1327,7 +1366,7 @@ update_tpm() {
   local remote
   remote="$(git rev-parse "@{u}")"
 
-  if [[ "$current" != "$remote" ]]; then
+  if ! version_gte "${remote}" "${current}"; then
     git pull --quiet --progress && print_success "Updated Tmux plugin manager."
   else
     print_success "Tmux plugin manager is already up-to-date."
@@ -1444,14 +1483,6 @@ main() {
   # Extract the command and globally available options.
   local command="$1"
   shift
-
-  while (( $# > 0 )); do
-    case "$1" in
-      -q|--quiet)   QUIET=1; VERBOSE=0; shift ;;
-      -v|--verbose) QUIET=0; VERBOSE=1; shift ;;
-      *)            break ;;
-    esac
-  done
 
   # Run the specified command.
   case "$command" in
