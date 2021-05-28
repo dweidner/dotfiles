@@ -8,7 +8,7 @@
 export PYENV_ROOT="${XDG_CONFIG_HOME}/pyenv"
 
 if dot::command_exists "pyenv"; then
-  dot::eval pyenv init -
+  dot::eval pyenv init --path
 fi
 
 
