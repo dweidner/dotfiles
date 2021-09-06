@@ -20,6 +20,7 @@
   "editor.renderWhitespace": "boundary",
   "editor.renderLineHighlight": "all",
   "editor.accessibilitySupport": "off",
+  "editor.suggest.preview": true,
   "editor.minimap.enabled": false,
   "editor.semanticHighlighting.enabled": false,
 
