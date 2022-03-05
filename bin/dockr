@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+#
+# Print an error message.
+#
+# usage: print_error <message>
+#
+print_error() {
+  echo -e "\\033[0;31m==> $*\\033[0;m" >&2
+}
+
+#
+# Run composer in a docker container.
+#
+# usage: run_composer [<option>] [<argument>]
+#
+run_composer() {
+  docker run \
+      --rm \
+      --interactive \
+      --tty \
+      --env COMPOSER_HOME \
+      --env COMPOSER_CACHE_DIR \
+      --volume "${COMPOSER_HOME:-${HOME}/.config/composer}":"${COMPOSER_HOME}" \
+      --volume "${COMPOSER_CACHE_DIR}:-${HOME}/.cache/composer}":"${COMPOSER_CACHE_DIR}" \
+      --volume "${PWD}":/app \
+      composer "${@}"
+}
+
+#
+# Local web development using docker images.
+#
+# usage: dockr <service> [<option>] [<argument>]
+#
+dockr() {
+  if ! command -v "docker" >/dev/null 2>&1; then
+    print_error "Command [docker] is not defined"
+    return 1
+  fi
+
+  if ! docker info >/dev/null 2>&1; then
+    print_error "Docker is not running"
+    return 1
+  fi
+
+  local service="$1"
+  shift
+
+  case "$service" in
+    composer)
+      run_composer "$@"
+      ;;
+    *)
+      print_error "Service [${service}] is not defined"
+      return 1
+      ;;
+  esac
+}
+
+dockr "$@"
