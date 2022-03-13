@@ -465,7 +465,7 @@ help_setup_command() {
 		  The setup command can be used to run the initial setup for a specific
 		  system component.
 
-		    e.g. dotfiles setup php
+		    e.g. dotfiles setup node
 
 	EOF
 }
@@ -619,7 +619,6 @@ setup() {
       "nvm"
       "node"
       "node_packages"
-      "php_packages"
       "python"
       "python_packages"
       "rvm"
@@ -627,7 +626,6 @@ setup() {
       "gems"
       "tpm"
       "tmux_plugins"
-      "phpcs"
       "icloud"
       "vscode"
     )
@@ -651,7 +649,6 @@ setup_symlinks() {
     "${XDG_CONFIG_HOME}"
     "${XDG_CACHE_HOME}"
     "${XDG_CACHE_HOME}/bundle"
-    "${XDG_CACHE_HOME}/composer"
     "${XDG_CACHE_HOME}/gem"
     "${XDG_CACHE_HOME}/npm"
     "${XDG_CACHE_HOME}/nvim"
@@ -834,40 +831,6 @@ setup_node_packages() {
 }
 
 #
-# Install cgr, a safer alternative to `composer global require`.
-#
-setup_cgr() {
-  command_exists "composer" || return 1
-
-  print_message "Installing cgr …"
-  composer global require consolidation/cgr
-}
-
-#
-# Install global php packages.
-#
-setup_php_packages() {
-  command_exists "composer" || return 1
-  command_exists "cgr" || setup_cgr
-
-  print_message "Installing php packages …"
-
-  local package
-  local version
-
-  while read -r package; do
-    version="${package#*:}"
-    name="${package%:*}"
-
-    if [[ -n "${version}" ]]; then
-      cgr --stability RC "${name}" "${version}"
-    else
-      cgr --stability RC "${name}"
-    fi
-  done < "${DOTFILES}/php/default-packages"
-}
-
-#
 # Install a specific version of python..
 #
 setup_python() {
@@ -966,42 +929,6 @@ setup_tmux_plugins() {
 }
 
 #
-# Setup php code sniffer.
-#
-setup_phpcs() {
-  command_exists "phpcs" || return 1
-
-  print_message "Setting default configuration for phpcs …"
-
-  silent phpcs --config-set default_standard PSR2
-  silent phpcs --config-set encoding utf-8
-  silent phpcs --config-set show_progress 1
-  silent phpcs --config-set colors 1
-  silent phpcs --config-set report_width auto
-
-  command_exists "cgr" || return 0
-
-  print_message "Registering additional coding standards …"
-
-  local cgr_path="${COMPOSER_HOME}/global"
-  local wpcs_path="${cgr_path}/wp-coding-standards/wpcs/vendor/wp-coding-standards/wpcs"
-  local coder_path="${cgr_path}/drupal/coder/vendor/drupal/coder/coder_sniffer"
-
-  local standards_path
-  standards_path="$(phpcs --config-show | grep installed_paths | cut -d: -f2 | sed -e 's/^[[:space:]]*//g')"
-
-  [[ -d "${wpcs_path}" ]]  && [[ ",${standards_path}," != *",${wpcs_path},"* ]]  \
-    && standards_path="${wpcs_path},${standards_path}"
-
-  [[ -d "${coder_path}" ]] && [[ ",${standards_path}," != *",${coder_path},"* ]] \
-    && standards_path="${coder_path},${standards_path}"
-
-  standards_path="$(sed -e 's/^,*//g' -e 's/,*$//g' <<< "${standards_path}")"
-
-  silent phpcs --config-set installed_paths "${standards_path}"
-}
-
-#
 # Setup a symlink for the iCloud Drive.
 #
 # On macOS the iCloud Drive is hidden in an obscure directory within a users
@@ -1066,7 +993,6 @@ update() {
       "nvm"
       "node"
       "node_packages"
-      "php_packages"
       "python_packages"
       "rvm"
       "ruby"
@@ -1218,28 +1144,6 @@ update_node_packages() {
 
   npm update --global \
     && print_success "Updated outdated node packages."
-}
-
-#
-# Update global php packages.
-#
-update_php_packages() {
-  command_exists "composer" || return 1
-  command_exists "cgr" || return 1
-
-  print_message "Updating cgr …"
-
-  composer global update consolidation/cgr \
-    && print_success "Updated cgr."
-
-  print_message "Updating global php packages …"
-
-  cgr update \
-    && print_success "Update global php packages."
-
-  # Updating phpcs overwrites the configuration file as a consequence we have
-  # to reapply the changes with each update
-  setup_phpcs
 }
 
 #
