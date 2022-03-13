@@ -40,6 +40,7 @@ brew 'yamllint'
 brew 'tidy-html5', args: ['HEAD']
 brew 'universal-ctags', args: ['HEAD']
 
+brew 'php'
 brew 'composer'
 brew 'pyenv'
 
@@ -63,11 +64,11 @@ cask 'google-chrome'
 
 cask 'imagealpha'
 cask 'imageoptim'
-cask 'contraste'
 
 cask 'visual-studio-code'
-cask 'dash4'
+cask 'dash'
 cask 'tad'
+cask 'tableplus'
 
 cask 'qlcolorcode'
 cask 'qlmarkdown'
@@ -82,16 +83,17 @@ cask 'font-ibm-plex'
 cask 'font-source-serif-pro'
 cask 'font-source-code-pro'
 
-mas '1Password', id: 1333542190
+mas '1Password 7', id: 1333542190
 mas 'Affinity Designer', id: 824171161
 mas 'Affinity Photo', id: 824183456
 mas 'Amphetamine', id: 937984704
+mas 'Better', id: 1121192229
 mas 'Gestimer', id: 990588172
 mas 'iA Writer', id: 775737590
-mas 'Magnet', id: 441258766
 mas 'Marked 2', id: 890031187
 mas 'Pixelmator', id: 407963104
-mas 'Reeder 3', id: 880001334
+mas 'Reeder', id: 880001334
+mas 'Things', id: 904280696
 
 
 
