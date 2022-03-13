@@ -61,7 +61,6 @@ set cursorline                       " Highlight current line
 set ruler                            " Display cursor position
 set showmode                         " Display the current vim mode
 set showcmd                          " Show currently running command
-set signcolumn="yes"                 " Always display the sign column
 
 set mouse=a                          " Enable mouse support. Shame on me...
 set clipboard^=unnamed               " Use system clipboard register
@@ -415,8 +414,7 @@ call plug#begin(s:data_home . '/bundle')
   " |- ncm2: Slim, fast and hackable completion framework
   " |- ncm2-tern: JavaScript completion using ternjs code analysis
   " |- ncm2-cssomni: CSS completion for CSS, SASS and LESS
-  " |- languageclient: Vim support for the Language Server Protocol
-  " |- languageserver-php: PHP implementation of the LSP
+  " |- ncm2-tern: ternjs based javascript completion
 
   Plug 'ncm2/ncm2', PlugIf(IsSupported('completion'))
   Plug 'ncm2/ncm2-path', PlugIf(IsSupported('completion'))
@@ -424,11 +422,6 @@ call plug#begin(s:data_home . '/bundle')
 
   if executable('npm')
     Plug 'ncm2/ncm2-tern', PlugIf(IsSupported('completion'), { 'do': function('DoNpmInstall') })
-  endif
-
-  if executable('composer')
-    Plug 'autozimu/LanguageClient-neovim', PlugIf(IsSupported('completion'), { 'branch': 'next', 'do': function('DoRunInstall') })
-    Plug 'roxma/LanguageServer-php-neovim', PlugIf(IsSupported('completion'), { 'do': function('DoComposerInstall') })
   endif
 
   " e) Bookmarks ------------------------------------------------------- {{{2
