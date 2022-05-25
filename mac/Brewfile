@@ -7,6 +7,7 @@ tap 'homebrew/core'
 tap 'homebrew/bundle'
 tap 'homebrew/cask'
 tap 'homebrew/cask-fonts'
+tap 'shivammathur/php'
 tap 'universal-ctags/universal-ctags'
 
 
