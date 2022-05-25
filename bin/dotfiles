@@ -624,6 +624,7 @@ setup() {
       "rvm"
       "ruby"
       "gems"
+      "valet"
       "tpm"
       "tmux_plugins"
       "icloud"
@@ -904,6 +905,22 @@ setup_gems() {
   while read -r name; do
     rvm @global do gem install "${name}"
   done < "${DOTFILES}/ruby/default-gems"
+}
+
+#
+# Install Laravel Valet
+#
+setup_valet() {
+  command_exists "brew" || return 1
+
+  print_message "Installing Laravel Valet …"
+
+  brew update
+  brew install php
+  brew install composer
+
+  composer global require laravel/valet
+  valet install
 }
 
 #
