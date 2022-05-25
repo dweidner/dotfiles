@@ -908,19 +908,24 @@ setup_gems() {
 }
 
 #
-# Install Laravel Valet
+# Install Laravel Valet.
 #
 setup_valet() {
   command_exists "brew" || return 1
 
   print_message "Installing Laravel Valet …"
 
+  brew tap shivammathur/php
+
   brew update
+
   brew install php
   brew install composer
 
   composer global require laravel/valet
+
   valet install
+  valet stop
 }
 
 #
