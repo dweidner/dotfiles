@@ -72,7 +72,6 @@ cask 'tad'
 cask 'tableplus'
 
 cask 'qlcolorcode'
-cask 'qlmarkdown'
 cask 'qlstephen'
 cask 'quicklook-json'
 cask 'quicklook-csv'
