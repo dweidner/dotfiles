@@ -525,7 +525,6 @@ status() {
       "system"
       "formulae"
       "node_packages"
-      "gems"
     )
   fi
 
@@ -590,16 +589,6 @@ status_node_packages() {
   npm outdated --global --parseable --depth=0 | wc -l | tr -d " "
 }
 
-#
-# Determine the number of outdated gems.
-#
-status_gems() {
-  require_rvm || return 1
-  function_exists "rvm" || return 1
-
-  rvm @global do gem outdated | wc -l | tr -d " "
-}
-
 # (d) Setup Command ----------------------------------------------------- {{{2
 
 #
@@ -623,7 +612,6 @@ setup() {
       "python_packages"
       "rvm"
       "ruby"
-      "gems"
       "valet"
       "tpm"
       "tmux_plugins"
@@ -894,20 +882,6 @@ setup_ruby() {
 }
 
 #
-# Install global gems.
-#
-setup_gems() {
-  require_rvm || return 1
-  function_exists "rvm" || return 1
-
-  print_message "Installing global gems …"
-
-  while read -r name; do
-    rvm @global do gem install "${name}"
-  done < "${DOTFILES}/ruby/default-gems"
-}
-
-#
 # Install Laravel Valet.
 #
 setup_valet() {
@@ -1018,7 +992,6 @@ update() {
       "python_packages"
       "rvm"
       "ruby"
-      "gems"
       "tpm"
       "tmux_plugins"
     )
@@ -1255,27 +1228,6 @@ update_ruby() {
 }
 
 #
-# Update global gems.
-#
-update_gems() {
-  require_rvm || return 1
-  function_exists "rvm" || return 1
-
-  print_message "Updating global ruby gems …"
-
-  local outdated
-  outdated="$(rvm @global do gem outdated)"
-
-  if [[ -z "${outdated}" ]]; then
-    print_success "Global ruby gems are already up-to-date"
-    return 0
-  fi
-
-  rvm @global do gem update \
-    && print_success "Updated global ruby gems."
-}
-
-#
 # Update tmux plugin manager.
 #
 update_tpm() {
@@ -1326,7 +1278,6 @@ cleanup() {
       "cache"
       "homebrew"
       "rvm"
-      "gems"
     )
   fi
 
@@ -1372,17 +1323,6 @@ cleanup_rvm() {
 
   print_message "Cleaning up rvm resources …"
   rvm cleanup all
-}
-
-#
-# Clean up old versions of installed gems.
-#
-cleanup_gems() {
-  require_rvm || return 1
-  function_exists "rvm" || return 1
-
-  print_message "Cleaning up old versions of installed gems …"
-  rvm @global do gem cleanup
 }
 
 
