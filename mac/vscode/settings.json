@@ -7,6 +7,8 @@
   "workbench.iconTheme": "vs-minimal",
   "workbench.startupEditor": "newUntitledFile",
   "workbench.sideBar.location": "left",
+  "workbench.editor.untitled.hint": "hidden",
+  "workbench.layoutControl.type": "menu",
 
   // (2) Editor -------------------------------
 
@@ -26,6 +28,7 @@
 
   // (3) Window -------------------------------
 
+  "window.commandCenter": false,
   "window.zoomLevel": 0,
   "window.restoreWindows": "none",
 
@@ -42,7 +45,10 @@
 
   // (6) Terminal -----------------------------
 
-  "terminal.integrated.shell.osx": "/usr/local/bin/zsh",
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.shellIntegration.decorationIcon": "",
+  "terminal.integrated.shellIntegration.decorationIconSuccess": "",
+  "terminal.integrated.shellIntegration.decorationIconError": "",
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.fontFamily": "Fira Code, Source Code Pro, monospace",
   "terminal.integrated.fontSize": 14,
@@ -67,6 +73,9 @@
     "editor.wrappingStrategy": "advanced",
     "files.trimTrailingWhitespace": false
   },
+  "[php]": {
+    "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+  },
   "[plaintext]": {
     "editor.wordWrap": "bounded",
     "editor.wrappingStrategy": "advanced",
@@ -74,6 +83,9 @@
   },
 
   // (9) Extensions ---------------------------
+
+  "extensions.autoUpdate": true,
+  "extensions.ignoreRecommendations": true,
 
   // (a) Workspace ------------
 
@@ -85,21 +97,19 @@
     "$home\\Projekte"
   ],
 
-  // (b) Intellisense ---------
-
-  "php.suggest.basic": false,
-
-  // (c) Source Control -------
+  // (b) Source Control -------
 
   "git.confirmSync": false,
   "git.countBadge": "tracked",
   "gitlens.codeLens.enabled": false,
   "gitlens.statusBar.enabled": false,
   "gitlens.currentLine.enabled": false,
-  "gitlens.views.repositories.enabled": false,
-  "gitlens.advanced.messages": {
-    "suppressShowKeyBindingsNotice": true
-  },
+
+  // (c) Intellisense ---------
+
+  "intelephense.phpdoc.useFullyQualifiedNames": true,
+  "intelephense.phpdoc.returnVoid": false,
+  "intelephense.telemetry.enabled": false,
 
   // (d) Text Editing ---------
 
@@ -110,25 +120,10 @@
     "comment": 2
   },
   "emmet.includeLanguages": {
-    "nunjucks": "html"
+    "nunjucks": "html",
+    "postcss": "css"
   },
-  "highlight-matching-tag.showPath": false,
-  "highlight-matching-tag.showRuler": false,
-  "highlight-matching-tag.styles": {
-    "opening": {
-      "name": {
-        "underline": "green"
-      }
-    }
-  },
-  "rewrap.autoWrap.enabled": false,
-  "spellright.statusBarIndicator": false,
-  "spellright.language": ["de", "en"],
-  "spellright.documentTypes": [
-    "markdown",
-    "latex",
-    "plaintext"
-  ]
+  "rewrap.autoWrap.enabled": false
 
 }
 
