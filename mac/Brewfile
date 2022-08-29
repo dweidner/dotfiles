@@ -83,7 +83,6 @@ cask 'font-ibm-plex'
 cask 'font-source-serif-pro'
 cask 'font-source-code-pro'
 
-mas '1Password 7', id: 1333542190
 mas 'Affinity Designer', id: 824171161
 mas 'Affinity Photo', id: 824183456
 mas 'Amphetamine', id: 937984704
