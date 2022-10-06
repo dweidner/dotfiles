@@ -10,12 +10,9 @@ DavidAnson.vscode-markdownlint
 dbaeumer.vscode-eslint
 dbankier.vscode-quick-select
 deerawan.vscode-dash
-eamodio.gitlens
 ecmel.vscode-html-css
 EditorConfig.EditorConfig
 esbenp.prettier-vscode
-getpsalm.psalm-vscode-plugin
-Gruntfuggly.todo-tree
 jock.svg
 junstyle.php-cs-fixer
 mikestead.dotenv

@@ -5,10 +5,18 @@
   "workbench.preferredLightColorTheme": "Atom One Light",
   "workbench.preferredDarkColorTheme": "Atom One Dark",
   "workbench.iconTheme": "vs-minimal",
-  "workbench.startupEditor": "newUntitledFile",
+  "workbench.startupEditor": "none",
+  "workbench.activityBar.visible": false,
+  "workbench.statusBar.visible": true,
   "workbench.sideBar.location": "left",
+  "workbench.layoutControl.enabled": false,
+  "workbench.editor.showTabs": true,
+  "workbench.editor.showIcons": false,
   "workbench.editor.untitled.hint": "hidden",
-  "workbench.layoutControl.type": "menu",
+  "workbench.tips.enabled": false,
+  "workbench.tree.indent": 16,
+  "workbench.tree.renderIndentGuides": "none",
+  "workbench.list.horizontalScrolling": true,
 
   // (2) Editor -------------------------------
 
@@ -16,26 +24,36 @@
   "editor.fontSize": 14,
   "editor.fontLigatures": true,
   "editor.lineHeight": 24,
-  "editor.rulers": [ 80 ],
   "editor.tabSize": 4,
   "editor.insertSpaces": true,
-  "editor.renderWhitespace": "boundary",
+  "editor.renderWhitespace": "trailing",
   "editor.renderLineHighlight": "all",
-  "editor.accessibilitySupport": "off",
   "editor.suggest.preview": true,
   "editor.minimap.enabled": false,
-  "editor.semanticHighlighting.enabled": false,
+  "editor.guides.indentation": false,
+  "editor.hideCursorInOverviewRuler": true,
+  "editor.scrollbar.horizontalScrollbarSize": 8,
+  "editor.scrollbar.verticalScrollbarSize": 8,
 
-  // (3) Window -------------------------------
+  // (2) Window -------------------------------
 
-  "window.commandCenter": false,
-  "window.zoomLevel": 0,
+  "window.title": "${rootName}",
+  "window.titleBarStyle": "native",
+  "window.nativeTabs": false,
   "window.restoreWindows": "none",
+  "window.newWindowDimensions": "inherit",
+  "window.autoDetectColorScheme": true,
+
+  // (3) Zen Mode -----------------------------
+
+  "zenMode.hideTabs": true,
+  "zenMode.hideStatusBar": true,
+  "zenMode.centerLayout": false,
+  "zenMode.fullScreen": false,
 
   // (4) Breadcrumbs --------------------------
 
-  "breadcrumbs.enabled": true,
-  "breadcrumbs.filePath": "last",
+  "breadcrumbs.enabled": false,
 
   // (5) Explorer -----------------------------
 
@@ -43,19 +61,30 @@
   "explorer.confirmDragAndDrop": false,
   "explorer.openEditors.visible": 0,
 
-  // (6) Terminal -----------------------------
+  // (6) Source Control ----------------------
 
-  "terminal.integrated.shellIntegration.enabled": true,
-  "terminal.integrated.shellIntegration.decorationIcon": "",
-  "terminal.integrated.shellIntegration.decorationIconSuccess": "",
-  "terminal.integrated.shellIntegration.decorationIconError": "",
-  "terminal.integrated.cursorBlinking": true,
+  "git.confirmSync": false,
+  "git.countBadge": "tracked",
+
+  // (7) Debugging ----------------------------
+
+  "debug.console.fontFamily": "Fira Code, Source Code Pro, monospace",
+  "debug.console.fontSize": 14,
+  "debug.console.lineHeight": 24,
+  "debug.toolBarLocation": "docked",
+
+  // (8) Terminal -----------------------------
+
   "terminal.integrated.fontFamily": "Fira Code, Source Code Pro, monospace",
   "terminal.integrated.fontSize": 14,
   "terminal.integrated.fontWeightBold": "normal",
   "terminal.integrated.lineHeight": 1.25,
+  "terminal.integrated.cursorStyle": "line",
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.shellIntegration.decorationsEnabled": "overviewRuler",
 
-  // (7) Files --------------------------------
+  // (9) Files --------------------------------
 
   "files.trimTrailingWhitespace": true,
   "files.associations": {
@@ -66,7 +95,7 @@
     "*.theme": "php"
   },
 
-  // (8) File Types ---------------------------
+  // (10) File Types ---------------------------
 
   "[markdown]": {
     "editor.wordWrap": "bounded",
@@ -82,12 +111,12 @@
     "files.trimTrailingWhitespace": false
   },
 
-  // (9) Extensions ---------------------------
+  // (11) Extensions --------------------------
 
   "extensions.autoUpdate": true,
   "extensions.ignoreRecommendations": true,
 
-  // (a) Workspace ------------
+  // (a) Project Manager ------
 
   "projectManager.sortList": "Recent",
   "projectManager.showProjectNameInStatusBar": false,
@@ -97,21 +126,13 @@
     "$home\\Projekte"
   ],
 
-  // (b) Source Control -------
-
-  "git.confirmSync": false,
-  "git.countBadge": "tracked",
-  "gitlens.codeLens.enabled": false,
-  "gitlens.statusBar.enabled": false,
-  "gitlens.currentLine.enabled": false,
-
-  // (c) Intellisense ---------
+  // (b) Intelephense ---------
 
   "intelephense.phpdoc.useFullyQualifiedNames": true,
   "intelephense.phpdoc.returnVoid": false,
   "intelephense.telemetry.enabled": false,
 
-  // (d) Text Editing ---------
+  // (c) Text Alignment -------
 
   "alignment.surroundSpace": {
     "colon": [ -1, 1 ],
@@ -119,11 +140,16 @@
     "arrow": [ 1, 1 ],
     "comment": 2
   },
+
+  // (d) Rewrap ---------------
+
+  "rewrap.autoWrap.enabled": false,
+
+  // (e) Emmet ----------------
+
   "emmet.includeLanguages": {
     "nunjucks": "html",
     "postcss": "css"
-  },
-  "rewrap.autoWrap.enabled": false
+  }
 
 }
-
