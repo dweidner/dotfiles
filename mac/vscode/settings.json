@@ -70,7 +70,7 @@
 
   "debug.console.fontFamily": "Fira Code, Source Code Pro, monospace",
   "debug.console.fontSize": 14,
-  "debug.console.lineHeight": 24,
+  "debug.console.lineHeight": 26,
   "debug.toolBarLocation": "docked",
 
   // (8) Terminal -----------------------------
