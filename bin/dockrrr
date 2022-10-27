@@ -136,28 +136,6 @@ find_service() {
   return 1
 }
 
-#
-# Proxy a command to a docker service container.
-#
-# usage: proxy_command <service> <cmd> [options] [arguments]
-#
-proxy_command() {
-  local service="${1}"
-
-  if ! is_service_running "${service}"; then
-    print_error "Service [${service}] is not running"
-    return 1
-  fi
-
-  shift 1
-
-  if [[ ! -t 0 ]]; then
-    docker compose exec --no-TTY "${service}" "${@}"
-  else
-    docker compose exec "${service}" "${@}"
-  fi
-}
-
 
 
 # (3) Commands ---------------------------------------------------------- {{{1
@@ -256,6 +234,12 @@ main() {
     return 1
   fi
 
+  local options=()
+
+  if [[ ! -t 0 ]]; then
+    options+=(--no-TTY)
+  fi
+
   local command="${1:-help}"
   shift 1
 
@@ -289,39 +273,39 @@ main() {
       start_services
       ;;
     node)
-      proxy_command "${node_service:-node}" \
+      docker compose exec "${options[@]}" "${node_service:-node}" \
         node "${@}"
       ;;
     npm)
-      proxy_command "${node_service:-node}" \
+      docker compose exec "${options[@]}" "${node_service:-node}" \
         npm "${@}"
       ;;
     npx)
-      proxy_command "${node_service:-node}" \
+      docker compose exec "${options[@]}" "${node_service:-node}" \
         npx "${@}"
       ;;
     php)
-      proxy_command "${php_service:-php}" \
+      docker compose exec "${options[@]}" "${php_service:-php}" \
         php "${@}"
       ;;
     composer)
-      proxy_command "${php_service:-php}" \
+      docker compose exec "${options[@]}" "${php_service:-php}" \
         composer "${@}"
       ;;
     drupal)
-      proxy_command "${php_service:-php}" \
+      docker compose exec "${options[@]}" "${php_service:-php}" \
         ./vendor/bin/drupal "${@}"
       ;;
     drush)
-      proxy_command "${php_service:-php}" \
+      docker compose exec "${options[@]}" "${php_service:-php}" \
         ./vendor/bin/drush "${@}"
       ;;
     phpunit)
-      proxy_command "${php_service:-php}" \
+      docker compose exec "${options[@]}" "${php_service:-php}" \
         ./vendor/bin/phpunit "${@}"
       ;;
     mysql)
-      proxy_command "${mysql_service:-mysql}" \
+      docker compose exec "${options[@]}" "${mysql_service:-mysql}" \
         bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysql -u \${MYSQL_USER} \${MYSQL_DATABASE}"
       ;;
     mysql:dump)
@@ -331,18 +315,23 @@ main() {
       local file
       file="/docker-entrypoint-initdb.d/${1:-${today}-${project}.sql}"
 
-      proxy_command "${mysql_service:-mysql}" \
+      docker compose exec "${options[@]}" "${mysql_service:-mysql}" \
          bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysqldump -u \${MYSQL_USER} \${MYSQL_DATABASE} -r \"${file}\""
       ;;
     mysql:restore)
-      local file
-      file="/docker-entrypoint-initdb.d/${1}"
+      local input
 
-      proxy_command "${mysql_service:-mysql}" \
-        bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysql -u \${MYSQL_USER} \${MYSQL_DATABASE} < \"${file}\""
+      if (( $# > 0 )); then
+        input="/docker-entrypoint-initdb.d/$*"
+      else
+        input="/dev/stdin"
+      fi
+
+      docker compose exec "${options[@]}" "${mysql_service:-mysql}" \
+        bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysql -u \${MYSQL_USER} \${MYSQL_DATABASE} < \"${input}\""
       ;;
     adminer)
-      docker run --init --rm --tty \
+      docker run --init --rm --interactive --tty \
         --publish "${1:-8080}:8080" \
         --env ADMINER_DEFAULT_SERVER="${mysql_service:-db}" \
         adminer
