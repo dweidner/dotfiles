@@ -234,14 +234,14 @@ main() {
     return 1
   fi
 
+  local command="${1:-help}"
+  shift 1
+
   local options=()
 
   if [[ ! -t 0 ]]; then
     options+=(--no-TTY)
   fi
-
-  local command="${1:-help}"
-  shift 1
 
   local project
   project="$(project_name)"
