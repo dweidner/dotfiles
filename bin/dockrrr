@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# @file Custom docker utilities
+# @file Custom wrapper for frequently used docker compose services
 
 # (1) Global Variables -------------------------------------------------- {{{1
 
@@ -107,6 +107,20 @@ project_name() {
 }
 
 #
+# Get the container name of a service.
+#
+# usage: container_name <service>
+#
+container_name() {
+  local service_name="${1}"
+
+  local container_id
+  container_id="$(docker compose ps --quiet "${service_name}")"
+
+  docker inspect --format '{{.Name}}' "${container_id}" | cut -c2-
+}
+
+#
 # Find the first service of multiple candidates that is currently running.
 #
 # usage: find_service <service> [service] [service] …
@@ -172,6 +186,8 @@ usage() {
 		  composer  Run a Composer command.
 		  drupal    Run a Drupal Console command.
 		  drush     Run a Drush command.
+		  phpunit   Run a PHPUnit test.
+		  adminer   Use a browser based database management tool.
 	CommandUsage
 }
 
@@ -259,6 +275,9 @@ main() {
     ls|list)
       list_projects
       ;;
+    help)
+      usage
+      ;;
     up)
       start_services
       ;;
@@ -269,32 +288,47 @@ main() {
       stop_services
       start_services
       ;;
-    help)
-      usage
-      ;;
     node)
-      proxy_command "${node_service:-node}" node "${@}"
+      proxy_command "${node_service:-node}" \
+        node "${@}"
       ;;
     npm)
-      proxy_command "${node_service:-node}" npm "${@}"
+      proxy_command "${node_service:-node}" \
+        npm "${@}"
       ;;
     npx)
-      proxy_command "${node_service:-node}" npx "${@}"
+      proxy_command "${node_service:-node}" \
+        npx "${@}"
       ;;
     php)
-      proxy_command "${php_service:-php}" php "${@}"
+      proxy_command "${php_service:-php}" \
+        php "${@}"
       ;;
     composer)
-      proxy_command "${php_service:-php}" composer "${@}"
+      proxy_command "${php_service:-php}" \
+        composer "${@}"
       ;;
     drupal)
-      proxy_command "${php_service:-php}" ./vendor/bin/drupal "${@}"
+      proxy_command "${php_service:-php}" \
+        ./vendor/bin/drupal "${@}"
       ;;
     drush)
-      proxy_command "${php_service:-php}" ./vendor/bin/drush "${@}"
+      proxy_command "${php_service:-php}" \
+        ./vendor/bin/drush "${@}"
+      ;;
+    phpunit)
+      proxy_command "${php_service:-php}" \
+        ./vendor/bin/phpunit "${@}"
       ;;
     mysql)
-      proxy_command "${mysql_service:-mysql}" bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysql -u \${MYSQL_USER} \${MYSQL_DATABASE}"
+      proxy_command "${mysql_service:-mysql}" \
+        bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysql -u \${MYSQL_USER} \${MYSQL_DATABASE}"
+      ;;
+    adminer)
+      docker run --init --rm --interactive --tty \
+        --publish "${1:-8080}:8080" \
+        --env ADMINER_DEFAULT_SERVER="${mysql_service:-db}" \
+        adminer
       ;;
     *)
       print_error "Unknown command [${command}]"
