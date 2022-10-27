@@ -247,10 +247,10 @@ main() {
   project="$(project_name)"
 
   local node_service
-  node_service="$(find_service "node" "npm")"
+  node_service="$(find_service "node" "laravel" "laravel.test")"
 
   local php_service
-  php_service="$(find_service "php" "drupal" "laravel" "laravel.test")"
+  php_service="$(find_service "php" "drupal" "wordpress" "laravel" "laravel.test")"
 
   local mysql_service
   mysql_service="$(find_service "db" "mysql" "mariadb")"
