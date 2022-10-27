@@ -324,8 +324,25 @@ main() {
       proxy_command "${mysql_service:-mysql}" \
         bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysql -u \${MYSQL_USER} \${MYSQL_DATABASE}"
       ;;
+    mysql:dump)
+      local today
+      today="$(date +%Y-%m-%d)"
+
+      local file
+      file="/docker-entrypoint-initdb.d/${1:-${today}-${project}.sql}"
+
+      proxy_command "${mysql_service:-mysql}" \
+         bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysqldump -u \${MYSQL_USER} \${MYSQL_DATABASE} -r \"${file}\""
+      ;;
+    mysql:restore)
+      local file
+      file="/docker-entrypoint-initdb.d/${1}"
+
+      proxy_command "${mysql_service:-mysql}" \
+        bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysql -u \${MYSQL_USER} \${MYSQL_DATABASE} < \"${file}\""
+      ;;
     adminer)
-      docker run --init --rm --interactive --tty \
+      docker run --init --rm --tty \
         --publish "${1:-8080}:8080" \
         --env ADMINER_DEFAULT_SERVER="${mysql_service:-db}" \
         adminer
