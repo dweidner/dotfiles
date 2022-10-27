@@ -162,9 +162,11 @@ usage() {
 		  npx       Run a npx command.
 		  php       Run a snippet of PHP code.
 		  composer  Run a Composer command.
+		  artisan   Run an Artisan command.
 		  drupal    Run a Drupal Console command.
 		  drush     Run a Drush command.
 		  phpunit   Run a PHPUnit test.
+		  mysql     Start a MYSQL CLI session.
 		  adminer   Use a browser based database management tool.
 	CommandUsage
 }
@@ -291,6 +293,10 @@ main() {
     composer)
       docker compose exec "${options[@]}" "${php_service:-php}" \
         composer "${@}"
+      ;;
+    artisan)
+      docker compose exec "${options[@]}" "${php_service:-php}" \
+        php artisan "${@}"
       ;;
     drupal)
       docker compose exec "${options[@]}" "${php_service:-php}" \
