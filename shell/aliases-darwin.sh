@@ -6,8 +6,7 @@
 # Table of Contents
 # -----------------------------------------------------------------------
 # 1. Homebrew
-# 2. Docker
-# 3. macOS Applications
+# 2. macOS Applications
 # -----------------------------------------------------------------------
 
 
@@ -26,18 +25,8 @@ for cmd in "${keg_only[@]}"; do
 done
 
 
-# (2) Docker ------------------------------------------------------------ {{{1
 
-alias dce="docker compose exec"          # Run a command in a given service
-alias dcr="docker compose run --rm"      # Run a one off command in a container
-alias dcu="docker compose up -d --build" # Build, start and attach to a service
-alias dcd="docker compose down"          # Stop and remove containers
-
-alias sail="./vendor/bin/sail"           # Run a local copy of Laraval Sail
-alias lzd="lazydocker"                   # Open a terminal UI for docker
-
-
-# (3) macOS Applications ------------------------------------------------ {{{1
+# (2) macOS Applications ------------------------------------------------ {{{1
 
 alias marked="open -a Marked\ 2"         # Custom alias for Marked 2
 alias finder="open -a Finder"            # Open a directory in Finder
@@ -49,6 +38,7 @@ alias safari="open -a Safari"            # Open a website in Safari
 alias ql="qlmanage -p >/dev/null 2>&1"   # Open a file in quick look
 alias browser="firefox"                  # Open firefox as default browser
 alias vscode="code"                      # Custom alias for VS Code
+alias sail="./vendor/bin/sail"           # Run a local copy of Laraval Sail
 
 
 # vim:foldmethod=marker:foldlevel=2

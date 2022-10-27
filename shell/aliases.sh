@@ -22,7 +22,7 @@ alias e="${EDITOR:-vi}"          # Open file in default editor
 alias o="${BROWSER:-open}"       # Open file in default file browser
 alias f="find"                   # Easily access the find command
 alias g="git"                    # Easily access the git command
-alias h="history"                # Easily access the command history
+alias d="dockrrr"                # Alias for custom docker command hub
 
 
 # (2) Switch directories ------------------------------------------------ {{{1
@@ -104,11 +104,11 @@ else
 fi
 
 if dot::command_exists "delta"; then
-  alias d="delta"
+  alias pd="delta"
 elif dot::command_exists "icdiff"; then
-  alias d="icdiff --tabsize=4 --numlines=8"
+  alias pd="icdiff --tabsize=4 --numlines=8"
 else
-  alias d="diff --side-by-side --width=\$(( COLUMNS - 2 ))"
+  alias pd="diff --side-by-side --width=\$(( COLUMNS - 2 ))"
 fi
 
 case "$EDITOR" in

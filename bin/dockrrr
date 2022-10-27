@@ -1,0 +1,310 @@
+#!/usr/bin/env bash
+#
+# @file Custom docker utilities
+
+# (1) Global Variables -------------------------------------------------- {{{1
+
+export WWWUSER="${WWWUSER:-$UID}"
+export WWWGROUP="${WWWGROUP:-$(id -g)}"
+
+if [[ -f "./.env" ]]; then
+  source "./.env"
+fi
+
+
+
+# (2) Utility Functions ------------------------------------------------- {{{1
+
+#
+# Determine whether docker is running
+#
+# usage: is_docker_running
+#
+is_docker_running() {
+  docker info >/dev/null 2>&1
+}
+
+#
+# Determine if any services are running
+#
+# usage: is_any_service_running
+#
+is_any_service_running() {
+  docker compose ps 2>&1 | grep --quiet "running"
+}
+
+#
+# Determine whether a docker compose service is running.
+#
+# usage: is_service_running <service>
+#
+is_service_running() {
+  docker compose ps "${1}" 2>&1 | grep --quiet "running"
+}
+
+#
+# Determine whether a command with the given name exists in the current
+# environment.
+#
+# usage: command_exists <name>
+#
+command_exists() {
+  command -v "${1}" >/dev/null 2>&1
+}
+
+#
+# Print a status message.
+#
+# usage: print_message <message>
+#
+print_message() {
+  echo -e "\\033[0;34m==> $*\\033[0;m"
+}
+
+#
+# Print an error message.
+#
+# usage: print_error <message>
+#
+print_error() {
+  echo -e "\\033[0;31m==> $*\\033[0;m" >&2
+}
+
+#
+# Print a warning message.
+#
+# usage: print_warning <message>
+#
+print_warning() {
+  echo -e "\\033[0;33m==> $*\\033[0;m" >&2
+}
+
+#
+# Confirm a question with the user.
+#
+# usage: confirm <question>
+#
+confirm() {
+  read -r -p $'\e[0;32m'"==> $* (y/n [n]) "$'\e[0;m' answer
+
+  case "$answer" in
+    y|Y) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+#
+# Get the name of the current docker compose project.
+#
+# usage: project_name
+#
+project_name() {
+  if [[ -n "${COMPOSE_PROJECT_NAME}" ]]; then
+    printf '%s\n' "${COMPOSE_PROJECT_NAME}"
+  else
+    printf '%s\n' "${PWD##*/}"
+  fi
+}
+
+#
+# Find the first service of multiple candidates that is currently running.
+#
+# usage: find_service <service> [service] [service] …
+#
+find_service() {
+  for service in "${@}"; do
+    if is_service_running "${service}"; then
+      echo "${service}"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+#
+# Proxy a command to a docker service container.
+#
+# usage: proxy_command <service> <cmd> [options] [arguments]
+#
+proxy_command() {
+  local service="${1}"
+
+  if ! is_service_running "${service}"; then
+    print_error "Service [${service}] is not running"
+    return 1
+  fi
+
+  shift 1
+
+  if [[ ! -t 0 ]]; then
+    docker compose exec --no-TTY "${service}" "${@}"
+  else
+    docker compose exec "${service}" "${@}"
+  fi
+}
+
+
+
+# (3) Commands ---------------------------------------------------------- {{{1
+
+# (a) Usage Command ----------------------------------------------------- {{{2
+
+#
+# Display usage information.
+#
+usage() {
+  cat <<- CommandUsage
+		Dockrrr v1.0.0
+
+		Usage:
+		dockrrr <command> [options] [arguments]
+
+		Commands:
+		  list      List all available docker compose projects.
+		  up        Start all containers of the current project.
+		  down      Stop all containers of the current project.
+		  restart   Restart all containers of the current project.
+		  node      Run a Node command.
+		  npm       Run a npm command.
+		  npx       Run a npx command.
+		  php       Run a snippet of PHP code.
+		  composer  Run a Composer command.
+		  drupal    Run a Drupal Console command.
+		  drush     Run a Drush command.
+	CommandUsage
+}
+
+# (b) Start Command ----------------------------------------------------- {{{2
+
+#
+# Start all containers of the current docker compose project.
+#
+# usage: start_services
+#
+start_services() {
+  if is_any_service_running; then
+    print_warning "Some Docker containers are already running"
+
+    if confirm "Do you want to shut them down first?"; then
+      stop_services
+    fi
+  fi
+
+  docker compose up --detach --wait
+}
+
+# (c) Stop Command ------------------------------------------------------ {{{2
+
+#
+# Stop all containers of the current docker compose project.
+#
+# usage: stop_services
+#
+stop_services() {
+  docker compose down --remove-orphans
+}
+
+# (d) List Command ------------------------------------------------------ {{{2
+
+#
+# List all docker compose projects.
+#
+# usage: list_projects
+#
+list_projects() {
+  local directories="${PROJECT_PATH:-"${HOME}/Sites"}"
+
+  while read -rd: directory; do
+    find "${directory}" -maxdepth 3 -type f -name "docker-compose.yml" -exec dirname -- {} \;
+  done <<< "${directories}:"
+}
+
+
+
+# (4) Entry Point ------------------------------------------------------- {{{1
+
+#
+# Main entry point of the script.
+#
+# usage: dockrrr [<cmd>] [options] [arguments]
+#
+main() {
+  if ! command_exists "docker"; then
+    print_error "Command [docker] is not defined"
+    return 1
+  fi
+
+  if ! is_docker_running; then
+    print_warning "Docker is not running"
+    return 1
+  fi
+
+  local command="${1:-help}"
+  shift 1
+
+  local project
+  project="$(project_name)"
+
+  local node_service
+  node_service="$(find_service "node" "npm")"
+
+  local php_service
+  php_service="$(find_service "php" "drupal" "laravel" "laravel.test")"
+
+  local mysql_service
+  mysql_service="$(find_service "db" "mysql" "mariadb")"
+
+  case "${command}" in
+    ls|list)
+      list_projects
+      ;;
+    up)
+      start_services
+      ;;
+    down)
+      stop_services
+      ;;
+    restart)
+      stop_services
+      start_services
+      ;;
+    help)
+      usage
+      ;;
+    node)
+      proxy_command "${node_service:-node}" node "${@}"
+      ;;
+    npm)
+      proxy_command "${node_service:-node}" npm "${@}"
+      ;;
+    npx)
+      proxy_command "${node_service:-node}" npx "${@}"
+      ;;
+    php)
+      proxy_command "${php_service:-php}" php "${@}"
+      ;;
+    composer)
+      proxy_command "${php_service:-php}" composer "${@}"
+      ;;
+    drupal)
+      proxy_command "${php_service:-php}" ./vendor/bin/drupal "${@}"
+      ;;
+    drush)
+      proxy_command "${php_service:-php}" ./vendor/bin/drush "${@}"
+      ;;
+    mysql)
+      proxy_command "${mysql_service:-mysql}" bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysql -u \${MYSQL_USER} \${MYSQL_DATABASE}"
+      ;;
+    *)
+      print_error "Unknown command [${command}]"
+      usage
+      ;;
+  esac
+}
+
+main "$@"
+
+
+
+# vim:foldmethod=marker:foldlevel=2
