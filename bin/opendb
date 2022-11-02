@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+#
+# @file Inspect a project database
+
+#
+# Get an environment variable from a file.
+#
+# usage: get_env <file> <variable>
+#
+get_env() {
+  sed -n "s/${2}=\\(.*\\)/\\1/p" < "${1}"
+}
+
+#
+# Print a status message.
+#
+# usage: print_message <message>
+#
+print_message() {
+  echo -e "\\033[0;34m==> $*\\033[0;m"
+}
+
+#
+# Print an error message.
+#
+# usage: error <message>
+#
+print_error() {
+  echo -e "\\033[0;31m==> $*\\033[0;m" >&2
+}
+
+#
+# Open the database of the current project in a managment tool.
+#
+# usage: opendb <directory>
+#
+opendb() {
+  local directory="${1}"
+
+  if [[ ! -f "${directory}/.env" ]]; then
+    print_error "No .env file found"
+    return 1
+  fi
+
+  DB_CONNECTION="$(get_env "${directory}/.env" "DB_CONNECTION")"
+  DB_HOST="$(get_env "${directory}/.env" "DB_HOST")"
+  DB_PORT="$(get_env "${directory}/.env" "DB_PORT")"
+  DB_DATABASE="$(get_env "${directory}/.env" "DB_DATABASE")"
+  DB_USERNAME="$(get_env "${directory}/.env" "DB_USERNAME")"
+  DB_PASSWORD="$(get_env "${directory}/.env" "DB_PASSWORD")"
+
+  if [[ -z "${DB_DATABASE}" ]]; then
+    DB_DATABASE="$(get_env "${directory}/.env" "DB_NAME")"
+  fi
+
+  if [[ -z "${DB_USERNAME}" ]]; then
+    DB_USERNAME="$(get_env "${directory}/.env" "DB_USER")"
+  fi
+
+  DB_URL="${DB_CONNECTION:-mysql}://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST:-localhost}:${DB_PORT:-3306}/${DB_DATABASE}"
+
+  print_message "Opening ${DB_URL}"
+  open "${DB_URL}"
+}
+
+opendb "${1:-$PWD}"
