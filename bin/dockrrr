@@ -274,6 +274,18 @@ main() {
       stop_services
       start_services
       ;;
+    ruby)
+      docker compose exec "${options[@]}" "${ruby_service:-ruby}" \
+        ruby "${@}"
+      ;;
+    bundle)
+      docker compose exec "${options[@]}" "${ruby_service:-ruby}" \
+        bundle "${@}"
+      ;;
+    gem)
+      docker compose exec "${options[@]}" "${ruby_service:-ruby}" \
+        gem "${@}"
+      ;;
     node)
       docker compose exec "${options[@]}" "${node_service:-node}" \
         node "${@}"
