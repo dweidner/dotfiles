@@ -310,11 +310,11 @@ main() {
       docker compose exec "${options[@]}" "${php_service:-php}" \
         ./vendor/bin/phpunit "${@}"
       ;;
-    mysql)
+    sql)
       docker compose exec "${options[@]}" "${mysql_service:-mysql}" \
         bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysql -u \${MYSQL_USER} \${MYSQL_DATABASE}"
       ;;
-    mysql:dump)
+    sql:dump)
       local today
       today="$(date +%Y-%m-%d)"
 
@@ -324,7 +324,7 @@ main() {
       docker compose exec "${options[@]}" "${mysql_service:-mysql}" \
          bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysqldump -u \${MYSQL_USER} \${MYSQL_DATABASE} -r \"${file}\""
       ;;
-    mysql:restore)
+    sql:restore)
       local input
 
       if (( $# > 0 )); then
