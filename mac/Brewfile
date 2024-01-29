@@ -54,45 +54,24 @@ brew 'terminal-notifier'
 
 # (3) Applications -------------------------------- {{{1
 
-cask 'alfred'
-cask 'bartender'
-cask 'itsycal'
-cask 'daisydisk'
-cask 'the-unarchiver'
-
 cask 'firefox'
 cask 'google-chrome'
 
-cask 'imagealpha'
-cask 'imageoptim'
-
 cask 'visual-studio-code'
 cask 'dash'
-cask 'tad'
 cask 'tableplus'
-
-cask 'qlcolorcode'
-cask 'qlstephen'
-cask 'quicklook-json'
-cask 'quicklook-csv'
 
 cask 'font-charter'
 cask 'font-fira-sans'
 cask 'font-fira-code'
 cask 'font-ibm-plex'
-cask 'font-source-serif-pro'
-cask 'font-source-code-pro'
 
-mas 'Affinity Designer', id: 824171161
+mas 'Affinity Designer', id: 824171160
 mas 'Affinity Photo', id: 824183456
-mas 'Amphetamine', id: 937984704
-mas 'Better', id: 1121192229
 mas 'Gestimer', id: 990588172
-mas 'iA Writer', id: 775737590
 mas 'Marked 2', id: 890031187
 mas 'Pixelmator', id: 407963104
 mas 'Reeder', id: 880001334
-mas 'Things', id: 904280696
 
 
 
