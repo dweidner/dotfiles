@@ -16,7 +16,7 @@ let g:vimrc_home = fnamemodify(resolve(expand('$MYVIMRC')), ':p:h')
 
 " (1) Python Setup  ----------------------------------------------------- {{{1
 
-let s:pyenv_python3 = expand('$PYENV_ROOT/versions/3.9.4/bin/python')
+let s:pyenv_python3 = expand('$PYENV_ROOT/versions/3.12.1/bin/python')
 
 let s:python3 = '/usr/bin/python3'
 let s:python2 = '/usr/bin/python2'

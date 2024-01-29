@@ -12,14 +12,4 @@ if dot::command_exists "pyenv"; then
 fi
 
 
-# (2) Python Package Manager -------------------------------------------- {{{1
-
-if dot::command_exists "python"; then
-  case "${SHELL}" in
-    */bash) dot::eval python -m pip completion --bash;;
-    */zsh)  dot::eval python -m pip completion --zsh;;
-  esac
-fi
-
-
 # vim:foldmethod=marker:foldlevel=2

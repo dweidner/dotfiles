@@ -66,13 +66,6 @@ cask 'font-fira-sans'
 cask 'font-fira-code'
 cask 'font-ibm-plex'
 
-mas 'Affinity Designer', id: 824171160
-mas 'Affinity Photo', id: 824183456
-mas 'Gestimer', id: 990588172
-mas 'Marked 2', id: 890031187
-mas 'Pixelmator', id: 407963104
-mas 'Reeder', id: 880001334
-
 
 
 # vim:foldmethod=marker:foldlevel=2

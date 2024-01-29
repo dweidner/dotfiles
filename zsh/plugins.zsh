@@ -13,16 +13,13 @@
 
 # (1) Plugin Manager ---------------------------------------------------- {{{1
 
-declare -A ZINIT
+ZINIT_HOME="${XDG_DATA_HOME}/zinit"
 
-ZINIT[HOME_DIR]="${XDG_DATA_HOME}/zinit"
-ZINIT[ZCOMPDUMP_PATH]="${XDG_CACHE_HOME}/zsh/zcompdump-${HOST/.*/}-${ZSH_VERSION}"
-
-if [[ ! -d "${ZINIT[HOME_DIR]}" ]]; then
-  git clone "https://github.com/zdharma/zinit.git" "${ZINIT[HOME_DIR]}"
+if [[ ! -d "${ZINIT_HOME}" ]]; then
+  git clone "ihttps://github.com/zdharma-continuum/zinit.git" "${ZINIT_HOME}"
 fi
 
-source "${ZINIT[HOME_DIR]}/zinit.zsh"
+source "${ZINIT_HOME}/zinit.zsh"
 
 
 # (2) Plugin Configuration ---------------------------------------------- {{{1
@@ -43,7 +40,7 @@ HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="fg=red"
 
 # (c) Forgit ------------------------------------------------------------ {{{2
 
-FORGIT_NO_ALIASES=1
+export FORGIT_NO_ALIASES=1
 
 alias fgl="forgit::log"
 alias fgd="forgit::diff"

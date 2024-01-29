@@ -57,8 +57,10 @@ dot::path_add "/usr/local/bin"
 
 # (3) Package Managers -------------------------------------------------- {{{1
 
-dot::path_add "${XDG_CONFIG_HOME}/composer/vendor/bin"
+dot::path_add "/opt/homebrew/sbin"
+dot::path_add "/opt/homebrew/bin"
 dot::path_add "${XDG_CONFIG_HOME}/pyenv/bin"
+dot::path_add "${XDG_CONFIG_HOME}/composer/vendor/bin"
 
 
 # (4) Trumps ------------------------------------------------------------- {{{1
