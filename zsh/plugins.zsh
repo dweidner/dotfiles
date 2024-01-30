@@ -90,8 +90,7 @@ zinit load "zsh-users/zsh-history-substring-search"
 # (d) Completions ------------------------------------------------------- {{{2
 
 zinit has"docker" as"completion" is-snippet for \
-  "https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker" \
-  "https://github.com/docker/compose/blob/master/contrib/completion/zsh/_docker-compose"
+  "https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker"
 
 zinit ice wait lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay"
 zinit load "zdharma/fast-syntax-highlighting"
