@@ -65,6 +65,7 @@ dot::path_add "${XDG_CONFIG_HOME}/composer/vendor/bin"
 
 # (4) Trumps ------------------------------------------------------------- {{{1
 
+dot::path_add "${HOME}/.docker/bin"
 dot::path_add "${HOME}/.local/bin"
 dot::path_add "${DOTFILES}/bin"
 
