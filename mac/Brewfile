@@ -21,6 +21,7 @@ brew 'fzf'
 brew 'curl'
 brew 'wget'
 brew 'rsync'
+brew 'lftp'
 brew 'httpie'
 brew 'jq'
 
@@ -45,7 +46,6 @@ brew 'php'
 brew 'composer'
 brew 'pyenv'
 
-brew 'mas'
 brew 'tag'
 brew 'trash'
 brew 'terminal-notifier'
@@ -54,6 +54,9 @@ brew 'terminal-notifier'
 
 # (3) Applications -------------------------------- {{{1
 
+cask 'appcleaner'
+
+cask 'arc'
 cask 'firefox'
 cask 'google-chrome'
 
