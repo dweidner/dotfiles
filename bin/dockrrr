@@ -236,14 +236,27 @@ main() {
     return 1
   fi
 
-  local command="${1:-help}"
-  shift 1
-
   local options=()
 
   if [[ ! -t 0 ]]; then
     options+=(--no-TTY)
   fi
+
+  for option in "$@"; do
+    case "${option}" in
+      -e|--env)
+        options+=(--env "${2}")
+        shift 2
+        ;;
+      -u|--user)
+        options+=(--user "${2}")
+        shift 2
+        ;;
+    esac
+  done
+
+  local command="${1}"
+  shift 1
 
   local project
   project="$(project_name)"
