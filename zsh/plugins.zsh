@@ -13,13 +13,16 @@
 
 # (1) Plugin Manager ---------------------------------------------------- {{{1
 
-ZINIT_HOME="${XDG_DATA_HOME}/zinit"
+declare -A ZINIT
 
-if [[ ! -d "${ZINIT_HOME}" ]]; then
-  git clone "ihttps://github.com/zdharma-continuum/zinit.git" "${ZINIT_HOME}"
+ZINIT[HOME_DIR]="${XDG_DATA_HOME}/zinit"
+ZINIT[COMPINIT_OPTS]=-C
+
+if [[ ! -d "${ZINIT[HOME_DIR]}" ]]; then
+  git clone "ihttps://github.com/zdharma-continuum/zinit.git" "${ZINIT[HOME_DIR]}"
 fi
 
-source "${ZINIT_HOME}/zinit.zsh"
+source "${ZINIT[HOME_DIR]}/zinit.zsh"
 
 
 # (2) Plugin Configuration ---------------------------------------------- {{{1
@@ -75,7 +78,6 @@ zinit wait lucid for \
 zinit has"fzf" wait lucid for \
   "wfxr/forgit"
 
-
 # (c) Widgets ----------------------------------------------------------- {{{2
 
 zinit ice wait lucid atload"
@@ -90,17 +92,13 @@ zinit load "zsh-users/zsh-history-substring-search"
 
 # (d) Completions ------------------------------------------------------- {{{2
 
-zinit has"docker" as"completion" is-snippet for \
-  "https://github.com/docker/cli/blob/master/contrib/completion/zsh/_docker"
-
-zinit ice wait lucid atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay"
-zinit load "zdharma/fast-syntax-highlighting"
-
 zinit ice wait lucid atload"_zsh_autosuggest_start"
 zinit load "zsh-users/zsh-autosuggestions"
 
 zinit ice wait lucid blockf atpull"zinit creinstall -q ."
 zinit load "zsh-users/zsh-completions"
 
+zinit ice lucid atinit"zicompinit; zicdreplay"
+zinit load "zdharma/fast-syntax-highlighting"
 
 # vim:foldmethod=marker:foldlevel=2
