@@ -6,10 +6,7 @@
 # Table of Contents
 # ----------------------------------------------------------------------
 # 1. Utility Functions
-# 2. Local Binaries
-# 3. Package Managers
-# 4. User Trumps
-# 5. User Manuals
+# 2. Path Directories
 # ----------------------------------------------------------------------
 
 
@@ -49,38 +46,18 @@ dot::path_add() {
 }
 
 
-# (2) Local Binaries ---------------------------------------------------- {{{1
+# (2) Path Directories ------------------------------------------------- {{{1
 
 dot::path_add "/usr/local/sbin"
 dot::path_add "/usr/local/bin"
 
-
-# (3) Package Managers -------------------------------------------------- {{{1
-
 dot::path_add "/opt/homebrew/sbin"
 dot::path_add "/opt/homebrew/bin"
-dot::path_add "${XDG_CONFIG_HOME}/pyenv/bin"
-dot::path_add "${XDG_CONFIG_HOME}/composer/vendor/bin"
-
-
-# (4) Trumps ------------------------------------------------------------- {{{1
 
 dot::path_add "${HOME}/.docker/bin"
 dot::path_add "${HOME}/.local/bin"
+
 dot::path_add "${DOTFILES}/bin"
 
-
-# (5) User Manuals ------------------------------------------------------- {{{1
-
-if command -v manpath >/dev/null 2>&1; then
-  MANPATH="$(manpath)"
-fi
-
-
-# }}}
-
 export PATH
-export MANPATH
 
-
-# vim:foldmethod=marker:foldlevel=2

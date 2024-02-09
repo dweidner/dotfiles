@@ -7,22 +7,18 @@ tap 'homebrew/core'
 tap 'homebrew/bundle'
 tap 'homebrew/cask'
 tap 'homebrew/cask-fonts'
-tap 'shivammathur/php'
-tap 'universal-ctags/universal-ctags'
-
 
 
 # (2) Formulae ------------------------------------ {{{1
 
 brew 'zsh'
-brew 'tmux'
 brew 'fzf'
+brew 'tmux'
 
+brew 'rsync'
 brew 'curl'
 brew 'wget'
-brew 'rsync'
 brew 'lftp'
-brew 'httpie'
 brew 'jq'
 
 brew 'git'
@@ -40,15 +36,9 @@ brew 'neovim'
 brew 'shellcheck'
 brew 'yamllint'
 brew 'tidy-html5', args: ['HEAD']
-brew 'universal-ctags', args: ['HEAD']
-
-brew 'php'
-brew 'composer'
-brew 'pyenv'
 
 brew 'tag'
 brew 'trash'
-brew 'terminal-notifier'
 
 
 
@@ -61,8 +51,6 @@ cask 'firefox'
 cask 'google-chrome'
 
 cask 'visual-studio-code'
-cask 'dash'
-cask 'tableplus'
 
 cask 'font-charter'
 cask 'font-fira-sans'

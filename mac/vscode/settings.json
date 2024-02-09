@@ -6,15 +6,14 @@
   "workbench.preferredDarkColorTheme": "Atom One Dark",
   "workbench.iconTheme": "vs-minimal",
   "workbench.startupEditor": "none",
-  "workbench.activityBar.visible": false,
   "workbench.statusBar.visible": true,
-  "workbench.sideBar.location": "left",
   "workbench.layoutControl.enabled": false,
-  "workbench.editor.showTabs": true,
+  "workbench.editor.showTabs": "multiple",
   "workbench.editor.showIcons": false,
-  "workbench.editor.untitled.hint": "hidden",
+  "workbench.editor.empty.hint": "hidden",
   "workbench.tips.enabled": false,
   "workbench.tree.indent": 16,
+  "workbench.tree.enableStickyScroll": true,
   "workbench.tree.renderIndentGuides": "none",
   "workbench.list.horizontalScrolling": true,
 
@@ -34,19 +33,21 @@
   "editor.hideCursorInOverviewRuler": true,
   "editor.scrollbar.horizontalScrollbarSize": 8,
   "editor.scrollbar.verticalScrollbarSize": 8,
+  "editor.tokenColorCustomizations": {
+    "textMateRules": []
+  },
 
   // (2) Window -------------------------------
 
   "window.title": "${rootName}",
   "window.titleBarStyle": "native",
-  "window.nativeTabs": false,
-  "window.restoreWindows": "none",
-  "window.newWindowDimensions": "inherit",
+  "window.customTitleBarVisibility": "never",
   "window.autoDetectColorScheme": true,
-
-  // (3) Zen Mode -----------------------------
-
-  "zenMode.hideTabs": true,
+  "window.newWindowDimensions": "inherit",
+  "window.restoreWindows": "none",
+  "window.nativeTabs": false,
+  "window.commandCenter": false,
+  "zenMode.showTabs": "single",
   "zenMode.hideStatusBar": true,
   "zenMode.centerLayout": false,
   "zenMode.fullScreen": false,
@@ -90,6 +91,7 @@
   "files.associations": {
     ".dockerignore": "ignore",
     ".php_cs*": "php",
+    ".env*": "dotenv",
     "*.inc": "php",
     "*.module": "php",
     "*.theme": "php"
@@ -132,24 +134,15 @@
   "intelephense.phpdoc.returnVoid": false,
   "intelephense.telemetry.enabled": false,
 
-  // (c) Text Alignment -------
-
-  "alignment.surroundSpace": {
-    "colon": [ -1, 1 ],
-    "assignment": [ 1, 1 ],
-    "arrow": [ 1, 1 ],
-    "comment": 2
-  },
-
-  // (d) Rewrap ---------------
-
-  "rewrap.autoWrap.enabled": false,
-
-  // (e) Emmet ----------------
+  // (c) Emmet ----------------
 
   "emmet.includeLanguages": {
     "nunjucks": "html",
     "postcss": "css"
-  }
+  },
+
+  // (d) Dotenv ----------------
+
+  "dotenv.enableAutocloaking": false
 
 }

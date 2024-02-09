@@ -60,7 +60,7 @@ export LESS="-imwFRX"
 export LESSHISTFILE="${XDG_DATA_HOME}/less/history"
 
 export PAGER="less -X"
-export MANPAGER="$PAGER"
+export MANPAGER="${PAGER}"
 
 if dot::command_exists "delta"; then
   export GIT_PAGER="delta --light"

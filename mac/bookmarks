@@ -1,7 +1,0 @@
-${DOTFILES}
-${DOTIFLES}/bash/bashrc
-${DOTIFLES}/vim/vimrc
-${DOTIFLES}/zsh/zshrc
-${HOME}/Documents
-${HOME}/Downloads
-${HOME}/Sites

@@ -17,12 +17,10 @@
 
 # (1) Command abbreviations --------------------------------------------- {{{1
 
-alias b="bookmark"               # Manage a users bookmarks
 alias e="${EDITOR:-vi}"          # Open file in default editor
 alias o="${BROWSER:-open}"       # Open file in default file browser
 alias f="find"                   # Easily access the find command
 alias g="git"                    # Easily access the git command
-alias d="dockrrr"                # Alias for custom docker command hub
 
 
 # (2) Switch directories ------------------------------------------------ {{{1
@@ -47,8 +45,8 @@ dot::ls_supports() {
 
 declare -a ls_options
 
-if dot::ls_supports --color=auto; then
-  ls_options+=( --color=auto )
+if dot::ls_supports --color; then
+  ls_options+=( --color )
 elif dot::ls_supports -G; then
   ls_options+=( -G )
 fi
@@ -74,8 +72,8 @@ dot::grep_supports() {
 
 declare -a grep_options
 
-if dot::grep_supports --color=auto; then
-  grep_options+=( --color=auto )
+if dot::grep_supports --color; then
+  grep_options+=( --color )
 fi
 
 alias grep="grep ${grep_options[*]}"
@@ -104,11 +102,11 @@ else
 fi
 
 if dot::command_exists "delta"; then
-  alias pd="delta"
+  alias d="delta"
 elif dot::command_exists "icdiff"; then
-  alias pd="icdiff --tabsize=4 --numlines=8"
+  alias d="icdiff --tabsize=4 --numlines=8"
 else
-  alias pd="diff --side-by-side --width=\$(( COLUMNS - 2 ))"
+  alias d="diff --side-by-side --width=\$(( COLUMNS - 2 ))"
 fi
 
 case "$EDITOR" in

@@ -106,23 +106,5 @@ command! -bang -nargs=* FZFGrep
       \   <bang>0
       \ )
 
-" Create a custom command to open a file from the users bookmark list
-command! FZFBookmark
-      \ call fzf#run(
-      \   fzf#wrap(
-      \     'Bookmark',
-      \     fzf#vim#with_preview(
-      \       {
-      \         'source': dw#Bookmarks(),
-      \         'options': [
-      \           '--multi',
-      \           '--prompt=Bm> ',
-      \         ],
-      \       },
-      \       s:fzf_preview
-      \     )
-      \   )
-      \ )
-
 
 " vim:foldmethod=marker:foldlevel=2

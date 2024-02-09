@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# @file Custom wrapper for frequently used docker compose services
+# @file Custom wrapper for frequently used docker services
 
 # (1) Global Variables -------------------------------------------------- {{{1
 
@@ -30,7 +30,7 @@ is_docker_running() {
 # usage: is_any_service_running
 #
 is_any_service_running() {
-  docker compose ps 2>&1 | grep --quiet "running"
+  docker compose ps --status running --services >/dev/null 2>&1
 }
 
 #
@@ -39,7 +39,16 @@ is_any_service_running() {
 # usage: is_service_running <service>
 #
 is_service_running() {
-  docker compose ps "${1}" 2>&1 | grep --quiet "running"
+  docker compose ps --status running --services "${1}" 2>/dev/null | grep --quiet "${1}"
+}
+
+#
+# Determine whether a docker container is running.
+#
+# usage: is_container_running <container>
+#
+is_container_running() {
+  docker ps --quiet --filter "name=${1}" >/dev/null
 }
 
 #
@@ -50,6 +59,24 @@ is_service_running() {
 #
 command_exists() {
   command -v "${1}" >/dev/null 2>&1
+}
+
+#
+# Determine whether a container exists.
+#
+# usage: container_exists <name>
+#
+container_exists() {
+  docker container inspect "${1}" >/dev/null 2>&1
+}
+
+#
+# Determine whether a docker network exists.
+#
+# usage: network_exists <name>
+#
+network_exists() {
+  docker network inspect "${1}" >/dev/null 2>&1
 }
 
 #
@@ -107,20 +134,6 @@ project_name() {
 }
 
 #
-# Get the container name of a service.
-#
-# usage: container_name <service>
-#
-container_name() {
-  local service_name="${1}"
-
-  local container_id
-  container_id="$(docker compose ps --quiet "${service_name}")"
-
-  docker inspect --format '{{.Name}}' "${container_id}" | cut -c2-
-}
-
-#
 # Find the first service of multiple candidates that is currently running.
 #
 # usage: find_service <service> [service] [service] …
@@ -147,16 +160,19 @@ find_service() {
 #
 usage() {
   cat <<- CommandUsage
-		Dockrrr v1.0.0
+		Dockr v1.0.0
+
+    Execute frequently used commands in the corresponding Docker Compose
+    services.
 
 		Usage:
-		dockrrr <command> [options] [arguments]
+		dockr <command> [options] [arguments]
 
 		Commands:
-		  list      List all available docker compose projects.
 		  up        Start all containers of the current project.
 		  down      Stop all containers of the current project.
 		  restart   Restart all containers of the current project.
+      proxy     Start a reverse proxy.
 		  node      Run a Node command.
 		  npm       Run a npm command.
 		  npx       Run a npx command.
@@ -167,7 +183,6 @@ usage() {
 		  drush     Run a Drush command.
 		  phpunit   Run a PHPUnit test.
 		  mysql     Start a MYSQL CLI session.
-		  adminer   Use a browser based database management tool.
 	CommandUsage
 }
 
@@ -201,21 +216,60 @@ stop_services() {
   docker compose down --remove-orphans
 }
 
-# (d) List Command ------------------------------------------------------ {{{2
+# (d) Proxy Command ----------------------------------------------------- {{{2
 
 #
-# List all docker compose projects.
+# Start a reverse proxy for local development using traefik.
 #
-# usage: list_projects
-#
-list_projects() {
-  local directories="${PROJECT_PATH:-"${HOME}/Sites"}"
+# usage: start_proxy [<container>] [<network>]
+start_proxy() {
+  local config_dir="${XDG_CONFIG_HOME:-$HOME/.config}"
 
-  while read -rd: directory; do
-    find "${directory}" -maxdepth 3 -type f -name "docker-compose.yml" -exec dirname -- {} \;
-  done <<< "${directories}:"
+  local container_name="${1:-traefik}"
+  local network_name="${2:-$container_name}"
+
+  print_message "Starting reverse proxy …"
+
+  if ! network_exists "${network_name}"; then
+    docker network create \
+      --driver bridge \
+      --attachable \
+      "${network_name}" >/dev/null
+
+    print_message "Created external network."
+  fi
+
+  if ! container_exists "${container_name}"; then
+    print_message "Creating traefik container …"
+
+    docker create \
+      --publish "80:80" \
+      --publish "8080:8080" \
+      --publish "443:443" \
+      --volume "/var/run/docker.sock:/var/run/docker.sock:ro" \
+      --volume "${config_dir}/traefik/:/etc/traefik" \
+      --name "${container_name}" \
+      --network "${network_name}" \
+      --restart "unless-stopped" \
+      traefik:latest \
+      --providers.docker \
+      --prodiders.docker.network="${network_name}" >/dev/null
+
+    if (( $? > 0 )); then
+      print_error "Could not create traefik container."
+    else
+      print_message "Traefik container created."
+    fi
+  fi
+
+  if ! is_container_running "${container_name}"; then
+    docker start "${container_name}" >/dev/null
+    print_message "Traefik started (http://localhost:8080)."
+  else
+    docker restart "${container_name}" >/dev/null
+    print_message "Traefik container restarted (http://localhost:8080)."
+  fi
 }
-
 
 
 # (4) Entry Point ------------------------------------------------------- {{{1
@@ -223,7 +277,7 @@ list_projects() {
 #
 # Main entry point of the script.
 #
-# usage: dockrrr [<cmd>] [options] [arguments]
+# usage: dockr [<cmd>] [options] [arguments]
 #
 main() {
   if ! command_exists "docker"; then
@@ -262,20 +316,20 @@ main() {
   project="$(project_name)"
 
   local node_service
-  node_service="$(find_service "node" "laravel" "laravel.test")"
+  node_service="$(find_service "node" "laravel" "${APP_SERVICE:-laravel.test}")"
 
   local php_service
-  php_service="$(find_service "php" "drupal" "wordpress" "laravel" "laravel.test")"
+  php_service="$(find_service "php" "drupal" "wordpress" "laravel" "${APP_SERVICE:-laravel.test}")"
 
   local mysql_service
   mysql_service="$(find_service "db" "mysql" "mariadb")"
 
   case "${command}" in
-    ls|list)
-      list_projects
-      ;;
     help)
       usage
+      ;;
+    ls|list)
+      list_projects
       ;;
     up)
       start_services
@@ -286,6 +340,9 @@ main() {
     restart)
       stop_services
       start_services
+      ;;
+    proxy)
+      start_proxy
       ;;
     ruby)
       docker compose exec "${options[@]}" "${ruby_service:-ruby}" \
@@ -360,12 +417,6 @@ main() {
 
       docker compose exec "${options[@]}" "${mysql_service:-mysql}" \
         bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysql -u \${MYSQL_USER} \${MYSQL_DATABASE} < \"${input}\""
-      ;;
-    adminer)
-      docker run --init --rm --interactive --tty \
-        --publish "${1:-8080}:8080" \
-        --env ADMINER_DEFAULT_SERVER="${mysql_service:-db}" \
-        adminer
       ;;
     *)
       print_error "Unknown command [${command}]"

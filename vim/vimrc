@@ -76,7 +76,7 @@ set shortmess-=f                     " Stop hiding the file label
 set shortmess+=ilmnrotwxIOW          " Abbreviate message output
 
 set nowrap                           " No line wrapping by default
-set hidden                           " Hide abandoned buffers 
+set hidden                           " Hide abandoned buffers
 set nostartofline                    " Do not reset cursor on buffer switch
 set nojoinspaces                     " Disable extra spaces
 set splitright                       " Split to the right
@@ -88,11 +88,11 @@ set listchars+=trail:·               " Show trailing spaces
 set listchars+=nbsp:⣿                " Show non breaking spaces
 set listchars+=extends:»             " Line continues off-screen
 set listchars+=precedes:«            " Line precedes off-screen
-"set listchars+=eol:¬                " Show end of line markers 
+"set listchars+=eol:¬                " Show end of line markers
 
 set showbreak=↪\                     " Show line breaks
 set fillchars=vert:│                 " Vertical seperator for splits
-set fillchars+=diff:⣿                " Fill character for blank lines 
+set fillchars+=diff:⣿                " Fill character for blank lines
 
 set diffopt=vertical,filler,iwhite   " Use vertical splits, ignore whitespace
 
@@ -345,8 +345,8 @@ call plug#begin(s:data_home . '/bundle')
   Plug 'godlygeek/tabular', { 'on': [ 'Tabularize' ] }
   Plug 'tpope/vim-unimpaired'
 
-  if isdirectory('/usr/local/opt/fzf')
-    Plug '/usr/local/opt/fzf'
+  if isdirectory('/opt/homebrew/opt/fzf')
+    Plug '/opt/homebrew/opt/fzf'
     Plug 'junegunn/fzf.vim'
   endif
 

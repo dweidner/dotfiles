@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-#
-# @file Generate ctags in the background after a commit
-
-./.git/hooks/ctags >/dev/null 2>&1 &
-

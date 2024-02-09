@@ -1,7 +1,0 @@
-#compdef cdd
-
-#
-# @file Enable completion for the cdd function
-#
-
-_path_files -/ -W "${DOTFILES:-${HOME}/.config/dotfiles}"

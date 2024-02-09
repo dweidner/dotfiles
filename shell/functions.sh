@@ -2,53 +2,6 @@
 #
 # @file Utilitiy functions used in interactive shells
 
-
-#
-# Switch to a bookmarked directory.
-#
-# usage: cdb <keyword>
-#
-cdb() {
-  local needle="$*"
-
-  local directory
-  directory="$(bookmark find -type d "$needle" | head -n1)"
-
-  if [[ -d "$directory" ]]; then
-    builtin cd -- "$directory"
-  else
-    echo "cdb: $needle: Bookmark not found" >&2
-  fi
-}
-
-#
-# Switch to the given directory of the dotfiles repository.
-#
-# usage: cdd [<path>]
-#
-cdd() {
-  local base="${DOTFILES:-$HOME/.config/dotfiles}"
-
-  if [[ -d "$base" ]]; then
-    builtin cd -- "$base/$*"
-  fi
-}
-
-#
-# Switch to the given path relative to the currently selected finder
-# directory.
-#
-# usage: cdf [<path>]
-#
-cdf() {
-  local base
-  base="$(printfd)"
-
-  if [[ -d "$base" ]]; then
-    builtin cd -- "$base/$*"
-  fi
-}
-
 #
 # Switch to the given directory and list the directory contents.
 #
@@ -56,21 +9,6 @@ cdf() {
 #
 cdl() {
   builtin cd -- "$*" && command ls "${ls_options[@]}"
-}
-
-#
-# Switch to the given directory starting from the root the current git
-# repository.
-#
-# usage: cdr [<path>]
-#
-cdr() {
-  local base
-  base="$(git rev-parse --show-toplevel)"
-
-  if [[ -d "$base" ]]; then
-    builtin cd -- "$base/$*"
-  fi
 }
 
 #
@@ -82,31 +20,10 @@ del() {
   local dir="${TRASH_DIR:-${HOME}/.Trash}"
 
   if [[ ! -d "${dir}" ]]; then
-    mkdir -p "${dir}" 
+    mkdir -p "${dir}"
   fi
 
   mv "$@" "${dir}"
-}
-
-#
-# Load a given file to the ~/Downloads folder.
-#
-# usage: download <url>
-#
-download() {
-  local user_agent="${CURL_USER_AGENT:-Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:70.0) Gecko/20100101 Firefox/70.0}"
-  local target_dir="${XDG_DOWNLOAD_DIR:-${HOME}/Downloads}"
-
-  wget \
-    --directory-prefix="${target_dir}" \
-    --user-agent="${user_agent}" \
-    --random-wait \
-    --no-verbose \
-    --show-progress \
-    --continue \
-    --content-disposition \
-    --xattr \
-    "$@"
 }
 
 #
@@ -129,26 +46,6 @@ myip() {
 
   printf "\033[0;34m\n%s\033[0;m\n" "EXTERNAL IP:"
   dig @resolver1.opendns.com ANY myip.opendns.com +short -4
-}
-
-#
-# Remove directories from the stack.
-#
-# usage: po [<directory>]
-#
-po() {
-  builtin popd "$@" >/dev/null || return
-  builtin dirs -v
-}
-
-#
-# Add directories to the stack.
-#
-# usage: pu [<directory>]
-#
-pu() {
-  builtin pushd "$@" >/dev/null || return
-  builtin dirs -v
 }
 
 #

@@ -1,7 +1,0 @@
-#compdef cdb
-
-#
-# @file Enable completion for the cdb function
-#
-
-_arguments "*:directories:($(bookmark list -type d))"

@@ -11,12 +11,12 @@
 # -----------------------------------------------------------------------
 
 
-[[ -d "/usr/local/opt/fzf" ]] || return
+[[ -d "/opt/homebrew/opt/fzf" ]] || return
 
 
 # (1) FZF Setup --------------------------------------------------------- {{{1
 
-export FZF_DIR="/usr/local/opt/fzf"
+export FZF_DIR="/opt/homebrew/opt/fzf"
 
 if [[ "${PATH}" != *"${FZF_DIR}/bin"* ]]; then
   PATH="${PATH}:${FZF_DIR}/bin"
@@ -95,30 +95,6 @@ export FZF_CTRL_T_OPTS="--preview '${FZF_CTRL_T_PREVIEW}'"
 
 
 # (3) FZF Functions ----------------------------------------------------- {{{1
-
-#
-# Open a selected file/directory from the bookmark list.
-#
-# usage: fb [<query>]
-#
-fb() {
-  local bookmark
-
-  bookmark="$(
-    bookmark list \
-      | fzf \
-          --query="${1}" \
-          --select-1 \
-          --exit-0 \
-          --preview "[[ -d {} ]] && ${FZF_DEFAULT_DIR_PREVIEW} || ${FZF_DEFAULT_FILE_PREVIEW}"
-  )"
-
-  if [[ -f "${bookmark}" ]]; then
-    dot::edit "${bookmark}"
-  elif [[ -d "${bookmark}" ]]; then
-    cd "${bookmark}" || return
-  fi
-}
 
 #
 # Open selected files (with the default editor).

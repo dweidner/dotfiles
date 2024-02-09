@@ -13,26 +13,6 @@ dot::in_git_repository() {
 }
 
 #
-# Determine wheter a given value exists in an array
-#
-# usage: dot::in_array <needle> <array>
-#
-dot::in_array() {
-  local needle="$1"
-  local item
-
-  shift
-
-  for item; do
-    if [[ "$needle" == "$item" ]]; then
-      return 0
-    fi
-  done
-
-  return 1
-}
-
-#
 # Determine whether a command with the given name exists in the current
 # environment.
 #
@@ -107,42 +87,6 @@ dot::confirm() {
 }
 
 #
-# Create a URL friendly string.
-#
-# usage: dot::slugify <str>
-#
-dot::slugify() {
-  local str
-
-  case "${SHELL}" in
-    */zsh)  str="${(L)*}" ;;
-    *)      str="$(tr "[:upper:]" "[:lower:]" <<< "${*}")" ;;
-  esac
-
-  str="${str//[^a-z0-9]/-}"
-  str="${str//--/-}"
-  str="${str#-}"
-  str="${str%-}"
-
-  echo "${str}"
-}
-
-#
-# Remove a single characters from the beginning and end of the given string.
-#
-# usage: dot::trim <str> [<char>]
-#
-dot::trim() {
-  local str="$1"
-  local needle="${2:- }"
-
-  str="${str#$needle}"
-  str="${str%$needle}"
-
-  echo "$str"
-}
-
-#
 # Open a list of files.
 #
 # usage: dot::open <file> [<file>]
@@ -160,43 +104,6 @@ dot::open() {
   esac
 
   ${cmd} -- "$@" &>/dev/null
-}
-
-#
-# Read the arguments as input to the shell and execute the resulting
-# command in the current shell process. Caches the result for subsequent
-# calls.
-#
-# @see {https://github.com/mroth/evalcache}
-#
-# usage: dot::eval <command>
-#
-dot::eval() {
-  local extension="sh"
-
-  case "${SHELL}" in
-    */zsh)  extension="zsh"  ;;
-    */bash) extension="bash" ;;
-  esac
-
-  local key
-  key="$(dot::slugify "${*}")"
-
-  local directory="${XDG_CACHE_HOME}/dotfiles"
-  local file="${directory}/eval-${key}.${extension}"
-
-  if [[ -s "${file}" ]]; then
-    source "${file}"
-    return $?
-  elif dot::command_exists "${1}"; then
-    mkdir -p "${directory}"
-    "${@}" > "${file}"
-    source "${file}"
-    return $?
-  else
-    dot::error "eval: command not found: ${*}"
-    return 1
-  fi
 }
 
 #

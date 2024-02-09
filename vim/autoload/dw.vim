@@ -78,18 +78,6 @@ function! dw#Languages() abort
 endfunction
 
 "
-" Get all files added to the users bookmark list.
-"
-" @return {List}
-"
-function! dw#Bookmarks() abort
-  let l:files = systemlist('bookmark list')
-  let l:files = filter(l:files, 'filereadable(v:val)')
-
-  return l:files
-endfunction
-
-"
 " Reveal the given file in Finder.
 "
 " @param {String} file

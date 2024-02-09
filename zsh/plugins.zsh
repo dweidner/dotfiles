@@ -69,7 +69,8 @@ zinit wait lucid for \
    "hlissner/zsh-autopair" \
    "tarrasch/zsh-bd" \
    "OMZP::cp" \
-   "OMZP::extract"
+   "OMZP::extract" \
+   "OMZP::ssh"
 
 zinit has"fzf" wait lucid for \
   "wfxr/forgit"

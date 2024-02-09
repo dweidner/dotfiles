@@ -19,8 +19,8 @@
 DOTFILES="${DOTFILES:-$HOME/.config/dotfiles}"
 
 source "${DOTFILES}/shell/utilities.sh"
-source "${DOTFILES}/shell/variables.sh"
 source "${DOTFILES}/shell/path.sh"
+source "${DOTFILES}/shell/variables.sh"
 
 
 # (3) Bash settings ----------------------------------------------------- {{{1
@@ -34,11 +34,6 @@ source "${DOTFILES}/bash/prompt.sh"
 
 source "${DOTFILES}/shell/functions.sh"
 source "${DOTFILES}/shell/aliases.sh"
-
-source "${DOTFILES}/shell/node.sh"
-source "${DOTFILES}/shell/php.sh"
-source "${DOTFILES}/shell/ruby.sh"
-source "${DOTFILES}/shell/python.sh"
 source "${DOTFILES}/shell/fzf.sh"
 
 

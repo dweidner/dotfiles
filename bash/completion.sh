@@ -7,8 +7,7 @@
 
 #
 # A helper function used to suggest directories at a given path for
-# auto completion. The function is used to generate auto suggestion for
-# custom functions like cdd, cdf and cdr.
+# auto completion.
 #
 # usage: dot::complete_directories <path>
 #
@@ -36,12 +35,12 @@ dot::complete_directories() {
 # (2) Completion functions ---------------------------------------------- {{{1
 
 # Load bash completions installed in system paths
-if [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]]; then
-  source "/usr/local/etc/profile.d/bash_completion.sh"
+if [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]]; then
+  source "/opt/homebrew/etc/profile.d/bash_completion.sh"
 fi
 
-if [[ -r "/usr/local/etc/bash_completion" ]]; then
-  source "/usr/local/etc/bash_completion"
+if [[ -r "/opt/homebrew/etc/bash_completion" ]]; then
+  source "/opt/homebrew/etc/bash_completion"
 fi
 
 if [[ -r "/etc/bash_completion" ]]; then
@@ -53,14 +52,14 @@ fi
 
 # Enable path completion for custom aliases
 if dot::function_exists "_fzf_path_completion"; then
-  for cmd in "b" "c" "d" "e"; do
+  for cmd in "c" "d" "e"; do
     complete -F _fzf_path_completion -o default -o bashdefault "${cmd}"
   done
 fi
 
 # Enable directory completion for custom commands
 if dot::function_exists "_fzf_dir_completion"; then
-  for cmd in "pu" "tree"; do
+  for cmd in "t" "tree"; do
     complete -F _fzf_dir_completion -o nospace -o dirnames "${cmd}"
   done
 fi
