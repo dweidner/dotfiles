@@ -7,7 +7,9 @@
 export WWWUSER="${WWWUSER:-$UID}"
 export WWWGROUP="${WWWGROUP:-$(id -g)}"
 
-if [[ -f "./.env" ]]; then
+if [[ -f "./.env.local" ]]; then
+  source "./.env.local"
+elif [[ -f "./.env" ]]; then
   source "./.env"
 fi
 
@@ -25,33 +27,6 @@ is_docker_running() {
 }
 
 #
-# Determine if any services are running
-#
-# usage: is_any_service_running
-#
-is_any_service_running() {
-  docker compose ps --status running --services >/dev/null 2>&1
-}
-
-#
-# Determine whether a docker compose service is running.
-#
-# usage: is_service_running <service>
-#
-is_service_running() {
-  docker compose ps --status running --services "${1}" 2>/dev/null | grep --quiet "${1}"
-}
-
-#
-# Determine whether a docker container is running.
-#
-# usage: is_container_running <container>
-#
-is_container_running() {
-  docker ps --quiet --filter "name=${1}" >/dev/null
-}
-
-#
 # Determine whether a command with the given name exists in the current
 # environment.
 #
@@ -59,24 +34,6 @@ is_container_running() {
 #
 command_exists() {
   command -v "${1}" >/dev/null 2>&1
-}
-
-#
-# Determine whether a container exists.
-#
-# usage: container_exists <name>
-#
-container_exists() {
-  docker container inspect "${1}" >/dev/null 2>&1
-}
-
-#
-# Determine whether a docker network exists.
-#
-# usage: network_exists <name>
-#
-network_exists() {
-  docker network inspect "${1}" >/dev/null 2>&1
 }
 
 #
@@ -125,40 +82,47 @@ confirm() {
 #
 # usage: project_name
 #
-project_name() {
+get_project_name() {
   if [[ -n "${COMPOSE_PROJECT_NAME}" ]]; then
     printf '%s\n' "${COMPOSE_PROJECT_NAME}"
   else
-    printf '%s\n' "${PWD##*/}"
+    printf '%s\n' "${PWD##*/}" | sed -E 's/[^a-zA-Z0-9]+/-/g'
   fi
 }
 
 #
-# Find the first service of multiple candidates that is currently running.
+# Get the path to the configuration file of the docker compose project.
 #
-# usage: find_service <service> [service] [service] …
+# usage: get_project_config
 #
-find_service() {
-  for service in "${@}"; do
-    if is_service_running "${service}"; then
-      echo "${service}"
-      return 0
+get_project_config() {
+  if [[ -f "${PWD}/.ddev/.ddev-docker-compose-full.yaml" ]]; then
+    echo "${PWD}/.ddev/.ddev-docker-compose-full.yaml"
+  else
+    if [[ -f "${PWD}/compose.yml" ]]; then
+      echo "${PWD}/compose.yml"
+    elif [[ -f "${PWD}/docker-compose.yml" ]]; then
+      echo "${PWD}/docker-compose.yml"
     fi
-  done
 
-  return 1
+    if [[ -f "${PWD}/compose.local.yml" ]]; then
+      echo "${PWD}/compose.local.yml"
+    elif [[ -f "${PWD}/docker-compose.local.yml" ]]; then
+      echo "${PWD}/docker-compose.local.yml"
+    fi
+  fi
 }
 
 
 
-# (3) Commands ---------------------------------------------------------- {{{1
-
-# (a) Usage Command ----------------------------------------------------- {{{2
+# (3) Entry Point ------------------------------------------------------- {{{1
 
 #
-# Display usage information.
+# Help text
 #
-usage() {
+# usage: help
+#
+help() {
   cat <<- CommandUsage
 		Dockr v1.0.0
 
@@ -172,7 +136,6 @@ usage() {
 		  up        Start all containers of the current project.
 		  down      Stop all containers of the current project.
 		  restart   Restart all containers of the current project.
-      proxy     Start a reverse proxy.
 		  node      Run a Node command.
 		  npm       Run a npm command.
 		  npx       Run a npx command.
@@ -182,97 +145,8 @@ usage() {
 		  drupal    Run a Drupal Console command.
 		  drush     Run a Drush command.
 		  phpunit   Run a PHPUnit test.
-		  mysql     Start a MYSQL CLI session.
 	CommandUsage
 }
-
-# (b) Start Command ----------------------------------------------------- {{{2
-
-#
-# Start all containers of the current docker compose project.
-#
-# usage: start_services
-#
-start_services() {
-  if is_any_service_running; then
-    print_warning "Some Docker containers are already running"
-
-    if confirm "Do you want to shut them down first?"; then
-      stop_services
-    fi
-  fi
-
-  docker compose up --detach --wait
-}
-
-# (c) Stop Command ------------------------------------------------------ {{{2
-
-#
-# Stop all containers of the current docker compose project.
-#
-# usage: stop_services
-#
-stop_services() {
-  docker compose down --remove-orphans
-}
-
-# (d) Proxy Command ----------------------------------------------------- {{{2
-
-#
-# Start a reverse proxy for local development using traefik.
-#
-# usage: start_proxy [<container>] [<network>]
-start_proxy() {
-  local config_dir="${XDG_CONFIG_HOME:-$HOME/.config}"
-
-  local container_name="${1:-traefik}"
-  local network_name="${2:-$container_name}"
-
-  print_message "Starting reverse proxy …"
-
-  if ! network_exists "${network_name}"; then
-    docker network create \
-      --driver bridge \
-      --attachable \
-      "${network_name}" >/dev/null
-
-    print_message "Created external network."
-  fi
-
-  if ! container_exists "${container_name}"; then
-    print_message "Creating traefik container …"
-
-    docker create \
-      --publish "80:80" \
-      --publish "8080:8080" \
-      --publish "443:443" \
-      --volume "/var/run/docker.sock:/var/run/docker.sock:ro" \
-      --volume "${config_dir}/traefik/:/etc/traefik" \
-      --name "${container_name}" \
-      --network "${network_name}" \
-      --restart "unless-stopped" \
-      traefik:latest \
-      --providers.docker \
-      --prodiders.docker.network="${network_name}" >/dev/null
-
-    if (( $? > 0 )); then
-      print_error "Could not create traefik container."
-    else
-      print_message "Traefik container created."
-    fi
-  fi
-
-  if ! is_container_running "${container_name}"; then
-    docker start "${container_name}" >/dev/null
-    print_message "Traefik started (http://localhost:8080)."
-  else
-    docker restart "${container_name}" >/dev/null
-    print_message "Traefik container restarted (http://localhost:8080)."
-  fi
-}
-
-
-# (4) Entry Point ------------------------------------------------------- {{{1
 
 #
 # Main entry point of the script.
@@ -286,137 +160,108 @@ main() {
   fi
 
   if ! is_docker_running; then
-    print_warning "Docker is not running"
+    print_error "Docker is not running"
     return 1
   fi
 
-  local options=()
+  local project_name
+  project_name="$(get_project_name)"
 
-  if [[ ! -t 0 ]]; then
-    options+=(--no-TTY)
+  if [[ -z "${project_name}" ]]; then
+    print_warning "Could not determine project name"
+    return 1
   fi
 
-  for option in "$@"; do
-    case "${option}" in
+  local compose_options=(--project-name "${project_name}")
+
+  while read -r config_file; do
+    compose_options+=(--file "${config_file}")
+  done <<< "$(get_project_config "${project_name}")"
+
+  if (( ${#compose_options[@]} < 2 )); then
+    print_warning "Docker compose configuration not found"
+    return 1
+  fi
+
+  local compose_services
+  compose_services="$(docker compose "${compose_options[@]}" config --services 2>/dev/null)"
+
+  if [[ -z "${compose_services}" ]]; then
+    print_warning "Inalid docker compose configuration"
+    return 1
+  fi
+
+  local command="${1}"
+  shift 1
+
+  local command_options=()
+
+  for command_option in "$@"; do
+    case "${command_option}" in
       -e|--env)
-        options+=(--env "${2}")
+        command_options+=(--env "${2}")
         shift 2
         ;;
       -u|--user)
-        options+=(--user "${2}")
+        command_options+=(--user "${2}")
         shift 2
         ;;
     esac
   done
 
-  local command="${1}"
-  shift 1
+  local php_service
 
-  local project
-  project="$(project_name)"
+  for service_name in "php" "web" "${APP_SERVICE:-laravel.test}"; do
+    if grep -q -E "\b${service_name}\b" <<< "${compose_services}"; then
+      php_service="${service_name}"
+      break
+    fi
+  done
 
   local node_service
-  node_service="$(find_service "node" "laravel" "${APP_SERVICE:-laravel.test}")"
 
-  local php_service
-  php_service="$(find_service "php" "drupal" "wordpress" "laravel" "${APP_SERVICE:-laravel.test}")"
-
-  local mysql_service
-  mysql_service="$(find_service "db" "mysql" "mariadb")"
+  for service_name in "node" "web" "${APP_SERVICE:-laravel.test}"; do
+    if grep -q -E "\b${service_name}\b" <<< "${compose_services}"; then
+      node_service="${service_name}"
+      break
+    fi
+  done
 
   case "${command}" in
     help)
-      usage
+      help
       ;;
-    ls|list)
-      list_projects
+    config)
+      docker compose "${compose_options[@]}" config "${@}"
       ;;
     up)
-      start_services
+      docker compose "${compose_options[@]}" up --detach --wait "${@}"
       ;;
     down)
-      stop_services
+      docker compose "${compose_options[@]}" down --remove-orphans "${@}"
       ;;
     restart)
-      stop_services
-      start_services
+      docker compose "${compose_options[@]}" restart "${@}"
       ;;
-    proxy)
-      start_proxy
+    ruby|bundle|gem)
+      docker compose "${compose_options[@]}" exec "${command_options[@]}" "${ruby_service:-ruby}" \
+        "${command}" "${@}"
       ;;
-    ruby)
-      docker compose exec "${options[@]}" "${ruby_service:-ruby}" \
-        ruby "${@}"
+    node|npm|npx)
+      docker compose "${compose_options[@]}" exec "${command_options[@]}" "${node_service:-node}" \
+        "${command}" "${@}"
       ;;
-    bundle)
-      docker compose exec "${options[@]}" "${ruby_service:-ruby}" \
-        bundle "${@}"
-      ;;
-    gem)
-      docker compose exec "${options[@]}" "${ruby_service:-ruby}" \
-        gem "${@}"
-      ;;
-    node)
-      docker compose exec "${options[@]}" "${node_service:-node}" \
-        node "${@}"
-      ;;
-    npm)
-      docker compose exec "${options[@]}" "${node_service:-node}" \
-        npm "${@}"
-      ;;
-    npx)
-      docker compose exec "${options[@]}" "${node_service:-node}" \
-        npx "${@}"
-      ;;
-    php)
-      docker compose exec "${options[@]}" "${php_service:-php}" \
+    php|composer)
+      docker compose "${compose_options[@]}" exec "${command_options[@]}" "${php_service:-php}" \
         php "${@}"
       ;;
-    composer)
-      docker compose exec "${options[@]}" "${php_service:-php}" \
-        composer "${@}"
-      ;;
     artisan)
-      docker compose exec "${options[@]}" "${php_service:-php}" \
+      docker compose "${compose_options[@]}" exec "${command_options[@]}" "${php_service:-php}" \
         php artisan "${@}"
       ;;
-    drupal)
-      docker compose exec "${options[@]}" "${php_service:-php}" \
-        ./vendor/bin/drupal "${@}"
-      ;;
-    drush)
-      docker compose exec "${options[@]}" "${php_service:-php}" \
-        ./vendor/bin/drush "${@}"
-      ;;
-    phpunit)
-      docker compose exec "${options[@]}" "${php_service:-php}" \
-        ./vendor/bin/phpunit "${@}"
-      ;;
-    sql)
-      docker compose exec "${options[@]}" "${mysql_service:-mysql}" \
-        bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysql -u \${MYSQL_USER} \${MYSQL_DATABASE}"
-      ;;
-    sql:dump)
-      local today
-      today="$(date +%Y-%m-%d)"
-
-      local file
-      file="/docker-entrypoint-initdb.d/${1:-${today}-${project}.sql}"
-
-      docker compose exec "${options[@]}" "${mysql_service:-mysql}" \
-         bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysqldump -u \${MYSQL_USER} \${MYSQL_DATABASE} -r \"${file}\""
-      ;;
-    sql:restore)
-      local input
-
-      if (( $# > 0 )); then
-        input="/docker-entrypoint-initdb.d/$*"
-      else
-        input="/dev/stdin"
-      fi
-
-      docker compose exec "${options[@]}" "${mysql_service:-mysql}" \
-        bash -c "MYSQL_PWD=\${MYSQL_PASSWORD} mysql -u \${MYSQL_USER} \${MYSQL_DATABASE} < \"${input}\""
+    phpunit|phpcs|phpstan|pint|drupal|drush|kirby|wp)
+      docker compose "${compose_options[@]}" exec "${command_options[@]}" "${php_service:-php}" \
+        "./vendor/bin/${command}" "${@}"
       ;;
     *)
       print_error "Unknown command [${command}]"
