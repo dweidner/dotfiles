@@ -80,13 +80,29 @@ confirm() {
 #
 # Get the name of the current docker compose project.
 #
-# usage: project_name
+# usage: get_project_name
 #
 get_project_name() {
+  local project_root
+  project_root="$(get_project_root)"
+
   if [[ -n "${COMPOSE_PROJECT_NAME}" ]]; then
     printf '%s\n' "${COMPOSE_PROJECT_NAME}"
   else
-    printf '%s\n' "${PWD##*/}" | sed -E 's/[^a-zA-Z0-9]+/-/g'
+    printf '%s\n' "${project_root##*/}" | sed -E 's/[^a-zA-Z0-9]+/-/g'
+  fi
+}
+
+#
+# Get the path to the root directory of the current project.
+#
+# usage: get_project_root
+#
+get_project_root() {
+  if command_exists "git"; then
+    git rev-parse --show-toplevel
+  else
+    pwd
   fi
 }
 
@@ -96,21 +112,36 @@ get_project_name() {
 # usage: get_project_config
 #
 get_project_config() {
-  if [[ -f "${PWD}/.ddev/.ddev-docker-compose-full.yaml" ]]; then
-    echo "${PWD}/.ddev/.ddev-docker-compose-full.yaml"
-  else
-    if [[ -f "${PWD}/compose.yml" ]]; then
-      echo "${PWD}/compose.yml"
-    elif [[ -f "${PWD}/docker-compose.yml" ]]; then
-      echo "${PWD}/docker-compose.yml"
-    fi
+  local project_root
+  project_root="$(get_project_root)"
 
-    if [[ -f "${PWD}/compose.local.yml" ]]; then
-      echo "${PWD}/compose.local.yml"
-    elif [[ -f "${PWD}/docker-compose.local.yml" ]]; then
-      echo "${PWD}/docker-compose.local.yml"
+  local ddev_configuration=(
+    "${PWD}/.ddev/.ddev-docker-compose-full.yaml"
+    "${project_root}/.ddev/.ddev-docker-compose-full.yaml"
+  )
+
+  for file in "${ddev_configuration[@]}"; do
+    if [[ -r "${file}" ]]; then
+      echo "${file}"
+      return 0
     fi
-  fi
+  done
+
+  local docker_configuration=(
+    "${PWD}/compose.yml"
+    "${PWD}/docker-compose.yml"
+    "${project_root}/compose.yml"
+    "${project_root}/docker-compose.yml"
+  )
+
+  for file in "${docker_configuration[@]}"; do
+    if [[ -r "${file}" ]]; then
+      echo "${file}"
+      return 0
+    fi
+  done
+
+  return 1
 }
 
 
@@ -118,7 +149,7 @@ get_project_config() {
 # (3) Entry Point ------------------------------------------------------- {{{1
 
 #
-# Help text
+# Help text for custom command
 #
 # usage: help
 #
@@ -151,7 +182,7 @@ help() {
 #
 # Main entry point of the script.
 #
-# usage: dockr [<cmd>] [options] [arguments]
+# usage: dockr [options] [<cmd>] [arguments]
 #
 main() {
   if ! command_exists "docker"; then
@@ -172,16 +203,17 @@ main() {
     return 1
   fi
 
-  local compose_options=(--project-name "${project_name}")
+  local project_config
+  project_config="$(get_project_config)"
 
-  while read -r config_file; do
-    compose_options+=(--file "${config_file}")
-  done <<< "$(get_project_config "${project_name}")"
-
-  if (( ${#compose_options[@]} < 2 )); then
+  if [[ ! -r "${project_config}" ]]; then
     print_warning "Docker compose configuration not found"
     return 1
   fi
+
+  local compose_options=(--project-name "${project_name}")
+  compose_options+=(--project-name "${project_name}")
+  compose_options+=(--file "${project_config}")
 
   local compose_services
   compose_services="$(docker compose "${compose_options[@]}" config --services 2>/dev/null)"
@@ -231,14 +263,14 @@ main() {
     help)
       help
       ;;
-    config)
-      docker compose "${compose_options[@]}" config "${@}"
-      ;;
     up)
-      docker compose "${compose_options[@]}" up --detach --wait "${@}"
+      docker compose "${compose_options[@]}" up "${@}"
       ;;
     down)
-      docker compose "${compose_options[@]}" down --remove-orphans "${@}"
+      docker compose "${compose_options[@]}" down "${@}"
+      ;;
+    config)
+      docker compose "${compose_options[@]}" config "${@}"
       ;;
     restart)
       docker compose "${compose_options[@]}" restart "${@}"
@@ -265,7 +297,7 @@ main() {
       ;;
     *)
       print_error "Unknown command [${command}]"
-      usage
+      help
       ;;
   esac
 }
