@@ -351,7 +351,6 @@ call plug#begin(s:data_home . '/bundle')
   " |- liquid: Liquid templates with jekyll additions
   " |- php: Syntax highlighting for PHP 7.x
   " |- php-indent: Latest indentation rules for php
-  " |- tmux: Syntax for tmux configuration
   " |- twig: Syntax and indentation for twig templates
   " |- scss: Syntax for SCSS (Sassy CSS)
   " |- vue: Syntax highlighting for Vue components
@@ -368,7 +367,6 @@ call plug#begin(s:data_home . '/bundle')
   Plug 'StanAngeloff/php.vim'
   Plug '2072/PHP-Indenting-for-Vim'
   Plug 'cakebaker/scss-syntax.vim'
-  Plug 'tmux-plugins/vim-tmux'
   Plug 'lumiliet/vim-twig'
   Plug 'posva/vim-vue'
   Plug 'stephpy/vim-yaml'

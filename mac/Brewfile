@@ -13,7 +13,6 @@ tap 'homebrew/cask-fonts'
 
 brew 'zsh'
 brew 'fzf'
-brew 'tmux'
 
 brew 'rsync'
 brew 'curl'
@@ -41,7 +40,6 @@ brew 'tag'
 brew 'trash'
 
 
-
 # (3) Applications -------------------------------- {{{1
 
 cask 'appcleaner'
@@ -56,7 +54,6 @@ cask 'font-charter'
 cask 'font-fira-sans'
 cask 'font-fira-code'
 cask 'font-ibm-plex'
-
 
 
 # vim:foldmethod=marker:foldlevel=2
