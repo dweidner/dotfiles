@@ -8,6 +8,7 @@
 # 1. General Settings
 # 2. Completion Menu
 # 3. Completion Matching
+# 4. FZF Completions
 # -----------------------------------------------------------------------
 
 
@@ -55,6 +56,14 @@ zstyle ":completion::complete:cd:*" tag-order "! users"
 
 # Don't complete usernames
 zstyle ":completion:*" users ""
+
+
+# (4) FZF Completions --------------------------------------------------- {{{1
+
+# Load completion functions shipping with fzf
+if [[ -r "${HOMEBREW_PREFIX}/opt/fzf/shell/completion.zsh" ]]; then
+  source "${HOMEBREW_PREFIX}/opt/fzf/shell/completion.zsh"
+fi
 
 
 # vim:foldmethod=marker:foldlevel=2

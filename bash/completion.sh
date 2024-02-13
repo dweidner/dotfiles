@@ -34,21 +34,26 @@ dot::complete_directories() {
 
 # (2) Completion functions ---------------------------------------------- {{{1
 
-# Load bash completions installed in system paths
-if [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]]; then
-  source "/opt/homebrew/etc/profile.d/bash_completion.sh"
+# Load bash completions installed via homebrew
+if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]; then
+  source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
 fi
 
-if [[ -r "/opt/homebrew/etc/bash_completion" ]]; then
-  source "/opt/homebrew/etc/bash_completion"
-fi
-
-if [[ -r "/etc/bash_completion" ]]; then
-  source "/etc/bash_completion"
+if [[ -d "${HOMEBREW_PREFIX}/etc/bash_completion.d" ]]; then
+  for file in "${HOMEBREW_PREFIX}/etc/bas_completion.d/"*; do
+    if [[ -r "${file}" ]]; then
+      source "${file}"
+    fi
+  done
 fi
 
 
 # (3) FZF completions --------------------------------------------------- {{{1
+
+# Load completions functions shipping with fzf
+if [[ -r "${HOMEBREW_PREFIX}/opt/fzf/shell/completion.bash" ]]; then
+  source "${HOMEBREW_PREFIX}/opt/fzf/shell/completion.bash"
+fi
 
 # Enable path completion for custom aliases
 if dot::function_exists "_fzf_path_completion"; then

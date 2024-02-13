@@ -38,6 +38,7 @@ brew 'tidy-html5', args: ['HEAD']
 
 brew 'tag'
 brew 'trash'
+brew 'tldr'
 
 
 # (3) Applications -------------------------------- {{{1

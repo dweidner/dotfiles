@@ -12,6 +12,7 @@ alias safari="open -a Safari"            # Open a website in Safari
 alias arc="open -a Arc"                  # Open a website in Arc
 alias browser="arc"                      # Open Arc as default browser
 
+alias help="tldr"                        # Lookup cheatsheets for commands
 alias sail="./vendor/bin/sail"           # Run a local copy of Laraval Sail
 
 

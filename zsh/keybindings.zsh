@@ -7,6 +7,7 @@
 # -----------------------------------------------------------------------
 # 1. Keymappings
 # 2. ZLE Commands
+# 3. FZF Commands
 # -----------------------------------------------------------------------
 
 
@@ -132,6 +133,14 @@ function accept-or-down-line() {
   fi
 }
 zle -N accept-or-down-line
+
+
+# (3) FZF Commands ------------------------------------------------------ {{{1
+
+# Load keybindings shipping with fzf
+if [[ -r "${HOMEBREW_PREFIX}/opt/fzf/shell/key-bindings.zsh" ]]; then
+  source "${HOMEBREW_PREFIX}/opt/fzf/shell/key-bindings.zsh"
+fi
 
 
 # vim:foldmethod=marker:foldlevel=2

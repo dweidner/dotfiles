@@ -36,7 +36,6 @@ source "${DOTFILES}/zsh/keybindings.zsh"
 
 source "${DOTFILES}/shell/functions.sh"
 source "${DOTFILES}/shell/aliases.sh"
-source "${DOTFILES}/shell/fzf.sh"
 
 
 # (4) Local configuration ----------------------------------------------- {{{1

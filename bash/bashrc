@@ -27,6 +27,7 @@ source "${DOTFILES}/shell/variables.sh"
 
 source "${DOTFILES}/bash/options.sh"
 source "${DOTFILES}/bash/completion.sh"
+source "${DOTFILES}/bash/keybindings.sh"
 source "${DOTFILES}/bash/prompt.sh"
 
 
@@ -34,7 +35,6 @@ source "${DOTFILES}/bash/prompt.sh"
 
 source "${DOTFILES}/shell/functions.sh"
 source "${DOTFILES}/shell/aliases.sh"
-source "${DOTFILES}/shell/fzf.sh"
 
 
 # (4) Local configuration ----------------------------------------------- {{{1
