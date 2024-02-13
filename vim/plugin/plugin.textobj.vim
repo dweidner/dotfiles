@@ -20,8 +20,6 @@ endfunction
 let s:plugins = {
       \   'i': 'indent',
       \   'l': 'line',
-      \   'u': 'url',
-      \   'x': 'xmlattr-attr',
       \ }
 
 " Add the mapping provided mapping for each plugin in the dictionary

@@ -25,9 +25,7 @@ fi
 if [[ "${SHELL}" == */bash ]]; then
   source "${FZF_DIR}/shell/completion.bash"
   source "${FZF_DIR}/shell/key-bindings.bash"
-fi
-
-if [[ "${SHELL}" == */zsh ]]; then
+elif [[ "${SHELL}" == */zsh ]]; then
   source "${FZF_DIR}/shell/completion.zsh"
   source "${FZF_DIR}/shell/key-bindings.zsh"
 fi

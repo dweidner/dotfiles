@@ -141,55 +141,46 @@ endfunction
 " (4) Editor ------------------------------------------------------------ {{{1
 
 "
-" Switch easily between indentation styles.
+" Save the value of a vim internal option in the local storage container of
+" a given buffer.
 "
-" @param {String} style
+" @param {String} bufnr
+" @param {String} var
+" @param {*} value
 " @return {void}
 "
-function! dw#IndentStyle(style) abort
-  if a:style == 'spaces'
-    setlocal expandtab shiftwidth=2 softtabstop=2
-  elseif a:style == 'tabs'
-    setlocal noexpandtab shiftwidth=2 softtabstop=0
-  endif
+function! s:Store(bufnr, var, value) abort
+  let l:store = dw#GetStore(a:bufnr, 'dw')
+  let l:store[a:var] = a:value
 endfunction
 
 "
-" Fill the current line with a given character.
+" Retrieve the value of an option saved to the local storage container of a
+" given buffer.
 "
-" @see {@link https://stackoverflow.com/a/3400528|How to fill a line…}
+" @param {String} bufnr
+" @param {String} var
+" @return {*}
 "
-" @param {String} char
-" @return {void}
-"
-function! dw#FillLine(char) abort
-  let l:cursor = getcurpos()
-  let l:suffix = getbufvar('%', 'current_line_suffix', '')
-
-  let l:tw = getbufvar('%', '&textwidth', 78)
-  let l:tw = l:tw ? l:tw : 78
-
-  let l:fdm = getbufvar('%', '&foldmethod')
-
-  if l:fdm == 'marker'
-    let l:fdl = max([1, foldlevel('.')])
-    let l:suffix = ' {{{' . l:fdl
-  endif
-
-  .s/[[:space:]]*$//
-
-  let l:offset = col('$') + len(l:suffix)
-  let l:count = float2nr(floor((l:tw - l:offset) / len(a:char)))
-
-  if l:count > 0
-    .s/$/\=(' ' . repeat(a:char, l:count) . l:suffix)/
-  endif
-
-  call setpos('.', l:cursor)
+function! s:Recall(bufnr, var) abort
+  let l:store = dw#GetStore(a:bufnr, 'dw')
+  return get(l:store, a:var, v:null)
 endfunction
 
+"
+" Remove the value of an option from the storage container of a given buffer.
+"
+" @param {String} bufnr
+" @param {String} var
+" @return {void}
+"
+function! s:Forget(bufnr, var) abort
+  let l:store = dw#GetStore(a:bufnr, 'dw')
 
-" (5) Support ----------------------------------------------------------- {{{1
+  if has_key(l:store, a:var)
+    unlet l:store[a:var]
+  endif
+endfunction
 
 "
 " Get a local dictionary by name. Create one if it does not exist yet.
@@ -208,6 +199,97 @@ function! dw#GetStore(bufnr, name) abort
 
   return l:store
 endfunction
+
+"
+" Change the value of vim internal option temporarily unti restoring it.
+"
+" @param {String} bufnr
+" @param {String} var
+" @param {*} value
+" @return {*}
+"
+function! dw#SetTemporarily(bufnr, var, value) abort
+  let l:current = getbufvar(a:bufnr, '&' . a:var)
+
+  if a:value != l:current
+    call setbufvar(a:bufnr, '&' . a:var, a:value)
+    call s:Store(a:bufnr, a:var, l:current)
+  endif
+
+  return l:current
+endfunction
+
+"
+" Enable a vim internal option temporarily until restoring it. Only works for
+" options which can be either on or off.
+"
+" @param {String} bufnr
+" @param {String} var
+" @return {Number}
+"
+function! dw#EnableTemporarily(bufnr, var) abort
+  return dw#SetTemporarily(a:bufnr, a:var, 1)
+endfunction
+
+"
+" Disable a vim internal option temporarily until restoring it. Only works for
+" options which can be either on or off.
+"
+" @param {String} bufnr
+" @param {String} var
+" @return {Number}
+"
+function! dw#DisableTemporarily(bufnr, var) abort
+  return dw#SetTemporarily(a:bufnr, a:var, 0)
+endfunction
+
+"
+" Restore the value for an option that has been temporarily enabled/disabled.
+"
+" @param {String} bufnr
+" @param {String} var
+" @return {Number}
+"
+function! dw#Restore(bufnr, var) abort
+  let l:value = s:Recall(a:bufnr, a:var)
+
+  if l:value != v:null
+    call setbufvar(a:bufnr, '&' . a:var, l:value)
+    call s:Forget(a:bufnr, a:var)
+  endif
+
+  return l:value
+endfunction
+
+"
+" Toggle the visibility of the color column.
+"
+" @return {void}
+"
+function! dw#ToggleColorColumn() abort
+  if match(&colorcolumn, '+1') >= 0
+    set colorcolumn-=+1
+  else
+    set colorcolumn+=+1
+  endif
+endfunction
+
+"
+" Switch easily between indentation styles.
+"
+" @param {String} style
+" @return {void}
+"
+function! dw#IndentStyle(style) abort
+  if a:style == 'spaces'
+    setlocal expandtab shiftwidth=2 softtabstop=2
+  elseif a:style == 'tabs'
+    setlocal noexpandtab shiftwidth=2 softtabstop=0
+  endif
+endfunction
+
+
+" (5) Support ----------------------------------------------------------- {{{1
 
 "
 " If the given value is not of type list, wrap it in one.

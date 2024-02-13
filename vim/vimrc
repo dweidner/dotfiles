@@ -201,7 +201,7 @@ xnoremap > >gv
 nmap Q @q
 
 " Toggle the visibility of the colorcolumn
-nnoremap <silent> =oC :call dw#ui#ToggleColorColumn()<CR>
+nnoremap <silent> =oC :call dw#ToggleColorColumn()<CR>
 
 
 " b) Movement ----------------------------------------------------------- {{{2
@@ -252,21 +252,12 @@ nnoremap <silent> <Leader>q :lclose<CR>:bdelete<CR>
 
 " d) Formatting --------------------------------------------------------- {{{2
 
-" Auto format current buffer
-nnoremap <Leader>= ggVG=
-
 " Join lines without spaces
 nnoremap <Leader>j VjgJl
 
 " Convert a word to lowercase/uppercase
 nnoremap <Leader>l mQviwu`Q
 nnoremap <Leader>u mQviwU`Q
-
-" Fill the current line with a given character
-nnoremap <silent> <Leader>f- :call dw#FillLine('-')<CR>
-nnoremap <silent> <Leader>f. :call dw#FillLine('.')<CR>
-inoremap <silent> <C-g>- <C-o>:<C-u>call dw#FillLine('-')<CR><Esc>A
-inoremap <silent> <C-g>. <C-o>:<C-u>call dw#FillLine('.')<CR><Esc>A
 
 
 " (11) Plugins ---------------------------------------------------------- {{{1
@@ -280,26 +271,6 @@ endfunction
 " Determine whether a given feature is supported
 function! IsSupported(...) abort
   return call('dw#IsSupported', a:000)
-endfunction
-
-" Run the install script in the given plugin directory
-function! DoRunInstall(plug) abort
-  silent !bash install.sh
-
-  if exists(':UpdateRemotePlugins')
-    silent UpdateRemotePlugins
-  endif
-endfunction
-
-" Use composer to install PHP package dependencies with a plugin
-function! DoComposerInstall(plug) abort
-  silent !composer install
-  silent !composer run-script parse-stubs
-endfunction
-
-" Use npm to install node package dependencies with a plugin
-function! DoNpmInstall(plug) abort
-  silent !npm install
 endfunction
 
 
@@ -318,9 +289,7 @@ call plug#begin(s:data_home . '/bundle')
   " |- lastplace: Reopen file at last edit position
   " |- lightline: Configurable statusline
   " |- one: Atom one color scheme
-  " |- yarp: Yet Another Remote Plugin Framework for Neovim
   " |- repeat: Enable repeating supported plugin maps
-  " |- startuptime: Identify slow plugins
   " |- surround: Wrap text objects
   " |- tabular: Text filtering and alignment
   " |- unimpaired: Handy bracket key mappings
@@ -338,9 +307,7 @@ call plug#begin(s:data_home . '/bundle')
   Plug 'farmergreg/vim-lastplace'
   Plug 'itchyny/lightline.vim'
   Plug 'rakr/vim-one'
-  Plug 'roxma/nvim-yarp'
   Plug 'tpope/vim-repeat'
-  Plug 'tweekmonster/startuptime.vim', { 'on': [ 'StartupTime' ] }
   Plug 'tpope/vim-surround'
   Plug 'godlygeek/tabular', { 'on': [ 'Tabularize' ] }
   Plug 'tpope/vim-unimpaired'
@@ -360,8 +327,6 @@ call plug#begin(s:data_home . '/bundle')
   " |- textobj-user: Create custom text objects
   " |- textobj-indent: Select current indent level (i)
   " |- textobj-line: Select current line (l)
-  " |- textobj-url: Select urls (u)
-  " |- textobj-xmlattr: Select html attributes (x)
 
   Plug 'ntpeters/vim-better-whitespace', { 'on': [ 'ToggleWhitespace', 'StripWhitespace' ] }
   Plug 'editorconfig/editorconfig-vim'
@@ -374,8 +339,6 @@ call plug#begin(s:data_home . '/bundle')
   Plug 'kana/vim-textobj-user'
   Plug 'kana/vim-textobj-indent', { 'on': [ '<Plug>(textobj-indent' ] }
   Plug 'kana/vim-textobj-line', { 'on': [ '<Plug>(textobj-line' ] }
-  Plug 'mattn/vim-textobj-url', { 'on': [ '<Plug>(textobj-url' ] }
-  Plug 'whatyouhide/vim-textobj-xmlattr', { 'on': [ '<Plug>(textobj-xmlattr' ] }
 
   " c) Syntax Highlighting & Indentation Rules -------------------------- {{{2
   " |- css3: Syntax highlighting for the latest CSS properties
@@ -410,32 +373,6 @@ call plug#begin(s:data_home . '/bundle')
   Plug 'posva/vim-vue'
   Plug 'stephpy/vim-yaml'
 
-  " d) Completion Manager ---------------------------------------------- {{{2
-  " |- ncm2: Slim, fast and hackable completion framework
-  " |- ncm2-tern: JavaScript completion using ternjs code analysis
-  " |- ncm2-cssomni: CSS completion for CSS, SASS and LESS
-  " |- ncm2-tern: ternjs based javascript completion
-
-  Plug 'ncm2/ncm2', PlugIf(IsSupported('completion'))
-  Plug 'ncm2/ncm2-path', PlugIf(IsSupported('completion'))
-  Plug 'ncm2/ncm2-cssomni', PlugIf(IsSupported('completion'))
-
-  if executable('npm')
-    Plug 'ncm2/ncm2-tern', PlugIf(IsSupported('completion'), { 'do': function('DoNpmInstall') })
-  endif
-
-  " e) Bookmarks ------------------------------------------------------- {{{2
-  " |- ale: Check syntax and fix files, with LSP support
-  " |- vim-cool: Disable search highlighting when you are done searching
-  " |- vim-ripgrep: Use RipGrep and display results in a quickfix list
-
-  " Plug 'dense-analysis/ale'
-  " Plug 'romainl/vim-cool'
-
-  " if executable('rg')
-  "   Plug 'jremmen/vim-ripgrep'
-  " endif
-
 call plug#end()
 
 
@@ -449,12 +386,12 @@ augroup vimrc
   autocmd FocusGained * if &autoread | silent checktime | endif
 
   " Temporarily hide the cursorline
-  autocmd WinLeave,InsertEnter * call dw#ui#DisableTemporarily('%', 'cursorline')
-  autocmd WinEnter,InsertLeave * call dw#ui#Restore('%', 'cursorline')
+  autocmd WinLeave,InsertEnter * call dw#DisableTemporarily('%', 'cursorline')
+  autocmd WinEnter,InsertLeave * call dw#Restore('%', 'cursorline')
 
   " Temporarily hide search results when entering insert mode
-  autocmd InsertEnter * call dw#ui#DisableTemporarily('%', 'hlsearch')
-  autocmd InsertLeave * call dw#ui#Restore('%', 'hlsearch')
+  autocmd InsertEnter * call dw#DisableTemporarily('%', 'hlsearch')
+  autocmd InsertLeave * call dw#Restore('%', 'hlsearch')
 
 augroup END
 

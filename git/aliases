@@ -43,7 +43,6 @@
 
 	# git helpers
 	aliases = "!git config --get-regexp '^alias\\.' | colrm 1 6 | sed 's/ / = /'"
-	ctags = !"$(git rev-parse --git-dir)/hooks/ctags"
 	branches = branch -a
 	contributors = shortlog --summary --numbered --no-merges
 	remotes = remote -v

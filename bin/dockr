@@ -2,21 +2,6 @@
 #
 # @file Custom wrapper for frequently used docker services
 
-# (1) Global Variables -------------------------------------------------- {{{1
-
-export WWWUSER="${WWWUSER:-$UID}"
-export WWWGROUP="${WWWGROUP:-$(id -g)}"
-
-if [[ -f "./.env.local" ]]; then
-  source "./.env.local"
-elif [[ -f "./.env" ]]; then
-  source "./.env"
-fi
-
-
-
-# (2) Utility Functions ------------------------------------------------- {{{1
-
 #
 # Determine whether docker is running
 #
@@ -64,33 +49,23 @@ print_warning() {
 }
 
 #
-# Confirm a question with the user.
+# Search for a file in the current directory hierarchy.
 #
-# usage: confirm <question>
+# usage: find_file <name> [<directory>]
 #
-confirm() {
-  read -r -p $'\e[0;32m'"==> $* (y/n [n]) "$'\e[0;m' answer
+find_file() {
+  local file="${1}"
+  local current_directory="${2:-$PWD}"
 
-  case "$answer" in
-    y|Y) return 0 ;;
-    *) return 1 ;;
-  esac
-}
+  while [[ "${current_directory}" != "/" ]]; do
+    if [[ -r "${current_directory}/${file}" ]]; then
+      echo "${current_directory}/${file}"
+      return 0
+    fi
+    current_directory="$(dirname "${current_directory}")"
+  done
 
-#
-# Get the name of the current docker compose project.
-#
-# usage: get_project_name
-#
-get_project_name() {
-  local project_root
-  project_root="$(get_project_root)"
-
-  if [[ -n "${COMPOSE_PROJECT_NAME}" ]]; then
-    printf '%s\n' "${COMPOSE_PROJECT_NAME}"
-  else
-    printf '%s\n' "${project_root##*/}" | sed -E 's/[^a-zA-Z0-9]+/-/g'
-  fi
+  return 1
 }
 
 #
@@ -99,44 +74,25 @@ get_project_name() {
 # usage: get_project_root
 #
 get_project_root() {
-  if command_exists "git"; then
-    git rev-parse --show-toplevel
-  else
-    pwd
-  fi
-}
-
-#
-# Get the path to the configuration file of the docker compose project.
-#
-# usage: get_project_config
-#
-get_project_config() {
-  local project_root
-  project_root="$(get_project_root)"
-
-  local ddev_configuration=(
-    "${PWD}/.ddev/.ddev-docker-compose-full.yaml"
-    "${project_root}/.ddev/.ddev-docker-compose-full.yaml"
+  local project_markers=(
+    "composer.json"
+    "package.json"
+    ".git"
+    ".github"
+    ".ddev"
+    ".vscode"
+    ".env"
+    ".editorconfig"
   )
 
-  for file in "${ddev_configuration[@]}"; do
-    if [[ -r "${file}" ]]; then
-      echo "${file}"
-      return 0
-    fi
-  done
+  local marker_name
+  local marker_file
 
-  local docker_configuration=(
-    "${PWD}/compose.yml"
-    "${PWD}/docker-compose.yml"
-    "${project_root}/compose.yml"
-    "${project_root}/docker-compose.yml"
-  )
+  for marker_name in "${project_markers[@]}"; do
+    marker_file="$(find_file "${marker_name}")"
 
-  for file in "${docker_configuration[@]}"; do
-    if [[ -r "${file}" ]]; then
-      echo "${file}"
+    if [[ -r "${marker_file}" ]]; then
+      dirname "${marker_file}"
       return 0
     fi
   done
@@ -144,9 +100,63 @@ get_project_config() {
   return 1
 }
 
+#
+# Get the path to the configuration file of the docker compose project.
+#
+# usage: get_compose_config
+#
+get_compose_config() {
+  local working_dir="${1}"
 
+  local config_files=(
+    "${working_dir}/.ddev/.ddev-docker-compose-full.yaml"
+    "${working_dir}/compose.yml"
+    "${working_dir}/docker-compose.yml"
+  )
 
-# (3) Entry Point ------------------------------------------------------- {{{1
+  local config_file
+
+  for config_file in "${config_files[@]}"; do
+    if [[ -r "${config_file}" ]]; then
+      echo "${config_file}"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+#
+# Find the first service that exists from a list of candidates.
+#
+# usage: get_compose_service <file> <name> [<name>] [<name>] […]
+#
+get_compose_service() {
+  local config_file="${1}"
+  shift 1
+
+  if [[ ! -r "${config_file}" ]]; then
+    return 1
+  fi
+
+  local services
+  services="$(docker compose --file "${config_file}" config --services 2>/dev/null)"
+
+  if [[ -z "${services}" ]]; then
+    return 1
+  fi
+
+  local service
+
+  for service in "${@}"; do
+    if grep -q -E "\b${service}\b" <<< "${services}"; then
+      echo "${service}"
+      return 0
+    fi
+  done
+
+  return 1
+}
 
 #
 # Help text for custom command
@@ -173,9 +183,13 @@ help() {
 		  php       Run a snippet of PHP code.
 		  composer  Run a Composer command.
 		  artisan   Run an Artisan command.
+		  kirby     Run a Kirby CLI command.
 		  drupal    Run a Drupal Console command.
 		  drush     Run a Drush command.
 		  phpunit   Run a PHPUnit test.
+		  phpcs     Run PHP CodeSniffer.
+		  pint      Run Pint a code style fixer.
+		  wp        Run WordPress CLI command.
 	CommandUsage
 }
 
@@ -195,68 +209,62 @@ main() {
     return 1
   fi
 
-  local project_name
-  project_name="$(get_project_name)"
+  local project_root
+  project_root="$(get_project_root)"
 
-  if [[ -z "${project_name}" ]]; then
-    print_warning "Could not determine project name"
+  if [[ ! -d "${project_root}" ]]; then
+    print_error "Could not determine project root"
     return 1
   fi
 
-  local project_config
-  project_config="$(get_project_config)"
+  local config_file
+  config_file="$(get_compose_config "${project_root}")"
 
-  if [[ ! -r "${project_config}" ]]; then
-    print_warning "Docker compose configuration not found"
+  if [[ ! -r "${config_file}" ]]; then
+    print_error "Docker compose configuration not found"
     return 1
   fi
 
-  local compose_options=(--project-name "${project_name}")
-  compose_options+=(--project-name "${project_name}")
-  compose_options+=(--file "${project_config}")
-
-  local compose_services
-  compose_services="$(docker compose "${compose_options[@]}" config --services 2>/dev/null)"
-
-  if [[ -z "${compose_services}" ]]; then
-    print_warning "Inalid docker compose configuration"
-    return 1
+  if [[ -r "${project_root}/.env.local" ]]; then
+    source "${project_root}/.env.local"
+  elif [[ -r "${project_root}/.env" ]]; then
+    source "${project_root}/.env"
   fi
+
+  local php_service
+  php_service="$(
+    get_compose_service "${config_file}" \
+      "${PHP_SERVICE:-php}" \
+      "${APP_SERVICE:-laravel.test}" \
+      "app" \
+      "web"
+  )"
+
+  local node_service
+  node_service="$(
+    get_compose_service "${config_file}" \
+      "${NODE_SERVICE:-node}" \
+      "${APP_SERVICE:-laravel.test}" \
+      "app" \
+      "web"
+  )"
 
   local command="${1}"
   shift 1
 
-  local command_options=()
+  local options=()
 
-  for command_option in "$@"; do
-    case "${command_option}" in
+  for option in "$@"; do
+    case "${option}" in
       -e|--env)
-        command_options+=(--env "${2}")
+        options+=(--env "${2}")
         shift 2
         ;;
       -u|--user)
-        command_options+=(--user "${2}")
+        options+=(--user "${2}")
         shift 2
         ;;
     esac
-  done
-
-  local php_service
-
-  for service_name in "php" "web" "${APP_SERVICE:-laravel.test}"; do
-    if grep -q -E "\b${service_name}\b" <<< "${compose_services}"; then
-      php_service="${service_name}"
-      break
-    fi
-  done
-
-  local node_service
-
-  for service_name in "node" "web" "${APP_SERVICE:-laravel.test}"; do
-    if grep -q -E "\b${service_name}\b" <<< "${compose_services}"; then
-      node_service="${service_name}"
-      break
-    fi
   done
 
   case "${command}" in
@@ -264,35 +272,35 @@ main() {
       help
       ;;
     up)
-      docker compose "${compose_options[@]}" up "${@}"
+      docker compose --file "${config_file}" up "${@}"
       ;;
     down)
-      docker compose "${compose_options[@]}" down "${@}"
+      docker compose --file "${config_file}" down "${@}"
       ;;
     config)
-      docker compose "${compose_options[@]}" config "${@}"
+      docker compose --file "${config_file}" config "${@}"
       ;;
     restart)
-      docker compose "${compose_options[@]}" restart "${@}"
+      docker compose --file "${config_file}" restart "${@}"
       ;;
     ruby|bundle|gem)
-      docker compose "${compose_options[@]}" exec "${command_options[@]}" "${ruby_service:-ruby}" \
+      docker compose --file "${config_file}" exec "${options[@]}" "${ruby_service:-ruby}" \
         "${command}" "${@}"
       ;;
     node|npm|npx)
-      docker compose "${compose_options[@]}" exec "${command_options[@]}" "${node_service:-node}" \
+      docker compose --file "${config_file}" exec "${options[@]}" "${node_service:-node}" \
         "${command}" "${@}"
       ;;
     php|composer)
-      docker compose "${compose_options[@]}" exec "${command_options[@]}" "${php_service:-php}" \
+      docker compose --file "${config_file}" exec "${options[@]}" "${php_service:-php}" \
         php "${@}"
       ;;
     artisan)
-      docker compose "${compose_options[@]}" exec "${command_options[@]}" "${php_service:-php}" \
+      docker compose --file "${config_file}" exec "${options[@]}" "${php_service:-php}" \
         php artisan "${@}"
       ;;
     phpunit|phpcs|phpstan|pint|drupal|drush|kirby|wp)
-      docker compose "${compose_options[@]}" exec "${command_options[@]}" "${php_service:-php}" \
+      docker compose --file "${config_file}" exec "${options[@]}" "${php_service:-php}" \
         "./vendor/bin/${command}" "${@}"
       ;;
     *)
@@ -303,7 +311,5 @@ main() {
 }
 
 main "$@"
-
-
 
 # vim:foldmethod=marker:foldlevel=2

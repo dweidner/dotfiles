@@ -19,7 +19,6 @@
 
 alias e="${EDITOR:-vi}"          # Open file in default editor
 alias o="${BROWSER:-open}"       # Open file in default file browser
-alias f="find"                   # Easily access the find command
 alias g="git"                    # Easily access the git command
 
 
@@ -53,7 +52,6 @@ fi
 
 alias ls="command ls ${ls_options[*]}"
 
-alias l1="ls -1"    # Short list, one entry per row
 alias ll="ls -lhF"  # Long list, human readable sizes
 alias la="ll -A"    # Long list including hidden files
 alias lt="ll -t"    # By date, most recent first
@@ -108,11 +106,6 @@ elif dot::command_exists "icdiff"; then
 else
   alias d="diff --side-by-side --width=\$(( COLUMNS - 2 ))"
 fi
-
-case "$EDITOR" in
-  *nvim) alias vd="nvim -dR" ;;
-  *vim)  alias vd="vimdiff" ;;
-esac
 
 
 # (7) System specific aliases ------------------------------------------- {{{1

@@ -11,7 +11,6 @@
 
 [init]
 	defaultBranch = main
-	tempaltedir = ~/.config/git/template
 
 [branch]
 	autosetupmerge = always

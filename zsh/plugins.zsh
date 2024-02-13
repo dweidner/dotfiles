@@ -45,10 +45,10 @@ HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND="fg=red"
 
 export FORGIT_NO_ALIASES=1
 
-alias fgl="forgit::log"
-alias fgd="forgit::diff"
-alias fga="forgit::add"
-alias fgi="forgit::ignore"
+alias gl="forgit::log"
+alias gd="forgit::diff"
+alias ga="forgit::add"
+alias gi="forgit::ignore"
 
 # (c) Pure Theme -------------------------------------------------------- {{{2
 
