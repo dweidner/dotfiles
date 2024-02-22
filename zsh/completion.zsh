@@ -19,7 +19,7 @@ zmodload zsh/complist
 
 # Enable cache for the completion system
 zstyle ":completion:*" use-cache true
-zstyle ":completion:*" cache-path "${XDG_CACHE_HOME}/zsh"
+zstyle ":completion:*" cache-path "${XDG_CACHE_HOME}/zsh/zcompcache"
 
 
 # (2) Completion Menu --------------------------------------------------- {{{1
@@ -29,9 +29,9 @@ zstyle ":completion:*" menu "select=1"
 
 # Use the same colors in the completion menu as used by the `ls` command
 if [[ -n "${LS_COLORS}" ]]; then
-  zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+  zstyle ':completion:*:default' list-colors "${(s.:.)LS_COLORS}"
 else
-  zstyle ":completion:*" list-colors "di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43:"
+  zstyle ":completion:*:default" list-colors "di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43:"
 fi
 
 # List directories first in the menu
@@ -51,12 +51,13 @@ zstyle ":completion:*" matcher-list \
   "r:|[._-]=* r:|=*" \
   "l:|=* r:|=*"
 
-# Don't complete home directories
-zstyle ":completion::complete:cd:*" tag-order "! users"
+# Don't complete directories in cdpath
+zstyle ":completion::complete:(cd|pushd):*" tag-order \
+  !path-directories \
+  !users
 
 # Don't complete usernames
 zstyle ":completion:*" users ""
-
 
 # (4) FZF Completions --------------------------------------------------- {{{1
 
