@@ -8,22 +8,39 @@
 # usage: cdl [<path>]
 #
 cdl() {
-  builtin cd -- "$*" && command ls "${ls_options[@]}"
+  if (( $# == 0 )); then
+    cd || return 1
+  else
+    cd -- "$*" || return 1
+  fi
+
+  ls "${ls_options[@]:-}"
 }
 
 #
-# Move a file to the trash.
+# Copy files from one location to another using rsync.
+# 
+# usage: cpv <source> <target>
 #
-# usage: del <file>
-#
-del() {
-  local dir="${TRASH_DIR:-${HOME}/.Trash}"
+cpv() {
+  rsync --archive --progress --partial --human-readable "${@}"
+}
 
-  if [[ ! -d "${dir}" ]]; then
-    mkdir -p "${dir}"
+#
+# Create and switch to a given directory.
+#
+# usage: mcd [<path>]
+#
+mcd() {
+  if (( $# == 0 )); then
+    return 1
   fi
 
-  mv "$@" "${dir}"
+  if [[ ! -d "${1}" ]]; then
+    mkdir -p "${1}" || return 1
+  fi
+
+  cd "${1}" || return 1
 }
 
 #
@@ -32,15 +49,15 @@ del() {
 # usage: ff <pattern>
 #
 ff() {
-  find . -type f -iname '*'"$*"'*' -exec ls "${ls_options[@]}" -- {} \;
+  find . -type f -iname '*'"$*"'*' -exec ls "${ls_options[@]:-}" -- {} \;
 }
 
 #
 # Get an overview of the current network addresses.
 #
-# usage: myip
+# usage: ip
 #
-myip() {
+ip() {
   printf "\033[0;34m%s\033[0;m\n" "INTERNAL IP:"
   ifconfig | awk '/inet /{ print $2 }' | grep -v "127.0.0.1"
 
@@ -54,16 +71,6 @@ myip() {
 # usage: serve [<directory>]
 serve() {
   php -S localhost:8080 "${1:-.}"
-}
-
-#
-# Supress output if a given command and run it in the background. Does not
-# supress error messages.
-#
-# usage: silent <command>
-#
-silent() {
-  "$@" >/dev/null &
 }
 
 #

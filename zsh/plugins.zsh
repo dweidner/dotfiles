@@ -16,7 +16,8 @@
 declare -A ZINIT
 
 ZINIT[HOME_DIR]="${XDG_DATA_HOME}/zinit"
-ZINIT[COMPINIT_OPTS]=-C
+ZINIT[ZCOMPDUMP_PATH]="${XDG_CACHE_HOME}/zsh/zcompdump"
+ZINIT[COMPINIT_OPTS]="-C"
 
 if [[ ! -d "${ZINIT[HOME_DIR]}" ]]; then
   git clone "ihttps://github.com/zdharma-continuum/zinit.git" "${ZINIT[HOME_DIR]}"
@@ -71,7 +72,6 @@ zinit load "sindresorhus/pure"
 zinit wait lucid for \
    "hlissner/zsh-autopair" \
    "tarrasch/zsh-bd" \
-   "OMZP::cp" \
    "OMZP::extract" \
    "OMZP::ssh"
 
