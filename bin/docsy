@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# @file Custom wrapper for frequently used docker services
+# @file Proxy command executions to running docker containers.
 
 #
 # Determine whether docker is running
@@ -165,13 +165,13 @@ get_compose_service() {
 #
 help() {
   cat <<- CommandUsage
-		Dockr v1.0.0
+		DOCSY v1.0.0
 
-    Execute frequently used commands in the corresponding Docker Compose
-    services.
+		Proxy the execution of frequently used commands to the corresponding
+		Docker Compose services. Supports DDEV and Laravel Sail environments.
 
 		Usage:
-		dockr <command> [options] [arguments]
+		docsy <command> [options] [arguments]
 
 		Commands:
 		  up        Start all containers of the current project.
@@ -196,7 +196,7 @@ help() {
 #
 # Main entry point of the script.
 #
-# usage: dockr [options] [<cmd>] [arguments]
+# usage: docsy [options] [<cmd>] [arguments]
 #
 main() {
   if ! command_exists "docker"; then
