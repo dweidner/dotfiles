@@ -16,32 +16,22 @@
 	s = status
 	w = whatchanged
 
-	# git add
 	aa = add --all
 	au = add --update
 	ai = add --interactive
-
-	# git checkout
 	co = checkout
-
-	# git commit
 	ca = commit --amend
 	ci = commit --interactive
 	cm = commit --message
-
-	# git status
 	ss = status --short
 
-	# git diff[tool]
 	dc = diff --cached
 	ds = diff --staged
 	dt = !"for name in $(git diff --name-only $1); do git difftool $1 $name & done"
 
-	# git log
 	ll = log -n 15 --graph --topo-order --abbrev-commit --date=short --decorate --all --boundary --pretty=nice
 	lm = !git log --author $(git config user.email)
 
-	# git helpers
 	aliases = "!git config --get-regexp '^alias\\.' | colrm 1 6 | sed 's/ / = /'"
 	branches = branch -a
 	contributors = shortlog --summary --numbered --no-merges
