@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+#
+# @file Open a given project directory in tinkerwell
+
+#
+# Main entry point of the script.
+#
+# usage: tinkerwell [<path>]
+#
+tinkerwell() {
+  local path
+  path="$(realpath "${1:-.}")"
+
+  if [[ ! -d "${path}" ]]; then
+    return 1
+  fi
+
+  local hash
+  hash="$(base64 <<< "${path}")"
+
+  open "tinkerwell://?cwd=${hash}"
+}
+
+tinkerwell "$@"
+
+# vim:foldmethod=marker:foldlevel=2
