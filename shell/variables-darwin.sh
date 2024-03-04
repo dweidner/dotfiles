@@ -91,4 +91,11 @@ export COMPOSER_HOME="${XDG_CONFIG_HOME}/composer"
 export COMPOSER_CACHE_DIR="${XDG_CACHE_HOME}/composer"
 
 
+# (6) Docker ------------------------------------------------------------ {{{1
+
+if [[ -S "${HOME}/.colima/default/docker.sock" ]]; then
+  export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+fi
+
+
 # vim:foldmethod=marker:foldlevel=2
