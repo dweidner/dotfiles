@@ -69,5 +69,5 @@ cscope.po.out
 # (5) Editors ----------------------------------------------------------- {{{1
 
 .vscode/
-.valetphprc
+.phpactor.json
 TODO*
