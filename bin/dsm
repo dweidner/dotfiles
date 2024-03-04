@@ -167,13 +167,13 @@ get_compose_service() {
 #
 help() {
   cat <<- CommandUsage
-		DOCSY v1.0.0
+		Docker Service Manager v1.0.0
 
 		Proxy the execution of frequently used commands to the corresponding
 		Docker Compose services. Supports DDEV and Laravel Sail environments.
 
 		Usage:
-		docsy <command> [options] [arguments]
+		dsm <command> [options] [arguments]
 
 		Commands:
 		  up        Start all containers of the current project.
@@ -198,7 +198,7 @@ help() {
 #
 # Main entry point of the script.
 #
-# usage: docsy [options] [<cmd>] [arguments]
+# usage: dsm [options] [<cmd>] [arguments]
 #
 main() {
   if ! command_exists "docker"; then
@@ -247,6 +247,14 @@ main() {
     get_compose_service "${config_file}" \
       "${NODE_SERVICE:-node}" \
       "${APP_SERVICE:-laravel.test}" \
+      "app" \
+      "web"
+  )"
+
+  local ruby_service
+  ruby_service="$(
+    get_compose_service "${config_file}" \
+      "${RUBY_SERVICE:-ruby}" \
       "app" \
       "web"
   )"
