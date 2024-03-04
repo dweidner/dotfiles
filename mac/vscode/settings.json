@@ -60,7 +60,7 @@
 
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
-  "explorer.openEditors.visible": 0,
+  "explorer.openEditors.visible": 1,
 
   // (6) Source Control ----------------------
 
@@ -99,6 +99,9 @@
 
   // (10) File Types ---------------------------
 
+  "[dockerfile]": {
+    "editor.renderWhitespace": "boundary"
+  },
   "[markdown]": {
     "editor.wordWrap": "bounded",
     "editor.wrappingStrategy": "advanced",
@@ -111,6 +114,9 @@
     "editor.wordWrap": "bounded",
     "editor.wrappingStrategy": "advanced",
     "files.trimTrailingWhitespace": false
+  },
+  "[shellscript]": {
+    "editor.renderWhitespace": "boundary"
   },
 
   // (11) Extensions --------------------------

@@ -1,67 +1,21 @@
 [
-  // (1) Panel --------------------------------
+  // (1) Editor -------------------------------
+
+  {
+    "key": "ctrl+k tab",
+    "command": "type",
+    "when": "editorTextFocus",
+    "args": {
+      "text": "\t"
+    }
+  },
+
+  // (2) Panel --------------------------------
 
   {
     "key": "shift+cmd+j",
     "command": "workbench.action.toggleMaximizedPanel",
     "when": "terminalFocus"
-  },
-
-  // (2) Quick & Simple Text Selection --------
-
-  {
-    "key": "cmd+k alt+8",
-    "command": "extension.selectCurlyBrackets",
-    "when": "editorTextFocus"
-  },
-  {
-    "key": "cmd+k ctrl+alt+8",
-    "command": "-extension.selectCurlyBrackets"
-  },
-  {
-    "key": "cmd+k alt+9",
-    "command": "extension.selectCurlyBracketsOuter",
-    "when": "editorTextFocus"
-  },
-  {
-    "key": "cmd+k ctrl+alt+9",
-    "command": "-extension.selectCurlyBracketsOuter"
-  },
-  {
-    "key": "cmd+k alt+5",
-    "command": "extension.selectSquareBrackets",
-    "when": "editorTextFocus"
-  },
-  {
-    "key": "cmd+k ctrl+alt+5",
-    "command": "-extension.selectSquareBrackets"
-  },
-  {
-    "key": "cmd+k alt+6",
-    "command": "extension.selectSquareBracketsOuter",
-    "when": "editorTextFocus"
-  },
-  {
-    "key": "cmd+k ctrl+alt+6",
-    "command": "-extension.selectSquareBracketsOuter"
-  },
-  {
-    "key": "cmd+k shift+8",
-    "command": "extension.selectParenthesis",
-    "when": "editorTextFocus"
-  },
-  {
-    "key": "cmd+k shift+9",
-    "command": "-extension.selectParenthesis"
-  },
-  {
-    "key": "cmd+k shift+9",
-    "command": "extension.selectParenthesisOuter",
-    "when": "editorTextFocus"
-  },
-  {
-    "key": "cmd+k shift+0",
-    "command": "-extension.selectParenthesisOuter"
   },
 
   // (3) Emmet --------------------------------
@@ -70,15 +24,6 @@
     "key": "ctrl+j",
     "command": "editor.emmet.action.mergeLines",
     "when": "editorTextFocus && !editorReadonly && resourceLangId =~ /(html|xml|css)/"
-  },
-
-  // (3) Better Align -------------------------
-
-  {
-    "key": "shift+alt+0",
-    "command": "wwm.aligncode",
-    "when": "editorTextFocus && !editorReadonly"
   }
 
 ]
-
