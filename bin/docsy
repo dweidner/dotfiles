@@ -111,7 +111,9 @@ get_compose_config() {
   local config_files=(
     "${working_dir}/.ddev/.ddev-docker-compose-full.yaml"
     "${working_dir}/compose.yml"
+    "${working_dir}/compose.yaml"
     "${working_dir}/docker-compose.yml"
+    "${working_dir}/docker-compose.yaml"
   )
 
   local config_file
