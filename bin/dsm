@@ -2,14 +2,147 @@
 #
 # @file Proxy command executions to running docker containers.
 
-# (1) Project utilities ------------------------------------------------- {{{1
+#
+# Determine whether docker is running
+#
+# usage: is_docker_running
+#
+is_docker_running() {
+  docker info >/dev/null 2>&1
+}
+
+#
+# Determine whether a service container is running.
+#
+# usage: is_service_running <name>
+#
+is_service_running() {
+  compose ps --status running --services 2>/dev/null | grep -q -E "\b${1}\b"
+}
+
+#
+# Determine whether a service container exists in the current project.
+#
+# usage: service_exists <name>
+#
+service_exists() {
+  compose config --services 2>/dev/null | grep -q -E "\b${1}\b"
+}
+
+#
+# Determine whether a command with the given name exists in the current
+# environment.
+#
+# usage: command_exists <name>
+#
+command_exists() {
+  command -v "${1}" >/dev/null 2>&1
+}
+
+#
+# Search for a file in the parent directories.
+#
+# usage: find_up <file> [<directory>]
+#
+find_up() {
+  local file="${1}"
+  local current_directory="${2:-$PWD}"
+
+  while [[ "${current_directory}" != "/" ]]; do
+    if [[ -r "${current_directory}/${file}" ]]; then
+      echo "${current_directory}/${file}"
+      return 0
+    fi
+    current_directory="$(dirname "${current_directory}")"
+  done
+
+  return 1
+}
+
+#
+# Get the path to the root directory of the current project.
+#
+# usage: find_root [<directory>]
+#
+find_root() {
+  local working_dir="${1:-$PWD}"
+
+  local project_markers=(
+    "composer.json"
+    "package.json"
+    ".git"
+    ".ddev"
+    ".vscode"
+    ".editorconfig"
+  )
+
+  local marker_name
+  local marker_file
+
+  for marker_name in "${project_markers[@]}"; do
+    marker_file="$(find_up "${marker_name}" "${working_dir}")"
+
+    if [[ -r "${marker_file}" ]]; then
+      dirname "${marker_file}"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+#
+# Get the path to the docker compose configuration.
+#
+# usage: find_config [<directory>]
+#
+find_config() {
+  local working_dir="${1-:$PWD}"
+
+  local config_files=(
+    "${working_dir}/.ddev/.ddev-docker-compose-full.yaml"
+    "${working_dir}/compose.yml"
+    "${working_dir}/compose.yaml"
+    "${working_dir}/docker-compose.yml"
+    "${working_dir}/docker-compose.yaml"
+  )
+
+  local config_file
+
+  for config_file in "${config_files[@]}"; do
+    if [[ -r "${config_file}" ]]; then
+      echo "${config_file}"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+#
+# Find the first service container that exists in the current project.
+#
+# usage: find_service <name> [<name>] […]
+#
+find_service() {
+  local service_name
+
+  for service_name in "${@}"; do
+    if service_exists "${service_name}"; then
+      echo "${service_name}"
+      return 0
+    fi
+  done
+
+  return 1
+}
 
 #
 # Initialize a project.
 #
-# usage: project::init <type>
+# usage: init <type>
 #
-project::init() {
+init() {
   local type="${1}"
 
   if [[ -z "${type}" ]]; then
@@ -28,7 +161,7 @@ project::init() {
   fi
 
   local project_directory
-  project_directory="$(project::find_root)"
+  project_directory="$(find_root "${PWD}")"
 
   if [[ ! -d "${project_directory}" ]]; then
     echo "Could not determine project directory" >&2
@@ -59,106 +192,23 @@ project::init() {
 }
 
 #
-# Search for a file in the parent directories.
-#
-# usage: project::find_up <file> [<directory>]
-#
-project::find_up() {
-  local file="${1}"
-  local current_directory="${2:-$PWD}"
-
-  while [[ "${current_directory}" != "/" ]]; do
-    if [[ -r "${current_directory}/${file}" ]]; then
-      echo "${current_directory}/${file}"
-      return 0
-    fi
-    current_directory="$(dirname "${current_directory}")"
-  done
-
-  return 1
-}
-
-#
-# Get the path to the root directory of the current project.
-#
-# usage: project::find_root [<directory>]
-#
-project::find_root() {
-  local working_dir="${1:-$PWD}"
-
-  local project_markers=(
-    "composer.json"
-    "package.json"
-    ".git"
-    ".ddev"
-    ".vscode"
-    ".editorconfig"
-  )
-
-  local marker_name
-  local marker_file
-
-  for marker_name in "${project_markers[@]}"; do
-    marker_file="$(project::find_up "${marker_name}" "${working_dir}")"
-
-    if [[ -r "${marker_file}" ]]; then
-      dirname "${marker_file}"
-      return 0
-    fi
-  done
-
-  return 1
-}
-
-#
-# Get the path to the docker compose configuration.
-#
-# usage: project::find_config [<directory>]
-#
-project::find_config() {
-  local working_dir="${1-:$PWD}"
-
-  local config_files=(
-    "${working_dir}/.ddev/.ddev-docker-compose-full.yaml"
-    "${working_dir}/compose.yml"
-    "${working_dir}/compose.yaml"
-    "${working_dir}/docker-compose.yml"
-    "${working_dir}/docker-compose.yaml"
-  )
-
-  local config_file
-
-  for config_file in "${config_files[@]}"; do
-    if [[ -r "${config_file}" ]]; then
-      echo "${config_file}"
-      return 0
-    fi
-  done
-
-  return 1
-}
-
-
-# (2) Docker utilities -------------------------------------------------- {{{1
-
-#
 # Run docker compose in the current project.
 #
 # usage: compose <command>
 #
 compose() {
-  if ! command -v "docker" >/dev/null 2>&1; then
+  if ! command_exists "docker"; then
     echo "Command [docker] is not defined" >&2
     return 1
   fi
 
-  if ! docker info >/dev/null 2>&1; then
+  if ! is_docker_running; then
     echo "Docker is not running" >&2
     return 1
   fi
 
   local project_directory
-  project_directory="$(project::find_root)"
+  project_directory="$(find_root "${PWD}")"
 
   if [[ ! -d "${project_directory}" ]]; then
     echo "Could not determine project directory" >&2
@@ -166,7 +216,7 @@ compose() {
   fi
 
   local config_file
-  config_file="$(project::find_config "${project_directory}")"
+  config_file="$(find_config "${project_directory}")"
 
   if [[ ! -r "${config_file}" ]]; then
     echo "Docker compose configuration not found" >&2
@@ -186,250 +236,50 @@ compose() {
 }
 
 #
-# Determine whether a service container is running.
+# Run a command in a given service container.
 #
-# usage: compose::is_service_running <name>
+# usage: run <service> <command> [<options>] [<arguments>]
 #
-compose::is_service_running() {
-  compose ps --status running --services 2>/dev/null | grep -q -E "\b${1}\b"
-}
+run() {
+  local fallback_services=()
+  local fallback_service=
 
-#
-# Determine whether a service container exists in the current project.
-#
-# usage: compose::service_exists <name>
-#
-compose::service_exists() {
-  compose config --services 2>/dev/null | grep -q -E "\b${1}\b"
-}
+  local service_name="${1}"
 
-#
-# Get the path to the configuration file of the docker compose project.
-#
-# usage: compose::find_config <pwd>
-#
-compose::find_config() {
-  local working_dir="${1-:$PWD}"
+  case "${service_name}" in
+    app)
+      fallback_services+=("laravel.test" "web")
+      ;;
+    node)
+      fallback_services+=("laravel.test" "app" "web")
+      ;;
+    php)
+      fallback_services+=("laravel.test" "app" "web")
+      ;;
+    ruby)
+      fallback_services+=("app" "web")
+      ;;
+  esac
 
-  local config_files=(
-    "${working_dir}/.ddev/.ddev-docker-compose-full.yaml"
-    "${working_dir}/compose.yml"
-    "${working_dir}/compose.yaml"
-    "${working_dir}/docker-compose.yml"
-    "${working_dir}/docker-compose.yaml"
-  )
+  if ! service_exists "${service_name}" ; then
+    fallback_service="$(find_service "${fallback_services[@]}")"
 
-  local config_file
-
-  for config_file in "${config_files[@]}"; do
-    if [[ -r "${config_file}" ]]; then
-      echo "${config_file}"
-      return 0
+    if [[ -z "${fallback_service}" ]]; then
+      echo "Service container does not exist [${service_name}]" >&2
+      return 1
     fi
-  done
 
-  return 1
-}
-
-#
-# Find the first service that exists from a list of candidates.
-#
-# usage: compose::find_service <name> [<name>] [<name>] […]
-#
-compose::find_service() {
-  local service
-
-  for service in "${@}"; do
-    if compose::service_exists "${service}"; then
-      echo "${service}"
-      return 0
-    fi
-  done
-
-  return 1
-}
-
-#
-# Resolve compose configuration.
-#
-# usage: compose::config [options]
-#
-compose::config() {
-  compose config "${@}"
-}
-
-#
-# Create and start service containers.
-#
-# usage: compose::up [options]
-#
-compose::up() {
-  compose up "${@}"
-}
-
-#
-# Stop and remove service containers.
-#
-# usage: compose::down [options]
-#
-compose::down() {
-  compose down "${@}"
-}
-
-#
-# Restart service containers.
-#
-# usage: compose::restart [options]
-#
-compose::restart() {
-  compose restart "${@}"
-}
-
-#
-# Display resource usage statistics.
-#
-# usage: compose::stats [options] [service]
-#
-compose::stats() {
-  compose stats "${@}"
-}
-
-#
-# List current containers.
-#
-# usage: compose::ps [options] [service]
-#
-compose::ps() {
-  local columns=(
-    "{{ .ID }}"
-    "{{ .Name }}"
-    "{{ .Service }}"
-    "{{ .Status }}"
-    "{{ .Image }}"
-  )
-
-  local format
-  format="$(printf "\t%s" "${columns[@]}")"
-
-  compose ps --format "table ${format:1}" "${@}"
-}
-
-
-#
-# Execute a command in a running service container.
-#
-# usage: compose::exec <service> <command>
-#
-compose::exec() {
-  local options=()
-
-  if [[ ! -t 0 ]]; then
-    options+=(--no-TTY)
+    service_name="${fallback_service}"
   fi
 
-  compose exec "${options[@]}" "${@}"
-}
+  shift 1
 
-#
-# Run a one-off command in a service container.
-#
-# usage: compose::run <service> <command>
-#
-compose::run() {
-  local options=()
-
-  if [[ ! -t 0 ]]; then
-    options+=(--no-TTY)
-  fi
-
-  compose run "${options[@]}" "${@}"
-}
-
-#
-# Run a command in the php serice container.
-#
-# usage: compose::php <command>
-#
-compose::php() {
-  local candidates=(
-    "${PHP_SERVICE:-php}"
-    "${APP_SERVICE:-laravel.test}"
-    "app"
-    "web"
-  )
-
-  local service
-  service="$(compose::find_service "${candidates[@]}")"
-
-  if [[ -z "${service}" ]]; then
-    echo "Service container not found" >&2
-    return 1
-  fi
-
-  if compose::is_service_running "${service}"; then
-    compose::exec "${service}" "${@}"
+  if is_service_running "${service_name}"; then
+    compose exec "${service_name}" "${@}"
   else
-    compose::run "${service}" "${@}"
+    compose run --rm "${service_name}" "${@}"
   fi
 }
-
-#
-# Run a command in the node serice container.
-#
-# usage: compose::node <command>
-#
-compose::node() {
-  local candidates=(
-    "${NODE_SERVICE:-node}"
-    "${APP_SERVICE:-laravel.test}"
-    "app"
-    "web"
-  )
-
-  local service
-  service="$(compose::find_service "${candidates[@]}")"
-
-  if [[ -z "${service}" ]]; then
-    echo "Service container not found" >&2
-    return 1
-  fi
-
-  if compose::is_service_running "${service}"; then
-    compose::exec "${service}" "${@}"
-  else
-    compose::run "${service}" "${@}"
-  fi
-}
-
-#
-# Run a command in the ruby serice container.
-#
-# usage: compose::node <command>
-#
-compose::ruby() {
-  local candidates=(
-    "${RUBY_SERVICE:-ruby}"
-    "app"
-    "web"
-  )
-
-  local service
-  service="$(compose::find_service "${candidates[@]}")"
-
-  if [[ -z "${service}" ]]; then
-    echo "Service container not found" >&2
-    return 1
-  fi
-
-  if compose::is_service_running "${service}"; then
-    compose::exec "${service}" "${@}"
-  else
-    compose::run "${service}" "${@}"
-  fi
-}
-
-
-# (3) Commands ---------------------------------------------------------- {{{1
 
 #
 # Help text for custom command
@@ -453,6 +303,7 @@ help() {
 		  down      Stop all containers of the current project.
 		  restart   Restart all containers of the current project.
 		  ps        List all containers of the current project.
+		  shell     Start a shell session.
 		  stats     Display resource usage statistics.
 		  artisan   Run an Artisan command.
 		  bundle    Run a Bundler command.
@@ -479,93 +330,96 @@ help() {
 #
 # Main entry point of the script.
 #
-# usage: run [command] [options] [arguments]
+# usage: main [command] [options] [arguments]
 #
-run() {
+main() {
   local command="${1:-help}"
   shift 1
 
   case "${command}" in
-    help)
+    h|help)
       help
       ;;
     i|init)
-      project::init "${@}"
+      init "${@}"
       ;;
     c|config)
-      compose::config "${@}"
+      compose config "${@}"
       ;;
     up)
-      compose::up "${@}"
+      compose up "${@}"
       ;;
     down)
-      compose::down "${@}"
+      compose down "${@}"
       ;;
     restart)
-      compose::restart "${@}"
+      compose restart "${@}"
       ;;
     ps)
-      compose::ps "${@}"
+      compose ps --format "table {{.ID}}\t{{.Name}}\t{{.Service}}\t{{.Status}}\t{{.Image}}" "${@}"
       ;;
     stats)
-      compose::stats "${@}"
+      compose stats "${@}"
+      ;;
+    sh|shell)
+      run app sh "${@}"
       ;;
     artisan)
-      compose::php php artisan "${@}"
+      run php php artisan "${@}"
       ;;
     bundle)
-      compose::ruby bundle "${@}"
+      run ruby bundle "${@}"
       ;;
     compass)
-      compose::ruby bundle exec compass "${@}"
+      run ruby bundle exec compass "${@}"
       ;;
     composer)
-      compose::php composer "${@}"
+      run php composer "${@}"
       ;;
     drupal)
-      compose::php php ./vendor/bin/drupal "${@}"
+      run php php ./vendor/bin/drupal "${@}"
       ;;
     drush)
-      compose::php php ./vendor/bin/drush "${@}"
+      run php php ./vendor/bin/drush "${@}"
       ;;
     gem)
-      compose::ruby gem "${@}"
+      run ruby gem "${@}"
       ;;
     jekyll)
-      compose::ruby bundle exec jekyll "${@}"
+      run ruby bundle exec jekyll "${@}"
       ;;
     kirby)
-      compose::php php ./vendor/bin/kirby "${@}"
+      run php php ./vendor/bin/kirby "${@}"
       ;;
     node)
-      compose::node node "${@}"
+      run node node "${@}"
       ;;
     npm)
-      compose::node npm "${@}"
+      run node npm "${@}"
       ;;
     npx)
-      compose::node npx "${@}"
+      run node npx "${@}"
       ;;
     php)
-      compose::php php "${@}"
+      run php php "${@}"
       ;;
     phpcs)
-      compose::php php ./vendor/bin/phpcs "${@}"
+      run php php ./vendor/bin/phpcs "${@}"
       ;;
     phpstan)
-      compose::php php ./vendor/bin/phpstan "${@}"
+      run php php ./vendor/bin/phpstan "${@}"
       ;;
     phpunit)
-      compose::php php ./vendor/bin/phpunit "${@}"
+      run php php ./vendor/bin/phpunit "${@}"
       ;;
     pint)
-      compose::php php ./vendor/bin/pint "${@}"
+      run php php ./vendor/bin/pint "${@}"
       ;;
     ruby)
-      compose::ruby ruby "${@}"
+      run ruby ruby "${@}"
       ;;
     wp|wordpress)
-      compose::php php ./vendor/bin/wp "${@}"
+      run php php ./vendor/bin/wp "${@}"
       ;;
     *)
       echo "Unknown command [${command}]" >&2
@@ -574,7 +428,7 @@ run() {
   esac
 }
 
-run "${@}"
+main "${@}"
 
 
 # vim:foldmethod=marker:foldlevel=2
