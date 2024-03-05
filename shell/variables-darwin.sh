@@ -70,7 +70,7 @@ export FZF_CTRL_T_OPTS="--preview '[[ \$(file --mime {}) =~ binary ]] && file -b
 export FZF_ALT_C_OPTS="--preview '${FZF_DIR_PREVIEW_COMMAND}'"
 
 unset FZF_FILE_PREVIEW_COMMAND
-unset FTF_DIR_PREVIEW_COMMAND
+unset FZF_DIR_PREVIEW_COMMAND
 
 
 # (3) BAT --------------------------------------------------------------- {{{1
