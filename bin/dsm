@@ -2,6 +2,18 @@
 #
 # @file Proxy command executions to running docker containers.
 
+
+# (1) Global variables -------------------------------------------------- {{{1
+
+declare -Ag PROJECT_TEMPLATES=(
+  ["node"]="4dc038da8ba946a534ae2ee813a3df5e"
+  ["ruby"]="872f426e784a08e5e591096d5e9e6df4"
+)
+
+
+
+# (2) Utility functions ------------------------------------------------- {{{1
+
 #
 # Determine whether docker is running
 #
@@ -37,6 +49,36 @@ service_exists() {
 #
 command_exists() {
   command -v "${1}" >/dev/null 2>&1
+}
+
+#
+# Determine whether the output device supports colors.
+#
+# usage: supports_colors
+#
+supports_colors() {
+  local colors
+
+  if [[ ! -t 1 ]]; then
+    return 1
+  fi
+
+  colors="$(tput colors)"
+
+  if [[ -z "${colors}" ]]; then
+    return 1
+  fi
+
+  (( colors >= 8))
+}
+
+#
+# Print an error message.
+#
+# usage: error <message>
+#
+error() {
+  echo "${COLORS[red]}==> ${*}${COLORS[normal]}" >&2
 }
 
 #
@@ -138,6 +180,22 @@ find_service() {
 }
 
 #
+# Download a gist to target directory.
+#
+# usage: download_gist <user> <id> <file>
+#
+download_gist() {
+  local user="${1}"
+  local id="${2}"
+  local file="${3}"
+
+  wget -q -O "${file}" "https://gist.github.com/${user}/${id}/download"
+}
+
+
+# (3) Commands ---------------------------------------------------------- {{{1
+
+#
 # Initialize a project.
 #
 # usage: init <type>
@@ -146,41 +204,35 @@ init() {
   local type="${1}"
 
   if [[ -z "${type}" ]]; then
-    echo "Project type is missing" >&2
-    return 1
+    error "Project type is missing"
+    return 128
   fi
 
-  local templates=(
-    ["node"]="872f426e784a08e5e591096d5e9e6df4/archive/f76e94688793313030b3ec4bf83b9c75a9e3348e.zip"
-    ["ruby"]="4dc038da8ba946a534ae2ee813a3df5e/archive/820b65f83ce2d48e1a5ddeb52cbbdc84632f415f.zip"
-  )
+  local template_id="${PROJECT_TEMPLATES[$type]}"
 
-  if [[ -z "${templates[$type]}" ]]; then
-    echo "Unsupported project type [${type}]" >&2
-    return 1
+  if [[ -z "${template_id}" ]]; then
+    error "Unsupported project type [${type}]"
+    return 128
   fi
 
   local project_directory
   project_directory="$(find_root "${PWD}")"
 
   if [[ ! -d "${project_directory}" ]]; then
-    echo "Could not determine project directory" >&2
+    error "Could not determine project directory"
     return 1
   fi
-
-  local template_file="${templates[$type]}"
-  local template_url="https://gist.github.com/dweidner/${template_file}"
 
   local tmp_file
   tmp_file="$(mktemp "${TMPDIR:-/tmp/}${type}.XXXXXXXXXXXX")"
 
-  if ! wget -q -O "${tmp_file}" "${template_url}"; then
-    echo "Could not download project template" >&2
+  if ! download_gist "dweidner" "${template_id}" "${tmp_file}"; then
+    error "Could not download project template"
     return 1
   fi
 
   if ! unzip -qnj -d "${project_directory}" "${tmp_file}"; then
-    echo "Could not extract project template" >&2
+    error "Could not extract project template"
     return 1
   fi
 
@@ -198,20 +250,20 @@ init() {
 #
 compose() {
   if ! command_exists "docker"; then
-    echo "Command [docker] is not defined" >&2
-    return 1
+    error "Command [docker] is not defined"
+    return 127
   fi
 
   if ! is_docker_running; then
-    echo "Docker is not running" >&2
-    return 1
+    error "Docker is not running"
+    return 64
   fi
 
   local project_directory
   project_directory="$(find_root "${PWD}")"
 
   if [[ ! -d "${project_directory}" ]]; then
-    echo "Could not determine project directory" >&2
+    error "Could not determine project directory"
     return 1
   fi
 
@@ -219,45 +271,51 @@ compose() {
   config_file="$(find_config "${project_directory}")"
 
   if [[ ! -r "${config_file}" ]]; then
-    echo "Docker compose configuration not found" >&2
+    error "Docker compose configuration not found"
     return 1
   fi
 
-  if [[ -r "${project_directory}/.env.local" ]]; then
-    source "${project_directory}/.env.local"
-  elif [[ -r "${project_directory}/.env" ]]; then
-    source "${project_directory}/.env"
-  fi
+  local config_directory
+  config_directory="$(dirname "${config_file}")"
 
-  docker compose \
-    --project-directory "${project_directory}" \
-    --file "${config_file}" \
-    "${@}"
+  local env_files=()
+
+  env_files+=("${config_directory}/.env.local")
+  env_files+=("${project_directory}/.env.local")
+
+  local options=()
+
+  options+=(--project-directory "${project_directory}")
+  options+=(--file "${config_file}")
+
+  for env_file in "${env_files[@]}"; do
+    if [[ -r "${env_file}" ]]; then
+      options+=(--env-file "${env_file}")
+      break
+    fi
+  done
+
+  docker compose "${options[@]}" "${@}"
 }
 
 #
-# Run a command in a given service container.
+# Run a command in a given service container. Tries to use a list of fallback
+# candidates if the given service does not exist in the current project.
 #
 # usage: run <service> <command> [<options>] [<arguments>]
 #
 run() {
+  local service_name="${1}"
+
   local fallback_services=()
   local fallback_service=
 
-  local service_name="${1}"
-
   case "${service_name}" in
-    app)
-      fallback_services+=("laravel.test" "web")
+    app|node|php)
+      fallback_services+=("laravel.test" "web" "app")
       ;;
-    node)
-      fallback_services+=("laravel.test" "app" "web")
-      ;;
-    php)
-      fallback_services+=("laravel.test" "app" "web")
-      ;;
-    ruby)
-      fallback_services+=("app" "web")
+    db)
+      fallback_services+=("mysql" "mariadb")
       ;;
   esac
 
@@ -265,7 +323,7 @@ run() {
     fallback_service="$(find_service "${fallback_services[@]}")"
 
     if [[ -z "${fallback_service}" ]]; then
-      echo "Service container does not exist [${service_name}]" >&2
+      error "Service container does not exist [${service_name}]"
       return 1
     fi
 
@@ -288,15 +346,15 @@ run() {
 #
 help() {
   cat <<- CommandUsage
-		Docker Service Manager v1.0.0
+		Docker Service Manager v1.0.0-beta
 
 		Proxy the execution of frequently used commands to the corresponding
-		Docker Compose services. Supports DDEV and Laravel Sail environments.
+		Docker Compose services. Supports DDEV and Laravel Sail.
 
-		Usage:
-		dsm [command] [options] [arguments]
+		${COLORS[green]}Command Usage:${COLORS[normal]}
+		  dsm [command] [options] [arguments]
 
-		Commands:
+		${COLORS[green]}Compose Commands:${COLORS[normal]}
 		  init      Create a docker compose configuration.
 		  config    Retrieve the docker compose configuration.
 		  up        Start all containers of the current project.
@@ -305,25 +363,34 @@ help() {
 		  ps        List all containers of the current project.
 		  shell     Start a shell session.
 		  stats     Display resource usage statistics.
-		  artisan   Run an Artisan command.
-		  bundle    Run a Bundler command.
-		  compass   Run a Compass command.
-		  composer  Run a Composer command.
-		  drupal    Run a Drupal Console command.
-		  drush     Run a Drush command.
-		  gem       Run a Ruby gem.
-		  jekyll    Run a Jekyll command.
-		  kirby     Run a Kirby CLI command.
+
+		${COLORS[green]}Database Commands:${COLORS[normal]}
+		  mysql     Run a MYSQL CLI terminal session.
+
+		${COLORS[green]}Node Commands:${COLORS[normal]}
 		  node      Run a Node snippet.
 		  npm       Run a npm command.
 		  npx       Run a npx command.
+
+		${COLORS[green]}PHP Commands:${COLORS[normal]}
+		  artisan   Run an Artisan command.
+		  composer  Run a Composer command.
+		  drupal    Run a Drupal Console command.
+		  drush     Run a Drush command.
+		  kirby     Run a Kirby CLI command.
 		  php       Run a PHP snippet.
 		  phpcs     Run PHP CodeSniffer.
 		  phpstan   Run PHPStan.
 		  phpunit   Run a PHPUnit test.
 		  pint      Run Pint a code style fixer.
-		  ruby      Run a Ruby snippet.
 		  wp        Run WordPress CLI command.
+
+		${COLORS[green]}Ruby Commands:${COLORS[normal]}
+		  bundle    Run a Bundler command.
+		  compass   Run a Compass command.
+		  gem       Run a Ruby gem.
+		  jekyll    Run a Jekyll command.
+		  ruby      Run a Ruby snippet.
 	CommandUsage
 }
 
@@ -333,6 +400,14 @@ help() {
 # usage: main [command] [options] [arguments]
 #
 main() {
+  if supports_colors; then
+    declare -Ag COLORS=(
+      ["red"]="$(tput setaf 1)"
+      ["green"]="$(tput setaf 2)"
+      ["normal"]="$(tput sgr0)"
+    )
+  fi
+
   local command="${1:-help}"
   shift 1
 
@@ -391,6 +466,9 @@ main() {
     kirby)
       run php php ./vendor/bin/kirby "${@}"
       ;;
+    mysql)
+      run db mysql "${@}"
+      ;;
     node)
       run node node "${@}"
       ;;
@@ -422,7 +500,7 @@ main() {
       run php php ./vendor/bin/wp "${@}"
       ;;
     *)
-      echo "Unknown command [${command}]" >&2
+      error "Unknown command [${command}]"
       help
       ;;
   esac
