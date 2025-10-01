@@ -4,18 +4,27 @@
   "workbench.colorTheme": "Atom One Light",
   "workbench.preferredLightColorTheme": "Atom One Light",
   "workbench.preferredDarkColorTheme": "Atom One Dark",
+  "workbench.productIconTheme": "fluent-icons",
   "workbench.iconTheme": "vs-minimal",
   "workbench.startupEditor": "none",
-  "workbench.statusBar.visible": true,
+  "workbench.activityBar.location": "bottom",
   "workbench.layoutControl.enabled": false,
   "workbench.editor.showTabs": "multiple",
   "workbench.editor.showIcons": false,
   "workbench.editor.empty.hint": "hidden",
   "workbench.tips.enabled": false,
-  "workbench.tree.indent": 16,
+  "workbench.tree.indent": 20,
   "workbench.tree.enableStickyScroll": true,
   "workbench.tree.renderIndentGuides": "none",
   "workbench.list.horizontalScrolling": true,
+  "workbench.editorAssociations": {
+    "*.svg": "default"
+  },
+  "breadcrumbs.enabled": false,
+  "zenMode.showTabs": "single",
+  "zenMode.hideStatusBar": true,
+  "zenMode.centerLayout": false,
+  "zenMode.fullScreen": false,
 
   // (2) Editor -------------------------------
 
@@ -25,6 +34,7 @@
   "editor.lineHeight": 24,
   "editor.tabSize": 4,
   "editor.insertSpaces": true,
+  "editor.lineNumbers": "off",
   "editor.renderWhitespace": "trailing",
   "editor.renderLineHighlight": "all",
   "editor.suggest.preview": true,
@@ -34,6 +44,26 @@
   "editor.scrollbar.horizontalScrollbarSize": 8,
   "editor.scrollbar.verticalScrollbarSize": 8,
   "editor.tokenColorCustomizations": {
+    "[*Light*]": {
+      "textMateRules": [
+        {
+          "scope": "ref.matchtext",
+          "settings": {
+            "foreground": "#000"
+          }
+        }
+      ]
+    },
+    "[*Dark*]": {
+      "textMateRules": [
+        {
+          "scope": "ref.matchtext",
+          "settings": {
+            "foreground": "#fff"
+          }
+        }
+      ]
+    },
     "textMateRules": []
   },
 
@@ -47,14 +77,6 @@
   "window.restoreWindows": "none",
   "window.nativeTabs": false,
   "window.commandCenter": false,
-  "zenMode.showTabs": "single",
-  "zenMode.hideStatusBar": true,
-  "zenMode.centerLayout": false,
-  "zenMode.fullScreen": false,
-
-  // (4) Breadcrumbs --------------------------
-
-  "breadcrumbs.enabled": false,
 
   // (5) Explorer -----------------------------
 
@@ -62,19 +84,25 @@
   "explorer.confirmDragAndDrop": false,
   "explorer.openEditors.visible": 1,
 
-  // (6) Source Control ----------------------
+  // (6) Chat ---------------------------------
+
+  "chat.commandCenter.enabled": false,
+
+  // (7) Source Control ----------------------
 
   "git.confirmSync": false,
   "git.countBadge": "tracked",
+  "git.openRepositoryInParentFolders": "never",
+  "git.blame.editorDecoration.enabled": false,
 
-  // (7) Debugging ----------------------------
+  // (8) Debugging ----------------------------
 
   "debug.console.fontFamily": "Fira Code, Source Code Pro, monospace",
   "debug.console.fontSize": 14,
   "debug.console.lineHeight": 26,
   "debug.toolBarLocation": "docked",
 
-  // (8) Terminal -----------------------------
+  // (9) Terminal -----------------------------
 
   "terminal.integrated.fontFamily": "Fira Code, Source Code Pro, monospace",
   "terminal.integrated.fontSize": 14,
@@ -85,19 +113,19 @@
   "terminal.integrated.shellIntegration.enabled": true,
   "terminal.integrated.shellIntegration.decorationsEnabled": "overviewRuler",
 
-  // (9) Files --------------------------------
+  // (10) Files -------------------------------
 
   "files.trimTrailingWhitespace": true,
   "files.associations": {
     ".dockerignore": "ignore",
     ".php_cs*": "php",
-    ".env*": "dotenv",
     "*.inc": "php",
     "*.module": "php",
-    "*.theme": "php"
+    "*.theme": "php",
+    ".env*": "dotenv"
   },
 
-  // (10) File Types ---------------------------
+  // (11) File Types --------------------------
 
   "[dockerfile]": {
     "editor.renderWhitespace": "boundary"
@@ -119,7 +147,7 @@
     "editor.renderWhitespace": "boundary"
   },
 
-  // (11) Extensions --------------------------
+  // (12) Extensions --------------------------
 
   "extensions.autoUpdate": true,
   "extensions.ignoreRecommendations": true,
@@ -147,8 +175,24 @@
     "postcss": "css"
   },
 
-  // (d) Dotenv ----------------
+  // (d) Dotenv ---------------
 
-  "dotenv.enableAutocloaking": false
+  "dotenv.enableAutocloaking": false,
+
+  // (e) GitLens --------------
+
+  "gitlens.codeLens.enabled": true,
+  "gitlens.currentLine.enabled": false,
+  "gitlens.showWhatsNewAfterUpgrades": false,
+  "gitlens.plusFeatures.enabled": false,
+  "gitlens.launchpad.indicator.enabled": false,
+  "gitlens.virtualRepositories.enabled": false,
+
+  // (f) Github ---------------
+
+  "github.copilot.enable": {
+    "*": false
+  }
 
 }
+
